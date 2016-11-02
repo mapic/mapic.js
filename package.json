@@ -1,0 +1,13 @@
+{
+  "name": "mapic.js",
+  "version": "1.3.8",
+  "description": "![Mapic Logo](https://cloud.githubusercontent.com/assets/2197944/19607635/5c434458-97cb-11e6-941b-e74e83b385ba.png) # Mapic.js client library This is the open source client library front-end for Mapic.",  
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mapic",
+  "license": "GNU General Public License"
+}

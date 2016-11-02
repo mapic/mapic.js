@@ -920,6 +920,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         if (!time || !_.isObject(time)) return console.error('wrong time');
 
         // set current time
+        this._current = this._current || {};
         this._current.day = time.day || this._current.day;
         this._current.year = time.year || this._current.year;
 

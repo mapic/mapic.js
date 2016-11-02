@@ -83,7 +83,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     options : {
         
         // frames to cache [before, after]
-        cacheSize : [1, 1], 
+        cacheSize : [1, 5], 
         
         // moment format at which to compare dates (year/day only here)
         timeFormat : 'YYYY-DDDD', 
@@ -190,8 +190,10 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             // add to active layers
             app.MapPane.addActiveLayer(this);   // includes baselayers, todo: evented
 
+                console.log('HASMASK???');
             // add mask layer
             if (this.hasMask()) {
+                console.log('HASMASK!!');
 
                 // add mask layer
                 this._maskLayers.forEach(function (maskLayer) {
@@ -469,6 +471,9 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             style : this.options.mask.defaultStyle,
             id : mask.id
         });
+
+        console.log('_initGeoJSONMask', mask);
+        console.log('maskLayer', maskLayer);
 
         // add to array
         this._maskLayers.push(maskLayer);
@@ -846,10 +851,15 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         // find dataset
         var dataset = this._datasets[this._cursor];
 
+        console.log('dataset:', dataset);
+        console.log('this._datasets:', this._datasets)
+
         // find cached frame
         var cache = _.find(this._cache, function (c) {
             return c.dataset_id == dataset.id;
         });
+
+        console.log('cache:', cache);
 
         // get layer
         var layer = cache ? cache.layer : false;
@@ -895,6 +905,8 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         var datasets = _.sortBy(_.uniq(a.concat(b)), function (d) {
             return _.findIndex(this._datasets, function (dd) {return d.id == dd.id});
         }, this);
+
+        console.log('_updateCache datasets', datasets);
 
         // cache datasets
         datasets.forEach(function (dataset) {

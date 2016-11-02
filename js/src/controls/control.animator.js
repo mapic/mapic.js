@@ -250,7 +250,10 @@ Wu.Graph.Animator = Wu.Evented.extend({
         if (!this._inited) return;
 
         // set slider value
-        this._sliderValue = value ? Math.round(value) : 0;
+        this._sliderValue = value ? Math.round(value) : 1;
+        if (!this._sliderValue) this._sliderValue = 1;
+
+        console.log('value, slidervalue', value, this._sliderValue);
 
         // fire update
         this.fire('update', {

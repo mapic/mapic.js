@@ -297,6 +297,8 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
     // without mask, there's no graph... 
     setMask : function (mask) {
 
+        console.log('setMask', mask);
+
         // set current mask
         this._mask = mask;
 
@@ -800,6 +802,11 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         data : {}
     },
 
+    // _current : {
+    //     year : 2016,
+    //     day : 1
+    // },
+
     getDatasetsEndDate : function () {
         // get datasets
         var datasets = this.cube().getDatasets();
@@ -876,6 +883,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
     _setDate : function (year, day) {
 
         // set dates
+        this._current = this._current || {};
         this._current.year = year || this._current.year;
         this._current.day = day || this._current.day;
 
@@ -918,8 +926,10 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
         // ensure proper time
         if (!time || !_.isObject(time)) return console.error('wrong time');
+        console.log('time:', time);
 
         // set current time
+        this._current = this._current || {};
         this._current.day = time.day || this._current.day;
         this._current.year = time.year || this._current.year;
 
@@ -933,6 +943,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
     },
 
     onUpdateTimeframe : function (options) {
+        console.error('onUpdateTimeframe', options);
         this.setTime({
             day : options.day, // value from animator
             year : options.year

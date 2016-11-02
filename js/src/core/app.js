@@ -3,7 +3,7 @@ Wu.App = Wu.Class.extend({
 	_ : 'app',
 
 	// default options
-	options : systemapicConfigOptions, // global var from config.js... perhaps refactor.
+	options : window.systemapicConfigOptions, // global var from config.js... perhaps refactor.
 	language : language,
 	_ready : false,
 

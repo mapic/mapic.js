@@ -60,11 +60,10 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             avg : true
         },
         colors : [
-
-            '#e31a1c', // red
-            '#ff7f00', // orange
-            '#33a02c', // green
-            '#1f78b4', // blue
+            '#e31a1c', 
+            '#ff7f00', 
+            '#33a02c', 
+            '#1f78b4', 
             '#F9DC5C',
             '#BE5035',
             '#F4FFFD',
@@ -82,7 +81,10 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             '#8DE4FF',
             'red',
             'yellow',
-        ]
+        ],
+        hydrologicalYear : {
+            month : 8, // 8 = sept in moment.js
+        }
     },
 
     _initialize : function () {
@@ -113,6 +115,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         if (this.parsed()) return done(null, this.parsed());
 
         // query non-data year (ie. query from actual raster datasets)
+        // todo: 2016 is hardcoded, not good
         this.query_yearly('2016', function (err, queried_data) {
             if (err) return done(err);
 
@@ -195,6 +198,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
             var item = {
                 scf : {}, 
+                // date : moment.utc().year(2016).dayOfYear(doy) // fake year, correct doy
                 date : moment.utc().year(2016).dayOfYear(doy) // fake year, correct doy
             }
 
@@ -255,7 +259,6 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
                 date : moment.utc().year(this._current.year).dayOfYear(doy), // year doesn't matter, as it's avg for all years
             });                                                              // however: need to add a YEAR/DATE when adding to graph, 
                                                                              // due to graph needing a date to know it should display data
-            
         }.bind(this));
 
         return average;
@@ -338,7 +341,6 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
         this._container              = Wu.DomUtil.create('div', 'big-graph-outer-container',            this.options.appendTo);
         this._infoContainer          = Wu.DomUtil.create('div', 'big-graph-info-container',             this._container);
-        
         this._pluginMainContainer    = Wu.DomUtil.create('div', 'big-graph-plugin-container',           this._container);
         this._pluginContainer        = Wu.DomUtil.create('div', 'big-graph-plugin-main-container',      this._pluginMainContainer);
         this._pluginLegendsContainer = Wu.DomUtil.create('div', 'big-graph-plugin-legends-container',   this._pluginMainContainer);
@@ -351,7 +353,6 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         
         // mask meta
         this._maskMeta               = Wu.DomUtil.create('div', 'big-graph-mask-meta-container',        this._infoContainer);
-        
        
         // date text
         this._dateTitle              = Wu.DomUtil.create('div', 'big-graph-current-day',                this._container, '');
@@ -567,7 +568,11 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
         // get max/min date 
         var minDate = average_dimension.bottom(1)[0].date;  // this is jan 1 2015.. shouldn't be a YEAR per say, since it messes with the line graph (which needs to be in same year to display)
-        var maxDate = average_dimension.top(1)[0].date;     
+        var maxDate = average_dimension.top(1)[0].date;   
+
+        // debug: hydrological year
+        var minDate = minDate.utc().month(this.options.hydrologicalYear.month).date(1);
+        var maxDate = maxDate.utc().month(this.options.hydrologicalYear.month).date(-1);  
 
         // create red line (this year's data) crossfilter
         this.ndx.line_crossfilter = crossfilter([]);
@@ -577,8 +582,8 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
         // create line group
         var line_groups = [];
-        var range = this.getRange();
-        var line_group_range = _.range(range[0], range[1] + 1);
+        var range = this.getRange(); // [2001, 2016]
+        var line_group_range = _.range(range[0], range[1] + 1); // [2001, 2002, ... 2016]
         line_group_range.reverse().forEach(function (r) {
             line_groups.push(line_dimension.group().reduceSum(function(d) { return d.scf[r]; }));
         });
@@ -719,8 +724,10 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         // with filter @ composite
         var currentYear = this._current.year;
         var currentDay = this._current.day;
-        var today = moment().year(currentYear).dayOfYear(currentDay);
+        // var today = moment().year(currentYear).dayOfYear(currentDay);
+        var today = moment().year(currentYear).month(8).date(1);
         var clone = cache.slice();
+        console.log('clone: ', clone);
         clone.forEach(function (c) {
             if (c.date.isAfter(today)) {
                c.scf[currentYear] = false;
@@ -749,6 +756,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
     _filterSelectedYears : function (cache) {
         var selectedYears = this.getSelectedYears();
+        console.log('selectedYears', selectedYears);
         var filtered = [];
         cache.forEach(function (c) {
             var item = {
@@ -833,6 +841,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
     _setTimeFrame : function () {
 
         // set avg data range
+        var range = this.dataRange(); // [2001, 2015]
         this._range.data[this._mask.id] = this.dataRange();
 
         // return if already set
@@ -880,8 +889,12 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         this._current.day = day || this._current.day;
 
         // set graph dates
-        var minDate = moment.utc().year(this._current.year).dayOfYear(1);
-        var maxDate = moment.utc().year(this._current.year + 1).dayOfYear(-1); // last day of year
+        // var minDate = moment.utc().year(this._current.year).dayOfYear(1);
+        // var maxDate = moment.utc().year(this._current.year + 1).dayOfYear(-1); // last day of year
+        var minDate = moment.utc().year(this._current.year).month(8).date(1);
+        var maxDate = moment.utc().year(this._current.year + 1).month(8).date(-1); // last day of year
+        // minDate.subtract(6, 'M');
+        // maxDate.subtract(6, 'M');
 
         // set date range to graph
         this._composite.x(d3.time.scale().domain([minDate,maxDate]));

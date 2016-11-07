@@ -65,3 +65,5 @@ var systemapicConfigOptions = {
 			"id": "GOOGLE_ANALYTICS_TRACKER"
 		}
 }
+
+var testMode = true;

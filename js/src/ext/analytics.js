@@ -7,9 +7,13 @@ Wu.Analytics = Wu.Class.extend({
 		// create shortcut
 		app.log = this.fire;
 
-		// initialize google analytics
-		ga('create', app.options.ga.id, 'auto');
-		ga('send', 'pageview');
+		console.log(testMode);
+
+		if(!testMode){
+			// initialize google analytics
+			ga('create', app.options.ga.id, 'auto');
+			ga('send', 'pageview');
+		}
 	},
 
 	// app.log()
@@ -26,13 +30,15 @@ Wu.Analytics = Wu.Class.extend({
 		// local analytics
 		app.Socket.analytics(data);
 
-		// google analytics
-		ga('send', {
-			hitType: 'event',
-			eventAction: event,
-			eventCategory: options ? options.category : 'noCategory',
-		});
-
+		if(!testMode){
+			// google analytics
+			ga('send', {
+				hitType: 'event',
+				eventAction: event,
+				eventCategory: options ? options.category : 'noCategory',
+			});
+		}
+		
 	},
 
 

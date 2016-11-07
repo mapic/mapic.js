@@ -10,16 +10,16 @@ describe("core.app", function () {
     app = new Wu.App(systemapicConfigOptions);
   });
 
-  it("Should check Wu version", function () {
+  it("should check Mapic.js version", function () {
     expect(Wu.version).to.equal('1.6.1');	
   });
 
 
-  it("Should test App constructed", function () {
+  it("should have global app", function () {
     expect(app).to.exist;
   });
 
-  it("Should test raven function availability after App construction", function () {    
+  it("should have raven object after app construction", function () {    
     expect(app.raven).to.exist;	
   });
 

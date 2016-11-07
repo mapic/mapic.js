@@ -83,7 +83,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     options : {
         
         // frames to cache [before, after]
-        cacheSize : [1, 1], 
+        cacheSize : [0, 1], 
         
         // moment format at which to compare dates (year/day only here)
         timeFormat : 'YYYY-DDDD', 
@@ -820,6 +820,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             return;
         }
 
+
         // set direction (for cache algorithm)
         this._cursorDirection = (didx > this._cursor) ? 1 : -1;
 
@@ -865,9 +866,9 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             // console.log('--------------------------');
 
             // fire missing layer event (for animator to fix manually)
-            Wu.Mixin.Events.fire('cubeCacheNoLayer', { detail : { 
-                cube : this 
-            }});
+            // Wu.Mixin.Events.fire('cubeCacheNoLayer', { detail : { 
+            //     cube : this 
+            // }});
             
             // done here
             return;
@@ -956,8 +957,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
             }
 
-
-        }, this);
+        }.bind(this));
 
     },
 
@@ -987,17 +987,19 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         if (this._cursorDirection > 0) {
 
             // return lowest cached dataset index
-            return _.min(this._cache, function (c) {
+            var cache = _.minBy(this._cache, function (c) {
                 return c.idx;
             }); 
+            return cache ? cache : this._cache[this._cache.length - 1]
 
         // if going backwards in time
         } else {
 
             // return highest cached dataset index
-            return _.max(this._cache, function (c) {
+            var cache = _.maxBy(this._cache, function (c) {
                 return c.idx;
             });
+            return cache ? cache : this._cache[0];
         }
        
     },
@@ -1040,9 +1042,9 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
     _findDatasetByTimestamp : function (t) {
         var f = this.options.timeFormat;
-        var b = moment(t).format(f); // YYYY-DDDD of animation
+        var b = _.toString(moment(t).format(f)); // YYYY-DDDD of animation
         var didx = _.findIndex(this._datasets, function (d) { 
-            return d.formattedTime == b;
+            return _.toString(d.formattedTime) == b;
         });
         return didx;
     },

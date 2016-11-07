@@ -1957,7 +1957,7 @@ g.axis.y {
 .big-slider-inner-container {
     background: #3C4759 !important;
     color: white !important;
-    opacity: 0.9 !important;
+    opacity: 0.95 !important;
     padding-bottom: 24px !important;
 }
 .big-slider-outer-container {

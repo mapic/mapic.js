@@ -1,18 +1,27 @@
 
 Wu.Analytics = Wu.Class.extend({
 
+	
+
 	initialize : function () {
 		// this._listen();
 
 		// create shortcut
 		app.log = this.fire;
 
-		if(!window.testMode){
-			// initialize google analytics
-			ga('create', app.options.ga.id, 'auto');
-			ga('send', 'pageview');
-		}
+		window.ga = function () {
+			if (window.testMode) return;
+
+			analytics.apply(this , arguments);
+		};
+
+		// initialize google analytics
+		ga('create', app.options.ga.id, 'auto');
+		ga('send', 'pageview');
+		
 	},
+
+	
 
 	// app.log()
 	fire : function (event, options) {
@@ -28,14 +37,12 @@ Wu.Analytics = Wu.Class.extend({
 		// local analytics
 		app.Socket.analytics(data);
 
-		if(!window.testMode){
-			// google analytics
-			ga('send', {
-				hitType: 'event',
-				eventAction: event,
-				eventCategory: options ? options.category : 'noCategory',
-			});
-		}
+		// google analytics
+		ga('send', {
+			hitType: 'event',
+			eventAction: event,
+			eventCategory: options ? options.category : 'noCategory',
+		});
 
 	},
 

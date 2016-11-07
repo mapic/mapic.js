@@ -9,6 +9,7 @@ See [mapic/mapic](https://github.com/mapic/mapic) for installation instructions.
 
 ## Run Test
 ```npm i```
+
 ```npm test```
 
 

@@ -4,17 +4,23 @@ console.log(testMode);
 
 describe("core.app", function () {
 
-  it("Should check Wu version", function () {
+  var app;
 
-    expect(Wu.version).to.equal('1.6.1');
-	
+  before(function() {
+    app = new Wu.App(systemapicConfigOptions);
   });
 
-  it("Should test App constructed", function () {
+  it("Should check Wu version", function () {
+    expect(Wu.version).to.equal('1.6.1');	
+  });
 
-    var app = new Wu.App(systemapicConfigOptions);
+
+  it("Should test App constructed", function () {
     expect(app).to.exist;
-	
+  });
+
+  it("Should test raven function availability after App construction", function () {    
+    expect(app.raven).to.exist;	
   });
 
 });

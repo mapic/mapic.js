@@ -182,6 +182,8 @@ module.exports = function (config) {
       // App 
       'js/src/core/app.js',
 
+      'test/config.mock.js',
+
       'test/**/*.spec.js'
 
     ],

@@ -9,6 +9,8 @@ Wu.App = Wu.Class.extend({
 
 	initialize : function (options) {
 
+		console.log("initialize" , options);
+
 		// print version
 		console.log('Mapic v.' + Wu.version);
 

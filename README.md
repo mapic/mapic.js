@@ -7,6 +7,10 @@ Please see the [wiki](https://github.com/mapic/mapic.js/wiki) for more informati
 ## Install
 See [mapic/mapic](https://github.com/mapic/mapic) for installation instructions.
 
+## Run Test
+```npm i```
+```npm test```
+
 
 ## Licence
 Mapic is built entirely open source. We believe in a collaborative environment for creating strong solutions for an industry that is constantly moving. The Mapic platform is open for anyone to use and contribute to, which makes it an ideal platform for government organisations as well as NGO's and for-profit businesses.

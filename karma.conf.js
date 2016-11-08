@@ -188,11 +188,17 @@ module.exports = function (config) {
 
     ],
 
-    port: 3001,
+    port: 9876,
     
+    colors: true,
 
     reporters: ['progress'],
 
-    browsers: ['Chrome']
+    browsers: ['PhantomJS'],
+
+    browserNoActivityTimeout : 3000
+
+
   });
+  
 };

@@ -5,3 +5,4 @@ images/portal-logo.png
 css/style.css
 css/style.min.css
 *.css.map
+node_modules

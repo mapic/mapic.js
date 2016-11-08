@@ -194,10 +194,7 @@ module.exports = function (config) {
 
     reporters: ['progress'],
 
-    browsers: ['PhantomJS'],
-
-    browserNoActivityTimeout : 3000
-
+    browsers: ['PhantomJS']
 
   });
   

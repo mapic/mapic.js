@@ -2,8 +2,12 @@ Wu.Socket = Wu.Class.extend({
 
 	initialize : function () {
 
+		if(window.testMode){
+			console.log(window);
+		}
+
 		// create socket
-		this._socket = io.connect();
+		this._socket = window.io.connect();
 
 		// add listeners
 		this._listen();

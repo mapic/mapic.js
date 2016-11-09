@@ -194,6 +194,8 @@ module.exports = function (config) {
 
     reporters: ['progress'],
 
+    singleRun : true,
+
     browsers: ['PhantomJS']
 
   });

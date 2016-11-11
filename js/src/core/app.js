@@ -28,6 +28,8 @@ Wu.App = Wu.Class.extend({
 
 		// auth
 		app.api.auth(app.authed);
+
+		this.raven();
 		
 	},
 

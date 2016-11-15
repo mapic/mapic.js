@@ -81,6 +81,7 @@ Wu.App = Wu.Class.extend({
 	},
 
 	_onError : function (message, file, line, char, ref) {
+		if (!ref) return console.error('No ref', arguments);
 		var stack = ref.stack;
 		var project = app.activeProject ? app.activeProject.getTitle() : 'No active project';
 		var username = app.Account ? app.Account.getName() : 'No username';

@@ -28,7 +28,9 @@
         </ul>
       </header>
       <section>
-        <h1>
+        <p><img src="https://cloud.githubusercontent.com/assets/2197944/19607635/5c434458-97cb-11e6-941b-e74e83b385ba.png" alt="Mapic Logo"></p>
+
+<h1>
 <a id="mapicjs-client-library" class="anchor" href="#mapicjs-client-library" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Mapic.js client library</h1>
 
 <p>This is the open source client library front-end for Mapic.</p>
@@ -39,6 +41,23 @@
 <a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
 
 <p>See <a href="https://github.com/mapic/mapic">mapic/mapic</a> for installation instructions.</p>
+
+<h2>
+<a id="run-test" class="anchor" href="#run-test" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Run Test</h2>
+
+<p>These commands must be run from <em>within</em> the <code>domain_engine_1</code> container.</p>
+
+<div class="highlight highlight-source-shell"><pre><span class="pl-c"># enter container</span>
+docker <span class="pl-c1">exec</span> -it localhost_engine_1 fish
+
+<span class="pl-c"># go to mapic.js folder</span>
+<span class="pl-c1">cd</span> public
+
+<span class="pl-c"># install node modules</span>
+npm install
+
+<span class="pl-c"># run tests</span>
+npm <span class="pl-c1">test</span></pre></div>
 
 <h2>
 <a id="licence" class="anchor" href="#licence" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Licence</h2>

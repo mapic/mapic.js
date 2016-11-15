@@ -1,7 +1,5 @@
 "use strict";
 
-console.log(testMode);
-
 describe("core.app", function () {
 
   var app;
@@ -10,17 +8,16 @@ describe("core.app", function () {
     app = new Wu.App(systemapicConfigOptions);
   });
 
+  // version
   it("should check Mapic.js version", function () {
     expect(Wu.version).to.equal('1.6.1');	
   });
 
-
+  // app object
   it("should have global app", function () {
     expect(app).to.exist;
   });
 
-  it("should have raven object after app construction", function () {    
-    expect(app.raven).to.exist;	
-  });
+  // todo: https://github.com/mapic/mapic.js/issues/6
 
 });

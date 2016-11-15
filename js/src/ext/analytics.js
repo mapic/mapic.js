@@ -1,16 +1,27 @@
 
 Wu.Analytics = Wu.Class.extend({
 
+	
+
 	initialize : function () {
 		// this._listen();
 
 		// create shortcut
 		app.log = this.fire;
 
+		window.ga = function () {
+			if (window.testMode) return;
+
+			analytics.apply(this , arguments);
+		};
+
 		// initialize google analytics
 		ga('create', app.options.ga.id, 'auto');
 		ga('send', 'pageview');
+		
 	},
+
+	
 
 	// app.log()
 	fire : function (event, options) {

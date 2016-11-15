@@ -3,11 +3,13 @@ Wu.App = Wu.Class.extend({
 	_ : 'app',
 
 	// default options
-	options : systemapicConfigOptions, // global var from config.js... perhaps refactor.
+	options : window.systemapicConfigOptions, // global var from config.js... perhaps refactor.
 	language : language,
 	_ready : false,
 
 	initialize : function (options) {
+
+		console.log("initialize" , options);
 
 		// print version
 		console.log('Mapic v.' + Wu.version);
@@ -26,6 +28,8 @@ Wu.App = Wu.Class.extend({
 
 		// auth
 		app.api.auth(app.authed);
+
+		this.raven();
 		
 	},
 

@@ -8,9 +8,21 @@ Please see the [wiki](https://github.com/mapic/mapic.js/wiki) for more informati
 See [mapic/mapic](https://github.com/mapic/mapic) for installation instructions.
 
 ## Run Test
-```npm i```
+These commands must be run from _within_ the `domain_engine_1` container.
 
-```npm test```
+```bash
+# enter container
+docker exec -it localhost_engine_1 fish
+
+# go to mapic.js folder
+cd public
+
+# install node modules
+npm install
+
+# run tests
+npm test
+```
 
 
 ## Licence

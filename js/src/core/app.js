@@ -29,16 +29,12 @@ Wu.App = Wu.Class.extend({
 		// auth
 		app.api.auth(app.authed);
 
-		if(!testMode){
-			this.raven();
-		}
+		// error logging with sentry
+		!window.testMode && this._raven();
 	},
 
-	raven : function () {
-
-		// error handling
+	_raven : function () {
 		Raven.config('https://594a4e7cc65f4e39bdd0337276e391b5@sentry.io/100809').install();
-
 		Raven.setRelease(Wu.version);
 	},
 

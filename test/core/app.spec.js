@@ -8,6 +8,7 @@ describe("core.app", function () {
   before(function() {
     app = new Wu.App(systemapicConfigOptions);
     projectModel = new Wu.Model.Project();
+    app.Chrome = {};
   });
 
   // version
@@ -27,14 +28,29 @@ describe("core.app", function () {
   });
 
   it("should set background color of project and get that back",function () {
-    var testBackgroundColor = "AAAAAA"
+    var testBackgroundColor = "AAAAAA";
     projectModel.setBackgroundColor(testBackgroundColor);
     
     var backgroundColor = projectModel.getBackgroundColor();
     expect(backgroundColor).to.equal(testBackgroundColor);
   });
-  
 
+  it("should have Wu.Chrome.Project instance" , function () {
+    var chromeProject = new Wu.Chrome.Projects();
+    expect(chromeProject).to.exist;
+  });
+
+  it("should create fullscreen window" , function () {
+    var fullscreen = new Wu.Fullscreen({
+			title : '<span style="font-weight:200;">Create New Project</span>'
+		});
+
+		var content = fullscreen._content;
+
+    expect(content).to.exist;
+
+  });
+  
   // todo: https://github.com/mapic/mapic.js/issues/6
 
 });

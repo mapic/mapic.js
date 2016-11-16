@@ -3,9 +3,11 @@
 describe("core.app", function () {
 
   var app;
+  var projectModel;
 
   before(function() {
     app = new Wu.App(systemapicConfigOptions);
+    projectModel = new Wu.Model.Project();
   });
 
   // version
@@ -16,6 +18,12 @@ describe("core.app", function () {
   // app object
   it("should have global app", function () {
     expect(app).to.exist;
+  });
+
+  // project model object
+  it("should have project model object" , function () {
+    console.log(projectModel);
+    expect(projectModel).to.exist;
   });
 
   // todo: https://github.com/mapic/mapic.js/issues/6

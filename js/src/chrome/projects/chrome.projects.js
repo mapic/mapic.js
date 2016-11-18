@@ -1325,7 +1325,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 	},
 	
 	_createProject : function (parameters) {
-		
+
 		// prevent double clicks
 		if (this._creatingProject) return;
 		this._creatingProject = true;
@@ -1339,12 +1339,14 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 			// set error message
 			parameters.name_error.innerHTML = 'Please enter a project name';
 
-			!window.testMode && app.log('error:project:tried_to_create_with_no_name');
+			app.log('error:project:tried_to_create_with_no_name');
 
 			
 			// done here
 			return;
 		}
+
+		if(window.testMode) return true;
 
 		// clean invitations array
 		var access = {

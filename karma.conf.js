@@ -184,6 +184,8 @@ module.exports = function (config) {
 
       'test/config.mock.js',
 
+      'test/api.mock.js',
+
       'test/**/*.spec.js'
 
     ],

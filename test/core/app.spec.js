@@ -43,8 +43,6 @@ describe("core.app", function () {
   });
 
   it("should fire the clicked Event on project creation" , function () {
-    
-    var content = _fullscreen._content;
 
     var name_input = {
       value : "My Test Project 1"

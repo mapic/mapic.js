@@ -16,18 +16,18 @@ var mockApi = {
                 "__v": 6,
                 "pending": [],
                 "settings": {
-                "d3popup": false,
-                "mapboxGL": false,
-                "mediaLibrary": false,
-                "tooltips": false,
-                "darkTheme": false,
-                "autoAbout": false,
-                "autoHelp": false,
-                "saveState": false,
-                "dataLibrary": true,
-                "documentsPane": true,
-                "socialSharing": true,
-                "screenshot": true
+                    "d3popup": false,
+                    "mapboxGL": false,
+                    "mediaLibrary": false,
+                    "tooltips": false,
+                    "darkTheme": false,
+                    "autoAbout": false,
+                    "autoHelp": false,
+                    "saveState": false,
+                    "dataLibrary": true,
+                    "documentsPane": true,
+                    "socialSharing": true,
+                    "screenshot": true
                 },
                 "controls": {
                 "cartocss": false,
@@ -58,24 +58,24 @@ var mockApi = {
                 "lat": "54.213861000644926"
                 },
                 "bounds": {
-                "maxZoom": "20",
-                "minZoom": "1",
-                "southWest": {
-                    "lng": "-180",
-                    "lat": "-90"
-                },
-                "northEast": {
-                    "lng": "180",
-                    "lat": "90"
-                }
+                    "maxZoom": "20",
+                    "minZoom": "1",
+                    "southWest": {
+                        "lng": "-180",
+                        "lat": "-90"
+                    },
+                    "northEast": {
+                        "lng": "180",
+                        "lat": "90"
+                    }
                 },
                 "baseLayers": [
-                {
-                    "uuid": "layer-3bcebbd0-e240-46ce-8ec0-d943a6182a16",
-                    "_id": "582f1e595381b2001832d82b",
-                    "opacity": 1,
-                    "zIndex": 1
-                }
+                    {
+                        "uuid": "layer-3bcebbd0-e240-46ce-8ec0-d943a6182a16",
+                        "_id": "582f1e595381b2001832d82b",
+                        "opacity": 1,
+                        "zIndex": 1
+                    }
                 ],
                 "connectedAccounts": {
                 "cartodb": [],
@@ -125,10 +125,10 @@ var mockApi = {
                     "uuid": "layer-efc45370-434a-4c07-a310-5f02f7dac29e",
                     "__v": 0,
                     "data": {
-                    "mapbox": "systemapic.jmkoodlb",
-                    "wms": {
-                        "layers": []
-                    }
+                        "mapbox": "systemapic.jmkoodlb",
+                        "wms": {
+                            "layers": []
+                        }
                     }
                 }],
                 "files": [],

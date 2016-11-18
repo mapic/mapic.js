@@ -28,14 +28,6 @@ describe("core.app", function () {
     expect(projectModel).to.exist;
   });
 
-  // it("should set background color of project and get that back",function () {
-  //   var testBackgroundColor = "AAAAAA";
-  //   projectModel.setBackgroundColor(testBackgroundColor);
-    
-  //   var backgroundColor = projectModel.getBackgroundColor();
-  //   expect(backgroundColor).to.equal(testBackgroundColor);
-  // });
-
   it("should have Wu.Chrome.Project instance" , function () {
     var chromeProject = new Wu.Chrome.Projects();
     expect(chromeProject).to.exist;
@@ -59,8 +51,8 @@ describe("core.app", function () {
     var store = {"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}}
 
     var project = new Wu.Model.Project(store);
-
-		project.create(options, function (err, json) {
+    
+    project.create(options, function (err, json) {
       console.log(json);
 
       expect(json.project.name).to.equal(store.name);

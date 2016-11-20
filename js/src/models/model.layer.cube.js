@@ -146,6 +146,8 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
         // set store
         this._setStore(store);
+
+        console.log('cube:', this);
     },
 
     _setStore : function (store) {

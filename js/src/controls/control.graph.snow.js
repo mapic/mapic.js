@@ -121,6 +121,8 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             // min/max/avg 
             parsed.mma = this.average(data);
 
+            console.log('parsed:', parsed);
+
             // resample to year/doy
             queried_data.forEach(function (q) {
                 var item = {
@@ -229,14 +231,16 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
                 return d.doy == doy;
             });
 
+            if (doy == 115) console.log('TODAY TODAY TODAY ->', today);
+
             // get this day's max
-            var max = _.max(today, function (d) {
-                return d.scf;
+            var max = _.maxBy(today, function (d) {
+                return parseFloat(d.scf);
             }).scf;
 
             // get this day's min
-            var min = _.min(today, function (d) {
-                return d.scf;
+            var min = _.minBy(today, function (d) {
+                return parseFloat(d.scf);
             }).scf;
 
             // get this day's avg
@@ -1104,6 +1108,8 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             },
         }
 
+        console.log('query_options', query_options);
+
         // query data from cube
         this.cube().query(query_options, function (err, query_results) {
             if (err) return console.error(err, query_results);
@@ -1188,15 +1194,21 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
     },
 
     _checkEnds : function () {
+        console.log('_checkEnds');
+        console.log('this:', this);
 
         // get cached line graph data
         var cache = this.cache().mask();
 
         // filter out period
         var today = moment.utc().year(this._current.year).dayOfYear(this._current.day + 1);
+        console.log('today', today);
         var period = _.find(cache, function (d) {
             return d.date.isSame(today, 'day');
         });
+
+        console.log('period', period);
+        console.log('cache: ', cache, _.size(cache));
 
         // shade buttons if end of dataset
         if (period) {

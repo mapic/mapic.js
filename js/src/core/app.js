@@ -9,8 +9,6 @@ Wu.App = Wu.Class.extend({
 
 	initialize : function (options) {
 
-		console.log("initialize" , options);
-
 		// print version
 		console.log('Mapic v.' + Wu.version);
 
@@ -333,14 +331,12 @@ Wu.App = Wu.Class.extend({
 			username : app.hotlink.username,
 			project_slug : app.hotlink.project
 		}, function (err, project_json) {
-			console.log('err, projec', err, project_json);
 			if (err) return app._login('Please log in to view this private project.');
 
 			var project_store = Wu.parse(project_json);
 
 			// import project
 			app._importProject(project_store, function (err, project) {
-				console.log('_importProject', err, project);
 				app._setProject(project);
 
 				if (project.isPublic()) {

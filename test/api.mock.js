@@ -178,5 +178,16 @@ var mockApi = {
 
         var path = '/v2/projects/update';
 		done && done(null, response);
+    },
+
+    deleteProject : function (options , done) {
+        var response = {
+            "project": "project-0e386d2a-2966-419b-8604-96d112d4abb2",
+            "deleted": true
+        };
+
+        var path = '/v2/projects/delete';
+		done && done(null, response);
+        
     }
 }

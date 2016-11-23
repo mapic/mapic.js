@@ -86,7 +86,7 @@ describe("core.project", function () {
   });
 
   it("should update project name", function () {
-    var options = {"store":{"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}}};    
+        
     var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
     
     var project = new Wu.Model.Project(store);
@@ -96,6 +96,18 @@ describe("core.project", function () {
     project.setName(newProjectName);
     //console.log(project.getName());
     // done();   
+
+  });
+
+  it("should delete a project", function () {
+        
+    var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
+
+    var project = new Wu.Model.Project(store);
+
+    project._delete(function (err ,resp) {
+      expect(resp.deleted).to.be.true;
+    });
 
   });
 

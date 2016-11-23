@@ -154,5 +154,29 @@ var mockApi = {
 
         done && done(null, response);
 
-	}
+	},
+
+    updateProject : function (options, done) {
+        var response = {
+            "updated": [
+                "name"
+            ],
+            "project": {
+                "lastUpdated": "2016-11-23T11:41:06.225Z",
+                "created": "2016-11-18T15:29:28.852Z",
+                "createdByUsername": "admin",
+                "createdByName": "Shahjada Talukdar",
+                "createdBy": "user-cf46b1c1-0520-493b-a2fe-8539fd16b0eb",
+                "uuid": "project-0e386d2a-2966-419b-8604-96d112d4abb2",
+                "description": "Test Project description",
+                "slug": "Test Project Name",
+                "name": "Test Project Name 2"
+            }
+        };
+
+        response = JSON.stringify(response);
+
+        var path = '/v2/projects/update';
+		done && done(null, response);
+    }
 }

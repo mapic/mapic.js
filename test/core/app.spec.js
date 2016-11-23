@@ -70,7 +70,29 @@ describe("core.app", function () {
       expect(json.project.createdByName).to.equal(store.createdByName);
 
     });
+  });
 
+  it("should fire the clicked Event on project Edition" , function () {
+
+    var store = {"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
+    var project = new Wu.Model.Project(store);
+
+    console.log(project);
+
+    var name_input = {
+      value : "My Test Project 1"
+    };
+    var name_error = {};
+
+    var options = {
+      name_input : name_input,
+      name_error : name_error,
+      project : project
+    };
+
+    var chromeProject = new Wu.Chrome.Projects();
+    var isFired = chromeProject._updateProject(options);
+    expect(isFired).to.be.true;
   });
 
   // todo: https://github.com/mapic/mapic.js/issues/6

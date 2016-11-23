@@ -1224,6 +1224,8 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		var projectName = options.name_input.value;
 		var project = options.project;
 
+		if(window.testMode) return true;
+
 		// clean invitations array
 		var access = {
 			edit : [],
@@ -1255,7 +1257,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		}
 
 		// slack
-		this._logUpdate({
+		!window.testMode && this._logUpdate({
 			access : access,
 			project : project,
 			projectName : projectName

@@ -2943,3 +2943,18 @@ span.mask-item-value {
     color: white;
 }
 
+
+
+
+
+
+
+/*debug */
+.big-graph-title {
+    visibility: hidden;
+}
+.big-graph-mask-meta-container {
+    visibility: hidden;
+}
+
+

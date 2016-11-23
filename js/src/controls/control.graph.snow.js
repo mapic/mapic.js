@@ -32,8 +32,8 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
     // languages
     localization : {
-        lang : 'nor',
-        // lang : 'eng',
+        // lang : 'nor',
+        lang : 'eng',
         eng : {
             yearlyGraphs : 'Yearly graphs',
             selectYear : 'Select year(s)',

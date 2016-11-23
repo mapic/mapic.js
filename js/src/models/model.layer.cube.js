@@ -90,12 +90,44 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
         // default mask style 
         mask : {
+            
+            // defaultStyle : {
+            //     fillColor : '#d35658',
+            //     fillOpacity : 0,
+            //     color : '#d35658',
+            //     opacity : 0.4,
+            //     weight : 2,
+            // },
+
+            // hoverStyle : {
+            //     fillColor : '#d35658',
+            //     fillOpacity : 0.2,
+            //     color : '#d35658',
+            //     opacity : 0.9,
+            //     weight : 2,
+            // },
+
+            // selectedStyle : {
+            //     fillColor : 'black',
+            //     fillOpacity : 0,
+            //     color : 'red',
+            //     opacity : 0.9,
+            //     weight : 2,
+            // },
+
+            // selectedHoverStyle : {
+            //     fillColor : 'black',
+            //     fillOpacity : 0,
+            //     color : 'red',
+            //     opacity : 0.9,
+            //     weight : 2,
+            // },
 
             defaultStyle : {
                 fillColor : '#d35658',
                 fillOpacity : 0,
-                color : '#d35658',
-                opacity : 0.4,
+                color : '#16d6f3',
+                opacity : 0.6,
                 weight : 2,
             },
 
@@ -122,6 +154,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
                 opacity : 0.9,
                 weight : 2,
             },
+
 
             // if you want click on separate features of mask
             separatedFeatures : false,

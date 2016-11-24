@@ -81,7 +81,7 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 		
 		// create fullscreen
 		this._fullscreen = new Wu.Fullscreen({
-			title : '<span style="font-weight:200;">Invite people to Systemapic</span>',
+			title : '<span style="font-weight:200;">Invite people to Mapic</span>',
 			innerClassName : 'smooth-fullscreen-inner invite'
 		});
 

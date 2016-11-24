@@ -14,7 +14,6 @@ Wu.Data = Wu.Class.extend({
 			onUploadDone : this._onUploadDone.bind(this)
 		});
 
-		console.log('resumable', this._resumable);
 	},
 
 	_refreshResumable : function () {
@@ -23,7 +22,6 @@ Wu.Data = Wu.Class.extend({
 			onUploadDone : this._onUploadDone.bind(this)
 		});
 
-		console.error('refresh resumable');
 	},
 
 	// serve an upload button with triggers

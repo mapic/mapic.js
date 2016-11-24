@@ -40,6 +40,8 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             minmax : 'Min/max',
             average : 'Average',
             layerPrefix : 'Data',
+            showData : 'Only show data within mask',
+            layerOptions : 'Layer options'
         },
         nor : {
             yearlyGraphs : 'Årlige verdier',
@@ -47,6 +49,9 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             minmax : 'Min/maks',
             average : 'Gjennomsnitt',
             layerPrefix : 'Data',
+            showData : 'Vis kun data innenfor masken',
+            layerOptions : 'Alternativer for kartlag'
+
         },
     },
     locale : function () {
@@ -230,13 +235,13 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             });
 
             // get this day's max
-            var max = _.max(today, function (d) {
-                return d.scf;
+            var max = _.maxBy(today, function (d) {
+                return parseFloat(d.scf);
             }).scf;
 
             // get this day's min
-            var min = _.min(today, function (d) {
-                return d.scf;
+            var min = _.minBy(today, function (d) {
+                return parseFloat(d.scf);
             }).scf;
 
             // get this day's avg
@@ -373,7 +378,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         this.options.appendTo.insertBefore(this._editorPane, this.options.appendTo.firstChild);
 
         // title
-        this._editorPaneTitle = Wu.DomUtil.create('div', 'big-graph-editor-pane-title', this._editorPane, 'Layer options');
+        this._editorPaneTitle = Wu.DomUtil.create('div', 'big-graph-editor-pane-title', this._editorPane, this.locale().layerOptions);
 
         // mask filter
         this._filterPane = Wu.DomUtil.create('div', 'big-graph-editor-filter-pane', this._editorPane);
@@ -399,7 +404,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         // create label
         var label = Wu.DomUtil.create('label', '', checkbox);
         label.setAttribute('for', input.id);
-        label.innerHTML = 'Only show data within mask.';
+        label.innerHTML = this.locale().showData;
 
         // mark checked if active
         if (this.cube().getFilterMask()) {

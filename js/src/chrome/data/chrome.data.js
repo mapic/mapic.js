@@ -31,8 +31,6 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
     _onLayerAdded : function (options) {
 
-        console.log('_onLayerAdded', options);
-
         var uuid = options.detail.layerUuid;
 
         // remember
@@ -3276,7 +3274,6 @@ Wu.Chrome.Data = Wu.Chrome.extend({
     // TOGGLE LAYERS
 
     toggleLayer : function (layer) {
-        console.log('toggleLayer', layer);
         var uuid = layer.getUuid();
         var on = this.isLayerOn(uuid);
         on ? this.removeLayer(layer) : this.addLayer(layer);

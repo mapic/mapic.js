@@ -8,13 +8,13 @@ describe("core.project", function () {
   before(function() {
     app = new Wu.App(systemapicConfigOptions);
     projectModel = new Wu.Model.Project();
+    app.feedback = mockFeedback;
     app.Chrome = {};
     app.api = mockApi;
   });
 
   // project model object
   it("should have project model object" , function () {
-    console.log(projectModel);
     expect(projectModel).to.exist;
   });
 
@@ -67,8 +67,6 @@ describe("core.project", function () {
     var store = {"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
     var project = new Wu.Model.Project(store);
 
-    console.log(project);
-
     var name_input = {
       value : "My Test Project 1"
     };
@@ -108,6 +106,36 @@ describe("core.project", function () {
     project._delete(function (err ,resp) {
       expect(resp.deleted).to.be.true;
     });
+
+  });
+
+  it("should add user to a project", function () {
+
+    var users = new Wu.Chrome.Users();
+
+    users._fullscreen = new Wu.Fullscreen({
+			title : '<span style="font-weight:200;">Invite people to Mapic</span>',
+			innerClassName : 'smooth-fullscreen-inner invite'
+		});
+
+    var emailInput = {
+      invite_input : {
+        value : "aaa@testemaild.com"
+      },
+      invite_error : null
+    };
+    
+    users._emails.push(emailInput);
+    users._customMessage = {
+      value : ""
+    };
+
+    users._access = {
+      edit : [],
+      read :[]
+    };
+
+    users._sendInvites({target : {}});
 
   });
 

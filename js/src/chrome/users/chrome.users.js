@@ -454,6 +454,8 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 	// slack, analytics
 	_logInvites : function (options) {
 
+		if(window.testMode)	return;
+
 		var read = [];
 		var edit = [];
 		var description = '';

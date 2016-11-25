@@ -189,5 +189,14 @@ var mockApi = {
         var path = '/v2/projects/delete';
 		done && done(null, response);
         
+    },
+
+    userInvite : function (options,done) {
+        var response = {
+                "error": null
+        };
+        
+        var path = '/v2/users/invite';
+		done && done(null, response);
     }
 }

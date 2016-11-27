@@ -83,7 +83,7 @@ describe("core.project", function () {
     expect(isFired).to.be.true;
   });
 
-  it("should update project name", function () {
+  it("should update project name", function (done) {
         
     var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
     
@@ -91,9 +91,7 @@ describe("core.project", function () {
 
     var newProjectName = "Test Project Name 2";
 
-    project.setName(newProjectName);
-    //console.log(project.getName());
-    // done();   
+    project.setName(newProjectName);    
 
   });
 

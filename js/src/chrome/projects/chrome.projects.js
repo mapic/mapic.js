@@ -1274,13 +1274,13 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		project.setAccess(access);
 
 		// add project to list
-		this._refreshContent();
+		//this._refreshContent();
 
 		// close fullscreen
-		this._fullscreen.close();
+		//this._fullscreen.close();
 
 		// select project
-		project.selectProject();
+		//project.selectProject();
 	},
 
 	_logUpdate : function (options) {
@@ -1453,6 +1453,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 	},
 
 	_onProjectDeleted : function (e) {
+		
 		if (!e.detail.projectUuid) return;
 
 		// add project to list
@@ -1462,6 +1463,24 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		app.Controller.openFirstProject();
 		
 	},
+
+	_onProjectChanged : function (e) {
+		if(e.projectChangedFired && !window.testMode){			
+			var project = app.Projects[e.detail.projectUuid];			
+
+			delete e.projectChangedFired;
+
+			// add project to list
+			this._refreshContent();
+
+			// close fullscreen
+			this._fullscreen.close();
+
+			// select project
+			project.selectProject();
+		}
+	},
+
 	_onLayerAdded : function (options) {
 	},
 	

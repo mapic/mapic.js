@@ -360,7 +360,7 @@ Wu.Model.Project = Wu.Model.extend({
 		Wu.Mixin.Events.fire('projectChanged', { detail : {
 			projectUuid : this.getUuid(),
 			name : result.project.name
-		}, projectChangedFired : true});
+		}});
 	},
 
 	_onProjectChanged : function (e) {

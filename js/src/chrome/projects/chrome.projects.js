@@ -1465,20 +1465,18 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 	},
 
 	_onProjectChanged : function (e) {
-		if(e.projectChangedFired && !window.testMode){			
-			var project = app.Projects[e.detail.projectUuid];			
+		if(window.testMode) return;
 
-			delete e.projectChangedFired;
+		var project = app.Projects[e.detail.projectUuid];
+		
+		// add project to list
+		this._refreshContent();
 
-			// add project to list
-			this._refreshContent();
+		// close fullscreen
+		this._fullscreen.close();
 
-			// close fullscreen
-			this._fullscreen.close();
-
-			// select project
-			project.selectProject();
-		}
+		// select project
+		project.selectProject();
 	},
 
 	_onLayerAdded : function (options) {

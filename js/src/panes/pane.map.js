@@ -256,18 +256,19 @@ Wu.MapPane = Wu.Pane.extend({
     },
 
     _onMove : function () {
+        console.log("_onMove");
         var project = this._project || app.activeProject;
-        Wu.Mixin.Events.fire('projectChanged', {detail : {
-            projectUuid : project.getUuid()
-        }});
+        // Wu.Mixin.Events.fire('projectChanged', {detail : {
+        //     projectUuid : project.getUuid()
+        // }});
     },
 
     _onZoom : function () {
-
+        console.log("_onZoom");
         var project = this._project || app.activeProject;
-        Wu.Mixin.Events.fire('projectChanged', {detail : {
-            projectUuid : project.getUuid()
-        }});
+        // Wu.Mixin.Events.fire('projectChanged', {detail : {
+        //     projectUuid : project.getUuid()
+        // }});
     },
 
     // // fired on window resize

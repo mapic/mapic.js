@@ -1257,7 +1257,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		}
 
 		// slack
-		!window.testMode && this._logUpdate({
+		this._logUpdate({
 			access : access,
 			project : project,
 			projectName : projectName
@@ -1284,6 +1284,8 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 	},
 
 	_logUpdate : function (options) {
+
+		if(window.testMode) return true;
 
 		var access = options.access;
 		var project = options.project;

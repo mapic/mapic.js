@@ -329,14 +329,35 @@ Wu.Model.Project = Wu.Model.extend({
 		this._save(options);
 	},
 
+	_updateSlug : function (field , value) {
+		// set fields
+		var options = {};
+		options[field] = value || this.store[field];
+		options.uuid = this.store.uuid;
+
+		app.api.updateProject(options);
+	},
+
 
 	save : function (field) {
 		console.error('deprecated');
 	},
+
+	checkAvailableSlug : function (name , callback) {
+
+		var options = {};
+		options['slug'] = name || this.store['slug'];
+		options.uuid = this.store.uuid;
+
+		app.api.checkUniqueSlug(options , function (err , json) {
+			var result = Wu.parse(json);
+			callback(result);
+		});
+	},
 	
 
 	_save : function (options) {
-
+		
 		// save to server                                       	
 		app.api.updateProject(options, this._saved.bind(this));
 	},
@@ -349,7 +370,7 @@ Wu.Model.Project = Wu.Model.extend({
 			description : result.error
 		});
 
-		if(result.updated[0] == "slug") return;
+		//if(result.updated[0] == "slug") return;
 
 		// store on server
 		this.store.name = result.project.name;
@@ -364,6 +385,7 @@ Wu.Model.Project = Wu.Model.extend({
 	},
 
 	_onProjectChanged : function (e) {
+		console.log("Never gets Fired");
 		if (!e.detail.name) {
 			return
 		}
@@ -951,7 +973,8 @@ Wu.Model.Project = Wu.Model.extend({
 		this.store.slug = slug;
 		
 		// save slug to server
-		this._update('slug');
+		//this._update('slug');
+		this._updateSlug('slug');
 
 		// set new url
 		this._setUrl();

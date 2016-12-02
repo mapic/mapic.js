@@ -1267,9 +1267,16 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		// reset
 		this._resetAccess();
 
-		// set project name
-		project.setName(projectName);
-
+		project.checkAvailableSlug(projectName, function (resp) {
+			console.log("---" , resp);
+			if(resp && resp.unique){
+				// set project name
+				project.setName(projectName);
+			}else{
+				alert("Slug is not available!");
+			}			
+		});
+		
 		// set invitations
 		project.setAccess(access);
 

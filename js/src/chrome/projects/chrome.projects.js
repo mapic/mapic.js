@@ -1350,7 +1350,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 			return;
 		}
 
-		if(window.testMode) return true;
+		//if(window.testMode) return true;
 
 		// clean invitations array
 		var access = {

@@ -26,6 +26,8 @@ Wu.Analytics = Wu.Class.extend({
 	// app.log()
 	fire : function (event, options) {
 
+		if(window.testMode)	return;
+
 		var data = {
 			event : event,
 			timestamp : Date.now(),

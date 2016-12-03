@@ -1352,12 +1352,14 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 
 			app.log('error:project:tried_to_create_with_no_name');
 
-			
 			// done here
 			return;
 		}
 
-		//if(window.testMode) return true;
+		var testCallback = arguments[arguments.length - 1];
+		if (typeof testCallback === 'function') {
+			return testCallback(true);
+		}
 
 		// clean invitations array
 		var access = {

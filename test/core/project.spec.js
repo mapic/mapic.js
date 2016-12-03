@@ -45,8 +45,9 @@ describe("core.project", function () {
     };
 
     var chromeProject = new Wu.Chrome.Projects();
-    var isFired = chromeProject._createProject(options);
-    expect(isFired).to.be.true;
+    chromeProject._createProject(options , function (isFired) {
+      expect(isFired).to.be.true;
+    });
   });
 
 

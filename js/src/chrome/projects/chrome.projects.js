@@ -1272,6 +1272,8 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 			if(resp && resp.unique){
 				// set project name
 				project.setName(projectName);
+				//set Project Slug
+				project.setSlug(projectName);
 			}else{
 				alert("Slug is not available!");
 			}			

@@ -368,16 +368,11 @@ Wu.Model.Project = Wu.Model.extend({
 		if (result.error) return app.feedback.setError({
 			title : "Could not update project", 
 			description : result.error
-		});
-
-		//if(result.updated[0] == "slug") return;
+		});		
 
 		// store on server
 		this.store.name = result.project.name;
-
-		// update slug name
-		!window.testMode && this.setSlug(result.project.name);
-
+		
 		Wu.Mixin.Events.fire('projectChanged', { detail : {
 			projectUuid : this.getUuid(),
 			name : result.project.name

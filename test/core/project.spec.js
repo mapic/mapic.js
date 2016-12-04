@@ -91,8 +91,10 @@ describe("core.project", function () {
     var project = new Wu.Model.Project(store);
 
     var newProjectName = "Test Project Name 2";
-
+    
     project.setName(newProjectName);
+
+    expect(project.store.name).to.equal(newProjectName);
 
   });
 
@@ -137,6 +139,14 @@ describe("core.project", function () {
     users._sendInvites({target : {}});
 
   });
+
+  // it("should check available slug of project" , function () {
+  //   //project.checkAvailableSlug
+  // });
+
+  // it("should update project slug" , function () {
+  //   //setSlug
+  // });
 
   // todo: https://github.com/mapic/mapic.js/issues/6
 

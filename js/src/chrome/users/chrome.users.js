@@ -416,7 +416,7 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 
 			if (email_value.length) emails.push(email_value);
 		});
-
+		
 		if (!emails.length) return;
 
 		var customMessage = this._customMessage.value.replace(/\n/g, '<br>');
@@ -439,9 +439,12 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 			customMessage : customMessage,
 			access : access
 		};
-
+		
+		var callback = typeof arguments[arguments.length - 1] === 'function' ? arguments[arguments.length - 1] : this._sentInvites.bind(this, e.target);
+				
 		// send to server
-		app.api.userInvite(options, this._sentInvites.bind(this, e.target));
+		//app.api.userInvite(options, this._sentInvites.bind(this, e.target));
+		app.api.userInvite(options, callback );
 
 		// logs
 		this._logInvites(options);

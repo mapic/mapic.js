@@ -195,7 +195,7 @@ var mockApi = {
 
     userInvite : function (options,done) {
         var response = {
-                "error": null
+            "error": null
         };
         
         var path = '/v2/users/invite';

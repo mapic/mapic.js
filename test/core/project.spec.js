@@ -111,10 +111,10 @@ describe("core.project", function () {
     
     var deletedProject = app.Projects['project-0e386d2a-2966-419b-8604-96d112d4abb2'];
     expect(deletedProject).to.be.undefined;
-    
+
   });
 
-  it("should add user to a project", function () {
+  it("should invite user to a project", function () {
 
     var users = new Wu.Chrome.Users();
 
@@ -140,7 +140,9 @@ describe("core.project", function () {
       read :[]
     };
 
-    users._sendInvites({target : {}});
+    users._sendInvites({target : {}} , function (err , resp) {
+      expect(resp.error).to.be.null;
+    });
 
   });
 

@@ -186,6 +186,8 @@ var mockApi = {
             "deleted": true
         };
 
+        response = JSON.stringify(response);
+        
         var path = '/v2/projects/delete';
 		done && done(null, response);
         

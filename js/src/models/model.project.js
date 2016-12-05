@@ -441,12 +441,14 @@ Wu.Model.Project = Wu.Model.extend({
 		var url = app.options.servers.portal;
 		var deletedProjectName = project.getName();
 
-		// set url
-		Wu.Util.setAddressBar(url);
-
 		// delete object
 		app.Projects[project.getUuid()] = null;
 		delete app.Projects[project.getUuid()];
+
+		if(window.testMode) return;
+
+		// set url
+		Wu.Util.setAddressBar(url);
 
 		// set no active project if was active
 		if (app.activeProject && app.activeProject.getUuid() == project.getUuid()) {

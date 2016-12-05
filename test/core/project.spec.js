@@ -10,6 +10,7 @@ describe("core.project", function () {
     projectModel = new Wu.Model.Project();
     app.feedback = mockFeedback;
     app.Chrome = {};
+    app.Projects = {};
     app.api = mockApi;
   });
 
@@ -91,7 +92,7 @@ describe("core.project", function () {
     var project = new Wu.Model.Project(store);
 
     var newProjectName = "Test Project Name 2";
-    
+
     project.setName(newProjectName);
 
     expect(project.store.name).to.equal(newProjectName);
@@ -104,10 +105,13 @@ describe("core.project", function () {
 
     var project = new Wu.Model.Project(store);
 
-    project._delete(function (err ,resp) {
-      expect(resp.deleted).to.be.true;
-    });
+    app.Projects['project-0e386d2a-2966-419b-8604-96d112d4abb2'] = project;
 
+    project._delete();
+    
+    var deletedProject = app.Projects['project-0e386d2a-2966-419b-8604-96d112d4abb2'];
+    expect(deletedProject).to.be.undefined;
+    
   });
 
   it("should add user to a project", function () {

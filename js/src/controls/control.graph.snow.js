@@ -341,9 +341,15 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
     _initContainer : function () {
         if (this._container) return;
 
+
+        // todo: refactor the DOM, incl. animator
         this._container              = Wu.DomUtil.create('div', 'big-graph-outer-container',            this.options.appendTo);
         this._infoContainer          = Wu.DomUtil.create('div', 'big-graph-info-container',             this._container);
-        
+
+        // resizer
+        this._resizer = Wu.DomUtil.create('div', 'big-graph-resizer', this._container);
+
+        // plugin container
         this._pluginMainContainer    = Wu.DomUtil.create('div', 'big-graph-plugin-container',           this._container);
         this._pluginContainer        = Wu.DomUtil.create('div', 'big-graph-plugin-main-container',      this._pluginMainContainer);
         this._pluginLegendsContainer = Wu.DomUtil.create('div', 'big-graph-plugin-legends-container',   this._pluginMainContainer);
@@ -356,7 +362,6 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         
         // mask meta
         this._maskMeta               = Wu.DomUtil.create('div', 'big-graph-mask-meta-container',        this._infoContainer);
-        
        
         // date text
         this._dateTitle              = Wu.DomUtil.create('div', 'big-graph-current-day',                this._container, '');

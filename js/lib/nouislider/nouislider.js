@@ -1697,10 +1697,14 @@ function closure ( target, options ){
 
 		var i, retour = [];
 
+
 		// Get the value from all handles.
 		for ( i = 0; i < options.handles; i += 1 ){
 			retour[i] = options.format.to( scope_Values[i] );
 		}
+
+		console.log('valueGet()', retour, options);
+
 
 		return inSliderOrder( retour );
 	}

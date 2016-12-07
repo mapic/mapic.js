@@ -157,6 +157,7 @@ Wu.Graph.Animator = Wu.Evented.extend({
     },
 
     _onSlide : function (values) {
+        console.error('_onSlide', values);
         var value = parseInt(values[0]);
         var limit = this.getSliderLimit();
 

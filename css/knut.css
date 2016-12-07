@@ -2923,3 +2923,18 @@ span.mask-item-value {
     margin-top: 0px;
     margin-bottom: 0px;
 }
+
+
+
+.big-graph-resizer {
+    background: red;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.big-slider-outer-container {
+    /*zoom: 1.3;*/
+}

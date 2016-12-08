@@ -762,6 +762,8 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         // add cube id
         options.cube_id = this.getCubeId();
 
+        console.log('cube query:', options);
+
         // query cube
         app.api.queryCube(options, done);
     },

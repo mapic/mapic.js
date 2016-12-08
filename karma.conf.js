@@ -200,7 +200,9 @@ module.exports = function (config) {
 
     singleRun : true,
 
-    browsers: ['PhantomJS']
+    browsers: ['PhantomJS'],
+
+    plugins : ['karma-mocha', 'karma-chai', 'karma-jasmine', 'karma-phantomjs-launcher']
 
   });
   

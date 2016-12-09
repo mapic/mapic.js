@@ -32,9 +32,12 @@ Wu.App = Wu.Class.extend({
 	},
 
 	_raven : function () {
-		if(window.testMode || location.hostname === "localhost") return true;
-		
-		Raven.config('https://594a4e7cc65f4e39bdd0337276e391b5@sentry.io/100809').install();
+		if(window.testMode) return true;
+		Raven.config('https://594a4e7cc65f4e39bdd0337276e391b5@sentry.io/100809', {
+			autoBreadcrumbs: {
+		    	console: false
+			}
+		}).install();
 		Raven.setRelease(Wu.version);
 	},
 

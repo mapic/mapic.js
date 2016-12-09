@@ -346,8 +346,9 @@ Wu.Model.Project = Wu.Model.extend({
 	checkAvailableSlug : function (name , callback) {
 
 		var options = {};
-		options['slug'] = name || this.store['slug'];
+		options['slug'] = this._getSlugByName(name) || this.store['slug'];
 		options.uuid = this.store.uuid;
+		options.createdByClient = this.store.createdBy;
 
 		app.api.checkUniqueSlug(options , function (err , json) {
 			var result = Wu.parse(json);
@@ -963,11 +964,20 @@ Wu.Model.Project = Wu.Model.extend({
 		this._update('description');
 	},
 
-	setSlug : function (name) {
+	_getSlugByName : function (name) {
 		var slug = name.replace(/\s+/g, '').toLowerCase();
 		slug = slug.replace(/\W/g, '');
 		slug = Wu.Util.stripAccents(slug);
-		this.store.slug = slug;
+		return slug;
+	},
+
+	setSlug : function (name) {
+		// var slug = name.replace(/\s+/g, '').toLowerCase();
+		// slug = slug.replace(/\W/g, '');
+		// slug = Wu.Util.stripAccents(slug);
+		// this.store.slug = slug;
+
+		this.store.slug = this._getSlugByName(name);
 		
 		// save slug to server
 		//this._update('slug');

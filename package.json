@@ -1,13 +1,18 @@
 {
   "name": "mapic.js",
   "version": "1.6.2",
-  "description": "Mapic Client Library https://mapic.io - This is the open source client library front-end for Mapic.",
+  "description": "Mapic Client Library",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
     "test": "karma start"
   },
+  "bugs" : {
+    "url" : "https://github.com/mapic/mapic.js/issues",
+    "email" : "hello@mapic.io"
+  },
+  "homepage" : "https://mapic.io",
   "devDependencies": {
     "chai": "^3.5.0",
     "jasmine-core": "^2.5.2",

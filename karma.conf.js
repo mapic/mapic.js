@@ -192,7 +192,7 @@ module.exports = function (config) {
     
     colors: true,
 
-    reporters: ['progress'],
+    reporters: ['mocha'],
 
     singleRun : true,
 

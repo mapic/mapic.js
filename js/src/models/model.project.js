@@ -956,7 +956,6 @@ Wu.Model.Project = Wu.Model.extend({
 		this._update('description');
 	},
 
-<<<<<<< 685072a820a125d95e3b2e7ae2435cb56a2d7997
 	_getSlugByName : function (name) {
 		var slug = name.replace(/\s+/g, '').toLowerCase();
 		slug = slug.replace(/\W/g, '');
@@ -971,21 +970,15 @@ Wu.Model.Project = Wu.Model.extend({
 		// this.store.slug = slug;
 
 		this.store.slug = this._getSlugByName(name);
-=======
-	setSlug : function (slug) {
-		// var slug = name.replace(/\s+/g, '').toLowerCase();
-		// slug = slug.replace(/\W/g, '');
-		// slug = Wu.Util.stripAccents(slug);
-		this.store.slug = slug;
->>>>>>> Added fn for getting available slug
 		
 		// save slug to server
-		this._update('slug');
-		// this._updateSlug('slug');
+		//this._update('slug');
+		this._updateSlug('slug');
 
 		// set new url
 		this._setUrl();
 	},
+
 
 	clearBounds : function () {
 

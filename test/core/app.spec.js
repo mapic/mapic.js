@@ -10,7 +10,7 @@ describe("core.app", function () {
 
   // version
   it("should check Mapic.js version", function () {
-    expect(Wu.version).to.equal('1.6.1');	
+    expect(Wu.version).to.exist;
   });
 
   // app object

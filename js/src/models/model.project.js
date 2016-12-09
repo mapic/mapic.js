@@ -325,18 +325,29 @@ Wu.Model.Project = Wu.Model.extend({
 		options[field] = value || this.store[field];
 		options.uuid = this.store.uuid;
 
+		console.log('_update options', options);
+
 		// save to server
 		this._save(options);
+	},
+
+	_updateSlug : function (field , value) {
+		// set fields
+		var options = {};
+		options[field] = value || this.store[field];
+		options.uuid = this.store.uuid;
+
+		app.api.updateProject(options);
 	},
 
 
 	save : function (field) {
 		console.error('deprecated');
 	},
-	
+
 
 	_save : function (options) {
-
+		
 		// save to server                                       	
 		app.api.updateProject(options, this._saved.bind(this));
 	},
@@ -347,22 +358,27 @@ Wu.Model.Project = Wu.Model.extend({
 		if (result.error) return app.feedback.setError({
 			title : "Could not update project", 
 			description : result.error
-		});
+		});		
+
+		// store on server
+		this.store.name = result.project.name;
+		
 		Wu.Mixin.Events.fire('projectChanged', { detail : {
 			projectUuid : this.getUuid(),
 			name : result.project.name
 		}});
 	},
 
-	_onProjectChanged : function (e) {
-		if (!e.detail.name) {
-			return
-		}
-		// store on server
-		this.store.name = e.detail.name;
-		// update slug name
-		this.setSlug(e.detail.name);
-	},
+	// _onProjectChanged : function (e) {
+	// 	console.log("Never gets Fired");
+	// 	if (!e.detail.name) {
+	// 		return
+	// 	}
+	// 	// store on server
+	// 	this.store.name = e.detail.name;
+	// 	// update slug name
+	// 	this.setSlug(e.detail.name);
+	// },
 
 	// create project on server
 	create : function (opts, callback) {
@@ -417,12 +433,14 @@ Wu.Model.Project = Wu.Model.extend({
 		var url = app.options.servers.portal;
 		var deletedProjectName = project.getName();
 
-		// set url
-		Wu.Util.setAddressBar(url);
-
 		// delete object
 		app.Projects[project.getUuid()] = null;
 		delete app.Projects[project.getUuid()];
+
+		if(window.testMode) return;
+
+		// set url
+		Wu.Util.setAddressBar(url);
 
 		// set no active project if was active
 		if (app.activeProject && app.activeProject.getUuid() == project.getUuid()) {
@@ -929,7 +947,8 @@ Wu.Model.Project = Wu.Model.extend({
 	},
 
 	setName : function (name) {
-		this._update('name', name);
+		this.store.name = name;
+		this._update('name');
 	},
 
 	setDescription : function (description) {
@@ -937,18 +956,23 @@ Wu.Model.Project = Wu.Model.extend({
 		this._update('description');
 	},
 
-	setSlug : function (name) {
+	_getSlugByName : function (name) {
 		var slug = name.replace(/\s+/g, '').toLowerCase();
 		slug = slug.replace(/\W/g, '');
 		slug = Wu.Util.stripAccents(slug);
+		return slug;
+	},
+
+	setSlug : function (slug) {
+
+		// store slug
 		this.store.slug = slug;
-		
-		// save slug to server
 		this._update('slug');
 
 		// set new url
 		this._setUrl();
 	},
+
 
 	clearBounds : function () {
 

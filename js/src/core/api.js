@@ -77,9 +77,15 @@ Wu.Api = Wu.Class.extend({
 	},
 
 
+	checkUniqueSlug : function (options,done) {
+		var path = '/v2/projects/slug/unique';
+		this.post(path, options , done);
+	},
 
-
-
+	getAvailableSlug : function (options,done) {
+		var path = '/v2/projects/slug/available';
+		this.post(path, options , done);
+	},
 
 
   	// USERS

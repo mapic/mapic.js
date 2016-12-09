@@ -81,8 +81,9 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
         var layerUuid = this._getActiveLayerUuid();
         if ( layerUuid ) this._selectedActiveLayer(false, layerUuid);
 
+        // Execute if only this._layer is available
         // select in dropdown
-        this.layerSelector.setValue({
+        this._layer && this.layerSelector.setValue({
             value : layerUuid,
             title : this._layer.getTitle()
         });

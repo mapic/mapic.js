@@ -8,7 +8,7 @@ Wu.App = Wu.Class.extend({
 	_ready : false,
 
 	initialize : function (options) {
-
+		
 		// print version
 		console.log('Mapic v.' + Wu.version);
 
@@ -28,11 +28,16 @@ Wu.App = Wu.Class.extend({
 		app.api.auth(app.authed);
 
 		// error logging with sentry
-		!window.testMode && this._raven();
+		this._raven();
 	},
 
 	_raven : function () {
-		Raven.config('https://594a4e7cc65f4e39bdd0337276e391b5@sentry.io/100809').install();
+		if(window.testMode) return true;
+		Raven.config('https://594a4e7cc65f4e39bdd0337276e391b5@sentry.io/100809', {
+			autoBreadcrumbs: {
+		    	console: false
+			}
+		}).install();
 		Raven.setRelease(Wu.version);
 	},
 

@@ -16,6 +16,7 @@ Wu.Evented = L.Evented.extend({ // inheriting from 1.0.0-rc3 L.Evented, makes it
         Wu.Mixin.Events.on('projectUnload',   this._onProjectUnload, this);
         Wu.Mixin.Events.on('projectSelected', this._projectSelected, this);
         Wu.Mixin.Events.on('projectDeleted',  this._onProjectDeleted, this);
+        Wu.Mixin.Events.on('projectChanged',  this._onProjectChanged, this);
         Wu.Mixin.Events.on('editEnabled',     this._editEnabled, this);
         Wu.Mixin.Events.on('editDisabled',    this._editDisabled, this);
         Wu.Mixin.Events.on('layerEnabled',    this._layerEnabled, this);
@@ -46,6 +47,7 @@ Wu.Evented = L.Evented.extend({ // inheriting from 1.0.0-rc3 L.Evented, makes it
     _onLayerEdited   : function () {},
     _onLayerDeleted  : function () {},
     _onProjectDeleted : function () {},
+    _onProjectChanged : function () {},
     _onClosePopups   : function () {},
     _onDoingScreenshot : function () {},
 

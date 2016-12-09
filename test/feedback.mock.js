@@ -1,0 +1,6 @@
+var mockFeedback = {
+    setMessage : function () {
+
+    }
+};
+

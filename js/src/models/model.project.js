@@ -963,17 +963,11 @@ Wu.Model.Project = Wu.Model.extend({
 		return slug;
 	},
 
-	setSlug : function (name) {
-		// var slug = name.replace(/\s+/g, '').toLowerCase();
-		// slug = slug.replace(/\W/g, '');
-		// slug = Wu.Util.stripAccents(slug);
-		// this.store.slug = slug;
+	setSlug : function (slug) {
 
-		this.store.slug = this._getSlugByName(name);
-		
-		// save slug to server
-		//this._update('slug');
-		this._updateSlug('slug');
+		// store slug
+		this.store.slug = slug;
+		this._update('slug');
 
 		// set new url
 		this._setUrl();

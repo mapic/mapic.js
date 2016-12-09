@@ -1,19 +1,27 @@
 {
   "name": "mapic.js",
-  "version": "1.3.8",
-  "description": "Mapic Client Library http://mapic.io - This is the open source client library front-end for Mapic.",
+  "version": "1.6.2",
+  "description": "Mapic Client Library",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
     "test": "karma start"
   },
+  "bugs" : {
+    "url" : "https://github.com/mapic/mapic.js/issues",
+    "email" : "hello@mapic.io"
+  },
+  "homepage" : "https://mapic.io",
   "devDependencies": {
     "chai": "^3.5.0",
+    "jasmine-core": "^2.5.2",
     "karma": "^1.3.0",
     "karma-chai": "^0.1.0",
-    "karma-phantomjs-launcher": "^1.0.2",
+    "karma-jasmine": "^1.0.2",
     "karma-mocha": "^1.2.0",
+    "karma-mocha-reporter": "^2.2.1",
+    "karma-phantomjs-launcher": "^1.0.2",
     "mocha": "^3.1.2"
   },
   "contributors": [
@@ -24,5 +32,5 @@
     "mgdfot@gmail.com",
     "shahjada.talukdar@gmail.com"
   ],
-  "license": "GPL-3.0"
+  "license": "AGPL-3.0"
 }

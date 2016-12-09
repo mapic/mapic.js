@@ -32,8 +32,8 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
     // languages
     localization : {
-        lang : 'nor',
-        // lang : 'eng',
+        // lang : 'nor',
+        lang : 'eng',
         eng : {
             yearlyGraphs : 'Yearly graphs',
             selectYear : 'Select year(s)',
@@ -341,9 +341,15 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
     _initContainer : function () {
         if (this._container) return;
 
+
+        // todo: refactor the DOM, incl. animator
         this._container              = Wu.DomUtil.create('div', 'big-graph-outer-container',            this.options.appendTo);
         this._infoContainer          = Wu.DomUtil.create('div', 'big-graph-info-container',             this._container);
-        
+
+        // resizer
+        this._resizer                = Wu.DomUtil.create('div', 'big-graph-resizer', this._container, '<i class="fa fa-bars" aria-hidden="true"></i>');
+
+        // plugin container
         this._pluginMainContainer    = Wu.DomUtil.create('div', 'big-graph-plugin-container',           this._container);
         this._pluginContainer        = Wu.DomUtil.create('div', 'big-graph-plugin-main-container',      this._pluginMainContainer);
         this._pluginLegendsContainer = Wu.DomUtil.create('div', 'big-graph-plugin-legends-container',   this._pluginMainContainer);
@@ -356,7 +362,6 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         
         // mask meta
         this._maskMeta               = Wu.DomUtil.create('div', 'big-graph-mask-meta-container',        this._infoContainer);
-        
        
         // date text
         this._dateTitle              = Wu.DomUtil.create('div', 'big-graph-current-day',                this._container, '');
@@ -366,6 +371,96 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         
         // add editor items
         if (this.isEditor()) this._addEditorPane();
+
+        // add resize event
+        Wu.DomEvent.on(this._resizer, 'mousedown', this._initResize, this);
+    },
+
+    _initResize : function () {
+        Wu.DomEvent.on(app._appPane, 'mousemove', this._doResize, this);
+        Wu.DomEvent.on(app._appPane, 'mouseup', this._stopResize, this);
+        this._resizer.style.cursor = 'nwse-resize';
+    },
+
+    _stopResize : function () {
+        Wu.DomEvent.off(app._appPane, 'mousemove', this._doResize, this);
+        Wu.DomEvent.off(app._appPane, 'mouseup', this._stopResize, this);
+        this._resizeValues = false;
+    },
+
+    _doResize : function (e) {
+
+        var container = this._container;
+     
+        // remember inital values
+        if (!this._resizeValues) {
+            this._resizeValues = {
+                x : e.clientX,
+                y : e.clientY,
+                h : container.clientHeight,
+                w : container.clientWidth,
+                ch : this._composite.height(),
+                cw : this._composite.width(),
+                ah : this._animator.sliderInnerContainer.clientHeight,
+                aw : this._animator.sliderInnerContainer.clientWidth,
+                sw : this._animator.slider.target.clientWidth,
+                sbw : this._animator.sliderButtonsContainer.clientWidth,
+                dl : this._dateTitle.offsetLeft,
+                pt : this._pluginMainContainer.offsetTop,
+                et : this._editorPane.offsetTop
+            }
+        }
+
+
+        // calc movement
+        var movement_x = e.clientX - this._resizeValues.x;
+        var movement_y = e.clientY - this._resizeValues.y;
+        // console.log('movement_x', movement_x)
+        // console.log('movement_y', movement_y)
+
+        // set size of container
+        var height = this._resizeValues.h - movement_y;
+        var width = this._resizeValues.w - movement_x;
+        if (height < 360) height = 360;
+        if (width < 600) width = 600;
+        this._container.style.height = height + 'px';
+        this._container.style.width = width + 'px';
+
+        // set size of chart
+        var chart_width = this._resizeValues.cw - movement_x; // 500
+        var chart_height = this._resizeValues.ch - movement_y; // 220
+        if (chart_width < 500) chart_width = 500;
+        if (chart_height < 220) chart_height = 220;
+        this._composite.width(chart_width).height(chart_height);
+        dc.renderAll();
+
+        // set size of bottom container
+        var bottom_container = this._animator.sliderInnerContainer;
+        var width = this._resizeValues.aw - movement_x;
+        if (width < 600) width = 600;
+        bottom_container.style.width = width + 'px';
+
+        // set size of slider
+        var slider = this._animator.slider.target;
+        var width = this._resizeValues.sw - movement_x;
+        if (width < 420) width = 420;
+        slider.style.width = width + 'px';
+
+        // set size of slider buttons
+        var slider_button = this._animator.sliderButtonsContainer;
+        var width = this._resizeValues.sbw - movement_x;
+        if (width < 530) width = 530;
+        slider_button.style.width = width + 'px';
+
+        // set text offsets
+        var left = this._resizeValues.dl - movement_x;
+        if (left < 330) left = 330;
+        this._dateTitle.style.left = left + 'px';
+
+        // set editor pane offset
+        var top = this._resizeValues.et + movement_y;
+        if (top > -365) top = -365;
+        this._editorPane.style.top = top + 'px';
 
     },
 

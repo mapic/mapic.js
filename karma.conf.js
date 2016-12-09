@@ -196,11 +196,13 @@ module.exports = function (config) {
     
     colors: true,
 
-    reporters: ['progress'],
+    reporters: ['mocha'],
 
     singleRun : true,
 
-    browsers: ['PhantomJS']
+    browsers: ['PhantomJS'],
+
+    plugins : ['karma-mocha', 'karma-chai', 'karma-jasmine', 'karma-phantomjs-launcher', 'karma-mocha-reporter']
 
   });
   

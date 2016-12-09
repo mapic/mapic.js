@@ -347,7 +347,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         this._infoContainer          = Wu.DomUtil.create('div', 'big-graph-info-container',             this._container);
 
         // resizer
-        this._resizer                = Wu.DomUtil.create('div', 'big-graph-resizer', this._container);
+        this._resizer                = Wu.DomUtil.create('div', 'big-graph-resizer', this._container, '<i class="fa fa-bars" aria-hidden="true"></i>');
 
         // plugin container
         this._pluginMainContainer    = Wu.DomUtil.create('div', 'big-graph-plugin-container',           this._container);

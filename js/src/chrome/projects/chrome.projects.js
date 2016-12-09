@@ -212,7 +212,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		name_input.setAttribute('placeholder', 'Enter name here');
 		var name_error = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label', content);
 
-		
+
 		var toggles_wrapper = Wu.DomUtil.create('div', 'toggles-wrapper', content);
 
 		// create invite input
@@ -458,7 +458,6 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		name_input.setAttribute('placeholder', 'Enter name here');
 		name_input.value = project.getName();
 		var name_error = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label', content);
-
 
 		// pretty wrapper
 		var toggles_wrapper = Wu.DomUtil.create('div', 'toggles-wrapper', content);
@@ -1267,20 +1266,48 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		// reset
 		this._resetAccess();
 
-		project.checkAvailableSlug(projectName, function (resp) {
-			console.log("---" , resp);
-			if(resp && resp.unique){
-				// set project name
-				project.setName(projectName);
-				//set Project Slug
-				project.setSlug(projectName);
-			}else{
-				alert("Slug is not available!");
-			}			
+		// get available slug
+		app.api.getAvailableSlug({
+			project_name : projectName,
+			created_by_username : project.getCreatedByUsername()
+		}, function (err, response) {
+			if (err) return console.error('Couldnt get slug!', err, response);
+
+			console.log('getAvailableSlug', err, response);
+
+			var result = Wu.parse(response);
+
+			// set project name
+			project.setName(projectName);
+
+			// set project slug
+			project.setSlug(result.slug);
+
+			// set invitations
+			project.setAccess(access);
+
 		});
+
+		// // check if slug is available
+		// project.getAvailableSlug(projectName, function (err, response) {
+		// 	if (err) return console.error('Couldnt get slug!', err, response);
+		// 	// project.checkAvailableSlug(projectName, function (resp) {
+
+		// 	// console.log("---" , resp);
+		// 	// if(resp && resp.uniqueSlug){
+		// 		// set project name
+		// 		project.setName(projectName);
+
+		// 		//set Project Slug
+		// 		project.setSlug(response.slug);
+		
+		// 	// } else{
+		// 		// alert("Slug is not available!");
+		// 	// }			
+		// });
 		
 		// set invitations
-		project.setAccess(access);
+		// project.setAccess(access);
 
 		// add project to list
 		//this._refreshContent();

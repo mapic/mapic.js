@@ -82,7 +82,10 @@ Wu.Api = Wu.Class.extend({
 		this.post(path, options , done);
 	},
 
-
+	getAvailableSlug : function (options,done) {
+		var path = '/v2/projects/slug/available';
+		this.post(path, options , done);
+	},
 
 
   	// USERS

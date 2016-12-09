@@ -325,6 +325,8 @@ Wu.Model.Project = Wu.Model.extend({
 		options[field] = value || this.store[field];
 		options.uuid = this.store.uuid;
 
+		console.log('_update options', options);
+
 		// save to server
 		this._save(options);
 	},
@@ -343,19 +345,6 @@ Wu.Model.Project = Wu.Model.extend({
 		console.error('deprecated');
 	},
 
-	checkAvailableSlug : function (name , callback) {
-
-		var options = {};
-		options['slug'] = this._getSlugByName(name) || this.store['slug'];
-		options.uuid = this.store.uuid;
-		options.createdByClient = this.store.createdBy;
-
-		app.api.checkUniqueSlug(options , function (err , json) {
-			var result = Wu.parse(json);
-			callback(result);
-		});
-	},
-	
 
 	_save : function (options) {
 		
@@ -380,16 +369,16 @@ Wu.Model.Project = Wu.Model.extend({
 		}});
 	},
 
-	_onProjectChanged : function (e) {
-		console.log("Never gets Fired");
-		if (!e.detail.name) {
-			return
-		}
-		// store on server
-		this.store.name = e.detail.name;
-		// update slug name
-		this.setSlug(e.detail.name);
-	},
+	// _onProjectChanged : function (e) {
+	// 	console.log("Never gets Fired");
+	// 	if (!e.detail.name) {
+	// 		return
+	// 	}
+	// 	// store on server
+	// 	this.store.name = e.detail.name;
+	// 	// update slug name
+	// 	this.setSlug(e.detail.name);
+	// },
 
 	// create project on server
 	create : function (opts, callback) {
@@ -958,7 +947,8 @@ Wu.Model.Project = Wu.Model.extend({
 	},
 
 	setName : function (name) {
-		this._update('name', name);
+		this.store.name = name;
+		this._update('name');
 	},
 
 	setDescription : function (description) {
@@ -966,6 +956,7 @@ Wu.Model.Project = Wu.Model.extend({
 		this._update('description');
 	},
 
+<<<<<<< 685072a820a125d95e3b2e7ae2435cb56a2d7997
 	_getSlugByName : function (name) {
 		var slug = name.replace(/\s+/g, '').toLowerCase();
 		slug = slug.replace(/\W/g, '');
@@ -980,10 +971,17 @@ Wu.Model.Project = Wu.Model.extend({
 		// this.store.slug = slug;
 
 		this.store.slug = this._getSlugByName(name);
+=======
+	setSlug : function (slug) {
+		// var slug = name.replace(/\s+/g, '').toLowerCase();
+		// slug = slug.replace(/\W/g, '');
+		// slug = Wu.Util.stripAccents(slug);
+		this.store.slug = slug;
+>>>>>>> Added fn for getting available slug
 		
 		// save slug to server
-		//this._update('slug');
-		this._updateSlug('slug');
+		this._update('slug');
+		// this._updateSlug('slug');
 
 		// set new url
 		this._setUrl();

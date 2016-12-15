@@ -33,7 +33,7 @@ describe("core.project", function () {
 
   });
 
-  it("should fire the clicked Event on project creation" , function () {
+  it("should fire the clicked Event on new project button" , function () {
 
     var name_input = {
       value : "My Test Project 1"
@@ -55,7 +55,7 @@ describe("core.project", function () {
   it("should create a new project and validate data", function () {
     var options = {"store":{"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}}};    
     var store = {"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
-    var project = new Wu.Model.Project(store);
+    var project = new Wu.Model.Project(store);    
     project.create(options, function (err, json) {
       expect(json.project.name).to.equal(store.name);
       expect(json.project.description).to.equal(store.description);

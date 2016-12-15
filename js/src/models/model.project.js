@@ -392,9 +392,7 @@ Wu.Model.Project = Wu.Model.extend({
 			position 	: this.store.position,
 			access		: this.store.access
 		};
-
-		console.log('crate project', options);
-
+						
 		// send request to API		
  		app.api.createProject(options, callback.bind(opts.context));
 	},

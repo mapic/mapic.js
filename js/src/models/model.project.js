@@ -387,12 +387,12 @@ Wu.Model.Project = Wu.Model.extend({
 
 		var options = {
 			name 		: this.store.name,
-			description 	: this.store.description,
+			description : this.store.description,
 			keywords 	: this.store.keywords, 
 			position 	: this.store.position,
 			access		: this.store.access
 		};
-						
+
 		// send request to API		
  		app.api.createProject(options, callback.bind(opts.context));
 	},

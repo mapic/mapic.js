@@ -152,8 +152,13 @@ var mockApi = {
             }
         };
 
-        done && done(null, response);
-
+        var errResp = '{\n  "error": {\n    "code": 400,\n    "message": "Missing information. Check out https://docs.systemapic.com/ for details on the API.",\n    "errors": {\n      "missingRequiredFields": [\n        "name"\n      ]\n    }\n  }\n}';
+        
+        if(options && options.name){
+            done && done(null, response);
+        }else{
+            done && done(null, JSON.parse(errResp));
+        }
 	},
 
     updateProject : function (options, done) {

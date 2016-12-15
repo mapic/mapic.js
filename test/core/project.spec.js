@@ -63,7 +63,17 @@ describe("core.project", function () {
 
     });
   });
-  
+
+  it("should fail to create a new project without project name", function () {
+    var options = {"store":{"name":"","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}}};    
+    var store = {"name":"","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
+    var project = new Wu.Model.Project(store);
+    
+    project.create(options, function (err, json) {
+      expect(json.error.errors.missingRequiredFields[0]).to.equal("name");
+    });
+  });
+
   it("should fire the clicked event on project edition" , function () {
 
     var store = {"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};

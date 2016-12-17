@@ -295,7 +295,7 @@ Wu.Util = {
 	},
 
 	setAddressBar : function (string) {
-		window.history.pushState( {} , '', string );
+		!window.testMode && window.history.pushState( {} , '', string );
 	},
 
 	checkDisconnect : function (response) {

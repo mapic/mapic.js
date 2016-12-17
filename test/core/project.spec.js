@@ -109,6 +109,20 @@ describe("core.project", function () {
 
   });
 
+  it("should update project slug" , function () {
+
+    var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
+    
+    var project = new Wu.Model.Project(store);
+
+    var newSlug = "test-project-name";
+
+    project.setSlug(newSlug);
+
+    expect(project.store.slug).to.equal(newSlug);
+    
+    });
+
   it("should delete a project", function () {
         
     var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
@@ -157,11 +171,7 @@ describe("core.project", function () {
   });
 
   // it("should check available slug of project" , function () {
-  //   //project.checkAvailableSlug
-  // });
-
-  // it("should update project slug" , function () {
-  //   //setSlug
+  //   project.checkAvailableSlug
   // });
 
   // todo: https://github.com/mapic/mapic.js/issues/6

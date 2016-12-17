@@ -162,7 +162,7 @@ var mockApi = {
 	},
 
     updateProject : function (options, done) {
-        var response = {
+        var nameResp = {
             "updated": [
                 "name"
             ],
@@ -179,7 +179,30 @@ var mockApi = {
             }
         };
 
-        response = JSON.stringify(response);
+        
+        var slugResp = { 
+                "updated": [
+                    "slug"
+                ],
+                "project": {
+                    "_id": "584a865686cbcd00183d1efc",
+                    "lastUpdated": "2016-12-17T19:12:10.076Z",
+                    "created": "2016-12-09T10:24:22.740Z",
+                    "createdByUsername": "admin",
+                    "createdByName": "Shahjada Talukdar",
+                    "createdBy": "user-cf46b1c1-0520-493b-a2fe-8539fd16b0eb",
+                    "uuid": "project-0e386d2a-2966-419b-8604-96d112d4abb2",
+                    "description": "Project description",
+                    "slug": "yes-its-new-slug",
+                    "name": "Yes Its new Proj"
+                }
+            };
+
+        if(options.name){
+            response = JSON.stringify(nameResp);
+        }else if(options.slug){
+            response = JSON.stringify(slugResp);
+        }
 
         var path = '/v2/projects/update';
 		done && done(null, response);

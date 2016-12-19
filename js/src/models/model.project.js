@@ -270,17 +270,35 @@ Wu.Model.Project = Wu.Model.extend({
 			access : projectAccess
 		};
 
+		var callback = typeof arguments[arguments.length - 1] === 'function' ? arguments[arguments.length - 1] : this._setAccessCallback.bind(this);
+
+		app.api.projectSetAccess(options, callback);
+
+		//app.api.projectSetAccess(options, this._setAccessCallback.bind(this));
+
 		// send request to API		
- 		app.api.projectSetAccess(options, function (err, response) {
+ 		// app.api.projectSetAccess(options, function (err, response) {
 
- 			// set locally
- 			this.store.access = projectAccess;
+ 		// 	// set locally
+ 		// 	this.store.access = projectAccess;
 
-			Wu.Mixin.Events.fire('updatedProjectAccess', {detail : {
-				projectId: options.project || null
-			}});
- 		}.bind(this));
+		// 	Wu.Mixin.Events.fire('updatedProjectAccess', {detail : {
+		// 		projectId: options.project || null
+		// 	}});
+ 		// }.bind(this));
 
+	},
+
+	_setAccessCallback : function (err , response) {
+
+		response = Wu.parse(response);
+
+		// set locally
+		this.store.access = response.access;
+
+		Wu.Mixin.Events.fire('updatedProjectAccess', {detail : {
+			projectId: response.uuid || null
+		}});
 	},
 
 	addInvites : function (projectAccess) {

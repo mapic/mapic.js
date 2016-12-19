@@ -121,7 +121,28 @@ describe("core.project", function () {
 
     expect(project.store.slug).to.equal(newSlug);
     
-    });
+  });
+
+  it("should add viewers(read access) of a project" , function () {
+
+    var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
+    
+    var project = new Wu.Model.Project(store);
+
+    var access = {
+			edit : [],
+			read : ["user-fbb3dee3-e042-4ad3-8378-c08b19706d52"],
+			options : {
+				share : true,
+				download : true,
+				isPublic : false
+			}
+		};
+
+    project.setAccess(access , function (err, resp) {
+      expect(resp.access.read[0]).to.equal(access.read[0]);
+    });    
+  });
 
   it("should delete a project", function () {
         

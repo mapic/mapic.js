@@ -231,7 +231,7 @@ var mockApi = {
     },
 
     projectSetAccess  : function (options, done) {
-
+        
         var response = {
             "lastUpdated": "2016-12-19T19:44:16.110Z",
             "created": "2016-12-09T10:24:22.740Z",
@@ -240,10 +240,8 @@ var mockApi = {
             "createdBy": "user-cf46b1c1-0520-493b-a2fe-8539fd16b0eb",
             "uuid": "project-0e386d2a-2966-419b-8604-96d112d4abb2",
             "access": {
-                "edit": [],
-                "read": [
-                "user-fbb3dee3-e042-4ad3-8378-c08b19706d52"
-                ],
+                "edit": options.access.edit,
+                "read": options.access.read,
                 "options": {
                 "share": true,
                 "download": true,

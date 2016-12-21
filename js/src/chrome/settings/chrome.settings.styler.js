@@ -423,13 +423,13 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 			this._pointStyler.updateStyle();
 		}
 
-		// Update point
+		// Update line
 		if (this._lineStyler) {
 			this._lineStyler.setCarto(this._carto.line);
 			this._lineStyler.updateStyle();
 		}
 
-		// Update point
+		// Update polygon
 		if (this._polygonStyler) {
 			this._polygonStyler.setCarto(this._carto.polygon);
 			this._polygonStyler.updateStyle();

@@ -99,6 +99,8 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 
 	_createCartoEditor : function () {
 
+		console.log('_createCartoEditor');
+
 		// editor
 		this._cartoEditor = CodeMirror.fromTextArea(this._codewrap, {
     			lineNumbers: true,    			
@@ -111,6 +113,8 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
     			paletteHints : true,
     			gutters: ['CodeMirror-linenumbers', 'errors']
   		});
+
+  		console.log(this._cartoEditor);
 
 	},
 
@@ -190,6 +194,8 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 
 
 	_updateStyle : function () {
+
+		console.error('_updateStyle')
 
 
 		// return if no active layer
@@ -303,6 +309,8 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 
 	_selectedActiveLayer : function (value, uuid) {
 
+		console.log('_selectedActiveLayer', value, uuid);
+
 		var layerUuid = uuid || value;
 		
 		// Store uuid of layer we're working with
@@ -311,6 +319,8 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 		// get layer
 		// var layerUuid = e.target.value;
 		this._layer = this._project.getLayer(layerUuid);
+
+		console.log('layer ->', this._layer, this._layer.isVector());
 
 		// selecting layer in dropdown...
 		// .. problems:
@@ -322,7 +332,7 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 		// ----------
 		// SOLUTION: temporarily add layers to map for editing, remove when done editing.
 
-
+		
 		if (!this._layer || !this._layer.isVector()) return;
 
 		// refresh
@@ -349,6 +359,8 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 	},
 
 	_refreshEditor : function () {
+
+		console.error('_refreshEditor');
 		
 		// fill editors
 		this._refreshCartoCSS();
@@ -371,6 +383,7 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 
 
 	_showEditors : function () {
+		console.error('SHOW CARTOCSS');
 		if (!this._cartoEditor) return console.error('no cartoEditor');
 		this._cartoEditor.getWrapperElement().style.opacity = 1;
 		this._cartotitle.style.opacity = 1;

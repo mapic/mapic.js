@@ -44,6 +44,20 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
             subdomains : subdomains,
             maxRequests : 0
         });
+
+        console.log('this._layer, on ', this.layer);
+        // this.layer.on('click', this._layerClick, this);
+        this.layer.on('click', function (e) {
+            console.log('CLICK!', e);
+        });
+
+        this.layer.on('mouseove', function (e) {
+            console.log('layer mouseove', e);
+        })
+    },
+
+    _layerClick : function (e) {
+        console.log('raste rlayer click', e);
     },
 
     _getLayerUuid : function () {

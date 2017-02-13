@@ -5,6 +5,8 @@ Wu.RasterStyler = Wu.Class.extend({
 
 	initialize : function (options) {
 
+		console.log('Wu.RasterStyler', this);
+
 		this.options = options;
 
 		// Default styling

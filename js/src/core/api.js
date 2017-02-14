@@ -334,14 +334,14 @@ Wu.Api = Wu.Class.extend({
 
 	
 	// TILES
-	// [pile]
+	// [mile]
 	createTileLayer : function (options, done) {
 		var path = '/v2/tiles/create';
 		this.post(path, options, done);
 	},
 
 
-	// [pile]
+	// [mile]
 	addMask : function (options, done) {
 		var path = '/v2/cubes/mask';
 		this.post(path, options, done);

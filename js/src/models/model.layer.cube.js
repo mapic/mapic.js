@@ -179,6 +179,8 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
         // set store
         this._setStore(store);
+
+        console.log('CUBE LAAYER _>', this);
     },
 
     _setStore : function (store) {
@@ -192,6 +194,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
     add : function (type) {
         this.addTo();
+        console.log('CUBE Add', this);
     },
 
     addTo : function () {
@@ -205,6 +208,8 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
         // ensure inited
         this.initLayer(function (err) {
+
+            console.log('_addTo, intilayer', err);
 
             var map = app._map;
 
@@ -305,19 +310,25 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     // fired when layer is added to map
     initLayer : function (done) {
 
+        console.log('initLayer 1');
+
         if (this._inited) {
             done && done();
             return;
         }
+        console.log('initLayer 2');
 
         // listen up
         this._listen();
+        console.log('initLayer 3');
 
         // init cursor
         this._initCursor();
+        console.log('initLayer 4');
 
         // init cache
         this._initCache();
+        console.log('initLayer 5');
 
         // run async ops
         async.series([
@@ -329,6 +340,8 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             this._initGraph.bind(this)
 
         ], function (err) {
+
+        console.log('initLayer 8', err);
 
             // mark inited
             this._inited = true;
@@ -456,7 +469,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         var masks = this.getMasks();
 
         // return if no mask
-        if (!masks || _.isEmpty(masks)) return;
+        if (!masks || _.isEmpty(masks)) return done();
 
         masks = _.isArray(masks) ? masks : [masks];
 

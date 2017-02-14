@@ -45,8 +45,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
             maxRequests : 0
         });
 
-        console.log('this._layer, on ', this.layer);
-        // this.layer.on('click', this._layerClick, this);
+        console.log('this._layer, on ', this.layer, this);
         this.layer.on('click', function (e) {
             console.log('CLICK!', e);
         });

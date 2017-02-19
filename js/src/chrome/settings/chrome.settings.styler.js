@@ -112,6 +112,20 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 
 		this._carto = this._layer.getStyleJSON();
 
+		var meta = this._layer.getMeta();
+
+		console.log('meta ->', meta);
+		console.log('layer;', this._layer);
+
+		var rangeMax = 255;
+		var rangeMin = 0;
+
+		// catch Int16
+		var data_type = meta.data_type;
+		if (data_type == 'UInt16') {
+			rangeMax = 65534;
+		}
+
 		var options = {
 			carto 	  : this._carto,
 			layer 	  : this._layer,
@@ -120,8 +134,8 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 			meta 	  : this._meta,
 			columns   : this._columns,
 			container : this._fieldsWrapper,
-			rangeMin  : 0,
-			rangeMax  : 255
+			rangeMin  : rangeMin,
+			rangeMax  : rangeMax
 		};
 
 		this._rasterStyler = new Wu.RasterStyler(options);
@@ -304,6 +318,8 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 	},	
 
 	_selectTemplate : function (e) {		
+
+		console.log('_selectTemplate', e);
 
 		var selected = e.target.value;
 

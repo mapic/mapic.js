@@ -478,9 +478,7 @@ L.Control.Layermenu = Wu.Control.extend({
 
 		app.log('created_folder:layermenu');
 
-
 	},
-
 
 	_removeMenuFolder : function () {
 		if (!this._menuFolder) return;
@@ -534,7 +532,6 @@ L.Control.Layermenu = Wu.Control.extend({
 		Wu.DomEvent.off(bin, 'drop', 	  this.drag.drop,  this);
 	},
 
-
 	enableDraggable : function () {
 
 		// iterate over all layers
@@ -558,7 +555,6 @@ L.Control.Layermenu = Wu.Control.extend({
 			el.setAttribute('draggable', false);
 		}
 	},
-
 	
 	// dragging of layers to layermenu
 	drag : {
@@ -957,6 +953,8 @@ L.Control.Layermenu = Wu.Control.extend({
 
 		// mark editing
 		app.Chrome.Right.options.editingLayer = layer.getUuid();
+
+		console.log('enableLayer: ', layer);
 
 	},
 

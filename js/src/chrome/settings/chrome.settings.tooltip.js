@@ -471,6 +471,7 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
     // TODO: Events?
 
     _buildTooltipMeta : function (layerMeta) {
+        console.log('_buildTooltipMeta layerMeta', layerMeta);
         return this.createTooltipMeta(layerMeta);
     },
 

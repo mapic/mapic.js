@@ -509,6 +509,8 @@ Wu.Model.Layer = Wu.Model.extend({
     },
 
     getTooltip : function () {
+
+        console.error('getTooltip', this);
         var json = this.store.tooltip;
         if (!json) return false;
         var meta = Wu.parse(json);
@@ -522,6 +524,7 @@ Wu.Model.Layer = Wu.Model.extend({
     },
 
     setTooltip : function (meta) {
+        console.error('setTooltip !!!!!!!!!!!!!!', meta);
         this.store.tooltip = JSON.stringify(meta);
         this.save('tooltip');
     },

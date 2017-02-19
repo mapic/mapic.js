@@ -28,7 +28,7 @@ Wu.App = Wu.Class.extend({
 		app.api.auth(app.authed);
 
 		// error logging with sentry
-		this._raven();
+		// this._raven();
 	},
 
 	_raven : function () {

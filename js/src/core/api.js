@@ -429,6 +429,11 @@ Wu.Api = Wu.Class.extend({
 		this.post(path, options, done);
 	},
 
+	fetchRasterDeformation : function (options, done) {
+		var path = '/v2/query/defo';
+		this.post(path, options, done);
+	},
+
 
 
 	// LOG

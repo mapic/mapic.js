@@ -684,6 +684,8 @@ Wu.MapPane = Wu.Pane.extend({
     // Create pop-up
     _addPopupContent : function (e, multiPopUp) {
 
+        console.log('_addPopupContent e:', e);
+
         if ( this._chart && this._chart._popup ) {          
             this.updatePopup(e, multiPopUp);
         } else {            

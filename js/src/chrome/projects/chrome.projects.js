@@ -363,7 +363,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		Wu.DomEvent.on(inviteSomeoneBtn, 'click', function (e) {
 			
 			// close fullscreen
-			this._fullscreen.close();
+			this._fullscreen && this._fullscreen.close();
 
 			// open invite fullscreen
 			var u = app.Chrome.Left._tabs.users;
@@ -404,7 +404,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		project.addInvites(access);
 
 		// close fullscreen
-		this._fullscreen.close();
+		this._fullscreen && this._fullscreen.close();
 
 	},
 
@@ -545,7 +545,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		Wu.DomEvent.on(inviteSomeoneBtn, 'click', function (e) {
 			
 			// close fullscreen
-			this._fullscreen.close();
+			this._fullscreen && this._fullscreen.close();
 
 			// open invite fullscreen
 			var u = app.Chrome.Left._tabs.users;
@@ -1211,7 +1211,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		this._activeProject = null;
 
 		// close fullscreen
-		this._fullscreen.close();
+		this._fullscreen && this._fullscreen.close();
 
 		app.log('deleted:project', {info : {project_name : project_name}});
 
@@ -1437,7 +1437,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 			// return error
 			if (error) {
 				this._creatingProject = false;
-				this._fullscreen.close();
+				this._fullscreen && this._fullscreen.close();
 				return app.feedback.setError({
 					title : 'There was an error creating new project!',
 					description : error.message
@@ -1454,7 +1454,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 			this._refreshContent();
 
 			// close fullscreen
-			this._fullscreen.close();
+			this._fullscreen && this._fullscreen.close();
 
 			// select project
 			project.selectProject();
@@ -1513,7 +1513,7 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		this._refreshContent();
 
 		// close fullscreen
-		this._fullscreen.close();
+		this._fullscreen && this._fullscreen.close();
 
 		// select project
 		project.selectProject();

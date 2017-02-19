@@ -532,6 +532,8 @@ Wu.VectorLayer = Wu.Model.Layer.extend({
 
             var data = Wu.parse(json);
 
+            console.log('AHASHDASH data', data);
+
             e.data = data;
             var event = e.originalEvent;
             this._event = {
@@ -541,6 +543,8 @@ Wu.VectorLayer = Wu.Model.Layer.extend({
 
             // open popup
             app.MapPane._addPopupContent(e);
+
+            console.log('popop e', e);
 
         });
     },

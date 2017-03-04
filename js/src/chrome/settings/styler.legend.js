@@ -4,6 +4,8 @@ Wu.Legend = Wu.Class.extend({
 
 	initialize : function (options) {
 
+		console.log('initLegends!', this);
+
 		this.options = options;
 
 		this.initLegends();

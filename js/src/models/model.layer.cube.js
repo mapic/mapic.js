@@ -180,7 +180,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         // set store
         this._setStore(store);
 
-        console.log('CUBE LAAYER _>', this);
+        // console.log('CUBE LAAYER _>', this);
     },
 
     _setStore : function (store) {
@@ -194,7 +194,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
     add : function (type) {
         this.addTo();
-        console.log('CUBE Add', this);
+        // console.log('CUBE Add', this);
     },
 
     addTo : function () {
@@ -209,7 +209,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         // ensure inited
         this.initLayer(function (err) {
 
-            console.log('_addTo, intilayer', err);
+            // console.log('_addTo, intilayer', err);
 
             var map = app._map;
 
@@ -310,25 +310,25 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     // fired when layer is added to map
     initLayer : function (done) {
 
-        console.log('initLayer 1');
+        // console.log('initLayer 1');
 
         if (this._inited) {
             done && done();
             return;
         }
-        console.log('initLayer 2');
+        // console.log('initLayer 2');
 
         // listen up
         this._listen();
-        console.log('initLayer 3');
+        // console.log('initLayer 3');
 
         // init cursor
         this._initCursor();
-        console.log('initLayer 4');
+        // console.log('initLayer 4');
 
         // init cache
         this._initCache();
-        console.log('initLayer 5');
+        // console.log('initLayer 5');
 
         // run async ops
         async.series([
@@ -341,7 +341,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
         ], function (err) {
 
-        console.log('initLayer 8', err);
+        // console.log('initLayer 8', err);
 
             // mark inited
             this._inited = true;
@@ -808,7 +808,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         // add cube id
         options.cube_id = this.getCubeId();
 
-        console.log('cube query:', options);
+        // console.log('cube query:', options);
 
         // query cube
         app.api.queryCube(options, done);
@@ -1019,7 +1019,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
        
         if (!dataset) return;
 
-        console.log('loaded:', dataset.idx);
+        // console.log('loaded:', dataset.idx);
 
         // mark cache loaded
         var cache = _.find(this._cache, {idx : dataset.idx});

@@ -256,7 +256,7 @@ Wu.MapPane = Wu.Pane.extend({
     },
 
     _onMove : function () {
-        console.log("_onMove");
+        // console.log("_onMove");
         var project = this._project || app.activeProject;
         // Wu.Mixin.Events.fire('projectChanged', {detail : {
         //     projectUuid : project.getUuid()
@@ -264,7 +264,7 @@ Wu.MapPane = Wu.Pane.extend({
     },
 
     _onZoom : function () {
-        console.log("_onZoom");
+        // console.log("_onZoom");
         var project = this._project || app.activeProject;
         // Wu.Mixin.Events.fire('projectChanged', {detail : {
         //     projectUuid : project.getUuid()
@@ -684,7 +684,7 @@ Wu.MapPane = Wu.Pane.extend({
     // Create pop-up
     _addPopupContent : function (e, multiPopUp) {
 
-        console.log('_addPopupContent e:', e);
+        // console.log('_addPopupContent e:', e);
 
         if ( this._chart && this._chart._popup ) {          
             this.updatePopup(e, multiPopUp);

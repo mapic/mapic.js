@@ -2791,7 +2791,7 @@ if (typeof window.console == "undefined") {
 // debug
 var overriddenStop =  Event.prototype.stopPropagation;
 Event.prototype.stopPropagation = function(){
-	console.error('stopping propagation!', arguments);
+	// console.error('stopping propagation!', arguments);
     this.isPropagationStopped = true;
     overriddenStop.apply(this, arguments);
 }

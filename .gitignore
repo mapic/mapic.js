@@ -6,6 +6,8 @@ css/style.css
 css/style.min.css
 *.css.map
 
+# portal specific images
+css/mapic_logo_inverted_blank.png
 
 # Dependency directory
 node_modules

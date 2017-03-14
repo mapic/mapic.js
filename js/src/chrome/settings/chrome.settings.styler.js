@@ -113,10 +113,6 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		this._carto = this._layer.getStyleJSON();
 
 		var meta = this._layer.getMeta();
-
-		console.log('meta ->', meta);
-		console.log('layer;', this._layer);
-
 		var rangeMax = 255;
 		var rangeMin = 0;
 
@@ -139,6 +135,9 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		};
 
 		this._rasterStyler = new Wu.RasterStyler(options);
+
+		// Init legend options
+		this._initLegendOptions();
 	},
 
 
@@ -420,13 +419,65 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 			var newLayerStyle = Wu.parse(newLayerJSON);
 
 			// catch errors
-			if (newLayerStyle.error) return console.error(newLayerStyle.error);
+			if (newLayerStyle && newLayerStyle.error) return console.error(newLayerStyle.error);
 
 			// update layer with new store.data
 			layer.updateStyle(newLayerStyle);
 
 			// save styleJSON to layer.style
 			layer.setStyling(styleJSON);
+
+			// todo: legends!
+
+			// update legend
+			if (this._legendStyler) {
+				console.error('styleJSON', styleJSON);
+				// var refresh = newLegend ? this._legend : false;
+				this._legendStyler.refreshLegend(JSON.stringify({
+  "enable": true,
+  "layerMeta": true,
+  "opacitySlider": true,
+  "layerName": "Akersvattn",
+  "point": {
+    "all": {
+      "color": {
+        "column": "mvel",
+        "value": [
+          "#ff0000",
+          "#ffff00",
+          "#00ff00",
+          "#00ffff",
+          "#0000ff"
+        ],
+        "minRange": 0,
+        "maxRange": 10
+      },
+      "opacity": {
+        "column": false,
+        "value": 1
+      },
+      "pointsize": {
+        "column": false,
+        "value": 0.4
+      },
+      "isOn": true
+    },
+    "target": []
+  },
+  "polygon": {
+    "all": {},
+    "target": []
+  },
+  "line": {
+    "all": {},
+    "target": []
+  },
+  "html": "",
+  "gradient": "<div class=\"info-legend-container\"><div class=\"info-legend-frame\"><div class=\"info-legend-val info-legend-min-val\">0</div><div class=\"info-legend-header\">Velocity in mm pr. year</div><div class=\"info-legend-val info-legend-max-val\">10</div><div class=\"info-legend-gradient-container\" style=\"background: -webkit-linear-gradient(left, #ff0000,#ffff00,#00ff00,#00ffff,#0000ff);background: -o-linear-gradient(right, #ff0000,#ffff00,#00ff00,#00ffff,#0000ff);background: -moz-linear-gradient(right, #ff0000,#ffff00,#00ff00,#00ffff,#0000ff);background: linear-gradient(to right, #ff0000,#ffff00,#00ff00,#00ffff,#0000ff);\"></div></div></div><div class=\"info-legend-gradient-bottomline\"><div id=\"legend-gradient-footer\" class=\"legend-gradient-footer\"><div class=\"legend-gradient-footer-top\">Deformation in satellite line of sight</div><div class=\"legend-gradient-footer-line-container\"><div class=\"legend-gradient-footer-line\"></div><div class=\"legend-gradient-footer-arrow-left\"></div><div class=\"legend-gradient-footer-arrow-right\"></div><div class=\"legend-gradient-footer-middle-line\"></div></div><div class=\"legend-gradient-footer-toward\">Towards satellite</div><div class=\"legend-gradient-footer-from\">Away from satellite</div></div></div>"
+}));
+			} else { 
+				console.log('no this._legendStyler for raster');
+			}
 
 		}.bind(this));
 	},
@@ -454,6 +505,7 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		// update legend
 		if (this._legendStyler) {
 			var refresh = newLegend ? this._legend : false;
+			console.log('update legend: ', refresh);
 			this._legendStyler.refreshLegend(refresh);
 		}
 

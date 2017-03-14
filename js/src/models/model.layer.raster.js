@@ -54,11 +54,9 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
         if (!this._added) return console.log('_mapClick, not added, returning');
         if (!this.isQueryable()) return console.log('_mapClick, not queryable, returning');
         var latlng = e.latlng;
-        console.log('_mapClick, latlng:', latlng);
 
         // check if within extent
         var extent = this.getExtent();
-        console.log('_mapClick extent', extent);
 
         var inside = this._checkInside(latlng, extent);
 
@@ -85,7 +83,6 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
     },
 
     _queryRaster : function (options) {
-        console.log('_queryRaster', options);
 
         var datasets = this.getRasterDeformationDatasets();
         var point = options.point;
@@ -99,8 +96,6 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
             point : point,
             layer_id : this.getLayerID(),
         }, function (err, results) {
-            console.log('err, results', err, results);
-
             if (err) return console.error(err);
 
             var deformation_results = this._parseRasterQueryResults(results);
@@ -123,27 +118,15 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
 
     _parseRasterQueryResults : function (data) {
 
-        console.log('_parseRasterQueryResults', data);
-
         var data = Wu.parse(data);
-
-         // output format should be thus:
-
-
         var parsed = {};
-
-
         var lines = data.query;
 
         lines.forEach(function (l) {
-
             var parsed_date = moment(l.date).format('YYYYMMDD')
             var value = (l.value - 32767) / 100;
-
             parsed[parsed_date] = value;
         });
-
-        console.log('pasred:', parsed);
 
         return parsed;
 

@@ -10,7 +10,7 @@ See [mapic/mapic](https://github.com/mapic/mapic) for installation instructions.
 ## Tests
 Enter running container and run `npm test` in `public/` folder:
 ```bash
-docker exec -it [domain]_engine_1 bash # replace `domain` with your domain or `localhost` 
+docker exec -it [domain]_engine_1 bash # replace `[domain]` with your domain or `localhost` 
 cd public
 npm test
 ```

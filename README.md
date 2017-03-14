@@ -8,11 +8,11 @@ Please see the [wiki](https://github.com/mapic/mapic.js/wiki) for more informati
 See [mapic/mapic](https://github.com/mapic/mapic) for installation instructions.
 
 ## Tests
-These commands must be run from _within_ the `domain_engine_1` container.
-
+Enter running container and run `npm test` in `public/` folder:
 ```bash
-# run tests
-docker exec -it localhost_engine_1 bash public/test/test.sh
+docker exec -it localhost_engine_1 bash
+cd public
+npm test
 ```
 
 ## Licence

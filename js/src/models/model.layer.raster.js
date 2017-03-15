@@ -128,6 +128,9 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
             layer_id : this.getLayerID(),
         }, function (err, results) {
             if (err) return console.error(err);
+            
+            // hide progress
+            app.ProgressBar.hideProgress();
 
             var deformation_results = this._parseRasterQueryResults(results);
 
@@ -142,6 +145,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
                 y : event.y
             };
 
+            // add popup
             app.MapPane._addPopupContent(e);
 
         }.bind(this));

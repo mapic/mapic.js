@@ -4,8 +4,6 @@ Wu.Legend = Wu.Class.extend({
 
 	initialize : function (options) {
 
-		console.log('initLegends!', this);
-
 		this.options = options;
 
 		this.initLegends();
@@ -19,7 +17,6 @@ Wu.Legend = Wu.Class.extend({
 
 	refreshLegend : function (legend) {
 		this.legendObj = legend ? Wu.parse(legend) : this.legendObj;
-		console.log('refreshLegend: this.legendObj', this.legendObj);
 		this.updateLegend();	
 	},
 
@@ -30,22 +27,14 @@ Wu.Legend = Wu.Class.extend({
 		// Creates legend object as JSON
 		this.oldLegend = this.legendObj;
 
-		console.error('whihc layer is this??', this.options.layer, this);
-
-		console.log('isDefo?', this.options.layer.isDefo());
-
 		// deformation raster
 		if (this.options.layer.isDefo()) {
 
 			this.legendObj = Wu.Tools.Legend.buildRasterDeformationLegend(styleJSON, this.options.layer, this.legendObj);
 
-			console.log('DEFO this.legendObj', this.legendObj);
-
 		} else {
 
 			this.legendObj = Wu.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, this.legendObj);
-
-			console.log('VECTOR this.legendObj', this.legendObj);
 
 		}
 
@@ -558,12 +547,12 @@ Wu.Tools.Legend = {
 
 	buildRasterDeformationLegend : function (json, layer, prev_legend) {
 
-		console.log('=====================');
-		console.log('buildRasterDeformationLegend');
-		console.log('json', json);
-		console.log('layer: ', layer);
-		console.log('legend:', prev_legend)
-		console.log('=====================');
+		// console.log('=====================');
+		// console.log('buildRasterDeformationLegend');
+		// console.log('json', json);
+		// console.log('layer: ', layer);
+		// console.log('legend:', prev_legend)
+		// console.log('=====================');
 
 		var standard = {
 		  "enable": true,

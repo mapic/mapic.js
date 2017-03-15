@@ -953,9 +953,6 @@ L.Control.Layermenu = Wu.Control.extend({
 
 		// mark editing
 		app.Chrome.Right.options.editingLayer = layer.getUuid();
-
-		console.log('enableLayer: ', layer);
-
 	},
 
 	// disable by layermenuItem

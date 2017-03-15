@@ -48,11 +48,39 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
         // hacky click event (cause no utf-grid)
         app._map.on('click', this._mapClick, this);
 
+        app._map.on('mousemove', _.throttle(this._onMapMousemove, 100), this);
+
+    },
+
+    // todo: this is expensive! 
+    _onMapMousemove : function (e) {
+        if (!this._added) return;
+        if (!this.isQueryable()) return;
+    
+        // check if within extent
+        var extent = this.getExtent();
+        var inside = this._checkInside(e.latlng, extent);
+        
+        // return if correct
+        if (inside && this._cursorInside) return;
+        if (!inside && !this._cursorInside) return;
+
+        if (inside) {
+
+            // set crosshair
+            app._map._controlContainer.style.cursor = 'crosshair';
+        } else {
+
+            // set pointer
+            app._map._controlContainer.style.cursor = 'pointer';
+        }
+
+        this._cursorInside = inside;
     },
 
     _mapClick : function (e) {
-        if (!this._added) return console.log('_mapClick, not added, returning');
-        if (!this.isQueryable()) return console.log('_mapClick, not queryable, returning');
+        if (!this._added) return;
+        if (!this.isQueryable()) return;
         var latlng = e.latlng;
 
         // check if within extent
@@ -60,7 +88,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
 
         var inside = this._checkInside(latlng, extent);
 
-        if (!inside) return console.log('_mapClick, not inside, returning');
+        if (!inside) return;
 
         // click was inside raster data
         this._queryRaster({
@@ -89,6 +117,9 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
         var e = options.e;
 
         if (!datasets) return console.log('no raster datasets to query!');
+
+        // set progress
+        app.ProgressBar.timedProgress(3000)
 
         // return;
         app.api.fetchRasterDeformation({
@@ -183,8 +214,6 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
 
     createPopupSettings : function (defo) {
 
-        console.log('createPopupSettings defo', defo);
-
         var p = {
             title : "",
             description : false,
@@ -207,276 +236,10 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
         this.setTooltip(p);
 
 
-        // {
-        //   "title": "",
-        //   "description": false,
-        //   "timeSeries": {
-        //     "20130611": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20130622": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20130703": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20130714": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20130725": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20130805": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20130816": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20130827": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20130907": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20130918": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20130929": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20131010": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20131021": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20131101": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20140620": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20140701": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20140712": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20140723": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20140803": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20140814": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20140825": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20140905": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20141008": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "20141019": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "enable": true
-        //   },
-        //   "metaFields": {
-        //     "20130611": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20130622": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20130703": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20130714": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20130725": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20130805": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20130816": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20130827": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20130907": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20130918": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20130929": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20131010": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20131021": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20131101": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20140620": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20140701": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20140712": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20140723": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20140803": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20140814": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20140825": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20140905": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20141008": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "20141019": {
-        //       "title": false,
-        //       "on": false
-        //     },
-        //     "gid": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "code": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "lon": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "lat": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "height": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "demerror": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "r": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "g": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "b": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "coherence": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "mvel": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "adisp": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "dtotal": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "d12mnd": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "d3mnd": {
-        //       "title": false,
-        //       "on": true
-        //     },
-        //     "d1mnd": {
-        //       "title": false,
-        //       "on": true
-        //     }
-        //   }
-        // }
 
     },
 
     setTooltip : function (meta) {
-        console.error('setTooltip !!!!!!!!!!!!!!', meta);
         this.store.tooltip = JSON.stringify(meta);
         // this.save('tooltip');
     },
@@ -486,13 +249,11 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
         // only for deformation raster
         if (this.isDefo()) {
        
-            console.error('getTooltip defo raster', this);
             var json = this.store.tooltip;
             if (!json) return false;
             var meta = Wu.parse(json);
             return meta;
        
-
         } else {
 
             // normal
@@ -537,7 +298,6 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
     },
 
     _layerClick : function (e) {
-        console.log('raste rlayer click', e);
     },
 
     _getLayerUuid : function () {
@@ -618,7 +378,6 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
     },
 
     downloadLayer : function () {
-        console.log('raster downloadLayer');
     },
 
     isRaster : function () {

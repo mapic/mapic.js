@@ -11,8 +11,6 @@ Wu.Control.Chart = Wu.Control.extend({
 		// If we are sampling with polygon (draw)
 		if ( multiPopUp ) {
 
-			console.log('chart 1');
-
 			// Get pop-up settings
 			var _layer = this._getWuLayerFromPostGISLayer(multiPopUp.layer_id);
 			this.popupSettings = _layer.getTooltip();
@@ -22,7 +20,6 @@ Wu.Control.Chart = Wu.Control.extend({
 
 		// csv 
 		} else if (this.isCSV()) {
-			console.log('chart 2');
 
 			// get layer
 			var layer = options.e.layer;
@@ -35,7 +32,6 @@ Wu.Control.Chart = Wu.Control.extend({
 
 		// If we are sampling from point (click)
 		} else {
-			console.log('chart 3');
 
 			// catch error
 			if (!e) return console.error('no "e" provided?');
@@ -47,22 +43,15 @@ Wu.Control.Chart = Wu.Control.extend({
 			var content = this.singlePopUp(e);
 		}
 
-		console.log('chart 10');
-
 		// Return if disabled
 		if ( typeof this.popupSettings.enable == 'undefined' ) this.popupSettings.enable = true;
-		console.log('chart 11');
 		if ( !this.popupSettings.enable ) return;
-		console.log('chart 12');
 
 		// clear old popup
 		this._popup = null;
 
 		// return if no content
 		if (!content) return;	
-
-		console.log('chart 13');
-
 
 		// Create empty		
 		if (!this._popupContent) this._popupContent = '';
@@ -187,8 +176,6 @@ Wu.Control.Chart = Wu.Control.extend({
 	// Open pop-up
 	openPopup : function (e, multiPopUp) {
 
-		console.log('openPopup 1', e, multiPopUp);
-	
 		if ( this._popup ) return;
 
 		var popup   = this._createPopup(e);
@@ -385,17 +372,11 @@ Wu.Control.Chart = Wu.Control.extend({
 	// Create single point C3 pop-up content
 	singlePopUp : function (e) {
 
-		console.log('singlePopUp e', e);
-
 		// check if timeseries
 		var timeSeries = (this.popupSettings.timeSeries && this.popupSettings.timeSeries.enable == true );
 
-		console.log('singlePopUp times', timeSeries);
-
 		// create content, as timeseries or normal
 		var content = timeSeries ? this.singleC3PopUp(e) : this._createPopupContent(e);
-
-		console.log('singlePopUp content', content )
 
 		return content;
 	},
@@ -451,8 +432,6 @@ Wu.Control.Chart = Wu.Control.extend({
 
 
 	singleC3PopUp : function (e) {
-
-		console.log('singleC3PopUp e, this:', e, this);
 
 		var c3Obj = {
 			data : e.data,

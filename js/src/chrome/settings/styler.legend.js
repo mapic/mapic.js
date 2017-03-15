@@ -18,7 +18,8 @@ Wu.Legend = Wu.Class.extend({
 	},
 
 	refreshLegend : function (legend) {
-		this.legendObj = legend ? JSON.parse(legend) : this.legendObj;
+		this.legendObj = legend ? Wu.parse(legend) : this.legendObj;
+		console.log('refreshLegend: this.legendObj', this.legendObj);
 		this.updateLegend();	
 	},
 
@@ -28,7 +29,25 @@ Wu.Legend = Wu.Class.extend({
 
 		// Creates legend object as JSON
 		this.oldLegend = this.legendObj;
-		this.legendObj = Wu.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, this.legendObj);
+
+		console.error('whihc layer is this??', this.options.layer, this);
+
+		console.log('isDefo?', this.options.layer.isDefo());
+
+		// deformation raster
+		if (this.options.layer.isDefo()) {
+
+			this.legendObj = Wu.Tools.Legend.buildRasterDeformationLegend(styleJSON, this.options.layer, this.legendObj);
+
+			console.log('DEFO this.legendObj', this.legendObj);
+
+		} else {
+
+			this.legendObj = Wu.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, this.legendObj);
+
+			console.log('VECTOR this.legendObj', this.legendObj);
+
+		}
 
 		// Rolls out the HTML
 		this.createLegendStyler();
@@ -534,6 +553,74 @@ Wu.Legend = Wu.Class.extend({
 
 
 Wu.Tools.Legend = {
+
+
+
+	buildRasterDeformationLegend : function (json, layer, prev_legend) {
+
+		console.log('=====================');
+		console.log('buildRasterDeformationLegend');
+		console.log('json', json);
+		console.log('layer: ', layer);
+		console.log('legend:', prev_legend)
+		console.log('=====================');
+
+		var standard = {
+		  "enable": true,
+		  "layerMeta": false,
+		  "opacitySlider": false,
+		  "layerName": layer.getName(),
+		  "point": {
+		    "all": {
+		      "color": {
+		        "column": "mvel",
+		        "value": [
+		     		"#0000ff",
+					"#00ffff",
+					"#00ff00",
+					"#ffff00",
+					"#ff0000",
+		        ],
+		        "minRange": -10,
+		        "maxRange": 10
+		      },
+		      "opacity": {
+		        "column": false,
+		        "value": 1
+		      },
+		      "pointsize": {
+		        "column": false,
+		        "value": 5
+		      },
+		      "isOn": true
+		    },
+		    "target": []
+		  },
+		  "polygon": {
+		    "all": {},
+		    "target": []
+		  },
+		  "line": {
+		    "all": {},
+		    "target": []
+		  },
+		  "html": "",
+		  "gradient": "<div class=\"info-legend-container\"><div class=\"info-legend-frame\"><div class=\"info-legend-val info-legend-min-val\">0.6</div><div class=\"info-legend-header\">coherence</div><div class=\"info-legend-val info-legend-max-val\">1</div><div class=\"info-legend-gradient-container\" style=\"background: -webkit-linear-gradient(left, #f0f9e8,#bae4bc,#7bccc4,#43a2ca,#0868ac);background: -o-linear-gradient(right, #f0f9e8,#bae4bc,#7bccc4,#43a2ca,#0868ac);background: -moz-linear-gradient(right, #f0f9e8,#bae4bc,#7bccc4,#43a2ca,#0868ac);background: linear-gradient(to right, #f0f9e8,#bae4bc,#7bccc4,#43a2ca,#0868ac);\"></div></div></div>"
+		}
+
+		return standard;
+
+	},
+
+
+
+
+
+
+
+
+
+
 
 	// ┌┐ ┬ ┬┬┬  ┌┬┐  ┬  ┌─┐┌─┐┌─┐┌┐┌┌┬┐  ┌─┐┌┐  ┬┌─┐┌─┐┌┬┐
 	// ├┴┐│ │││   ││  │  ├┤ │ ┬├┤ │││ ││  │ │├┴┐ │├┤ │   │ 

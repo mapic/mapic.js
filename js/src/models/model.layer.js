@@ -734,6 +734,10 @@ Wu.Model.Layer = Wu.Model.extend({
 
     getDisplayNames : function () {},
 
+    isDefo : function () {
+        return false;
+    },
+
 });
 
 

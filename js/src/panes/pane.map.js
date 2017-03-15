@@ -125,8 +125,6 @@ Wu.MapPane = Wu.Pane.extend({
             fadeAnimation : false,
             // zoomAnimation : false,
 
-            
-
             // exp
             // zoomSnap : 0,
             // zoomDelta : 2,
@@ -144,31 +142,6 @@ Wu.MapPane = Wu.Pane.extend({
 
         // add attribution
         this._addAttribution(map);
-
-
-        // todo: remove this?
-        // // global map events
-        // map.on('zoomstart', function (e) {
-
-        //     map.eachLayer(function (layer) {
-        //         if (!layer.options) return;
-
-        //         var layerUuid = layer.options.layerUuid;
-
-        //         if (!layerUuid) return;
-
-        //         // get wu layer
-        //         var l = app.activeProject.getPostGISLayer(layerUuid);
-        
-        //         if (!l) return ;
-                
-        //         l._invalidateTiles();
-        //     });
-
-        //     // send invalidate to pile
-        //     this._invalidateTiles();
-
-        // }, this);
 
         map.on('moveend', function () {
             app.log('moved:map');
@@ -256,7 +229,6 @@ Wu.MapPane = Wu.Pane.extend({
     },
 
     _onMove : function () {
-        console.log("_onMove");
         var project = this._project || app.activeProject;
         // Wu.Mixin.Events.fire('projectChanged', {detail : {
         //     projectUuid : project.getUuid()
@@ -264,35 +236,11 @@ Wu.MapPane = Wu.Pane.extend({
     },
 
     _onZoom : function () {
-        console.log("_onZoom");
         var project = this._project || app.activeProject;
         // Wu.Mixin.Events.fire('projectChanged', {detail : {
         //     projectUuid : project.getUuid()
         // }});
     },
-
-    // // fired on window resize
-    // // THIS FUNCTION IS NEVER FIRED, IS IT???
-    // resizeEvent : function (d) {
-    //     console.error('deprecated??');
-    //     this._updateWidth(d);
-    // },
-    
-    // // THIS FUNCTION IS NEVER FIRED, IS IT???
-    // _updateWidth : function (d) {
-    //     console.error('deprecated??');
-    //     var map = this._map;
-    //     if (!map || !d) return;
-        
-    //     // set width
-    //     var w = d.width - parseInt(map._container.offsetLeft) + 'px';
-    //     map._container.style.width = w;
-        
-    //     // refresh map size
-    //     setTimeout(function() {
-    //         if (map) map.reframe();
-    //     }, 300); // time with css
-    // },
     
     getZIndexControls : function () {
         var z = {
@@ -683,8 +631,6 @@ Wu.MapPane = Wu.Pane.extend({
 
     // Create pop-up
     _addPopupContent : function (e, multiPopUp) {
-
-        console.log('_addPopupContent e:', e);
 
         if ( this._chart && this._chart._popup ) {          
             this.updatePopup(e, multiPopUp);

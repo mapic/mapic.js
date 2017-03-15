@@ -1703,7 +1703,7 @@ function closure ( target, options ){
 			retour[i] = options.format.to( scope_Values[i] );
 		}
 
-		console.log('valueGet()', retour, options);
+		// console.log('valueGet()', retour, options);
 
 
 		return inSliderOrder( retour );
@@ -1813,7 +1813,7 @@ function closure ( target, options ){
 	// Updateable: margin, limit, step, range, animate, snap
 	function updateOptions ( optionsToUpdate, dontInvalidate) {
 
-		console.error('updateOptions');
+		// console.error('updateOptions');
 
 		var v = valueGet(), i, newOptions = testOptions({
 			start: [0, 0],

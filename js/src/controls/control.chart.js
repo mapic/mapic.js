@@ -786,12 +786,20 @@ Wu.Control.Chart = Wu.Control.extend({
 
 		var data = c3Obj.d3array;
 
+		console.log('---> data', data);
+
 		// Ticks
 		var t = data.ticks;
 
 		// X's and Why's
 		var x = data.x;
 		var y = data.y;
+
+		var y = _.filter(y, function (i) {
+			return parseFloat(i) > -9999;
+		});
+
+		
 
 		// Get first TICK date and the first X date
 		var firstTickDate = t[0];

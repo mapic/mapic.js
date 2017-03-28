@@ -768,7 +768,7 @@ Wu.Control.Chart = Wu.Control.extend({
 
 
 
-			if ( _val ) {
+			if ( _val && _val != -9999) {
 				var metaPair = Wu.DomUtil.create('div', 'tableRow c3-header-metapair metapair-' + c, container);
 				var metaKey = Wu.DomUtil.create('div', 'tableCell c3-header-metakey', metaPair, title);
 				var metaVal = Wu.DomUtil.create('div', 'tableCell c3-header-metaval', metaPair, _val);
@@ -1022,8 +1022,16 @@ Wu.Control.Chart = Wu.Control.extend({
 
 	_addChartEvents : function (div) {
 
+		// create throttled function
+		this._throttledChartMousemove = _.throttle(this._onChartMousemove, 50);
+
 		// mousewheel zoom on chart
-		Wu.DomEvent.on(div, 'mousewheel', _.throttle(this._onChartMousemove, 50), this); // prob leaking
+		Wu.DomEvent.on(div, 'mousewheel', this._throttleChartMousemove, this); // prob leaking
+	},
+
+	_throttleChartMousemove : function (e) {
+		L.DomEvent.stop(e); // stop other scrolling
+		this._throttledChartMousemove(e);
 	},
 
 	_onChartMousemove : function (e) {

@@ -22,21 +22,17 @@ Wu.Legend = Wu.Class.extend({
 
 	updateLegend : function () {
 
+		// get style
 		var styleJSON = this.options.carto;
 
 		// Creates legend object as JSON
 		this.oldLegend = this.legendObj;
 
-		// deformation raster
-		if (this.options.layer.isDefo()) {
+		// get correct legend builder function
+		var legendFn = this.options.layer.isDefo() ? Wu.Tools.Legend.buildRasterDeformationLegend : Wu.Tools.Legend.buildLegendObject;
 
-			this.legendObj = Wu.Tools.Legend.buildRasterDeformationLegend(styleJSON, this.options.layer, this.legendObj);
-
-		} else {
-
-			this.legendObj = Wu.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, this.legendObj);
-
-		}
+		// create legend objecct
+		this.legendObj = legendFn(styleJSON, this.options.layer, this.legendObj);
 
 		// Rolls out the HTML
 		this.createLegendStyler();
@@ -44,7 +40,7 @@ Wu.Legend = Wu.Class.extend({
 		// Saves the changes (object)
 		this.saveLegend();
 
-
+		// fire event
 		var layerID = this.options.layer.options.uuid;
 		Wu.Mixin.Events.fire('updateLegend', { detail : { layerUuid : layerID }}); 
 
@@ -74,6 +70,7 @@ Wu.Legend = Wu.Class.extend({
 		// Where the legends are + the switches for opacity slider and legend meta
 		this._legendContent = Wu.DomUtil.create('div', 'legend-content', this._legendSection);
 
+		// get style & legends
 		var styleJSON = this.options.carto;
 		var legends = this.options.layer.store.legends;
 		var oldLegend = legends ? JSON.parse(legends) : false;
@@ -84,27 +81,20 @@ Wu.Legend = Wu.Class.extend({
 		// Create legend styler
 		this.createLegendStyler();
 
-
 	},
 
 	// Clear content when updating
 	clearLegendContent : function () {
-	
 		this._legendTopLineWrapper.innerHTML = '';
 		this._legendContent.innerHTML = '';
-
 	},
 
 	// Create the basic switches, and run the options to create legend for
 	// lines, polygons and points.
 	createLegendStyler : function () {
 
+		// clear
 		this.clearLegendContent();
-
-
-		// The top section 
-		// The top section 
-		// The top section 
 
 		// The top section hold the "Legend" title + on/off switch
 		// This part should always be there
@@ -141,7 +131,7 @@ Wu.Legend = Wu.Class.extend({
 
 
 		// If switch is off, do not roll out the rest of the options.
-		if ( !_isOn ) return;
+		if ( !_isOn ) return console.error('legend done cause !_isOn');
 
 
 		// Legend meta
@@ -487,6 +477,7 @@ Wu.Legend = Wu.Class.extend({
 	},
 
 	_switchEnableLegend : function  (e) {
+		console.log('_switchEnableLegend', e);
 		if ( this.legendObj.enable ) {
 			// Wu.DomUtil.addClass(this._legendContent, 'displayNone');
 			this.legendObj.enable = false;

@@ -524,7 +524,6 @@ Wu.Model.Layer = Wu.Model.extend({
     },
 
     setTooltip : function (meta) {
-        console.error('setTooltip !!!!!!!!!!!!!!', meta);
         this.store.tooltip = JSON.stringify(meta);
         this.save('tooltip');
     },
@@ -543,7 +542,9 @@ Wu.Model.Layer = Wu.Model.extend({
     },
     // todo: remove
     setStyling : function (styleJSON) {
-        this.store.style = JSON.stringify(styleJSON);
+        var style = _.isObject(styleJSON) ? JSON.stringify(styleJSON) : styleJSON;
+        // this.store.style = JSON.stringify(styleJSON);
+        this.store.style = style;
         this.save('style');
     },
     

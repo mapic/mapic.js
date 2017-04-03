@@ -31,6 +31,7 @@ Wu.RasterStyler = Wu.Class.extend({
 		// Shorten
 		this.stops = this.styleJSON.stops;
 		this.range = this.styleJSON.range;
+		this.scale = this.styleJSON.scale;
 
 		// Create dom
 		this._initContainer();
@@ -594,8 +595,7 @@ Wu.RasterStyler = Wu.Class.extend({
 	},	
 
 	_renderStopList : function () {
-
-		if ( !this.viewStoplist ) return;
+		if (!this.viewStoplist) return;
 		
 		this._stopListContainer.innerHTML = '';
 		var tabIndex = 100;
@@ -757,29 +757,76 @@ Wu.RasterStyler = Wu.Class.extend({
 
 		// Add line for adjusting range
 		var rangeWrapper = Wu.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
-		
-		var rangeTitle = Wu.DomUtil.create('div', 'raster-styler-range-title', rangeWrapper, 'Range:');
-
+		var rangeTitle = Wu.DomUtil.create('div', 'raster-styler-range-title', rangeWrapper, 'Data range:');
 		var rangeMinWrapper = Wu.DomUtil.create('div', 'raster-styler-range-min-wrapper', rangeWrapper);
 		var rangeMinDescr   = Wu.DomUtil.create('div', 'stop-color', rangeMinWrapper, 'min');
 		var rangeMinInput   = Wu.DomUtil.create('input', 'raster-styler-range-min stop-color', rangeMinWrapper);
-
 		var rangeMaxWrapper = Wu.DomUtil.create('div', 'raster-styler-range-max-wrapper', rangeWrapper);
 		var rangeMaxDescr   = Wu.DomUtil.create('div', 'stop-color', rangeMaxWrapper, 'max');
 		var rangeMaxInput   = Wu.DomUtil.create('input', 'raster-styler-range-max stop-color', rangeMaxWrapper);
 
 		rangeMinInput.value = this.range.min;
 		rangeMaxInput.value = this.range.max;
-
 		Wu.DomEvent.on(rangeMinInput, 'blur', this._saveRange, this);
 		Wu.DomEvent.on(rangeMaxInput, 'blur', this._saveRange, this);
-
 		rangeMaxInput.onkeypress = Wu.Tools.forceNumeric;
 		rangeMinInput.onkeypress = Wu.Tools.forceNumeric;
-
 		this.rangeMinInput = rangeMinInput;
 		this.rangeMaxInput = rangeMaxInput;
 
+
+		// add line for setting min/max of scale
+		var scaleWrapper = Wu.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
+		var scaleTitle = Wu.DomUtil.create('div', 'raster-styler-range-title', scaleWrapper, 'Scale range:');
+		var scaleMinWrapper = Wu.DomUtil.create('div', 'raster-styler-range-min-wrapper', scaleWrapper);
+		var scaleMinDescr   = Wu.DomUtil.create('div', 'stop-color', scaleMinWrapper, 'min');
+		var scaleMinInput   = Wu.DomUtil.create('input', 'raster-styler-range-min stop-color', scaleMinWrapper);
+		var scaleMaxWrapper = Wu.DomUtil.create('div', 'raster-styler-range-max-wrapper', scaleWrapper);
+		var scaleMaxDescr   = Wu.DomUtil.create('div', 'stop-color', scaleMaxWrapper, 'max');
+		var scaleMaxInput   = Wu.DomUtil.create('input', 'raster-styler-range-max stop-color', scaleMaxWrapper);
+		this.scaleMinInput = scaleMinInput;
+		this.scaleMaxInput = scaleMaxInput;
+
+		this.scale = this.styleJSON.scale || {
+			min : -10,
+			max : 10
+		};
+		scaleMinInput.value = this.scale.min;
+		scaleMaxInput.value = this.scale.max;
+		Wu.DomEvent.on(scaleMinInput, 'blur', this._saveScale, this);
+		Wu.DomEvent.on(scaleMaxInput, 'blur', this._saveScale, this);
+		scaleMaxInput.onkeypress = Wu.Tools.forceNumeric;
+		scaleMinInput.onkeypress = Wu.Tools.forceNumeric;
+
+
+		// add line for setting precision
+		var precisionWrapper 	= Wu.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
+		var precisionTitle 		= Wu.DomUtil.create('div', 'raster-styler-range-title', precisionWrapper, 'Precision:');
+		var precisionMinWrapper = Wu.DomUtil.create('div', 'raster-styler-range-min-wrapper', precisionWrapper);
+		var precisionMinDescr   = Wu.DomUtil.create('div', 'stop-color', precisionMinWrapper, 'factor');
+		var precisionMinInput   = Wu.DomUtil.create('input', 'raster-styler-range-min stop-color', precisionMinWrapper);
+		this.precisionInput = precisionMinInput;
+
+		this.precision = this.styleJSON.precision || 10;
+		precisionMinInput.value = this.precision;
+		Wu.DomEvent.on(precisionMinInput, 'blur', this._savePrecision, this);
+		precisionMinInput.onkeypress = Wu.Tools.forceNumeric;
+
+	},
+
+	_saveScale : function () {
+		console.log('_saveScale', this);
+		this.styleJSON.scale = {
+			min : parseInt(this.scaleMinInput.value),
+			max : parseInt(this.scaleMaxInput.value)
+		}
+		this.options.layer.setStyleJSON(this.styleJSON);
+	},
+
+	_savePrecision : function () {
+		console.log('_savePrecision', this);
+		this.styleJSON.precision = parseInt(this.precisionInput.value);
+		this.options.layer.setStyleJSON(this.styleJSON);
 	},
 
 	_saveRange : function () {

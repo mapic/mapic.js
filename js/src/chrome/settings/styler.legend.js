@@ -9,9 +9,12 @@ Wu.Legend = Wu.Class.extend({
 		this.initLegends();
 
 		// Set satellite view option
-		if ( app.options.customizations && app.options.customizations.satelliteView ) {
-			this.satelliteView = true;
-		}
+		// if ( app.options.customizations && app.options.customizations.satelliteView ) {
+		// 	this.satelliteView = true;
+		// }
+
+		// set sat view option
+		this.satelliteView = (app.options.customizations && app.options.customizations.satelliteView);
 
 	},
 
@@ -29,10 +32,13 @@ Wu.Legend = Wu.Class.extend({
 		this.oldLegend = this.legendObj;
 
 		// get correct legend builder function
-		var legendFn = this.options.layer.isDefo() ? Wu.Tools.Legend.buildRasterDeformationLegend : Wu.Tools.Legend.buildLegendObject;
-
-		// create legend objecct
-		this.legendObj = legendFn(styleJSON, this.options.layer, this.legendObj);
+		if (this.options.layer.isDefo()) {
+			// create legend objecct
+			this.legendObj = Wu.Tools.Legend.buildRasterDeformationLegend(styleJSON, this.options.layer, this.legendObj);
+		} else {
+			// create legend objecct
+			this.legendObj = Wu.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, this.legendObj);
+		}
 
 		// Rolls out the HTML
 		this.createLegendStyler();
@@ -47,9 +53,7 @@ Wu.Legend = Wu.Class.extend({
 	},
 
 	saveLegend : function () {
-
 		this.options.layer.setLegends( this.legendObj );
-
 	},
 
 
@@ -77,6 +81,8 @@ Wu.Legend = Wu.Class.extend({
 
 		// Creates legend object as JSON
 		this.legendObj = Wu.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, oldLegend);
+
+		console.log('this.legendObj', this.legendObj);
 
 		// Create legend styler
 		this.createLegendStyler();
@@ -191,8 +197,6 @@ Wu.Legend = Wu.Class.extend({
 
 		// If opacity slider option does not exist, see if we have it stored
 		if ( typeof this.legendObj.opacitySlider == 'undefined' ) {
-			// this.legendObj.opacitySlider = this.oldLegendObj.opacitySlider;
-
 			if ( this.oldLegendObj ) {
 				this.legendObj.opacitySlider = this.oldLegendObj.opacitySlider;
 			} else {
@@ -235,15 +239,11 @@ Wu.Legend = Wu.Class.extend({
 
 	},
 
-
 	createLegendSettingsFromArray : function (legendArray) {
-
 		legendArray.forEach(function (l) {
 			l.gradient ? this.gradientLegendSetting(l) : this.eachLegendSetting(l);
 		}.bind(this));
-
 	},
-
 
 	createLegendHTMLFromArray : function (legendArray) {
 		var legendHTML = '';
@@ -252,7 +252,7 @@ Wu.Legend = Wu.Class.extend({
 		legendArray.forEach(function (l) {
 			
 			if ( l.gradient ) {
-				gradientHTML += Wu.Tools.Legend.gradientLegendHTML(l, this.satelliteView);
+				gradientHTML += Wu.Tools.Legend.gradientLegendHTML(l, this);
 			} else {
 				legendHTML += Wu.Tools.Legend.eachLegendHTML(l, this.satelliteView);
 			}
@@ -534,16 +534,14 @@ Wu.Legend = Wu.Class.extend({
 
 Wu.Tools.Legend = {
 
-
-
 	buildRasterDeformationLegend : function (json, layer, prev_legend) {
 
-		// console.log('=====================');
-		// console.log('buildRasterDeformationLegend');
-		// console.log('json', json);
-		// console.log('layer: ', layer);
-		// console.log('legend:', prev_legend)
-		// console.log('=====================');
+		console.log('buildRasterDeformationLegend', arguments);
+
+		var scaleMin = (json.scale && _.isNumber(json.scale.min)) ? json.scale.min : -10;
+		var scaleMax = (json.scale && _.isNumber(json.scale.max)) ? json.scale.max : 10;
+
+		var legendTitle = (json.legendScaleTitle && _.isString(json.scale.legendScaleTitle)) ? json.scale.legendScaleTitle : '';
 
 		var standard = {
 		  "enable": true,
@@ -561,8 +559,8 @@ Wu.Tools.Legend = {
 					"#ffff00",
 					"#ff0000",
 		        ],
-		        "minRange": -10,
-		        "maxRange": 10
+		        "minRange" : scaleMin,
+		        "maxRange" : scaleMax,
 		      },
 		      "opacity": {
 		        "column": false,
@@ -614,7 +612,7 @@ Wu.Tools.Legend = {
 
 		var point 	= styleJSON.point;
 		var line 	= styleJSON.line;
-		var polygon 	= styleJSON.polygon;
+		var polygon = styleJSON.polygon;
 
 		this.legendObj = oldLegend;
 
@@ -1617,13 +1615,23 @@ Wu.Tools.Legend = {
 
 
 
-	gradientLegendHTML : function (options, satelliteView) {
+	gradientLegendHTML : function (options, stylerObject) {
 		var gradientStyle = options.style;
 		var object = options.object;
 		var minVal = options.gradient.minVal;
 		var maxVal = options.gradient.maxVal;
 		var bline = options.gradient.bline;
 		var gradientName = object.name ? object.name : bline;
+		var satelliteView = stylerObject.satelliteView;
+		var layer = stylerObject.options.layer;
+
+		console.log('gradient this ->', stylerObject, layer);
+
+		var gradientName = layer.getStyleJSON().legendScaleTitle;
+
+		console.log('gradientName -->>', gradientName, this);
+
+
 
 		// HTML PART
 		// HTML PART
@@ -1692,3 +1700,81 @@ Wu.Tools.Legend = {
 
 	}
 };
+
+
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+
+
+
+Wu.Legend.Raster = Wu.Legend.extend({
+
+	
+});
+
+
+
+
+
+
+
+

@@ -2957,4 +2957,8 @@ span.mask-item-value {
     visibility: hidden;
 }
 
-
+.legend-title-input {
+    width: 200px !important;
+    text-align: left !important;
+    padding-left: 5px !important;
+}

@@ -812,6 +812,20 @@ Wu.RasterStyler = Wu.Class.extend({
 		Wu.DomEvent.on(precisionMinInput, 'blur', this._savePrecision, this);
 		precisionMinInput.onkeypress = Wu.Tools.forceNumeric;
 
+
+		// add line for setting legend scale title
+		var legendScaleTitleWrapper 	= Wu.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
+		var legendScaleTitleTitle 		= Wu.DomUtil.create('div', 'raster-styler-range-title', legendScaleTitleWrapper, 'Legend scale title:');
+		var legendScaleTitleMinWrapper = Wu.DomUtil.create('div', 'raster-styler-range-min-wrapper', legendScaleTitleWrapper);
+		var legendScaleTitleMinDescr   = Wu.DomUtil.create('div', 'stop-color', legendScaleTitleMinWrapper, 'title');
+		var legendScaleTitleInput   = Wu.DomUtil.create('input', 'raster-styler-range-min stop-color legend-title-input', legendScaleTitleMinWrapper);
+		this.legendScaleTitleInput = legendScaleTitleInput;
+
+		this.legendScaleTitle = this.styleJSON.legendScaleTitle || 'mvel';
+		legendScaleTitleInput.value = this.legendScaleTitle;
+		Wu.DomEvent.on(legendScaleTitleInput, 'blur', this._saveLegendScaleTitle, this);
+		// precisionMinInput.onkeypress = Wu.Tools.forceNumeric;
+
 	},
 
 	_saveScale : function () {
@@ -826,6 +840,12 @@ Wu.RasterStyler = Wu.Class.extend({
 	_savePrecision : function () {
 		console.log('_savePrecision', this);
 		this.styleJSON.precision = parseInt(this.precisionInput.value);
+		this.options.layer.setStyleJSON(this.styleJSON);
+	},
+
+	_saveLegendScaleTitle : function () {
+		console.log('_saveLegendScaleTitle', this);
+		this.styleJSON.legendScaleTitle = this.legendScaleTitleInput.value;
 		this.options.layer.setStyleJSON(this.styleJSON);
 	},
 

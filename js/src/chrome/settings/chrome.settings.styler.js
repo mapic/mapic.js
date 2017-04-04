@@ -137,7 +137,8 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		this._rasterStyler = new Wu.RasterStyler(options);
 
 		// Init legend options
-		this._initLegendOptions();
+		// this._initLegendOptions();
+		this._initRasterLegendOptions();
 	},
 
 
@@ -159,6 +160,21 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		this._polygonStyler = new Wu.Styler.Polygon(options);
 		this._lineStyler = new Wu.Styler.Line(options);
 	},
+
+	_initRasterLegendOptions : function () {
+
+		var legendOptions = {			
+			layer     : this._layer,
+			carto     : this._carto,
+			globesar  : this.globesar, 		// todo: remove client name, make truly customizable
+			container : this._legendWrapper
+		};
+
+		this._legendStyler = new Wu.Legend.Raster(legendOptions);
+
+		Wu.DomUtil.removeClass(this._legendStyler._legensOuter, 'displayNone');		
+	},
+
 
 	_initLegendOptions : function () {
 

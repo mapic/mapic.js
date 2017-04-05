@@ -538,11 +538,29 @@ Wu.Tools.Legend = {
 
 		console.log('buildRasterDeformationLegend', arguments);
 
+		// get scale, title
 		var scaleMin = (json.scale && _.isNumber(json.scale.min)) ? json.scale.min : -10;
 		var scaleMax = (json.scale && _.isNumber(json.scale.max)) ? json.scale.max : 10;
+		var legendTitle = (json.legendScaleTitle && _.isString(json.legendScaleTitle)) ? json.legendScaleTitle : '';
 
-		var legendTitle = (json.legendScaleTitle && _.isString(json.scale.legendScaleTitle)) ? json.scale.legendScaleTitle : '';
+		// get colors
+		var stops = json.stops;
+		var colorArray = [];
+		_.each(json.stops, function (s) {
+			var c = 'rgba(';
+			c += [s.col.r, s.col.g, s.col.b, s.col.a].join(',');
+			c += ')';
+			colorArray.push(c);
+		});
+		// var colorArray = ['#f0f9e8','#bae4bc','#43a2ca','#0868ac','#7bccc4'];
+		var colors = colorArray.join(',');
 
+		console.log('colorArray', colorArray);
+
+		// create html for gradient
+		// var gradient = '<div class="info-legend-container"><div class="info-legend-frame"><div class="info-legend-val info-legend-min-val">0.6</div><div class="info-legend-header">coherence</div><div class="info-legend-val info-legend-max-val">1</div>';
+		// gradient += '<div class="info-legend-gradient-container" style="background: -webkit-linear-gradient(left, ' + colors + ');background: -o-linear-gradient(right, ' + colors + ');background: -moz-linear-gradient(right, ' + colors + ');background: linear-gradient(to right, ' + colors + ');"></div></div></div>';
+		// var gradient = '';
 		var standard = {
 		  "enable": true,
 		  "layerMeta": false,
@@ -552,13 +570,14 @@ Wu.Tools.Legend = {
 		    "all": {
 		      "color": {
 		        "column": "mvel",
-		        "value": [
-		     		"#0000ff",
-					"#00ffff",
-					"#00ff00",
-					"#ffff00",
-					"#ff0000",
-		        ],
+		   //      "value": [
+		   //   		"#0000ff",
+					// "#00ffff",
+					// "#00ff00",
+					// "#ffff00",
+					// "#ff0000",
+		   //      ],
+		   		"value" : colorArray,
 		        "minRange" : scaleMin,
 		        "maxRange" : scaleMax,
 		      },
@@ -583,7 +602,8 @@ Wu.Tools.Legend = {
 		    "target": []
 		  },
 		  "html": "",
-		  "gradient": "<div class=\"info-legend-container\"><div class=\"info-legend-frame\"><div class=\"info-legend-val info-legend-min-val\">0.6</div><div class=\"info-legend-header\">coherence</div><div class=\"info-legend-val info-legend-max-val\">1</div><div class=\"info-legend-gradient-container\" style=\"background: -webkit-linear-gradient(left, #f0f9e8,#bae4bc,#7bccc4,#43a2ca,#0868ac);background: -o-linear-gradient(right, #f0f9e8,#bae4bc,#7bccc4,#43a2ca,#0868ac);background: -moz-linear-gradient(right, #f0f9e8,#bae4bc,#7bccc4,#43a2ca,#0868ac);background: linear-gradient(to right, #f0f9e8,#bae4bc,#7bccc4,#43a2ca,#0868ac);\"></div></div></div>"
+		  // "gradient": gradient
+		  "gradient" : ''
 		}
 
 		return standard;

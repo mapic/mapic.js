@@ -2367,7 +2367,7 @@ input.chrome-field-input {
     position: relative;
 
     margin-top: 20px;
-    margin-bottom: 100px;
+    /*margin-bottom: 100px;*/
 }
 
 .raster-range-marks {

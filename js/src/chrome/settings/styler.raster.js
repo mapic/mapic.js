@@ -5,8 +5,6 @@ Wu.RasterStyler = Wu.Class.extend({
 
 	initialize : function (options) {
 
-		console.log('Wu.RasterStyler', this);
-
 		this.options = options;
 
 		// Default styling
@@ -61,11 +59,6 @@ Wu.RasterStyler = Wu.Class.extend({
 		
 		// Render slider
 		this._renderSlider();
-
-		
-
-		console.log('this', this);
-		// this.predefinedRange(1);
 
 	},
 
@@ -829,7 +822,6 @@ Wu.RasterStyler = Wu.Class.extend({
 	},
 
 	_saveScale : function () {
-		console.log('_saveScale', this);
 		this.styleJSON.scale = {
 			min : parseInt(this.scaleMinInput.value),
 			max : parseInt(this.scaleMaxInput.value)
@@ -838,13 +830,11 @@ Wu.RasterStyler = Wu.Class.extend({
 	},
 
 	_savePrecision : function () {
-		console.log('_savePrecision', this);
 		this.styleJSON.precision = parseInt(this.precisionInput.value);
 		this.options.layer.setStyleJSON(this.styleJSON);
 	},
 
 	_saveLegendScaleTitle : function () {
-		console.log('_saveLegendScaleTitle', this);
 		this.styleJSON.legendScaleTitle = this.legendScaleTitleInput.value;
 		this.options.layer.setStyleJSON(this.styleJSON);
 	},

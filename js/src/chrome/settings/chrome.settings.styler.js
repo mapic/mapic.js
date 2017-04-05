@@ -334,8 +334,6 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 
 	_selectTemplate : function (e) {		
 
-		console.log('_selectTemplate', e);
-
 		var selected = e.target.value;
 
 		this.templates.forEach(function (template) {
@@ -447,8 +445,6 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 
 			// update legend
 			if (this._legendStyler) {
-				console.error('styleJSON', styleJSON);
-				// var refresh = newLegend ? this._legend : false;
 				this._legendStyler.refreshLegend(JSON.stringify({
 					"enable": true,
 					"layerMeta": true,
@@ -521,7 +517,6 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		// update legend
 		if (this._legendStyler) {
 			var refresh = newLegend ? this._legend : false;
-			console.log('update legend: ', refresh);
 			this._legendStyler.refreshLegend(refresh);
 		}
 

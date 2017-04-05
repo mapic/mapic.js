@@ -82,8 +82,6 @@ Wu.Legend = Wu.Class.extend({
 		// Creates legend object as JSON
 		this.legendObj = Wu.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, oldLegend);
 
-		console.log('this.legendObj', this.legendObj);
-
 		// Create legend styler
 		this.createLegendStyler();
 
@@ -447,7 +445,6 @@ Wu.Legend = Wu.Class.extend({
 		var value = e.target.value;
 
 		this.sourceObject.name = value;
-		// console.log('this.sourceObject.gradient', this.sourceObject.gradient);
 		this.context.updateLegend();
 	},
 
@@ -477,7 +474,6 @@ Wu.Legend = Wu.Class.extend({
 	},
 
 	_switchEnableLegend : function  (e) {
-		console.log('_switchEnableLegend', e);
 		if ( this.legendObj.enable ) {
 			// Wu.DomUtil.addClass(this._legendContent, 'displayNone');
 			this.legendObj.enable = false;
@@ -536,8 +532,6 @@ Wu.Tools.Legend = {
 
 	buildRasterDeformationLegend : function (json, layer, prev_legend) {
 
-		console.log('buildRasterDeformationLegend', arguments);
-
 		// get scale, title
 		var scaleMin = (json.scale && _.isNumber(json.scale.min)) ? json.scale.min : -10;
 		var scaleMax = (json.scale && _.isNumber(json.scale.max)) ? json.scale.max : 10;
@@ -552,15 +546,9 @@ Wu.Tools.Legend = {
 			c += ')';
 			colorArray.push(c);
 		});
-		// var colorArray = ['#f0f9e8','#bae4bc','#43a2ca','#0868ac','#7bccc4'];
 		var colors = colorArray.join(',');
 
-		console.log('colorArray', colorArray);
 
-		// create html for gradient
-		// var gradient = '<div class="info-legend-container"><div class="info-legend-frame"><div class="info-legend-val info-legend-min-val">0.6</div><div class="info-legend-header">coherence</div><div class="info-legend-val info-legend-max-val">1</div>';
-		// gradient += '<div class="info-legend-gradient-container" style="background: -webkit-linear-gradient(left, ' + colors + ');background: -o-linear-gradient(right, ' + colors + ');background: -moz-linear-gradient(right, ' + colors + ');background: linear-gradient(to right, ' + colors + ');"></div></div></div>';
-		// var gradient = '';
 		var standard = {
 		  "enable": true,
 		  "layerMeta": false,
@@ -1645,12 +1633,7 @@ Wu.Tools.Legend = {
 		var satelliteView = stylerObject.satelliteView;
 		var layer = stylerObject.options.layer;
 
-		console.log('gradient this ->', stylerObject, layer);
-
 		var gradientName = layer.getStyleJSON().legendScaleTitle;
-
-		console.log('gradientName -->>', gradientName, this);
-
 
 
 		// HTML PART

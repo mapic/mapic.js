@@ -786,8 +786,6 @@ Wu.Control.Chart = Wu.Control.extend({
 
 		var data = c3Obj.d3array;
 
-		console.log('---> data', data);
-
 		// Ticks
 		var t = data.ticks;
 

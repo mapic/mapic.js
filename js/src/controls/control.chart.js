@@ -433,6 +433,12 @@ Wu.Control.Chart = Wu.Control.extend({
 
 	singleC3PopUp : function (e) {
 
+		console.log('singleC3PopUp!', e);
+
+		// get precision
+		var styleJSON = e.layer.getStyleJSON();
+		var precision = _.isNumber(styleJSON.precision) ? styleJSON.precision : 1;
+
 		var c3Obj = {
 			data : e.data,
 			layer : e.layer,
@@ -446,7 +452,8 @@ Wu.Control.Chart = Wu.Control.extend({
 		    		y 	: [],
 		    		ticks 	: [],
 		    		tmpTicks : []
-			}
+			},
+			precision : precision
 		};
 
 		this._c3Obj = this.createC3dataObj(c3Obj);
@@ -1088,6 +1095,7 @@ Wu.Control.Chart = Wu.Control.extend({
 		var data = c3Obj.data;
 		var meta = c3Obj.meta;		
 		var d3array = c3Obj.d3array;
+		var precision = c3Obj.precision
 
 		// already stored tooltip (edited, etc.)
 		if (meta) {		
@@ -1104,6 +1112,11 @@ Wu.Control.Chart = Wu.Control.extend({
 					var _val = parseFloat(data[field.key]).toString().substring(0,10);
 					var _key = field.title || field.key;
 
+					console.log('key/val 1', _key, _val);
+
+					// divide by precision
+					_val = _val / precision;
+
 					this.C3dataObjBuilder(_key, _val, d3array);
 				}
 			}
@@ -1116,6 +1129,11 @@ Wu.Control.Chart = Wu.Control.extend({
 				var _val = parseFloat(data[key]).toString().substring(0,10);
 				if (_val == 'NaN') _val = data[key];
 				var _key = key;
+
+				console.log('key/val 2', _key, _val);
+
+				// divide by precision
+				_val = _val / precision;
 
 				this.C3dataObjBuilder(_key, _val, d3array);
 			}

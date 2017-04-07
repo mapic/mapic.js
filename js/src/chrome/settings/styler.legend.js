@@ -1655,7 +1655,7 @@ Wu.Tools.Legend = {
 			_legendHTML += '<div class="info-legend-val info-legend-min-val">' + minVal + '</div>';
 
 			if ( satelliteView ) {
-				_legendHTML += '<div class="info-legend-header">' + 'Velocity in mm pr. year' + '</div>';
+				_legendHTML += '<div class="info-legend-header">' + gradientName + '</div>';
 			} else {
 				_legendHTML += '<div class="info-legend-header">' + gradientName + '</div>';
 			}

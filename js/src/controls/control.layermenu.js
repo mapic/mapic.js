@@ -562,8 +562,6 @@ L.Control.Layermenu = Wu.Control.extend({
 		start : function (e) {
 			var el = e.target;
 
-			console.log('drag start', e);
-			
 			// add visual feedback on dragged element
 			Wu.DomUtil.addClass(el, 'dragged-ghost');
 
@@ -579,8 +577,6 @@ L.Control.Layermenu = Wu.Control.extend({
 
 		drop : function (e) {
 			
-			console.log('drag drop', e);
-
 			var uuid = e.dataTransfer.getData('uuid');
 			var el = document.getElementById(uuid);
 
@@ -610,8 +606,6 @@ L.Control.Layermenu = Wu.Control.extend({
 		over : function (e) {
 			if (e.preventDefault) e.preventDefault(); // allows us to drop
 
-			console.log('drag over', e);
-
 			// set first offset
 			if (!this.movingX) this.movingX = e.layerX;
 			
@@ -623,8 +617,6 @@ L.Control.Layermenu = Wu.Control.extend({
 
 		leave : function (e) {
 			
-			console.log('drag leave', e);
-
 			// get element over which we're hovering
 			var x = e.clientX;
 			var y = e.clientY;
@@ -1161,8 +1153,6 @@ L.Control.Layermenu = Wu.Control.extend({
 		Wu.DomEvent.on(wrap, 'dragstart', this.drag.start, this);
 		// Wu.DomEvent.on(wrap, 'mousedown', console.log, this);
 		
-		console.log('adding drag event', wrap); // ok
-
 		// Stop Propagation
 		Wu.DomEvent.on(this._container, 'touchstart mousedown click dblclick',  Wu.DomEvent.stopPropagation, this);
 

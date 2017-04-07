@@ -433,8 +433,6 @@ Wu.Control.Chart = Wu.Control.extend({
 
 	singleC3PopUp : function (e) {
 
-		console.log('singleC3PopUp!', e);
-
 		// get precision
 		var styleJSON = e.layer.getStyleJSON();
 		var precision = _.isNumber(styleJSON.precision) ? styleJSON.precision : 1;
@@ -1112,8 +1110,6 @@ Wu.Control.Chart = Wu.Control.extend({
 					var _val = parseFloat(data[field.key]).toString().substring(0,10);
 					var _key = field.title || field.key;
 
-					console.log('key/val 1', _key, _val);
-
 					// divide by precision
 					_val = _val / precision;
 
@@ -1129,8 +1125,6 @@ Wu.Control.Chart = Wu.Control.extend({
 				var _val = parseFloat(data[key]).toString().substring(0,10);
 				if (_val == 'NaN') _val = data[key];
 				var _key = key;
-
-				console.log('key/val 2', _key, _val);
 
 				// divide by precision
 				_val = _val / precision;

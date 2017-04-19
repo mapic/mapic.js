@@ -1423,7 +1423,7 @@ input.target-input.polygon {
 
 
 .disabled-btn {
-    pointer-events: none;
+    /*pointer-events: none;*/
     opacity: 0.2;
 }
 
@@ -2605,7 +2605,7 @@ input[type="radio"] .styled:checked + label::after {
     font-weight: 600;
     padding: 5px 10px 5px 10px;
     text-align: center;
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 
 .big-graph-mask-title {
@@ -2961,4 +2961,8 @@ span.mask-item-value {
     width: 200px !important;
     text-align: left !important;
     padding-left: 5px !important;
+}
+
+.leaflet-container {
+  touch-action: none !important;
 }

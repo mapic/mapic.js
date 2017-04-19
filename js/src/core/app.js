@@ -15,6 +15,7 @@ Wu.App = Wu.Class.extend({
 		// set global app
 		window.app = Wu.app = this; // todo: remove Wu.app, use only window.app
 
+
 		// merge options
 		Wu.setOptions(app, options);
 
@@ -29,17 +30,18 @@ Wu.App = Wu.Class.extend({
 
 		// error logging with sentry
 		// this._raven();
+
 	},
 
-	_raven : function () {
-		if(window.testMode) return true;
-		Raven.config('https://594a4e7cc65f4e39bdd0337276e391b5@sentry.io/100809', {
-			autoBreadcrumbs: {
-		    	console: false
-			}
-		}).install();
-		Raven.setRelease(Wu.version);
-	},
+	// _raven : function () {
+	// 	if(window.testMode) return true;
+	// 	Raven.config('https://594a4e7cc65f4e39bdd0337276e391b5@sentry.io/100809', {
+	// 		autoBreadcrumbs: {
+	// 	    	console: false
+	// 		}
+	// 	}).install();
+	// 	Raven.setRelease(Wu.version);
+	// },
 
 	authed : function (err, access_token) {
 

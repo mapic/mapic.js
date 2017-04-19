@@ -118,7 +118,7 @@ body {
 	z-index: 2;
 	opacity: 0;
 	transition:opacity 150ms linear;
-	pointer-events: none;
+	/*pointer-events: none;*/
 }
 
 

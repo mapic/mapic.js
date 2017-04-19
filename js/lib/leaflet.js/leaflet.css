@@ -107,14 +107,15 @@
 .leaflet-control {
 	position: relative;
 	z-index: 800;
-	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
-	pointer-events: auto;
+	/*pointer-events: visiblePainted; */
+	/* IE 9-10 doesn't have auto */
+	/*pointer-events: auto;*/
 	}
 .leaflet-top,
 .leaflet-bottom {
 	position: absolute;
 	z-index: 1000;
-	pointer-events: none;
+	/*pointer-events: none;*/
 	}
 .leaflet-top {
 	top: 0;
@@ -222,14 +223,15 @@
 .leaflet-image-layer,
 .leaflet-pane > svg path,
 .leaflet-tile-container {
-	pointer-events: none;
+	/*pointer-events: none;*/
 	}
 
 .leaflet-marker-icon.leaflet-interactive,
 .leaflet-image-layer.leaflet-interactive,
 .leaflet-pane > svg path.leaflet-interactive {
-	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
-	pointer-events: auto;
+	/*pointer-events: visiblePainted; */
+	/* IE 9-10 doesn't have auto */
+	/*pointer-events: auto;*/
 	}
 
 /* visual tweaks */
@@ -470,7 +472,7 @@
 	left: 50%;
 	margin-left: -20px;
 	overflow: hidden;
-	pointer-events: none;
+	/*pointer-events: none;*/
 	}
 .leaflet-popup-tip {
 	width: 17px;
@@ -559,19 +561,19 @@
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-	pointer-events: none;
+	/*pointer-events: none;*/
 	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 	}
 .leaflet-tooltip.leaflet-clickable {
 	cursor: pointer;
-	pointer-events: auto;
+	/*pointer-events: auto;*/
 	}
 .leaflet-tooltip-top:before,
 .leaflet-tooltip-bottom:before,
 .leaflet-tooltip-left:before,
 .leaflet-tooltip-right:before {
 	position: absolute;
-	pointer-events: none;
+	/*pointer-events: none;*/
 	border: 6px solid transparent;
 	background: transparent;
 	content: "";

@@ -477,12 +477,12 @@
 
 .disabledBtn {
     color: rgba(220, 220, 220, 0.156863) !important;
-    pointer-events: none !important; 
+    /*pointer-events: none !important; */
     pointer: default !important;
 }
 .disabledBtn:hover {
     color: rgba(220, 220, 220, 0.156863) !important;
-    pointer-events: none !important;
+    /*pointer-events: none !important;*/
     pointer: default !important;
 }
 
@@ -760,7 +760,7 @@
     padding-left: 100px;
     font-size: 18px;
     font-weight: 600;
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 
 .chrome-switch-container.disabled-switch:after {

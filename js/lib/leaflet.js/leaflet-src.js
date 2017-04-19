@@ -709,6 +709,9 @@ L.Mixin = {Events: proto};
 
 (function () {
 
+    // pointer event fix
+    window.PointerEvent = false;
+
     var ua = navigator.userAgent.toLowerCase(),
         doc = document.documentElement,
 

@@ -632,7 +632,7 @@ Wu.MapPane = Wu.Pane.extend({
     // Create pop-up
     _addPopupContent : function (e, multiPopUp) {
 
-        if ( this._chart && this._chart._popup ) {          
+        if ( this._chart && this._chart._popup ) { 
             this.updatePopup(e, multiPopUp);
         } else {            
             this.newPopup(e, multiPopUp);           
@@ -649,6 +649,7 @@ Wu.MapPane = Wu.Pane.extend({
             };
         
         this._chart = new Wu.Control.Chart(options);
+
     },
 
     // Adds data to existing pop-up

@@ -596,7 +596,6 @@ Wu.Control.Chart = Wu.Control.extend({
 			var _areaSQ = areaRounded + 'km' + '<sup>2</sup>';
 		}		
 
-		
 		var c3Obj = {
 			data 		: _average,
 			meta 		: false,
@@ -617,7 +616,6 @@ Wu.Control.Chart = Wu.Control.extend({
 		};
 
 		this._c3Obj = this.createC3dataObj(c3Obj);
-
 
 		var headerOptions = {
 			headerMeta 	: this._c3Obj.d3array.meta,
@@ -652,8 +650,6 @@ Wu.Control.Chart = Wu.Control.extend({
 
 		return content;
 	},		
-
-
 
 
 	chartTicks : function (c3Obj) {
@@ -851,7 +847,6 @@ Wu.Control.Chart = Wu.Control.extend({
 
 		_columns = [x, y];
 
-
 		// Create container
 		var _C3Container = Wu.DomUtil.createId('div', 'c3-container');	
 
@@ -870,7 +865,7 @@ Wu.Control.Chart = Wu.Control.extend({
 
 
 		// CHART SETTINGS
-		var chart = this._chart = c3.generate({
+		var chartSettings = {
 			interaction : true,
 
 			bindto: _C3Container,
@@ -953,7 +948,8 @@ Wu.Control.Chart = Wu.Control.extend({
 			color: {
 				pattern: ['#000000']
 			}		        
-		});
+		};
+		var chart = this._chart = c3.generate(chartSettings);
 
 
 		// add zoom events
@@ -1093,7 +1089,7 @@ Wu.Control.Chart = Wu.Control.extend({
 		var data = c3Obj.data;
 		var meta = c3Obj.meta;		
 		var d3array = c3Obj.d3array;
-		var precision = c3Obj.precision
+		var precision = c3Obj.precision || 1;
 
 		// already stored tooltip (edited, etc.)
 		if (meta) {		
@@ -1127,7 +1123,7 @@ Wu.Control.Chart = Wu.Control.extend({
 				var _key = key;
 
 				// divide by precision
-				_val = _val / precision;
+				_val = parseFloat(_val) / precision;
 
 				this.C3dataObjBuilder(_key, _val, d3array);
 			}

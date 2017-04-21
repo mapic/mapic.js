@@ -1633,8 +1633,7 @@ Wu.Tools.Legend = {
 		var satelliteView = stylerObject.satelliteView;
 		var layer = stylerObject.options.layer;
 
-		var gradientName = layer.getStyleJSON().legendScaleTitle;
-
+		var gradientName = layer.getStyleJSON().legendScaleTitle || 'mean velocity per year';
 
 		// HTML PART
 		// HTML PART

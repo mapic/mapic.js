@@ -135,7 +135,7 @@ Wu.Legend = Wu.Class.extend({
 
 
 		// If switch is off, do not roll out the rest of the options.
-		if ( !_isOn ) return console.error('legend done cause !_isOn');
+		if ( !_isOn ) return; // console.error('legend done cause !_isOn');
 
 
 		// Legend meta

@@ -174,7 +174,6 @@ L.Draw.Feature = L.Handler.extend({
 	},
 
 	_fireCreatedEvent: function (layer) {
-		console.error('fire created', layer);
 		this._map.fire('draw:created', { layer: layer, layerType: this.type });
 	},
 

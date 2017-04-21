@@ -509,8 +509,6 @@ Wu.Model.Layer = Wu.Model.extend({
     },
 
     getTooltip : function () {
-
-        console.error('getTooltip', this);
         var json = this.store.tooltip;
         if (!json) return false;
         var meta = Wu.parse(json);

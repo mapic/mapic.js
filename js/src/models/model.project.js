@@ -325,8 +325,6 @@ Wu.Model.Project = Wu.Model.extend({
 		options[field] = value || this.store[field];
 		options.uuid = this.store.uuid;
 
-		console.log('_update options', options);
-
 		// save to server
 		this._save(options);
 	},

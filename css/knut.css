@@ -2966,3 +2966,19 @@ span.mask-item-value {
 .leaflet-container {
   touch-action: none !important;
 }
+
+
+.ghostface {
+    filter: invert(100%);
+}
+.intro-logo-disclaimer {
+    color: rgba(255, 255, 255, 0.73);
+    position: fixed;
+    top: 60%;
+    left: 42%;
+    font-weight: 600;
+    font-style: italic;
+}
+.intro-logo-container {
+    -webkit-animation: blink 5s;
+}

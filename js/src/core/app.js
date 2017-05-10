@@ -6,6 +6,7 @@ Wu.App = Wu.Class.extend({
 	options : window.systemapicConfigOptions, // global var from config.js... perhaps refactor.
 	language : language,
 	_ready : false,
+	force_login : true,
 
 	initialize : function (options) {
 		
@@ -14,7 +15,6 @@ Wu.App = Wu.Class.extend({
 
 		// set global app
 		window.app = Wu.app = this; // todo: remove Wu.app, use only window.app
-
 
 		// merge options
 		Wu.setOptions(app, options);
@@ -28,20 +28,7 @@ Wu.App = Wu.Class.extend({
 		// auth
 		app.api.auth(app.authed);
 
-		// error logging with sentry
-		// this._raven();
-
 	},
-
-	// _raven : function () {
-	// 	if(window.testMode) return true;
-	// 	Raven.config('https://594a4e7cc65f4e39bdd0337276e391b5@sentry.io/100809', {
-	// 		autoBreadcrumbs: {
-	// 	    	console: false
-	// 		}
-	// 	}).install();
-	// 	Raven.setRelease(Wu.version);
-	// },
 
 	authed : function (err, access_token) {
 
@@ -79,11 +66,6 @@ Wu.App = Wu.Class.extend({
 		// log all errors
 		window.onerror = app._onError;
 
-		// forward console.error's to log also
-		// console.error = function (message) {
-		// 	try { throw Error(message); } 
-		// 	catch (e) {}
-		// }
 	},
 
 	_onError : function (message, file, line, char, ref) {
@@ -171,7 +153,7 @@ Wu.App = Wu.Class.extend({
 		app._logEntry();
 
 		// force login
-		// app._forceLogin();
+		app._forceLogin();
 
 	},
 

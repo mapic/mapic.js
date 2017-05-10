@@ -2978,6 +2978,7 @@ span.mask-item-value {
     left: 42%;
     font-weight: 600;
     font-style: italic;
+    display: none;
 }
 .intro-logo-container {
     -webkit-animation: blink 5s;

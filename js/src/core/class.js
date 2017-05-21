@@ -538,8 +538,8 @@ Wu.Util = {
 	
 
 	_getServerUrl : function () {
-		// return window.location.origin;
-		return app.options.servers.portal.slice(0,-1);
+		return window.location.origin;
+		// return app.options.servers.portal.slice(0,-1);
 	},
 
 	// get with callback

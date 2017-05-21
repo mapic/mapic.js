@@ -2969,7 +2969,7 @@ span.mask-item-value {
 
 
 .ghostface {
-    filter: invert(100%);
+    /*filter: invert(100%);*/
 }
 .intro-logo-disclaimer {
     color: rgba(255, 255, 255, 0.73);

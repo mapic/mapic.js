@@ -233,6 +233,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
                 // add mask layer
                 this._maskLayers.forEach(function (maskLayer) {
+                    console.log('adding mask', maskLayer);
                     maskLayer.add();
                 });
 
@@ -463,6 +464,8 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
     _initMask : function (done) {
 
+        console.log('_initMask');
+
         this._maskLayers = [];
 
         // get mask
@@ -474,6 +477,8 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         masks = _.isArray(masks) ? masks : [masks];
 
         masks.forEach(function (m) {
+
+            console.log('mask type', m.type, m);
 
             // check if raster mask
             if (m.type == 'postgis-raster') return this._initRasterMask(m, done);
@@ -542,6 +547,8 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             // permanent : true
         });
 
+        console.log('_initGeoJSONMask', mask);
+
         // click events
         maskLayer.layer.on('click', this._onMaskClick.bind(this, maskLayer));
         maskLayer.layer.on('mouseover', this._onMaskMouseover.bind(this, maskLayer));
@@ -558,16 +565,20 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     },
 
     _onMaskMouseover : function (maskLayer, e) {
+        console.log('_onMaskMouseover');
         var style = maskLayer.selected ? this.options.mask.selectedHoverStyle : this.options.mask.hoverStyle;
         maskLayer.layer.setStyle(style);
     },
 
     _onMaskMouseout : function (maskLayer, e) {
+        console.log('_onMaskMouseout');
         var style = maskLayer.selected ? this.options.mask.selectedStyle : this.options.mask.defaultStyle;
         maskLayer.layer.setStyle(style);
     },
 
     _onMaskClick : function (maskLayer, e) {
+
+        console.log('_onMaskClick', e);
         
         // turn off
         if (maskLayer.selected) {
@@ -600,6 +611,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     },
 
     setDefaultMask : function (maskLayer) {
+        console.log('setDefaultMask', maskLayer);
         var maskLayer = maskLayer || this._maskLayers[0];
         if (!maskLayer) return;
 
@@ -1091,6 +1103,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     _findDatasetByTimestamp : function (t) {
         var f = this.options.timeFormat;
         var b = _.toString(moment(t).format(f)); // YYYY-DDDD of animation
+        console.log('b', b);
         var didx = _.findIndex(this._datasets, function (d) { 
             return _.toString(d.formattedTime) == b;
         });
@@ -1192,6 +1205,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
         // set new date (format: "2016-04-01T00:00:00+02:00")
         dataset.timestamp = moment(date).format();
+        console.log('dataset.timestamp', dataset.timestamp);
 
         // get all datasets
         var datasets = this.getDatasets();

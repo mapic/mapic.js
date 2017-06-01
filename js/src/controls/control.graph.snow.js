@@ -30,6 +30,8 @@ moment().utc();
 // Annual Graph (cyclical)
 Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
+    _year : 2016,
+
     // languages
     localization : {
         // lang : 'nor',
@@ -118,7 +120,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         if (this.parsed()) return done(null, this.parsed());
 
         // query non-data year (ie. query from actual raster datasets)
-        this.query_yearly('2016', function (err, queried_data) {
+        this.query_yearly(this._year, function (err, queried_data) {
             if (err) return done(err);
 
             var parsed = {}
@@ -200,7 +202,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
             var item = {
                 scf : {}, 
-                date : moment.utc().year(2016).dayOfYear(doy) // fake year, correct doy
+                date : moment.utc().year(this._year).dayOfYear(doy) // fake year, correct doy
             }
 
             years.forEach(function (y) {
@@ -213,6 +215,8 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             yearly_data.push(item);
 
         }.bind(this));
+
+        console.log('this', this);
 
         return yearly_data;
     },
@@ -819,6 +823,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         // with filter @ composite
         var currentYear = this._current.year;
         var currentDay = this._current.day;
+        console.log('this._current', this._current);
         var today = moment().year(currentYear).dayOfYear(currentDay);
         var clone = cache.slice();
         clone.forEach(function (c) {

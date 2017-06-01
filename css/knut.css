@@ -2945,7 +2945,12 @@ span.mask-item-value {
 
 
 
-
+.leaflet-overlay-pane {
+    z-index: 1000;
+}
+.leaflet-zoom-animated {
+    pointer-events: all;
+}
 
 
 

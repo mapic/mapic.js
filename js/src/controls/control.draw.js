@@ -86,7 +86,6 @@ L.Control.Draw = Wu.Control.extend({
 	},
 
 	_drawCreated : function (e) {
-		console.log('e:', e);
 		var type = e.layerType;
 		var layer = e.layer;
 
@@ -246,7 +245,9 @@ L.Control.Draw = Wu.Control.extend({
 		if (this._drawEnabled) {
 			this._toolbars.draw._modes.polygon.handler.disable();
 			this._drawEnabled = false;
+
 		} else {
+
 			this._toolbars.draw._modes.polygon.handler.enable();
 			this._drawEnabled = true;
 		}	
@@ -370,6 +371,7 @@ L.Control.Draw = Wu.Control.extend({
 
 			// Listen for when toolbar is enabled
 			this._toolbars[L.DrawToolbar.TYPE].on('enable', this._toolbarEnabled, this);
+			this._toolbars[L.DrawToolbar.TYPE].on('disable', this._toolbarDisabled, this);
 
 		}
 
@@ -380,6 +382,7 @@ L.Control.Draw = Wu.Control.extend({
 
 			// Listen for when toolbar is enabled
 			this._toolbars[L.EditToolbar.TYPE].on('enable', this._toolbarEnabled, this);
+			this._toolbars[L.EditToolbar.TYPE].on('disable', this._toolbarDisabled, this);
 		}
 	},
 
@@ -430,11 +433,27 @@ L.Control.Draw = Wu.Control.extend({
 	_toolbarEnabled: function (e) {
 		var enabledToolbar = e.target;
 
+		console.log('_toolbarEnabled', e);
+
+		var overlayPane = app._map.getPanes().overlayPane;
+		Wu.DomUtil.addClass(overlayPane, 'pointer-events-none');
+
 		for (var toolbarId in this._toolbars) {
 			if (this._toolbars[toolbarId] !== enabledToolbar) {
 				this._toolbars[toolbarId].disable();
 			}
 		}
+	},
+
+	_toolbarDiabled: function (e) {
+
+		console.log('_toolbarDisabled', e);
+
+		// set pointer-events
+		console.log('_toggleDraw on');
+		var overlayPane = app._map.getPanes().overlayPane;
+		Wu.DomUtil.removeClass(overlayPane, 'pointer-events-none');
+
 	}
 
 });

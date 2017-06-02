@@ -2948,14 +2948,15 @@ span.mask-item-value {
 .leaflet-overlay-pane {
     z-index: 1000;
 }
-.leaflet-zoom-animated {
-    pointer-events: all;
+svg.leaflet-zoom-animated {
+    pointer-events: all !important;
 }
-
 .leaflet-container .leaflet-overlay-pane svg, .leaflet-container .leaflet-marker-pane img, .leaflet-container .leaflet-shadow-pane img, .leaflet-container .leaflet-tile-pane img, .leaflet-container img.leaflet-image-layer {
     pointer-events: none;
 }
-
+.leaflet-overlay-pane.pointer-events-none svg {
+    pointer-events: none !important;
+}
 
 
 /*debug */

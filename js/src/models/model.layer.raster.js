@@ -1,6 +1,8 @@
 // postgis raster layer
 Wu.RasterLayer = Wu.Model.Layer.extend({
 
+    _type : 'raster-layer',
+
     initialize : function (layer) {
 
         // set source
@@ -8,6 +10,9 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
         
         // data not loaded
         this.loaded = false;
+
+        // debug
+        console.log('Wu.RasterLayer', this);
 
     },
 
@@ -107,10 +112,44 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
     isQueryable : function () {
         // should be able to query deformation rasters
         if (this.isDefo()) return true;
+        if (this.isDefault()) return true;
         return false;
     },
 
     _queryRaster : function (options) {
+
+        if (this.isDefo()) return this._queryDeformationRaster(options);
+        if (this.isDefault()) return this._queryRasterPoint(options);
+    },
+
+    _queryRasterPoint : function (options) {
+
+        app.api.queryRasterPoint({
+            point : options.point,
+            layer_id : this.getLayerID(),
+        }, function (err, results) {
+            if (err) return console.error(err);
+
+            var query_result = Wu.parse(results);
+
+            if (!query_result || query_result.err) return console.error('bad query');
+
+            var map = app._map;
+            var lngLat = query_result.data.lngLat;
+            var value = query_result.data.value;
+            var latlng = [lngLat.lat, lngLat.lng];
+
+            // open simple popup
+            var popup = L.popup({
+                className : 'raster-point-popup',
+            })
+            .setLatLng(latlng)
+            .setContent('Queried point value: ' + value)
+            .openOn(map);
+        });
+    },
+
+    _queryDeformationRaster : function (options) {
 
         var datasets = this.getRasterDeformationDatasets();
         var point = options.point;
@@ -274,6 +313,11 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
     isDefo : function () {
         if (this.store.layer_type == 'defo_raster') return true;
         return false;
+    },
+
+    isDefault : function () {
+        if (this.store.layer_type == 'defo_raster') return false;
+        return true;
     },
 
     // todo: clean up!

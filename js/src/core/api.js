@@ -434,6 +434,10 @@ Wu.Api = Wu.Class.extend({
 		this.post(path, options, done);
 	},
 
+	queryRasterPoint : function (options, done) {
+		var path = '/v2/query/raster/point';
+		this.post(path, options, done);
+	},
 
 
 	// LOG

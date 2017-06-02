@@ -572,7 +572,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             }.bind(this))
 
             // set default year (hacky, but what to do)
-            if (i == years.length-1) {
+            if (i == years.length-2) {
                 setTimeout(function () {
                     input.click();
                 }, 300);

@@ -1,5 +1,1 @@
-### Changelog
-
-
-#### 1.3.8
-- Added background layer toggle
+See [mapic/mapic changelog](https://github.com/mapic/mapic/blob/master/CHANGELOG.md).

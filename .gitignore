@@ -12,3 +12,4 @@ css/mapic_logo_inverted_blank.png
 # Dependency directory
 node_modules
 
+test/open-data

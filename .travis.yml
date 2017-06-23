@@ -36,5 +36,5 @@ install:
   - sleep 240
 
 script:
-  - mapic test mapicjs
+  - mapic test js
   

@@ -2978,3 +2978,45 @@ svg.leaflet-zoom-animated {
 }
 
 
+.ghostface {
+    /*filter: invert(100%);*/
+}
+.intro-logo-disclaimer {
+    color: rgba(255, 255, 255, 0.73);
+    position: fixed;
+    top: 60%;
+    left: 42%;
+    font-weight: 600;
+    font-style: italic;
+    display: none;
+}
+.intro-logo-container {
+    -webkit-animation: blink 5s;
+}
+
+
+/*raster point popup*/
+/*demo popup for simple raster point query*/
+.raster-point-popup .leaflet-popup-content-wrapper .leaflet-popup-content {
+    padding: 20px !important;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+}
+.raster-point-popup .leaflet-popup-content-wrapper {
+    background: none;
+}
+.raster-point-popup .leaflet-popup-tip-container {
+    visibility: visible;
+}
+.raster-point-popup .leaflet-popup-tip-container .leaflet-popup-tip {
+    background: rgba(0, 0, 0, 0.5);
+}
+.raster-point-popup {
+    margin-bottom: 0px !important;
+}
+
+
+
+
+
+

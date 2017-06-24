@@ -177,6 +177,10 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 				enable : true,
 				name   : 'WMS toggle'
 			},
+			sentinel : {
+				enable : true,
+				name   : 'Sentinel Hub data'
+			},
 
 			// Inactive
 			layermenu : {
@@ -306,6 +310,8 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 
 		// Get control
 		var control = app.MapPane.getControls()[key];
+
+		console.log('_saveSwitch control', control);
 
 		if (!control) return console.error('no control!', key, on);
 

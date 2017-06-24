@@ -311,8 +311,6 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 		// Get control
 		var control = app.MapPane.getControls()[key];
 
-		console.log('_saveSwitch control', control);
-
 		if (!control) return console.error('no control!', key, on);
 
 		// Save

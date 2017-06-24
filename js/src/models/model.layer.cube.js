@@ -180,7 +180,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         // set store
         this._setStore(store);
 
-        // console.log('CUBE LAAYER _>', this);
     },
 
     _setStore : function (store) {
@@ -194,7 +193,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
     add : function (type) {
         this.addTo();
-        // console.log('CUBE Add', this);
     },
 
     addTo : function () {
@@ -208,8 +206,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
         // ensure inited
         this.initLayer(function (err) {
-
-            // console.log('_addTo, intilayer', err);
 
             var map = app._map;
 
@@ -233,7 +229,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
                 // add mask layer
                 this._maskLayers.forEach(function (maskLayer) {
-                    console.log('adding mask', maskLayer);
                     maskLayer.add();
                 });
 
@@ -311,25 +306,19 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     // fired when layer is added to map
     initLayer : function (done) {
 
-        // console.log('initLayer 1');
-
         if (this._inited) {
             done && done();
             return;
         }
-        // console.log('initLayer 2');
 
         // listen up
         this._listen();
-        // console.log('initLayer 3');
 
         // init cursor
         this._initCursor();
-        // console.log('initLayer 4');
 
         // init cache
         this._initCache();
-        // console.log('initLayer 5');
 
         // run async ops
         async.series([
@@ -341,8 +330,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             this._initGraph.bind(this)
 
         ], function (err) {
-
-        // console.log('initLayer 8', err);
 
             // mark inited
             this._inited = true;
@@ -464,8 +451,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
     _initMask : function (done) {
 
-        console.log('_initMask');
-
         this._maskLayers = [];
 
         // get mask
@@ -477,8 +462,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         masks = _.isArray(masks) ? masks : [masks];
 
         masks.forEach(function (m) {
-
-            console.log('mask type', m.type, m);
 
             // check if raster mask
             if (m.type == 'postgis-raster') return this._initRasterMask(m, done);
@@ -547,8 +530,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             // permanent : true
         });
 
-        console.log('_initGeoJSONMask', mask);
-
         // click events
         maskLayer.layer.on('click', this._onMaskClick.bind(this, maskLayer));
         maskLayer.layer.on('mouseover', this._onMaskMouseover.bind(this, maskLayer));
@@ -565,21 +546,17 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     },
 
     _onMaskMouseover : function (maskLayer, e) {
-        console.log('_onMaskMouseover');
         var style = maskLayer.selected ? this.options.mask.selectedHoverStyle : this.options.mask.hoverStyle;
         maskLayer.layer.setStyle(style);
     },
 
     _onMaskMouseout : function (maskLayer, e) {
-        console.log('_onMaskMouseout');
         var style = maskLayer.selected ? this.options.mask.selectedStyle : this.options.mask.defaultStyle;
         maskLayer.layer.setStyle(style);
     },
 
     _onMaskClick : function (maskLayer, e) {
 
-        console.log('_onMaskClick', e);
-        
         // turn off
         if (maskLayer.selected) {
 
@@ -611,7 +588,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     },
 
     setDefaultMask : function (maskLayer) {
-        console.log('setDefaultMask', maskLayer);
         var maskLayer = maskLayer || this._maskLayers[0];
         if (!maskLayer) return;
 
@@ -819,8 +795,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         
         // add cube id
         options.cube_id = this.getCubeId();
-
-        // console.log('cube query:', options);
 
         // query cube
         app.api.queryCube(options, done);
@@ -1103,7 +1077,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     _findDatasetByTimestamp : function (t) {
         var f = this.options.timeFormat;
         var b = _.toString(moment(t).format(f)); // YYYY-DDDD of animation
-        console.log('b', b);
         var didx = _.findIndex(this._datasets, function (d) { 
             return _.toString(d.formattedTime) == b;
         });
@@ -1205,7 +1178,6 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
 
         // set new date (format: "2016-04-01T00:00:00+02:00")
         dataset.timestamp = moment(date).format();
-        console.log('dataset.timestamp', dataset.timestamp);
 
         // get all datasets
         var datasets = this.getDatasets();

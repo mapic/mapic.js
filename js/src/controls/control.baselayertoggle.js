@@ -28,8 +28,6 @@ L.Control.Baselayertoggle = Wu.Control.extend({
 
 	addTo: function (map) {
 
-		console.error('basleyar addTo')
-
 		this._map = map;
 
 		var container = this._container = this.onAdd(map),

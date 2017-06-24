@@ -216,8 +216,6 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
         }.bind(this));
 
-        console.log('this', this);
-
         return yearly_data;
     },
 
@@ -419,8 +417,6 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         // calc movement
         var movement_x = e.clientX - this._resizeValues.x;
         var movement_y = e.clientY - this._resizeValues.y;
-        // console.log('movement_x', movement_x)
-        // console.log('movement_y', movement_y)
 
         // set size of container
         var height = this._resizeValues.h - movement_y;
@@ -823,7 +819,6 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         // with filter @ composite
         var currentYear = this._current.year;
         var currentDay = this._current.day;
-        console.log('this._current', this._current);
         var today = moment().year(currentYear).dayOfYear(currentDay);
         var clone = cache.slice();
         clone.forEach(function (c) {

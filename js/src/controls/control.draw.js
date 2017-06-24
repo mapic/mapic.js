@@ -116,8 +116,6 @@ L.Control.Draw = Wu.Control.extend({
 		}, function (err, results) {
 			var resultObject = Wu.parse(results);
 
-			console.log('_fetchData resultObject', resultObject);
-
 			// add center
 			resultObject.center = layer.getBounds().getCenter();
 
@@ -224,7 +222,6 @@ L.Control.Draw = Wu.Control.extend({
 		var layer_id = this._getActiveLayerID();
 		var layers = app.activeProject.getLayers();
 		var layer = _.find(layers, function (l) {
-			console.log('l: ', l);
 			if (!l.store || !l.store.data) return false;
 			if (l.store.data.postgis) {
 				return l.store.data.postgis == layer_id;
@@ -433,8 +430,6 @@ L.Control.Draw = Wu.Control.extend({
 	_toolbarEnabled: function (e) {
 		var enabledToolbar = e.target;
 
-		console.log('_toolbarEnabled', e);
-
 		var overlayPane = app._map.getPanes().overlayPane;
 		Wu.DomUtil.addClass(overlayPane, 'pointer-events-none');
 
@@ -447,10 +442,7 @@ L.Control.Draw = Wu.Control.extend({
 
 	_toolbarDiabled: function (e) {
 
-		console.log('_toolbarDisabled', e);
-
 		// set pointer-events
-		console.log('_toggleDraw on');
 		var overlayPane = app._map.getPanes().overlayPane;
 		Wu.DomUtil.removeClass(overlayPane, 'pointer-events-none');
 

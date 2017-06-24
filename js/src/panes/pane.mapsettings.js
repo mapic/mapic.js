@@ -177,6 +177,10 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 				enable : true,
 				name   : 'WMS toggle'
 			},
+			sentinel : {
+				enable : true,
+				name   : 'Sentinel Hub data'
+			},
 
 			// Inactive
 			layermenu : {

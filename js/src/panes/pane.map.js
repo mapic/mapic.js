@@ -15,7 +15,8 @@ Wu.MapPane = Wu.Pane.extend({
             'baselayertoggle',
             // 'cartocss',
             'draw',
-            'wms'
+            'wms',
+            'sentinel'
         ]
     },
     

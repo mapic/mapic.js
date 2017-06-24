@@ -30,6 +30,8 @@ moment().utc();
 // Annual Graph (cyclical)
 Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
+    _year : 2016,
+
     // languages
     localization : {
         // lang : 'nor',
@@ -118,7 +120,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         if (this.parsed()) return done(null, this.parsed());
 
         // query non-data year (ie. query from actual raster datasets)
-        this.query_yearly('2016', function (err, queried_data) {
+        this.query_yearly(this._year, function (err, queried_data) {
             if (err) return done(err);
 
             var parsed = {}
@@ -200,7 +202,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
             var item = {
                 scf : {}, 
-                date : moment.utc().year(2016).dayOfYear(doy) // fake year, correct doy
+                date : moment.utc().year(this._year).dayOfYear(doy) // fake year, correct doy
             }
 
             years.forEach(function (y) {
@@ -415,8 +417,6 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         // calc movement
         var movement_x = e.clientX - this._resizeValues.x;
         var movement_y = e.clientY - this._resizeValues.y;
-        // console.log('movement_x', movement_x)
-        // console.log('movement_y', movement_y)
 
         // set size of container
         var height = this._resizeValues.h - movement_y;
@@ -568,7 +568,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             }.bind(this))
 
             // set default year (hacky, but what to do)
-            if (i == years.length-1) {
+            if (i == years.length-2) {
                 setTimeout(function () {
                     input.click();
                 }, 300);

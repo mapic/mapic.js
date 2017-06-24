@@ -93,8 +93,6 @@ L.Control.Wms = Wu.Control.extend({
 
     _initContent : function () {
 
-        console.log('_initContent');
-        
         // create wrapper
         this._list = L.DomUtil.create('div', 'baselayertoggle-list', this._container);
         Wu.DomEvent.on(this._list, 'dblclick', Wu.DomEvent.stop, this);

@@ -33,7 +33,7 @@ describe("core.project", function () {
 
   });
 
-  it("should fire the clicked Event on project creation" , function () {
+  it("should fire the clicked Event on new project button" , function () {
 
     var name_input = {
       value : "My Test Project 1"
@@ -52,15 +52,25 @@ describe("core.project", function () {
   });
 
 
-  it("should create a new project and validate data", function () {
+  it("should create a new project with all required data", function () {
     var options = {"store":{"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}}};    
     var store = {"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
-    var project = new Wu.Model.Project(store);
+    var project = new Wu.Model.Project(store);    
     project.create(options, function (err, json) {
       expect(json.project.name).to.equal(store.name);
       expect(json.project.description).to.equal(store.description);
       expect(json.project.createdByName).to.equal(store.createdByName);
 
+    });
+  });
+
+  it("should fail to create a new project without project name", function () {
+    var options = {"store":{"name":"","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}}};    
+    var store = {"name":"","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
+    var project = new Wu.Model.Project(store);
+    
+    project.create(options, function (err, json) {
+      expect(json.error.errors.missingRequiredFields[0]).to.equal("name");
     });
   });
 
@@ -97,6 +107,62 @@ describe("core.project", function () {
 
     expect(project.store.name).to.equal(newProjectName);
 
+  });
+
+  it("should update project slug" , function () {
+
+    var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
+    
+    var project = new Wu.Model.Project(store);
+
+    var newSlug = "test-project-name";
+
+    project.setSlug(newSlug);
+
+    expect(project.store.slug).to.equal(newSlug);
+    
+  });
+
+  it("should add viewers(read access) of a project" , function () {
+
+    var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
+    
+    var project = new Wu.Model.Project(store);
+
+    var access = {
+			edit : [],
+			read : ["user-fbb3dee3-e042-4ad3-8378-c08b19706d52"],
+			options : {
+				share : true,
+				download : true,
+				isPublic : false
+			}
+		};
+
+    project.setAccess(access , function (err, resp) {
+      expect(resp.access.read[0]).to.equal(access.read[0]);
+    });    
+  });
+
+  it("should add editors(edit access) of a project" , function () {
+
+    var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
+    
+    var project = new Wu.Model.Project(store);
+
+    var access = {
+			edit : ["user-fbb3dee3-e042-4ad3-8378-c08b19706d52"],
+			read : [],
+			options : {
+				share : true,
+				download : true,
+				isPublic : false
+			}
+		};
+
+    project.setAccess(access , function (err, resp) {
+      expect(resp.access.edit[0]).to.equal(access.edit[0]);
+    });
   });
 
   it("should delete a project", function () {
@@ -147,11 +213,7 @@ describe("core.project", function () {
   });
 
   // it("should check available slug of project" , function () {
-  //   //project.checkAvailableSlug
-  // });
-
-  // it("should update project slug" , function () {
-  //   //setSlug
+  //   project.checkAvailableSlug
   // });
 
   // todo: https://github.com/mapic/mapic.js/issues/6

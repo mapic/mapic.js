@@ -115,7 +115,7 @@ Wu.App = Wu.Class.extend({
 			var store = Wu.parse(response);
 
 			// build app
-			app.build(store)
+			app.build(store);
 		});
 	},
 

@@ -1497,7 +1497,7 @@ input.target-input.polygon {
     position: fixed;
     height: 400px;
     width: 100%;
-    top: 100px;
+    top: calc(50% - 250px);
 }
 
 .login-box {

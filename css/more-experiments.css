@@ -1,39 +1,43 @@
 
-/*graph styling experiement*/
-/*.big-graph-outer-container {
-    background: rgba(255, 255, 255, 0.14);
-    color: white;
-    padding-bottom: 40px;
+.smooth-fullscreen-save.pre-render {
+    font-size: 15px;
+    text-align: center;
+    padding: 8px;
+    font-weight: bold;
+    float: left;
+    margin-left: 20%;
+    margin-top: 0px;
 }
-.big-graph-info-container {
+
+.smooth-fullscreen-save {
+    margin-top: 10px;
+    border: 1px solid #DCDCDC;
     width: auto;
-    margin: auto;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
+    position: absolute;
     padding: 5px;
-    max-width: 300px;
+    font-size: 19px;
+    border-radius: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: #F9F9F9;
+    color: #616161;
+    font-weight: 500;
+    cursor: pointer;
 }
 
-.big-graph-title {
-    font-size: 20px;
-    font-weight: 600;
-    text-decoration: none;
-}
-.big-graph-current-day {
-    font-size: 16px;
+
+.smooth-fullscreen-save.update-style {
+    position: relative;
+    width: 140px;
+    margin: auto;
+    float: right;
+    margin-right: 20%;
 }
 
-.big-slider-button-container {
-    color: rgba(255, 255, 255, 0.78);
+.smooth-fullscreen-save.update-style {
+    font-size: 15px;
+    text-align: center;
+    padding: 8px;
+    font-weight: bold;
+    margin-bottom: 100px;
 }
-
-.big-slider-inner-container {
-    top: -30px;
-    background: rgba(0, 0, 0, 0);
-}
-
-.big-slider-play-button:hover, .big-slider-step-forward:hover, .big-slider-tap-forward:hover, .big-slider-step-backward:hover, .big-slider-tap-backward:hover {
-    color: white;
-}
-
-*/

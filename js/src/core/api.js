@@ -23,17 +23,14 @@ Wu.Api = Wu.Class.extend({
 	},
 
 
-
-
-
-
-
-
+	// pre-render
+	preRender : function (options, done) {
+		var path = '/v2/tiles/render';
+		this.post(path, options, done);
+	},
 
 
 	// PROJECTS
-
-
 	createProject : function (options, done) {
 		// var path = '/api/project/create';
 		var path = '/v2/projects/create';

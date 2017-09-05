@@ -60,8 +60,11 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		this._buttonWrapper = Wu.DomUtil.create('div', 'button-wrapper displayNone', this._container);
 		this._updateStyleButton = Wu.DomUtil.create('div', 'smooth-fullscreen-save update-style', this._buttonWrapper, 'Update Style');
 
+		this._preRenderButton = Wu.DomUtil.create('div', 'smooth-fullscreen-save pre-render', this._buttonWrapper, 'Render');
+
 		// Event for click button
 		Wu.DomEvent.on(this._updateStyleButton, 'click', this._updateStyle, this);		
+		Wu.DomEvent.on(this._preRenderButton, 'click', this._preRender, this);		
 
 		// Ability to save styling as a template
 		this._initTemplateContent();
@@ -69,10 +72,22 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		// Mark inited
 		this._inited = true;
 
-
 	},
 
+	_preRender : function () {
+		console.log('_preRender!', this);
 
+		// var confirmed = confirm('Are you sure you want to pre-render the layer?');
+		// if (!confirmed) return;
+
+		// request pre-render
+		app.api.preRender({
+			layer_id : this._layer._getLayerUuid()
+		}, function (err, results) {
+			console.log('err, results', err, results);
+		});
+		
+	},
 
 	_initVectorStyler : function () {
 

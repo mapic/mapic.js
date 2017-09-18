@@ -534,19 +534,27 @@ Wu.Control.Chart = Wu.Control.extend({
 		var xy_sum = 0;
 
 		x.forEach(function (value, i) {
-			x_sum += value;
+			if (!_.isNaN(value)) {
+				x_sum += value;
+			}
 		});
 
 		y.forEach(function (value, i) {
-			y_sum += value;
+			if (!_.isNaN(value)) {
+				y_sum += value;
+			}
 		});
 
 		xx.forEach(function (value, i) {
-			xx_sum += value;
+			if (!_.isNaN(value)) {
+				xx_sum += value;
+			}
 		});
 
 		xy.forEach(function (value, i) {
-			xy_sum += value;
+			if (!_.isNaN(value)) {
+				xy_sum += value;
+			}
 		});
 
 		var n = y.length;
@@ -739,7 +747,8 @@ Wu.Control.Chart = Wu.Control.extend({
 
 			if (!setting) return;
 
-			if ( _key == 'lat' || _key == 'lng' || _key == 'geom' || _key == 'the_geom_3857' || _key == 'the_geom_4326' ) return;
+			// if ( _key == 'lat' || _key == 'lng' || _key == 'geom' || _key == 'the_geom_3857' || _key == 'the_geom_4326' ) return;
+			if ( _key == 'geom' || _key == 'the_geom_3857' || _key == 'the_geom_4326' ) return;
 			
 			// Do not show field if there is no value
 			if ( !_val ) return;

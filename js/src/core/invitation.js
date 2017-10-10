@@ -59,12 +59,17 @@ Wu.Invite = Wu.Class.extend({
 		var logo = Wu.DomUtil.create('div', 'logo', logo_wrap);
 
 		// set image
-		var logo_img = this.config.logos.invitationLogo;
-		logo.style.backgroundImage = logo_img.backgroundImage;
+		// var logo_img = this.config.logos.invitationLogo;
+		var logo_img = this.config.logos.loginLogo.image;
+		// logo.style.backgroundImage = logo_img.backgroundImage;
+		logo.style.backgroundImage = logo_img;
 		
 		// set width
-		var width = this.config.loginLogoWidth || 210;
-		logo.style.width = width + 'px';
+		// var width = this.config.loginLogoWidth || 210;
+		var width = 360;
+		var height = 210;
+		logo.style.width = parseInt(width) + 'px';
+		logo.style.height = parseInt(height) + 'px';
 	},
 	
 
@@ -262,7 +267,7 @@ Wu.Invite = Wu.Class.extend({
 		privacy_checkbox.id = 'privacy-checkbox';
 		var privacy_label = document.createElement('label')
 		privacy_label.htmlFor = 'privacy-checkbox';
-		privacy_label.innerHTML = 'I have read and agree to Systemapic\'s <a href="/privacy-policy" target="_blank">Terms and Conditions</a>';
+		privacy_label.innerHTML = 'I have read and agree to Mapic\'s <a href="/privacy-policy" target="_blank">Terms and Conditions</a>';
 		input_wrapper.appendChild(privacy_label);
 
 		// submit button

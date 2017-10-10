@@ -113,7 +113,7 @@ Wu.Chrome.SettingsContent.Extras = Wu.Chrome.SettingsContent.extend({
 		}
 
 		var wrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
-		var header = Wu.DomUtil.create('div', 'chrome-content-header globesar-extras', wrapper, 'Globesar Extras');
+		var header = Wu.DomUtil.create('div', 'chrome-content-header globesar-extras', wrapper, 'Satellite Settings');
 
 		this.layer = this._project.getLayer(this.layerUuid);
 

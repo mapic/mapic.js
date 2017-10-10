@@ -16,7 +16,8 @@ Wu.MapPane = Wu.Pane.extend({
             // 'cartocss',
             'draw',
             'wms'
-        ]
+        ],
+        maxZoom : 18
     },
     
     _initialize : function () {
@@ -112,11 +113,13 @@ Wu.MapPane = Wu.Pane.extend({
 
     _initLeaflet : function () {
 
+        var maxZoom = this.options.maxZoom;
+
         // create new map
         var map = this._map = app._map = L.map('map', {
             worldCopyJump : true,
             attributionControl : false,
-            maxZoom : 19,
+            maxZoom : maxZoom,
             minZoom : 0,
             zoomControl : false,
             inertia : false,
@@ -377,7 +380,7 @@ Wu.MapPane = Wu.Pane.extend({
             // set maxBoudns
         map.setMaxBounds(maxBounds);
         map.options.minZoom = bounds.minZoom;
-        map.options.maxZoom = bounds.maxZoom > 19 ? 19 : bounds.maxZoom;
+        map.options.maxZoom = bounds.maxZoom > this.options.maxZoom ? this.options.maxZoom : bounds.maxZoom;
     },
 
     _clearBounds : function () {
@@ -393,7 +396,7 @@ Wu.MapPane = Wu.Pane.extend({
                 lng : '-180'
             },
             minZoom : '1',
-            maxZoom : '20'
+            maxZoom : this.options.maxZoom.toString()
         };
         var southWest = L.latLng(noBounds.southWest.lat, noBounds.southWest.lng);
         var northEast = L.latLng(noBounds.northEast.lat, noBounds.northEast.lng);
@@ -420,7 +423,7 @@ Wu.MapPane = Wu.Pane.extend({
                 lng : '-180'
             },
             minZoom : '1',
-            maxZoom : '20'
+            maxZoom : this.options.maxZoom.toString()
         };
 
         // set bounds to project
@@ -443,15 +446,15 @@ Wu.MapPane = Wu.Pane.extend({
         if (bounds) {
             var southWest   = L.latLng(bounds.southWest.lat, bounds.southWest.lng);
             var northEast   = L.latLng(bounds.northEast.lat, bounds.northEast.lng);
-                var maxBounds   = L.latLngBounds(southWest, northEast);
+            var maxBounds   = L.latLngBounds(southWest, northEast);
             var minZoom     = bounds.minZoom;
             var maxZoom     = bounds.maxZoom;
 
-                if (bounds == this._nullBounds) {
-                    map.setMaxBounds(false);
-                } else {
-                    map.setMaxBounds(maxBounds);
-                }
+            if (bounds == this._nullBounds) {
+                map.setMaxBounds(false);
+            } else {
+                map.setMaxBounds(maxBounds);
+            }
             
             // set zoom
             map.options.minZoom = minZoom;

@@ -94,8 +94,9 @@ Wu.Chrome.Projects = Wu.Chrome.extend({
 		var tooltipText = '';
 		var tooltipWidth = '';
 		var usersNo;
-		var editorsNo = project.store.access.edit.length;
-		var readersNo = project.store.access.read.length;
+
+		var editorsNo = _.size(project.store.access.edit);
+		var readersNo = _.size(project.store.access.read);
 
 		// if project is not created by self -> shared with the user
 		if (project.store.createdBy != app.Account.getUuid()) {

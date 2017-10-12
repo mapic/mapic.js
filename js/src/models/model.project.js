@@ -1139,6 +1139,7 @@ Wu.Model.Project = Wu.Model.extend({
 
 	isPublic : function () {
 		var access = this.getAccess();
+		console.log('access: ', access);
 		var isPublic = access.options.isPublic;
 		return !!isPublic
 	},

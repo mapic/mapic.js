@@ -56,8 +56,8 @@ L.UtfGrid = (L.Layer || L.Class).extend({
 		useJsonP: true,
 		pointerCursor: true,
 
-		maxRequests: 4,
-		requestTimeout: 60000
+		maxRequests: 12,
+		requestTimeout: 120000
 	},
 
 	//The thing the mouse is currently on

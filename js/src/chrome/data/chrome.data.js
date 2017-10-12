@@ -2949,32 +2949,32 @@ Wu.Chrome.Data = Wu.Chrome.extend({
             }.bind(this))
         }.bind(this));
 
-        sortedLayers.push({
-            title: "----------------------------------------------------------------------------",
-            disabled: true
-        });
+        // sortedLayers.push({
+        //     title: "----------------------------------------------------------------------------",
+        //     disabled: true
+        // });
 
-        sortedLayers.push({
-            title: "Solid background color",
-            value: "Solid background color"
-        });
+        // sortedLayers.push({
+        //     title: "Solid background color",
+        //     value: "Solid background color"
+        // });
 
-        this._backgroundLayerDropdown = new Wu.Dropdown({
-            fn: this._selectedActiveLayer.bind(this),
-            appendTo: container,
-            content: sortedLayers,
-            project: this._project
-        });
+        // this._backgroundLayerDropdown = new Wu.Dropdown({
+        //     fn: this._selectedActiveLayer.bind(this),
+        //     appendTo: container,
+        //     content: sortedLayers,
+        //     project: this._project
+        // });
 
-        if ( this._project.store.baseLayers.length == 0 ) {
-            this._backgroundLayerDropdown.setValue({
-                title: "Solid background color",
-                value: "Solid background color"
-            });
-            this._enableColorSelector();
-        } else {
-            this._disableColorSelector();
-        }
+        // if ( this._project.store.baseLayers.length == 0 ) {
+        //     this._backgroundLayerDropdown.setValue({
+        //         title: "Solid background color",
+        //         value: "Solid background color"
+        //     });
+        //     this._enableColorSelector();
+        // } else {
+        //     this._disableColorSelector();
+        // }
 
         // select event
         return this._backgroundLayerDropdown;

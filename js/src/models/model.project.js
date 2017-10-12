@@ -94,7 +94,7 @@ Wu.Model.Project = Wu.Model.extend({
 	setBackgroundColor : function (hex) {
 		
 		this.store.colorTheme = hex;
-		this._update('colorTheme');
+		// this._update('colorTheme');
 	},	
 
 	createOSMLayer : function (callback) {

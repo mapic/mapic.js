@@ -1,4 +1,4 @@
-Wu.Forgot = Wu.Class.extend({
+M.Forgot = M.Class.extend({
 
 	options : {
 		title : 'Forgot password',
@@ -13,7 +13,7 @@ Wu.Forgot = Wu.Class.extend({
 
 
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// init container
 		this._initContainer();
@@ -23,7 +23,7 @@ Wu.Forgot = Wu.Class.extend({
 	},
 
 	_initContainer : function () {
-		this._container = Wu.DomUtil.get(this.options.container);
+		this._container = M.DomUtil.get(this.options.container);
 	},
 
 	_initContent : function () {
@@ -32,7 +32,7 @@ Wu.Forgot = Wu.Class.extend({
 		this._createLogo();
 
 		// wrapper
-		this._centralWrapper = Wu.DomUtil.create('div', 'central', this._container);
+		this._centralWrapper = M.DomUtil.create('div', 'central', this._container);
 
 		// login
 		this._createForgot();
@@ -42,17 +42,17 @@ Wu.Forgot = Wu.Class.extend({
 	_createLogo : function () {
 
 		// wrap
-		var logo_wrap = Wu.DomUtil.create('div', 'logo-wrap', this._container);
+		var logo_wrap = M.DomUtil.create('div', 'logo-wrap', this._container);
 
 		// // logo
-		// var logo = Wu.DomUtil.create('div', 'logo', logo_wrap);
+		// var logo = M.DomUtil.create('div', 'logo', logo_wrap);
 
 		// // set image
 		// var logo_img = loginConfig.invitationLogo;
 		// logo.style.backgroundImage = 'url(../' + logo_img + ')';
 
 		// logo
-		var logo = Wu.DomUtil.create('img', '', logo_wrap);
+		var logo = M.DomUtil.create('img', '', logo_wrap);
 
 		// set image
 		var logo_img = loginConfig.invitationLogo;
@@ -63,28 +63,28 @@ Wu.Forgot = Wu.Class.extend({
 	_createForgot : function () {
 
 		// login wrapper
-		var wrapper = Wu.DomUtil.create('div', 'center', this._centralWrapper);
+		var wrapper = M.DomUtil.create('div', 'center', this._centralWrapper);
 
 		// label
-		var label = Wu.DomUtil.create('div', 'top-label', wrapper, this.options.title);
+		var label = M.DomUtil.create('div', 'top-label', wrapper, this.options.title);
 	
 		// text
-		var textWrapper = Wu.DomUtil.create('div', 'text-wrapper', wrapper);
-		this._text = Wu.DomUtil.create('div', 'text-content', textWrapper);
+		var textWrapper = M.DomUtil.create('div', 'text-wrapper', wrapper);
+		this._text = M.DomUtil.create('div', 'text-content', textWrapper);
 		this._text.innerHTML = this.options.message;
 
 		// wrapper
-		this._inputs = Wu.DomUtil.create('div', 'input-wrapper', wrapper);
+		this._inputs = M.DomUtil.create('div', 'input-wrapper', wrapper);
 
 		// email label
-		this._email = Wu.DomUtil.create('input', 'input forgot', this._inputs, this.options.email);
+		this._email = M.DomUtil.create('input', 'input forgot', this._inputs, this.options.email);
 		this._email.setAttribute('name', 'email');
 
 		// button
-		var button = Wu.DomUtil.create('button', 'button', this._inputs, this.options.button);
+		var button = M.DomUtil.create('button', 'button', this._inputs, this.options.button);
 
 		// click
-		Wu.DomEvent.on(button, 'click', this._sendForgotRequest, this);
+		M.DomEvent.on(button, 'click', this._sendForgotRequest, this);
 
 	},
 

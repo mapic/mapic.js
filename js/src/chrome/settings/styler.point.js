@@ -1,4 +1,4 @@
-Wu.Styler.Point = Wu.Styler.extend({
+M.Styler.Point = M.Styler.extend({
 
 	type : 'point',
 
@@ -49,14 +49,14 @@ Wu.Styler.Point = Wu.Styler.extend({
 		
 
 		// remove divs
-		color_wrapper && Wu.DomUtil.remove(color_wrapper);
-		color_children && Wu.DomUtil.remove(color_children);
-		opacity_wrapper && Wu.DomUtil.remove(opacity_wrapper);
-		opacity_children && Wu.DomUtil.remove(opacity_children);
-		pointsize_wrapper && Wu.DomUtil.remove(pointsize_wrapper);
-		pointsize_children && Wu.DomUtil.remove(pointsize_children);
-		targets && 		Wu.DomUtil.remove(targets);
-		blendmode && 		Wu.DomUtil.remove(blendmode);
+		color_wrapper && M.DomUtil.remove(color_wrapper);
+		color_children && M.DomUtil.remove(color_children);
+		opacity_wrapper && M.DomUtil.remove(opacity_wrapper);
+		opacity_children && M.DomUtil.remove(opacity_children);
+		pointsize_wrapper && M.DomUtil.remove(pointsize_wrapper);
+		pointsize_children && M.DomUtil.remove(pointsize_children);
+		targets && 		M.DomUtil.remove(targets);
+		blendmode && 		M.DomUtil.remove(blendmode);
 	},
 
 	_addPointSizeFields : function (column) {
@@ -71,7 +71,7 @@ Wu.Styler.Point = Wu.Styler.extend({
 		var minMax  = this.carto().pointsize.range || [1,10];
 
 		// line
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id        : 'minmaxpointsize',
 			appendTo  : childWrapper,
 			title     : 'Min/max size',
@@ -80,7 +80,7 @@ Wu.Styler.Point = Wu.Styler.extend({
 		});
 
 		// Inputs
-		var input = new Wu.button({
+		var input = new M.button({
 			id 	  : 'minmaxpointsize',
 			type 	  : 'dualinput',
 			right 	  : true,

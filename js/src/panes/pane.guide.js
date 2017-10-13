@@ -1,4 +1,4 @@
-Wu.Guide = Wu.Evented.extend({
+M.Guide = M.Evented.extend({
 
 	_initialize : function () {
 
@@ -57,32 +57,32 @@ Wu.Guide = Wu.Evented.extend({
 	_initContent : function () {
 
 		// Translucent black backdrop
-		this._bg = Wu.DomUtil.create('div', 'guide-fullscreen-block', app._appPane);
+		this._bg = M.DomUtil.create('div', 'guide-fullscreen-block', app._appPane);
 
 		// The container
-		this._outerContainer = Wu.DomUtil.create('div', 'guide-outer-container', app._appPane);
-		this._container = Wu.DomUtil.create('div', 'guide-container', this._outerContainer);
+		this._outerContainer = M.DomUtil.create('div', 'guide-outer-container', app._appPane);
+		this._container = M.DomUtil.create('div', 'guide-container', this._outerContainer);
 
 		// Welcome container
-		this._welcomeOuterContainer = Wu.DomUtil.create('div', 'tour-welcome-outer-container', this._container);
+		this._welcomeOuterContainer = M.DomUtil.create('div', 'tour-welcome-outer-container', this._container);
 
 		// Welcome text area
-		this._welcomeTextArea = Wu.DomUtil.create('div', 'tour-text-area welcome-text', this._welcomeOuterContainer, this._welcomeText);
+		this._welcomeTextArea = M.DomUtil.create('div', 'tour-text-area welcome-text', this._welcomeOuterContainer, this._welcomeText);
 		
 		// Welcome buttons
-		this._welcomeButtonsContainer = Wu.DomUtil.create('div', 'tour-welcome-buttons-container', this._welcomeOuterContainer);
-		this._welcomeButtonTour = Wu.DomUtil.create('div', 'smooth-button', this._welcomeButtonsContainer, this._tourText);		
-		this._welcomeButtonStart = Wu.DomUtil.create('div', 'smooth-button right', this._welcomeButtonsContainer, this._directButtonText);
+		this._welcomeButtonsContainer = M.DomUtil.create('div', 'tour-welcome-buttons-container', this._welcomeOuterContainer);
+		this._welcomeButtonTour = M.DomUtil.create('div', 'smooth-button', this._welcomeButtonsContainer, this._tourText);		
+		this._welcomeButtonStart = M.DomUtil.create('div', 'smooth-button right', this._welcomeButtonsContainer, this._directButtonText);
 
 		// Welcome disclaimer
-		this._disclaimerContainer = Wu.DomUtil.create('div', 'tour-welcome-disclaimer', this._welcomeOuterContainer);
-		this._disclaimerTextArea = Wu.DomUtil.create('span', 'tour-welcome-disclaimerText', this._disclaimerContainer, this._diclaimerText);
-		this._termsButton = Wu.DomUtil.create('a', 'tour-welcome-disclaimer-terms', this._disclaimerContainer, this._diclaimerButtonText);
+		this._disclaimerContainer = M.DomUtil.create('div', 'tour-welcome-disclaimer', this._welcomeOuterContainer);
+		this._disclaimerTextArea = M.DomUtil.create('span', 'tour-welcome-disclaimerText', this._disclaimerContainer, this._diclaimerText);
+		this._termsButton = M.DomUtil.create('a', 'tour-welcome-disclaimer-terms', this._disclaimerContainer, this._diclaimerButtonText);
 		this._termsButton.href = '#';		
 
 		// Welcome contact information
-		this._contactContainer = Wu.DomUtil.create('div', 'tour-welcome-contact', this._welcomeOuterContainer);
-		this._contactTextArea = Wu.DomUtil.create('div', 'tour-welcome-contact-text', this._contactContainer, this._contactText);
+		this._contactContainer = M.DomUtil.create('div', 'tour-welcome-contact', this._welcomeOuterContainer);
+		this._contactTextArea = M.DomUtil.create('div', 'tour-welcome-contact-text', this._contactContainer, this._contactText);
 
 		// Centralize this._container
 		this._centralize(this._container, 400);
@@ -104,18 +104,18 @@ Wu.Guide = Wu.Evented.extend({
 		this._centralize(this._container, 550);
 
 		// Build elements
-		this._termsContainer = Wu.DomUtil.create('div', 'tour-terms-container', this._container);
-		this._termsTextArea = Wu.DomUtil.create('div', 'tour-terms-text-area', this._termsContainer, this._termsText);
+		this._termsContainer = M.DomUtil.create('div', 'tour-terms-container', this._container);
+		this._termsTextArea = M.DomUtil.create('div', 'tour-terms-text-area', this._termsContainer, this._termsText);
 
-		this._termsButtonContainer = Wu.DomUtil.create('div', 'tour-terms-button-container', this._termsContainer);
-		this._termsButtonOK = Wu.DomUtil.create('div', 'terms-ok smooth-button', this._termsButtonContainer, this._termsOkayText);
+		this._termsButtonContainer = M.DomUtil.create('div', 'tour-terms-button-container', this._termsContainer);
+		this._termsButtonOK = M.DomUtil.create('div', 'terms-ok smooth-button', this._termsButtonContainer, this._termsOkayText);
 
 		// Event listnener
-		Wu.DomEvent.on(this._termsButtonOK, 'click', this._closeTerms, this);
+		M.DomEvent.on(this._termsButtonOK, 'click', this._closeTerms, this);
 
 		// Time with CSS transitions
 		setTimeout(function() {
-			Wu.DomUtil.addClass(this._welcomeOuterContainer, 'displayNone');
+			M.DomUtil.addClass(this._welcomeOuterContainer, 'displayNone');
 			this._startTerms();
 		}.bind(this), 250);	
 	
@@ -137,10 +137,10 @@ Wu.Guide = Wu.Evented.extend({
 		setTimeout(function() {
 			
 			this._welcomeOuterContainer.style.opacity = 1;
-			Wu.DomUtil.removeClass(this._welcomeOuterContainer, 'displayNone');
+			M.DomUtil.removeClass(this._welcomeOuterContainer, 'displayNone');
 
 			// this._termsContainer.remove();
-			Wu.DomUtil.remove(this._termsContainer);
+			M.DomUtil.remove(this._termsContainer);
 			this._termsContainer = null;
 
 
@@ -172,7 +172,7 @@ Wu.Guide = Wu.Evented.extend({
 	startTour : function () {
 
 		// Slide container
-		this._tourContainer = Wu.DomUtil.create('div', 'tour-container', this._container);
+		this._tourContainer = M.DomUtil.create('div', 'tour-container', this._container);
 
 		// Need to have a little delay for opacity animation to work
 		setTimeout(function () {
@@ -180,25 +180,25 @@ Wu.Guide = Wu.Evented.extend({
 		}.bind(this), 50)
 		
 		// GIF images
-		this._guideImagesContainer = Wu.DomUtil.create('div', 'guide-images-container', this._tourContainer);
-		this._guideImages = Wu.DomUtil.create('div', 'guide-images', this._guideImagesContainer);
-		this._guideImagesBackground = Wu.DomUtil.create('div', 'guide-background', this._guideImages);
+		this._guideImagesContainer = M.DomUtil.create('div', 'guide-images-container', this._tourContainer);
+		this._guideImages = M.DomUtil.create('div', 'guide-images', this._guideImagesContainer);
+		this._guideImagesBackground = M.DomUtil.create('div', 'guide-background', this._guideImages);
 		this._guideImagesBackground.appendChild(this.img_blank);
-		this._guideImagesForeground = Wu.DomUtil.create('div', 'guide-foreground', this._guideImages);
+		this._guideImagesForeground = M.DomUtil.create('div', 'guide-foreground', this._guideImages);
 
 		// Dots
-		this._dotsContainer = Wu.DomUtil.create('div', 'tour-guide-dots-container', this._tourContainer);
-		this._dot1 = Wu.DomUtil.create('div', 'tour-dot', this._dotsContainer);
-		this._dot2 = Wu.DomUtil.create('div', 'tour-dot', this._dotsContainer);
-		this._dot3 = Wu.DomUtil.create('div', 'tour-dot', this._dotsContainer);
-		this._dot4 = Wu.DomUtil.create('div', 'tour-dot', this._dotsContainer);
+		this._dotsContainer = M.DomUtil.create('div', 'tour-guide-dots-container', this._tourContainer);
+		this._dot1 = M.DomUtil.create('div', 'tour-dot', this._dotsContainer);
+		this._dot2 = M.DomUtil.create('div', 'tour-dot', this._dotsContainer);
+		this._dot3 = M.DomUtil.create('div', 'tour-dot', this._dotsContainer);
+		this._dot4 = M.DomUtil.create('div', 'tour-dot', this._dotsContainer);
 
 		// Text area
-		this._textArea = Wu.DomUtil.create('div', 'tour-text-area', this._tourContainer);
+		this._textArea = M.DomUtil.create('div', 'tour-text-area', this._tourContainer);
 
 		// Buttons
-		this._buttonsContainer = Wu.DomUtil.create('div', 'tour-buttons-container', this._tourContainer);
-		this._nextButton = Wu.DomUtil.create('div', 'smooth-button relative', this._buttonsContainer);
+		this._buttonsContainer = M.DomUtil.create('div', 'tour-buttons-container', this._tourContainer);
+		this._nextButton = M.DomUtil.create('div', 'smooth-button relative', this._buttonsContainer);
 
 		// Know which GIF we're showing
 		this.counter = 1;
@@ -219,7 +219,7 @@ Wu.Guide = Wu.Evented.extend({
 		}.bind(this), 1000);
 
 		// Register click event on button
-		Wu.DomEvent.on(this._nextButton, 'click', this.next, this);
+		M.DomEvent.on(this._nextButton, 'click', this.next, this);
 		
 	},
 
@@ -235,7 +235,7 @@ Wu.Guide = Wu.Evented.extend({
 		// Going from "Layers" to "Description/legends"
 		if ( this.counter == 1 ) { 			
 			
-			Wu.DomUtil.remove(this.img_layers);
+			M.DomUtil.remove(this.img_layers);
 			// this.img_layers.remove(); 
 			
 			this.img_layers = null;
@@ -254,7 +254,7 @@ Wu.Guide = Wu.Evented.extend({
 		// Going from "Description/legends" to "Graph"
 		if ( this.counter == 2 ) { 
 			// this.img_info.remove();
-			Wu.DomUtil.remove(this.img_info);
+			M.DomUtil.remove(this.img_info);
 			this.img_info = null;
 			this._guideImagesForeground.appendChild(this.img_graph); 
 
@@ -273,7 +273,7 @@ Wu.Guide = Wu.Evented.extend({
 		// Going from "Graph" to "Multi Graph"
 		if ( this.counter == 3 ) {
 			// this.img_graph.remove();
-			Wu.DomUtil.remove(this.img_graph);
+			M.DomUtil.remove(this.img_graph);
 			this.img_graph = null;
 			this._guideImagesForeground.appendChild(this.img_multi); 
 			this._nextButton.innerHTML = this._finalButtonText;
@@ -337,17 +337,17 @@ Wu.Guide = Wu.Evented.extend({
 
 
 	addEvents : function () {
-		Wu.DomEvent.on(this._welcomeButtonStart, 'click', this._clickClose, this);
-		Wu.DomEvent.on(this._welcomeButtonTour, 'click', this._initTour, this);
-		Wu.DomEvent.on(this._termsButton, 'click', this._initTerms, this);
-		Wu.DomEvent.on(window, 'keydown', this._keyDown, this);
+		M.DomEvent.on(this._welcomeButtonStart, 'click', this._clickClose, this);
+		M.DomEvent.on(this._welcomeButtonTour, 'click', this._initTour, this);
+		M.DomEvent.on(this._termsButton, 'click', this._initTerms, this);
+		M.DomEvent.on(window, 'keydown', this._keyDown, this);
 	},
 
 	removeEvents : function () {
-		Wu.DomEvent.off(this._welcomeButtonStart, 'click', this._clickClose, this);
-		Wu.DomEvent.off(this._welcomeButtonTour, 'click', this._initTour, this);
-		Wu.DomEvent.off(this._termsButton, 'click', this._initTerms, this);
-		Wu.DomEvent.off(window, 'keydown', this._keyDown, this);
+		M.DomEvent.off(this._welcomeButtonStart, 'click', this._clickClose, this);
+		M.DomEvent.off(this._welcomeButtonTour, 'click', this._initTour, this);
+		M.DomEvent.off(this._termsButton, 'click', this._initTerms, this);
+		M.DomEvent.off(window, 'keydown', this._keyDown, this);
 	},
 
 	_keyDown : function (e) {
@@ -368,14 +368,14 @@ Wu.Guide = Wu.Evented.extend({
 	},
 
 	close : function (e) {
-		e && Wu.DomEvent.stop(e);
+		e && M.DomEvent.stop(e);
 
 		if (!this._container) return;
 
 		this.removeEvents();
 
-		Wu.DomUtil.remove(this._container);
-		Wu.DomUtil.remove(this._bg);
+		M.DomUtil.remove(this._container);
+		M.DomUtil.remove(this._bg);
 	},
 
 	_onDoingScreenshot : function () {

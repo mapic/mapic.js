@@ -1,4 +1,4 @@
-Wu.StartPane = Wu.Pane.extend({
+M.StartPane = M.Pane.extend({
 
 	dimensions : {
 		screenW 	: 	0,
@@ -41,7 +41,7 @@ Wu.StartPane = Wu.Pane.extend({
 		if (this._spinner) this._spinner.disable();
 
 		// delete divs
-		if (this._container) Wu.DomUtil.remove(this._container);
+		if (this._container) M.DomUtil.remove(this._container);
 
 	},
 
@@ -49,11 +49,11 @@ Wu.StartPane = Wu.Pane.extend({
 	initContainer : function () {
 
 		// create container 
-		this._container = Wu.DomUtil.create('div', 'startpane-canvas-container', app._appPane);
+		this._container = M.DomUtil.create('div', 'startpane-canvas-container', app._appPane);
 
 		// create content for black box
 		var content = this._initContent();
-		this._wrapper = Wu.DomUtil.create('div', 'spinning-wrapper', this._container);
+		this._wrapper = M.DomUtil.create('div', 'spinning-wrapper', this._container);
 
 		this._wrapper.appendChild(content);
 
@@ -88,20 +88,20 @@ Wu.StartPane = Wu.Pane.extend({
 	_initContent : function () {
 
 		// create wrapper
-		var wrapper 			= Wu.DomUtil.create('div', 'startpane-spinning-content');
+		var wrapper 			= M.DomUtil.create('div', 'startpane-spinning-content');
 
 		// black box in centre
-		this._bannerContainer    	= Wu.DomUtil.create('div', 'startpane-banner-container', wrapper);
-		this._banner 			= Wu.DomUtil.create('div', 'startpane-banner', this._bannerContainer);
+		this._bannerContainer    	= M.DomUtil.create('div', 'startpane-banner-container', wrapper);
+		this._banner 			= M.DomUtil.create('div', 'startpane-banner', this._bannerContainer);
 
-		this._recentProjectsContainer 	= Wu.DomUtil.create('div', 'startpane-recent-projects-container', this._banner);
+		this._recentProjectsContainer 	= M.DomUtil.create('div', 'startpane-recent-projects-container', this._banner);
 		
 		if ( this._getLatestProjects().length > 1 ){
 			//1 and not 0 since hidden/default project is counted in
 
 			//there are some projects for this user
 			//console.log("has: " + this._getLatestProjects().length + " projects");
-			this._recentProjectsHeader = Wu.DomUtil.create('h1', 'startpane-header-title', this._recentProjectsContainer, 'Latest projects:');
+			this._recentProjectsHeader = M.DomUtil.create('h1', 'startpane-header-title', this._recentProjectsContainer, 'Latest projects:');
 
 		} else {
 
@@ -109,9 +109,9 @@ Wu.StartPane = Wu.Pane.extend({
 			
 			if (app.access.to.create_project()) {
 				//the user has access to create projects
-				this._recentProjectsHeader = Wu.DomUtil.create('h1', 'startpane-header-title', this._recentProjectsContainer, 'Get started:');
-				this._hasAccessMessage = Wu.DomUtil.create('p', 'startpane-has-access',this._recentProjectsContainer,'Hello ' +app.Account.getFirstName()+'.<br/>You have no projects yet. Choose one of your clients and click the respective button below to start a project.');
-				this._clientsContainer = Wu.DomUtil.create('div', 'startpane-client-container',this._recentProjectsContainer);
+				this._recentProjectsHeader = M.DomUtil.create('h1', 'startpane-header-title', this._recentProjectsContainer, 'Get started:');
+				this._hasAccessMessage = M.DomUtil.create('p', 'startpane-has-access',this._recentProjectsContainer,'Hello ' +app.Account.getFirstName()+'.<br/>You have no projects yet. Choose one of your clients and click the respective button below to start a project.');
+				this._clientsContainer = M.DomUtil.create('div', 'startpane-client-container',this._recentProjectsContainer);
 
 				for (c in app.Clients) {
 					var client = app.Clients[c];
@@ -120,13 +120,13 @@ Wu.StartPane = Wu.Pane.extend({
 					var name = client.getName();
 
 
-					this._singleClientContainer = Wu.DomUtil.create('div', 'startpane-single-client-container',this._clientsContainer);
+					this._singleClientContainer = M.DomUtil.create('div', 'startpane-single-client-container',this._clientsContainer);
 					
-					this._logoContainer = Wu.DomUtil.create('div', 'startpane-client-logo', this._singleClientContainer, '<img src='+logo+'>');
+					this._logoContainer = M.DomUtil.create('div', 'startpane-client-logo', this._singleClientContainer, '<img src='+logo+'>');
 					//adding the client name 
-					this._clientDiv = Wu.DomUtil.create('div', 'startpane-client-name', this._singleClientContainer, '<p>' +name + '</p>');
-					this._createProjectLink = Wu.DomUtil.create('div', 'startpane-new-project', this._singleClientContainer, '<p>Create new project.</p>');
-					Wu.DomEvent.on(this._createProjectLink, 'mousedown', function() { this.createProjectFromClient(client); }, this);
+					this._clientDiv = M.DomUtil.create('div', 'startpane-client-name', this._singleClientContainer, '<p>' +name + '</p>');
+					this._createProjectLink = M.DomUtil.create('div', 'startpane-new-project', this._singleClientContainer, '<p>Create new project.</p>');
+					M.DomEvent.on(this._createProjectLink, 'mousedown', function() { this.createProjectFromClient(client); }, this);
 
 					// add tooltip
 					app.Tooltip.add(this._logoContainer, 'Click to create new project.');
@@ -134,13 +134,13 @@ Wu.StartPane = Wu.Pane.extend({
 
 			} else {
 				//the user has no access to create projects
-				this._recentProjectsHeader = Wu.DomUtil.create('h1', 'startpane-header-title', this._recentProjectsContainer, 'No current projects.');
-				this._hasNoAccessMessage = Wu.DomUtil.create('p', 'startpane-has-no-access',this._recentProjectsContainer,'Hello ' +app.Account.getFirstName()+',<br/>You are currently not participating in any projects, and you are not allowed to create a project. <br/>Please wait for an invitation.');
+				this._recentProjectsHeader = M.DomUtil.create('h1', 'startpane-header-title', this._recentProjectsContainer, 'No current projects.');
+				this._hasNoAccessMessage = M.DomUtil.create('p', 'startpane-has-no-access',this._recentProjectsContainer,'Hello ' +app.Account.getFirstName()+',<br/>You are currently not participating in any projects, and you are not allowed to create a project. <br/>Please wait for an invitation.');
 				
 			}
 		}	
 
-		this._projectList = Wu.DomUtil.create('div', 'startpane-project-list', this._recentProjectsContainer);
+		this._projectList = M.DomUtil.create('div', 'startpane-project-list', this._recentProjectsContainer);
 		// return 
 		return wrapper;
 		
@@ -209,8 +209,8 @@ Wu.StartPane = Wu.Pane.extend({
 		var newProject = {};
 
 		// create container
-		newProject._projectContainer = Wu.DomUtil.create('div', 'start-panne-recent-projects', this._projectList);
-		newProject._projectThumb = Wu.DomUtil.create('img', '', newProject._projectContainer);
+		newProject._projectContainer = M.DomUtil.create('div', 'start-panne-recent-projects', this._projectList);
+		newProject._projectThumb = M.DomUtil.create('img', '', newProject._projectContainer);
 
 		// Load image in memory before we paste it (to see image orientation)
 		var img = new Image();
@@ -247,24 +247,24 @@ Wu.StartPane = Wu.Pane.extend({
 			newProject._projectThumb.src = ssrc; 
 		};
 
-		newProject._projectTitle = Wu.DomUtil.create('div', 'start-project-name', newProject._projectContainer);
+		newProject._projectTitle = M.DomUtil.create('div', 'start-project-name', newProject._projectContainer);
 		newProject._projectTitle.innerHTML = project.getName();
 
-		// newProject._clientName = Wu.DomUtil.create('div', 'start-project-client-name', newProject._projectContainer);
+		// newProject._clientName = M.DomUtil.create('div', 'start-project-client-name', newProject._projectContainer);
 		// newProject._clientName.innerHTML = client.getName();
 
 		// if (client.getLogo()) {
-		// 	newProject._clientLogo = Wu.DomUtil.create('img', 'start-project-client-logo', newProject._projectContainer);
+		// 	newProject._clientLogo = M.DomUtil.create('img', 'start-project-client-logo', newProject._projectContainer);
 		// 	newProject._clientLogo.src = client.getLogo() + '?access_token=' + app.tokens.access_token;
 		// }
 
 		this.projectContainers.push(newProject);
 
 		// Adjust for short titles
-		if (project.getName().length < 22) Wu.DomUtil.addClass(newProject._projectTitle, 'short-name');
+		if (project.getName().length < 22) M.DomUtil.addClass(newProject._projectTitle, 'short-name');
 		
 		// select project hook
-		Wu.DomEvent.on(newProject._projectContainer, 'click', function() { this.selectProject(project); }, this);
+		M.DomEvent.on(newProject._projectContainer, 'click', function() { this.selectProject(project); }, this);
 
 	},
 
@@ -291,7 +291,7 @@ Wu.StartPane = Wu.Pane.extend({
 		// refresh sidepane
 		// app.SidePane.refreshMenu();
 
-		Wu.Mixin.Events.fire('projectSelected', { detail : {
+		M.Mixin.Events.fire('projectSelected', { detail : {
 			projectUuid : project.getUuid()
 		}});  
 
@@ -450,10 +450,10 @@ Wu.StartPane = Wu.Pane.extend({
 		for (var i = 0; i < this.projects.length; i++) {
 			if (i < no) {
 				var project = this.projectContainers[i];
-				if (project) Wu.DomUtil.removeClass(project._projectContainer, 'displayNone');
+				if (project) M.DomUtil.removeClass(project._projectContainer, 'displayNone');
 			} else {
 				var project = this.projectContainers[i];
-				if (project) Wu.DomUtil.addClass(project._projectContainer, 'displayNone');
+				if (project) M.DomUtil.addClass(project._projectContainer, 'displayNone');
 			}	    
 		}
 
@@ -501,7 +501,7 @@ Wu.StartPane = Wu.Pane.extend({
 			folders : []
 		};
 		// create new project with options, and save
-		var project = new Wu.Model.Project(store);
+		var project = new M.Model.Project(store);
 		project.editMode = true;
 
 		var sidepaneClient = this._getSidepaneClient(client);
@@ -519,7 +519,7 @@ Wu.StartPane = Wu.Pane.extend({
 
 	_projectCreated : function (project, json) {
 
-		var result = Wu.parse(json);
+		var result = M.parse(json);
 		var error  = result.error;
 		var store  = result.project;
 

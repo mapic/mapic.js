@@ -28,7 +28,7 @@ moment().utc();
 
 // created by cube layer
 // Annual Graph (cyclical)
-Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
+M.Graph.SnowCoverFraction = M.Graph.extend({
 
     // languages
     localization : {
@@ -168,7 +168,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             if (err) return done(err);
 
             // parse
-            var fractions = Wu.parse(query_results);
+            var fractions = M.parse(query_results);
 
             // parse dates
             var parsed_data = this._parseDates(fractions);
@@ -343,48 +343,48 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
 
         // todo: refactor the DOM, incl. animator
-        this._container              = Wu.DomUtil.create('div', 'big-graph-outer-container',            this.options.appendTo);
-        this._infoContainer          = Wu.DomUtil.create('div', 'big-graph-info-container',             this._container);
+        this._container              = M.DomUtil.create('div', 'big-graph-outer-container',            this.options.appendTo);
+        this._infoContainer          = M.DomUtil.create('div', 'big-graph-info-container',             this._container);
 
         // resizer
-        this._resizer                = Wu.DomUtil.create('div', 'big-graph-resizer', this._container, '<i class="fa fa-bars" aria-hidden="true"></i>');
+        this._resizer                = M.DomUtil.create('div', 'big-graph-resizer', this._container, '<i class="fa fa-bars" aria-hidden="true"></i>');
 
         // plugin container
-        this._pluginMainContainer    = Wu.DomUtil.create('div', 'big-graph-plugin-container',           this._container);
-        this._pluginContainer        = Wu.DomUtil.create('div', 'big-graph-plugin-main-container',      this._pluginMainContainer);
-        this._pluginLegendsContainer = Wu.DomUtil.create('div', 'big-graph-plugin-legends-container',   this._pluginMainContainer);
-        this._pluginLegendsHeader    = Wu.DomUtil.create('div', 'graph-legend',                         this._pluginLegendsContainer);
-        this._legendContainer        = Wu.DomUtil.create('div', 'graph-legend',                         this._pluginLegendsContainer);
+        this._pluginMainContainer    = M.DomUtil.create('div', 'big-graph-plugin-container',           this._container);
+        this._pluginContainer        = M.DomUtil.create('div', 'big-graph-plugin-main-container',      this._pluginMainContainer);
+        this._pluginLegendsContainer = M.DomUtil.create('div', 'big-graph-plugin-legends-container',   this._pluginMainContainer);
+        this._pluginLegendsHeader    = M.DomUtil.create('div', 'graph-legend',                         this._pluginLegendsContainer);
+        this._legendContainer        = M.DomUtil.create('div', 'graph-legend',                         this._pluginLegendsContainer);
         
         // mask titles
-        this._maskTitle              = Wu.DomUtil.create('div', 'big-graph-mask-title',                 this._infoContainer, '');
-        this._layerTitle             = Wu.DomUtil.create('div', 'big-graph-title',                      this._infoContainer, '');
+        this._maskTitle              = M.DomUtil.create('div', 'big-graph-mask-title',                 this._infoContainer, '');
+        this._layerTitle             = M.DomUtil.create('div', 'big-graph-title',                      this._infoContainer, '');
         
         // mask meta
-        this._maskMeta               = Wu.DomUtil.create('div', 'big-graph-mask-meta-container',        this._infoContainer);
+        this._maskMeta               = M.DomUtil.create('div', 'big-graph-mask-meta-container',        this._infoContainer);
        
         // date text
-        this._dateTitle              = Wu.DomUtil.create('div', 'big-graph-current-day',                this._container, '');
+        this._dateTitle              = M.DomUtil.create('div', 'big-graph-current-day',                this._container, '');
        
         // container for graph
-        this._graphContainer         = Wu.DomUtil.create('div', 'big-graph-inner-container',            this._container);
+        this._graphContainer         = M.DomUtil.create('div', 'big-graph-inner-container',            this._container);
         
         // add editor items
         if (this.isEditor()) this._addEditorPane();
 
         // add resize event
-        Wu.DomEvent.on(this._resizer, 'mousedown', this._initResize, this);
+        M.DomEvent.on(this._resizer, 'mousedown', this._initResize, this);
     },
 
     _initResize : function () {
-        Wu.DomEvent.on(app._appPane, 'mousemove', this._doResize, this);
-        Wu.DomEvent.on(app._appPane, 'mouseup', this._stopResize, this);
+        M.DomEvent.on(app._appPane, 'mousemove', this._doResize, this);
+        M.DomEvent.on(app._appPane, 'mouseup', this._stopResize, this);
         this._resizer.style.cursor = 'nwse-resize';
     },
 
     _stopResize : function () {
-        Wu.DomEvent.off(app._appPane, 'mousemove', this._doResize, this);
-        Wu.DomEvent.off(app._appPane, 'mouseup', this._stopResize, this);
+        M.DomEvent.off(app._appPane, 'mousemove', this._doResize, this);
+        M.DomEvent.off(app._appPane, 'mouseup', this._stopResize, this);
         this._resizeValues = false;
     },
 
@@ -467,16 +467,16 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
     _addEditorPane : function () {
 
         // container
-        this._editorPane = Wu.DomUtil.create('div', 'big-graph-editor-pane');
+        this._editorPane = M.DomUtil.create('div', 'big-graph-editor-pane');
 
         // insert above outer container
         this.options.appendTo.insertBefore(this._editorPane, this.options.appendTo.firstChild);
 
         // title
-        this._editorPaneTitle = Wu.DomUtil.create('div', 'big-graph-editor-pane-title', this._editorPane, this.locale().layerOptions);
+        this._editorPaneTitle = M.DomUtil.create('div', 'big-graph-editor-pane-title', this._editorPane, this.locale().layerOptions);
 
         // mask filter
-        this._filterPane = Wu.DomUtil.create('div', 'big-graph-editor-filter-pane', this._editorPane);
+        this._filterPane = M.DomUtil.create('div', 'big-graph-editor-filter-pane', this._editorPane);
 
         // mask filter
         if (this.options.editorOptions.mask) {        
@@ -491,13 +491,13 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
     _createFilterCheckbox : function (options) {
 
         // create checkbox
-        var checkbox = Wu.DomUtil.create('div', 'checkbox');
-        var input = Wu.DomUtil.create('input', '', checkbox);
+        var checkbox = M.DomUtil.create('div', 'checkbox');
+        var input = M.DomUtil.create('input', '', checkbox);
         input.setAttribute('type', 'checkbox');
-        input.id = 'checkbox-' + Wu.Util.getRandomChars(5);
+        input.id = 'checkbox-' + M.Util.getRandomChars(5);
         
         // create label
-        var label = Wu.DomUtil.create('label', '', checkbox);
+        var label = M.DomUtil.create('label', '', checkbox);
         label.setAttribute('for', input.id);
         label.innerHTML = this.locale().showData;
 
@@ -507,7 +507,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         }
 
         // check event
-        Wu.DomEvent.on(checkbox, 'mouseup', function (e) {
+        M.DomEvent.on(checkbox, 'mouseup', function (e) {
 
             // toggle
             this.cube().setFilterMask(!this.cube().getFilterMask());
@@ -533,24 +533,24 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
         // create pane
         var pane = this._average_pane = {};
-        pane.container = Wu.DomUtil.create('div', 'average-data-pane-container', this._pluginContainer);
+        pane.container = M.DomUtil.create('div', 'average-data-pane-container', this._pluginContainer);
 
         // create title
-        var title = Wu.DomUtil.create('div', 'average-data-pane-title', pane.container, this.locale().yearlyGraphs);
+        var title = M.DomUtil.create('div', 'average-data-pane-title', pane.container, this.locale().yearlyGraphs);
 
         // create select
-        var btn_group = Wu.DomUtil.create('div', 'btn-group', pane.container);
-        var btn = Wu.DomUtil.create('button', 'btn btn-default dropdown-toggle', btn_group, this.locale().selectYear);
+        var btn_group = M.DomUtil.create('div', 'btn-group', pane.container);
+        var btn = M.DomUtil.create('button', 'btn btn-default dropdown-toggle', btn_group, this.locale().selectYear);
         btn.setAttribute('data-toggle', 'dropdown');
-        var span = Wu.DomUtil.create('span', 'caret', btn);
-        var ul = Wu.DomUtil.create('ul', 'dropdown-menu bullet pull-left pull-top', btn_group);
+        var span = M.DomUtil.create('span', 'caret', btn);
+        var ul = M.DomUtil.create('ul', 'dropdown-menu bullet pull-left pull-top', btn_group);
 
         // years
         years.forEach(function (y, i) {
           
-            var li = Wu.DomUtil.create('li', '', ul);
-            var input = Wu.DomUtil.create('input', '', li);
-            var label = Wu.DomUtil.create('label', '', li, y);
+            var li = M.DomUtil.create('li', '', ul);
+            var input = M.DomUtil.create('input', '', li);
+            var label = M.DomUtil.create('label', '', li, y);
 
             input.id = 'years-dropdown-' + y;
             input.setAttribute('type', 'checkbox');
@@ -559,7 +559,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             label.setAttribute('for', input.id);
 
             // event
-            Wu.DomEvent.on(input, 'click', function (e) {
+            M.DomEvent.on(input, 'click', function (e) {
                 var checked = e.target.checked;
 
                 // toggle
@@ -619,13 +619,13 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
                 if (div) {
                     // show if already created
-                    Wu.DomUtil.removeClass(div, 'displayNone');
+                    M.DomUtil.removeClass(div, 'displayNone');
                 } else {
 
                     // create legend
-                    var legend = Wu.DomUtil.create('div', 'graph-legend-module', this._legendContainer);
-                    var legend_color = Wu.DomUtil.create('div', 'graph-legend-color', legend);
-                    var legend_text = Wu.DomUtil.create('div', 'graph-legend-text', legend, s);
+                    var legend = M.DomUtil.create('div', 'graph-legend-module', this._legendContainer);
+                    var legend_color = M.DomUtil.create('div', 'graph-legend-color', legend);
+                    var legend_text = M.DomUtil.create('div', 'graph-legend-text', legend, s);
 
                     // set color
                     legend_color.style.background = this.getColor(i);
@@ -637,7 +637,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
 
                 // hide
                 var div = this._legendsDOM[s];
-                if (div) Wu.DomUtil.addClass(div, 'displayNone');
+                if (div) M.DomUtil.addClass(div, 'displayNone');
             }
         }.bind(this));
     },
@@ -873,13 +873,13 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
         var rangeText = [range[0], range[1]-1].join('-');
         
         // create divs
-        var year_container = Wu.DomUtil.create('div', 'graph-legend-header', this._pluginLegendsHeader, rangeText);
-        var average_container = Wu.DomUtil.create('div', 'graph-legend-module', this._pluginLegendsHeader);
-        var minmax_container = Wu.DomUtil.create('div', 'graph-legend-module', this._pluginLegendsHeader);
-        var minmax_color = Wu.DomUtil.create('div', 'graph-legend-color', minmax_container);
-        var average_color = Wu.DomUtil.create('div', 'graph-legend-color', average_container);
-        this._legends.minmax_text = Wu.DomUtil.create('div', 'graph-legend-text', minmax_container);
-        this._legends.average_text = Wu.DomUtil.create('div', 'graph-legend-text', average_container);
+        var year_container = M.DomUtil.create('div', 'graph-legend-header', this._pluginLegendsHeader, rangeText);
+        var average_container = M.DomUtil.create('div', 'graph-legend-module', this._pluginLegendsHeader);
+        var minmax_container = M.DomUtil.create('div', 'graph-legend-module', this._pluginLegendsHeader);
+        var minmax_color = M.DomUtil.create('div', 'graph-legend-color', minmax_container);
+        var average_color = M.DomUtil.create('div', 'graph-legend-color', average_container);
+        this._legends.minmax_text = M.DomUtil.create('div', 'graph-legend-text', minmax_container);
+        this._legends.average_text = M.DomUtil.create('div', 'graph-legend-text', average_container);
 
         // set values
         this._legends.minmax_text.innerHTML = this.locale().minmax; //'Min/max';
@@ -1156,7 +1156,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             if (_.isEmpty(value)) return;
 
             // create meta div
-            var div = Wu.DomUtil.create('div', 'big-graph-mask-meta-item', this._maskMeta);
+            var div = M.DomUtil.create('div', 'big-graph-mask-meta-item', this._maskMeta);
             var html = '<span class="mask-item-title">' + _.capitalize(key) + ': </span>';
             html +=  '<span class="mask-item-value">' + _.capitalize(value) + '</span>';
             div.innerHTML = html;
@@ -1212,7 +1212,7 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
             this._fetching = false;
 
             // parse
-            var fractions = Wu.parse(query_results);
+            var fractions = M.parse(query_results);
 
             // parse dates
             var cache = this._parseDates(fractions);
@@ -1316,11 +1316,11 @@ Wu.Graph.SnowCoverFraction = Wu.Graph.extend({
     },
 
     _shadeButtons : function () {
-        Wu.Mixin.Events.fire('shadeButtons'); // refactor
+        M.Mixin.Events.fire('shadeButtons'); // refactor
     },
 
     _unshadeButtons : function () {
-        Wu.Mixin.Events.fire('unshadeButtons');
+        M.Mixin.Events.fire('unshadeButtons');
     },
 
     getCurrentDate : function () {

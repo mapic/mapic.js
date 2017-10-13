@@ -1,4 +1,4 @@
-Wu.Chrome.Right = Wu.Chrome.extend({
+M.Chrome.Right = M.Chrome.extend({
 
 	_ : 'rightchrome', 
 
@@ -24,7 +24,7 @@ Wu.Chrome.Right = Wu.Chrome.extend({
 	initContainer : function () {
 
 		// create the container (just a div to hold errythign)
-		this._container = Wu.DomUtil.create('div', 'chrome chrome-container chrome-right', app._appPane);
+		this._container = M.DomUtil.create('div', 'chrome chrome-container chrome-right', app._appPane);
 
 		// holder for all tabs
 		this._tabs = {};
@@ -33,7 +33,7 @@ Wu.Chrome.Right = Wu.Chrome.extend({
 		if (this.options.tabs.data) {
 
 			// create data selector
-			this._tabs.data = new Wu.Chrome.Data({
+			this._tabs.data = new M.Chrome.Data({
 				appendTo : this._container,
 				chrome : this // ie. right chrome
 			});
@@ -43,7 +43,7 @@ Wu.Chrome.Right = Wu.Chrome.extend({
 		if (this.options.tabs.settings) {
 
 			// create settings selector
-			this._tabs.settings = new Wu.Chrome.SettingsContent.SettingsSelector({
+			this._tabs.settings = new M.Chrome.SettingsContent.SettingsSelector({
 				appendTo : this._container,
 				chrome : this
 			});
@@ -52,11 +52,11 @@ Wu.Chrome.Right = Wu.Chrome.extend({
 
 	_addEvents : function () {
 		// todo
-		Wu.DomEvent.on(window, 'resize', _.throttle(this._onWindowResize, 1000), this);
+		M.DomEvent.on(window, 'resize', _.throttle(this._onWindowResize, 1000), this);
 	},
 
 	_removeEvents : function () {
-		Wu.DomEvent.off(window, 'resize', this._onWindowResize, this);
+		M.DomEvent.off(window, 'resize', this._onWindowResize, this);
 	},
 
 	_onWindowResize : function () {
@@ -83,7 +83,7 @@ Wu.Chrome.Right = Wu.Chrome.extend({
 	open : function (tab) {
 
 		// close other tabs
-		Wu.Mixin.Events.fire('closeMenuTabs');
+		M.Mixin.Events.fire('closeMenuTabs');
 
 		// hide all tabs
 		this._forEachTab(function (tab) {

@@ -1,4 +1,4 @@
-L.Control.Zoom = Wu.Control.extend({
+L.Control.Zoom = M.Control.extend({
 	
 	type : 'zoom',
 

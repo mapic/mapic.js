@@ -1,5 +1,5 @@
 // postgis vector layer
-Wu.VectorLayer = Wu.Model.Layer.extend({
+M.VectorLayer = M.Model.Layer.extend({
 
     initLayer : function () {
         this.update();
@@ -11,8 +11,8 @@ Wu.VectorLayer = Wu.Model.Layer.extend({
     },
 
     _listenLocally : function () {
-        Wu.DomEvent.on(this.layer, 'load', this._onLayerLoaded, this);
-        Wu.DomEvent.on(this.layer, 'loading', this._onLayerLoading, this);
+        M.DomEvent.on(this.layer, 'load', this._onLayerLoaded, this);
+        M.DomEvent.on(this.layer, 'loading', this._onLayerLoading, this);
         
         this.on('disabled', this._onLayerDisabled);
         this.on('enabled', this._onLayerEnabled);
@@ -154,7 +154,7 @@ Wu.VectorLayer = Wu.Model.Layer.extend({
             if (err) return console.error(err);
 
             // parse
-            var p = Wu.parse(points);
+            var p = M.parse(points);
 
             // store locally
             this._labelPoints = p.points;
@@ -389,7 +389,7 @@ Wu.VectorLayer = Wu.Model.Layer.extend({
             }, function (ctx, json) {
                
                 // parse
-                var data = Wu.parse(json);
+                var data = M.parse(json);
 
                 if (!data) return;
 
@@ -419,7 +419,7 @@ Wu.VectorLayer = Wu.Model.Layer.extend({
     _fetchedData : function (ctx, json) {
 
         // parse
-        var data = Wu.parse(json);
+        var data = M.parse(json);
 
         if (!data) return;
 
@@ -530,7 +530,7 @@ Wu.VectorLayer = Wu.Model.Layer.extend({
                 return;
             }
 
-            var data = Wu.parse(json);
+            var data = M.parse(json);
 
             e.data = data;
             var event = e.originalEvent;
@@ -553,7 +553,7 @@ Wu.VectorLayer = Wu.Model.Layer.extend({
         };
 
         // set download id for feedback
-        this._downloadingID = Wu.Util.createRandom(5);
+        this._downloadingID = M.Util.createRandom(5);
 
         app.api.downloadLayerDataset(options, function (err, resp) {
             if (err) {

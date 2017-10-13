@@ -1,4 +1,4 @@
-Wu.Chrome.SettingsContent.Layers = Wu.Chrome.SettingsContent.extend({
+M.Chrome.SettingsContent.Layers = M.Chrome.SettingsContent.extend({
 
 
 	// INITS
@@ -18,22 +18,22 @@ Wu.Chrome.SettingsContent.Layers = Wu.Chrome.SettingsContent.extend({
 	_initContainer : function () {
 
 		// create container
-		this._container = Wu.DomUtil.create('div', 'chrome chrome-content chrome-pane layers', this.options.appendTo);
+		this._container = M.DomUtil.create('div', 'chrome chrome-content chrome-pane layers', this.options.appendTo);
 	},
 
 	_initLayout : function () {
 
 		if (!this._project) return;
 
-		this._topButtonWrapper = Wu.DomUtil.create('div', 'chrome-layers-top-button-wrapper', this._container);
+		this._topButtonWrapper = M.DomUtil.create('div', 'chrome-layers-top-button-wrapper', this._container);
 
 		// Scroller
-		this._midSection = Wu.DomUtil.create('div', 'chrome-middle-section', this._container);
-		this._midOuterScroller = Wu.DomUtil.create('div', 'chrome-middle-section-outer-scroller', this._midSection);
-		this._midInnerScroller = Wu.DomUtil.create('div', 'chrome-middle-section-inner-scroller', this._midOuterScroller);
+		this._midSection = M.DomUtil.create('div', 'chrome-middle-section', this._container);
+		this._midOuterScroller = M.DomUtil.create('div', 'chrome-middle-section-outer-scroller', this._midSection);
+		this._midInnerScroller = M.DomUtil.create('div', 'chrome-middle-section-inner-scroller', this._midOuterScroller);
 
 		// Inner wrapper
-		this._fieldsWrapper = Wu.DomUtil.create('div', 'chrome-field-wrapper', this._midInnerScroller);
+		this._fieldsWrapper = M.DomUtil.create('div', 'chrome-field-wrapper', this._midInnerScroller);
 
 		// Init layer/baselayer toggle
 		this.initLayerBaselayerToggle();
@@ -75,7 +75,7 @@ Wu.Chrome.SettingsContent.Layers = Wu.Chrome.SettingsContent.extend({
 		this._container.style.display = 'block';
 
 		// mark button
-		Wu.DomUtil.addClass(this.options.trigger, 'active-tab');
+		M.DomUtil.addClass(this.options.trigger, 'active-tab');
 
 		// enable edit of layer menu...
 		var layerMenu = app.MapPane.getControls().layermenu;
@@ -94,29 +94,29 @@ Wu.Chrome.SettingsContent.Layers = Wu.Chrome.SettingsContent.extend({
 
 
 	initLayerBaselayerToggle : function () {
-		var wrapper = Wu.DomUtil.create('div',   'chrome-layer-baselayer-toggle', this._topButtonWrapper);
-		this.baselayerButton = Wu.DomUtil.create('div', 'chrome-layer-toggle-button chrome-baselayer', wrapper, 'BASE LAYERS');
-		this.layerButton = Wu.DomUtil.create('div',     'chrome-layer-toggle-button chrome-layer layer-toggle-active', wrapper, 'LAYERS');
+		var wrapper = M.DomUtil.create('div',   'chrome-layer-baselayer-toggle', this._topButtonWrapper);
+		this.baselayerButton = M.DomUtil.create('div', 'chrome-layer-toggle-button chrome-baselayer', wrapper, 'BASE LAYERS');
+		this.layerButton = M.DomUtil.create('div',     'chrome-layer-toggle-button chrome-layer layer-toggle-active', wrapper, 'LAYERS');
 
-		Wu.DomEvent.on(this.layerButton,     'click', this.toggleToLayers, this);
-		Wu.DomEvent.on(this.baselayerButton, 'click', this.toggleToBaseLayers, this);
+		M.DomEvent.on(this.layerButton,     'click', this.toggleToLayers, this);
+		M.DomEvent.on(this.baselayerButton, 'click', this.toggleToBaseLayers, this);
 	},
 
 	toggleToBaseLayers : function () {
-		Wu.DomUtil.addClass(this.baselayerButton, 'layer-toggle-active');
-		Wu.DomUtil.removeClass(this.layerButton, 'layer-toggle-active');
+		M.DomUtil.addClass(this.baselayerButton, 'layer-toggle-active');
+		M.DomUtil.removeClass(this.layerButton, 'layer-toggle-active');
 
-		Wu.DomUtil.addClass(this._fieldsWrapper, 'editing-baselayers');
+		M.DomUtil.addClass(this._fieldsWrapper, 'editing-baselayers');
 
 		this._mode = 'baselayer';
 		this.update();		
 	},
 
 	toggleToLayers : function () {
-		Wu.DomUtil.removeClass(this.baselayerButton, 'layer-toggle-active');
-		Wu.DomUtil.addClass(this.layerButton, 'layer-toggle-active');
+		M.DomUtil.removeClass(this.baselayerButton, 'layer-toggle-active');
+		M.DomUtil.addClass(this.layerButton, 'layer-toggle-active');
 
-		Wu.DomUtil.removeClass(this._fieldsWrapper, 'editing-baselayers');
+		M.DomUtil.removeClass(this._fieldsWrapper, 'editing-baselayers');
 
 		this._mode = 'layer';
 		this.update();
@@ -141,8 +141,8 @@ Wu.Chrome.SettingsContent.Layers = Wu.Chrome.SettingsContent.extend({
 
 	       		var providerTitle = this.providerTitle(provider.key);
 
-	       		var sectionWrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
-			var header = Wu.DomUtil.create('div', 'chrome-content-header', sectionWrapper, providerTitle);
+	       		var sectionWrapper = M.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
+			var header = M.DomUtil.create('div', 'chrome-content-header', sectionWrapper, providerTitle);
 
 	       		provider.layers.forEach(function (layer) {
 
@@ -175,14 +175,14 @@ Wu.Chrome.SettingsContent.Layers = Wu.Chrome.SettingsContent.extend({
 		});
 		var enabledByDefault = layermenuItem && layermenuItem.enabled;
 
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id       : uuid,
 			appendTo : wrapper,
 			title    : layerTitle,
 			input    : false
 		});		
 
-		var _switch = new Wu.button({ 
+		var _switch = new M.button({ 
 			id 	 : uuid,
 			type 	 : 'switch',
 			isOn 	 : on,
@@ -192,7 +192,7 @@ Wu.Chrome.SettingsContent.Layers = Wu.Chrome.SettingsContent.extend({
 		});
 
 
-		var _radio = new Wu.button({ 
+		var _radio = new M.button({ 
 			id 	 : uuid,
 			type 	 : 'radio',
 			isOn 	 : enabledByDefault,
@@ -300,15 +300,15 @@ Wu.Chrome.SettingsContent.Layers = Wu.Chrome.SettingsContent.extend({
 	// SET LAYER AS NOT OCCUPIED
 	activateLayer : function (layerUuid) {
 		var id = 'field_wrapper_' + layerUuid;
-		var elem = Wu.DomUtil.get(id);
-		Wu.DomUtil.removeClass(elem, 'deactivated-layer');
+		var elem = M.DomUtil.get(id);
+		M.DomUtil.removeClass(elem, 'deactivated-layer');
 	},
 
 	// SET LAYER AS OCCUPIED
 	deactivateLayer : function (layerUuid) {
 		var id = 'field_wrapper_' + layerUuid;
-		var elem = Wu.DomUtil.get(id);
-		Wu.DomUtil.addClass(elem, 'deactivated-layer');
+		var elem = M.DomUtil.get(id);
+		M.DomUtil.addClass(elem, 'deactivated-layer');
 	},
 
 
@@ -374,12 +374,12 @@ Wu.Chrome.SettingsContent.Layers = Wu.Chrome.SettingsContent.extend({
 		}
 
 		// Get switch
-		var s = Wu.DomUtil.get('radio_' + uuid);
+		var s = M.DomUtil.get('radio_' + uuid);
 
 		if (layerActive) {
-			Wu.DomUtil.removeClass(s, 'displayNone');
+			M.DomUtil.removeClass(s, 'displayNone');
 		} else {
-			Wu.DomUtil.addClass(s, 'displayNone');		
+			M.DomUtil.addClass(s, 'displayNone');		
 		}
 	},	
 
@@ -421,14 +421,14 @@ Wu.Chrome.SettingsContent.Layers = Wu.Chrome.SettingsContent.extend({
 		}
 
 		// Get switch
-		var s = Wu.DomUtil.get('switch_' + uuid);
+		var s = M.DomUtil.get('switch_' + uuid);
 
 		// xoxoxoxox
 		if ( on ) {
-			Wu.DomUtil.addClass(s, 'switch-on');
+			M.DomUtil.addClass(s, 'switch-on');
 			s.setAttribute('state', 'true');
 		} else {
-			Wu.DomUtil.removeClass(s, 'switch-on');
+			M.DomUtil.removeClass(s, 'switch-on');
 			s.setAttribute('state', 'false');			
 		}
 	},	

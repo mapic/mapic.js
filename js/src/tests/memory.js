@@ -1,4 +1,4 @@
-Wu.TestSuite = {
+M.TestSuite = {
 
 	projectMemoryLeak : function (runs) {
 		var first = true;
@@ -7,10 +7,10 @@ Wu.TestSuite = {
 
 		var a = setInterval(function () {
 			var p = first ? 'project-aff995e7-c6de-4783-afb1-5f8a5bffae2f' : 'project-4ba8d217-6245-4311-8efc-c62eb0dbaa73';
-			Wu.Mixin.Events.fire('projectSelected', { detail : {
+			M.Mixin.Events.fire('projectSelected', { detail : {
 				projectUuid : p
 			}}); 
-			Wu.Mixin.Events.fire('projectSelected', { detail : {
+			M.Mixin.Events.fire('projectSelected', { detail : {
 				projectUuid : p
 			}});
 

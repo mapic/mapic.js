@@ -1,4 +1,4 @@
-Wu.Styler = Wu.Class.extend({
+M.Styler = M.Class.extend({
 
 	options :  {
 		defaults : {
@@ -64,7 +64,7 @@ Wu.Styler = Wu.Class.extend({
 	initialize : function (options) {
 
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// init container
 		this._initContainer();
@@ -74,7 +74,7 @@ Wu.Styler = Wu.Class.extend({
 	_initContainer : function () {
 
 		// Create wrapper
-		this._wrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper toggles-wrapper', this.options.container);
+		this._wrapper = M.DomUtil.create('div', 'chrome-content-section-wrapper toggles-wrapper', this.options.container);
 
 		this._refresh();
 	},
@@ -92,7 +92,7 @@ Wu.Styler = Wu.Class.extend({
 		var isOn = this.carto().enabled;
 
 		// wrapper
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id           : this.type,
 			appendTo     : this._wrapper,
 			title        : '<b>' + this.type.camelize() + 's</b>',
@@ -100,7 +100,7 @@ Wu.Styler = Wu.Class.extend({
 		});		
 
 		// switch Update Style
-		var button = new Wu.button({
+		var button = new M.button({
 			id 	     : this.type,
 			type 	     : 'switch',
 			isOn 	     : isOn,
@@ -174,7 +174,7 @@ Wu.Styler = Wu.Class.extend({
 		var minMax       = this.carto().color.range;
 
 		// container
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id           : 'color',
 			appendTo     : this._wrapper,
 			title        : '<b>Color</b>',
@@ -183,7 +183,7 @@ Wu.Styler = Wu.Class.extend({
 		});	
 
 		// dropdown
-		var dropdown = new Wu.button({
+		var dropdown = new M.button({
 			id 	 : 'color',
 			type 	 : 'dropdown',
 			isOn 	 : isOn,
@@ -195,7 +195,7 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// color ball
-		var ball = new Wu.button({
+		var ball = new M.button({
 			id 	 	 : 'color',
 			type 	 : 'colorball',
 			right    : true,
@@ -236,7 +236,7 @@ Wu.Styler = Wu.Class.extend({
 		var minMax = this.carto().opacity.range;
 
 		// Container
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id       : 'opacity',
 			appendTo : this._wrapper,
 			title    : '<b>Opacity</b>',
@@ -245,7 +245,7 @@ Wu.Styler = Wu.Class.extend({
 		});	
 
 		// Dropdown
-		var dropdown = new Wu.button({
+		var dropdown = new M.button({
 			id 	 : 'opacity',
 			type 	 : 'dropdown',
 			right 	 : true,
@@ -256,7 +256,7 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// Input
-		var input = new Wu.button({
+		var input = new M.button({
 			id 	    : 'opacity',
 			type 	    : 'miniInput',
 			right 	    : true,
@@ -291,7 +291,7 @@ Wu.Styler = Wu.Class.extend({
 		var blendmode = this.carto().blend.mode || 'screen';
 
 		// container
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id           : 'blendmode',
 			appendTo     : this._wrapper,
 			title        : '<b>Blend mode</b>',
@@ -300,7 +300,7 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// blend modes dropdown
-		var dropdown = new Wu.button({
+		var dropdown = new M.button({
 			id 	 : 'blendmode',
 			type 	 : 'dropdown',
 			right 	 : true,
@@ -346,7 +346,7 @@ Wu.Styler = Wu.Class.extend({
 		var minMax = this.carto().pointsize.range;
 
 		// container
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id           : 'pointsize',
 			appendTo     : this._wrapper,
 			title        : '<b>Point size</b>',
@@ -355,7 +355,7 @@ Wu.Styler = Wu.Class.extend({
 		});	
 
 		// column dropdown
-		var dropdown = new Wu.button({
+		var dropdown = new M.button({
 			id 	 : 'pointsize',
 			type 	 : 'dropdown',
 			right 	 : true,
@@ -366,7 +366,7 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// fixed value input
-		var input = new Wu.button({
+		var input = new M.button({
 			id 	    : 'pointsize',
 			type 	    : 'miniInput',
 			right 	    : true,
@@ -406,7 +406,7 @@ Wu.Styler = Wu.Class.extend({
 		var minMax = this.carto().width.range;
 
 		// container
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id           : 'width',
 			appendTo     : this._wrapper,
 			title        : '<b>Line width</b>',
@@ -415,7 +415,7 @@ Wu.Styler = Wu.Class.extend({
 		});	
 
 		// column dropdown
-		var dropdown = new Wu.button({
+		var dropdown = new M.button({
 			id 	 : 'width',
 			type 	 : 'dropdown',
 			right 	 : true,
@@ -426,7 +426,7 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// fixed value input
-		var input = new Wu.button({
+		var input = new M.button({
 			id 	    : 'width',
 			type 	    : 'miniInput',
 			right 	    : true,
@@ -478,7 +478,7 @@ Wu.Styler = Wu.Class.extend({
 		if (value.length < 5) values = this._convertToFiveColors(value);
 
 		// Container
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id        : 'colorrange',
 			appendTo  : childWrapper,
 			title     : 'Color range',
@@ -487,7 +487,7 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// dropdown
-		var dropdown = new Wu.button({
+		var dropdown = new M.button({
 			id 	  : 'colorrange',
 			type 	  : 'colorrange',
 			right 	  : true,
@@ -516,7 +516,7 @@ Wu.Styler = Wu.Class.extend({
 		if (isNaN(value[1])) value[1] = fieldMaxRange;
 
 		// Container
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id        : 'minmaxcolorrange',
 			appendTo  : childWrapper,
 			title     : 'Range',
@@ -525,7 +525,7 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// Inputs
-		var input = new Wu.button({
+		var input = new M.button({
 			id 	  : 'minmaxcolorrange',
 			type 	  : 'dualinput',
 			right 	  : true,
@@ -567,7 +567,7 @@ Wu.Styler = Wu.Class.extend({
 		var value = this.carto().opacity.range || [column_min, column_max];
 
 		// line
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id        : 'minmaxopacity',
 			appendTo  : childWrapper,
 			title     : 'Range',
@@ -576,7 +576,7 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// Inputs
-		var input = new Wu.button({
+		var input = new M.button({
 			id 	  : 'minmaxopacity',
 			type 	  : 'dualinput',
 			right 	  : true,
@@ -617,7 +617,7 @@ Wu.Styler = Wu.Class.extend({
 		var value = this.carto().width.range || [column_min, column_max];
 
 		// line
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id        : 'minmaxwidth',
 			appendTo  : childWrapper,
 			title     : 'Range',
@@ -626,7 +626,7 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// Inputs
-		var input = new Wu.button({
+		var input = new M.button({
 			id 	  : 'minmaxwidth',
 			type 	  : 'dualinput',
 			right 	  : true,
@@ -923,7 +923,7 @@ Wu.Styler = Wu.Class.extend({
 	_selectField : function (field, wrapper, column) {
 
 		// add class
-		Wu.DomUtil.addClass(wrapper, 'full-width');
+		M.DomUtil.addClass(wrapper, 'full-width');
 
 		// if not same, clear old values
 		if (this.carto()[field].column != column) {
@@ -934,18 +934,18 @@ Wu.Styler = Wu.Class.extend({
 
 		// remove static inputs
 		if (field == 'opacity') {
-			Wu.DomUtil.addClass(this._content[this.type].opacity.input.input, 'left-mini-kill');
+			M.DomUtil.addClass(this._content[this.type].opacity.input.input, 'left-mini-kill');
 		}
 
 		// remove static inputs
 		if (field == 'pointsize') {
-			Wu.DomUtil.addClass(this._content[this.type].pointsize.input.input, 'left-mini-kill');
+			M.DomUtil.addClass(this._content[this.type].pointsize.input.input, 'left-mini-kill');
 		}
 
 		// remove static inputs
 		if (field == 'color') {
 			var colorBall = this._content[this.type].color.ball.color;
-			Wu.DomUtil.addClass(colorBall, 'disable-color-ball');
+			M.DomUtil.addClass(colorBall, 'disable-color-ball');
 		}
 
 		// save carto
@@ -975,29 +975,29 @@ Wu.Styler = Wu.Class.extend({
 
 		// show static inputs
 		if (key == 'opacity') {
-			Wu.DomUtil.removeClass(this._content[this.type].opacity.input.input, 'left-mini-kill');
+			M.DomUtil.removeClass(this._content[this.type].opacity.input.input, 'left-mini-kill');
 		}
 
 		// show static inputs
 		if (key == 'pointsize') {
-			Wu.DomUtil.removeClass(this._content[this.type].pointsize.input.input, 'left-mini-kill');
+			M.DomUtil.removeClass(this._content[this.type].pointsize.input.input, 'left-mini-kill');
 		}
 
 		// show static inputs
 		if (key == 'color') {
-			Wu.DomUtil.removeClass(this._content[this.type].color.ball.color, 'disable-color-ball');
+			M.DomUtil.removeClass(this._content[this.type].color.ball.color, 'disable-color-ball');
 		}
 
 		// show static inputs
 		if (key == 'width') {
-			Wu.DomUtil.removeClass(this._content[this.type].width.input.input, 'left-mini-kill');
+			M.DomUtil.removeClass(this._content[this.type].width.input.input, 'left-mini-kill');
 		}
 
 		// remove extras
 		this._removeSubfields(key);
 
 		// adjust width
-		Wu.DomUtil.removeClass(wrapper, 'full-width');
+		M.DomUtil.removeClass(wrapper, 'full-width');
 
 		// save style
 		this.carto()[key].column = false;
@@ -1012,7 +1012,7 @@ Wu.Styler = Wu.Class.extend({
 		// remove div
 		var field = this._content[this.type][key].minmax;
 		var div = field ? field.line.container : false;
-		div && Wu.DomUtil.remove(div);
+		div && M.DomUtil.remove(div);
 
 		// extra
 		if (key == 'color') {
@@ -1021,7 +1021,7 @@ Wu.Styler = Wu.Class.extend({
 			var range = this._content[this.type].color.range;
 
 			div = range ? range.line.container : false;
-			div && Wu.DomUtil.remove(div);
+			div && M.DomUtil.remove(div);
 		}		
 	},
 
@@ -1154,8 +1154,8 @@ Wu.Styler = Wu.Class.extend({
 
 		var rangeSelector = range.dropdown._colorSelectorWrapper;
 		var clickCatcher = range.dropdown._clicker;
-		if (rangeSelector) Wu.DomUtil.addClass(rangeSelector, 'displayNone');
-		if (clickCatcher) Wu.DomUtil.addClass(clickCatcher, 'displayNone');		
+		if (rangeSelector) M.DomUtil.addClass(rangeSelector, 'displayNone');
+		if (clickCatcher) M.DomUtil.addClass(clickCatcher, 'displayNone');		
 	},	
 
 	_createCarto : function (json, callback) {
@@ -1220,7 +1220,7 @@ Wu.Styler = Wu.Class.extend({
 			});
 			
 			// new layer
-			var newLayerStyle = Wu.parse(newLayerJSON);
+			var newLayerStyle = M.parse(newLayerJSON);
 
 			// catch errors
 			if (newLayerStyle.error) {
@@ -1383,7 +1383,7 @@ Wu.Styler = Wu.Class.extend({
 		// remove div
 		var trg = targets[i];
 		var wrapper = trg.wrapper;
-		Wu.DomUtil.remove(wrapper);
+		M.DomUtil.remove(wrapper);
 
 		// remove from carto
 		_.pullAt(this.carto().targets, i);
@@ -1398,7 +1398,7 @@ Wu.Styler = Wu.Class.extend({
 
 	_changeAddButtonText : function () {
 		// change title of button (hacky)
-		var button = Wu.DomUtil.get('target-text-' + this.type);
+		var button = M.DomUtil.get('target-text-' + this.type);
 		button.innerHTML = 'Add column';
 	},
 
@@ -1444,15 +1444,15 @@ Wu.Styler = Wu.Class.extend({
 		this.carto().targets = this.carto().targets || [];
 
 		// create wrapper
-		var wrapper = Wu.DomUtil.create('div', 'add-target-wrapper', this._wrapper);
+		var wrapper = M.DomUtil.create('div', 'add-target-wrapper', this._wrapper);
 		// create (+) box
-		var addTarget = Wu.DomUtil.create('div', 'add-target', wrapper);
+		var addTarget = M.DomUtil.create('div', 'add-target', wrapper);
 
 		addTarget.innerHTML = '<i class="fa fa-plus-circle add-target-icon"></i>';
 		addTarget.innerHTML += '<div id="target-text-' + this.type + '" class="add-target-text">Target specific columns</div>';
 
 		// event
-		Wu.DomEvent.on(addTarget, 'click', this._addTargetColumn, this);
+		M.DomEvent.on(addTarget, 'click', this._addTargetColumn, this);
 
 		// remember items
 		this._content[this.type].targets = {
@@ -1491,19 +1491,19 @@ Wu.Styler = Wu.Class.extend({
 		var wrapper = this._content[this.type].targets.wrapper;
 
 		// create target wrapper
-		var target_wrapper = Wu.DomUtil.create('div', 'target-wrapper', wrapper);
+		var target_wrapper = M.DomUtil.create('div', 'target-wrapper', wrapper);
 
 		// (-) button
-		var rembtn_wrapper = Wu.DomUtil.create('div', 'target-remove', target_wrapper);
+		var rembtn_wrapper = M.DomUtil.create('div', 'target-remove', target_wrapper);
 		rembtn_wrapper.innerHTML = '<i class="fa fa-minus-circle"></i>';
 		
 		// event
-		Wu.DomEvent.on(rembtn_wrapper, 'click', this._removeTarget, this);	
+		M.DomEvent.on(rembtn_wrapper, 'click', this._removeTarget, this);	
 
 		// column dropdown
-		var column_wrapper = Wu.DomUtil.create('div', 'target-column-wrapper', target_wrapper);
-		var column_title = Wu.DomUtil.create('div', 'target-column-title', column_wrapper, 'Column');
-		var column_dropdown = new Wu.button({
+		var column_wrapper = M.DomUtil.create('div', 'target-column-wrapper', target_wrapper);
+		var column_title = M.DomUtil.create('div', 'target-column-title', column_wrapper, 'Column');
+		var column_dropdown = new M.button({
 			id 	 	 : 'target',
 			type 	 : 'dropdown',
 			isOn 	 : true,
@@ -1516,8 +1516,8 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// < = > input
-		var operator_wrapper = Wu.DomUtil.create('div', 'target-column-wrapper', target_wrapper);
-		var operator_dropdown = new Wu.button({
+		var operator_wrapper = M.DomUtil.create('div', 'target-column-wrapper', target_wrapper);
+		var operator_dropdown = new M.button({
 			id 	 : 'equals_selection',
 			type 	 : 'clicker',
 			appendTo : operator_wrapper,
@@ -1528,18 +1528,18 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// value input
-		var input_wrapper = Wu.DomUtil.create('div', 'target-input-wrapper', target_wrapper);
-		var input_title = Wu.DomUtil.create('div', 'target-input-title', input_wrapper, 'Value');
-		var column_input = Wu.DomUtil.create('input', 'target-input', input_wrapper);
+		var input_wrapper = M.DomUtil.create('div', 'target-input-wrapper', target_wrapper);
+		var input_title = M.DomUtil.create('div', 'target-input-title', input_wrapper, 'Value');
+		var column_input = M.DomUtil.create('input', 'target-input', input_wrapper);
 		column_input.value = options.value;
 
 		// blur event
-		Wu.DomEvent.on(column_input, 'blur', this._targetValueSelected, this);
+		M.DomEvent.on(column_input, 'blur', this._targetValueSelected, this);
 
 		// color ball
-		var color_wrapper = Wu.DomUtil.create('div', 'target-color-wrapper', target_wrapper);
-		var input_title = Wu.DomUtil.create('div', 'target-input-title', color_wrapper, 'Color');
-		var ball = new Wu.button({
+		var color_wrapper = M.DomUtil.create('div', 'target-color-wrapper', target_wrapper);
+		var input_title = M.DomUtil.create('div', 'target-input-title', color_wrapper, 'Color');
+		var ball = new M.button({
 			id 	 : 'target-color',
 			type 	 : 'colorball',
 			right    : true,
@@ -1552,23 +1552,23 @@ Wu.Styler = Wu.Class.extend({
 		});
 
 		// opacity input
-		var opacity_wrapper = Wu.DomUtil.create('div', 'target-opacity-wrapper', target_wrapper);
-		var opacity_title = Wu.DomUtil.create('div', 'target-input-title-opacity', opacity_wrapper, 'Opacity');
-		var opacity_input = Wu.DomUtil.create('input', 'target-input opacity', opacity_wrapper);
+		var opacity_wrapper = M.DomUtil.create('div', 'target-opacity-wrapper', target_wrapper);
+		var opacity_title = M.DomUtil.create('div', 'target-input-title-opacity', opacity_wrapper, 'Opacity');
+		var opacity_input = M.DomUtil.create('input', 'target-input opacity', opacity_wrapper);
 		opacity_input.value = options.opacity;
 
 		// blur event
-		Wu.DomEvent.on(opacity_input, 'blur', this._targetOpacitySelected, this);
+		M.DomEvent.on(opacity_input, 'blur', this._targetOpacitySelected, this);
 
 
 		// width input
-		var width_wrapper = Wu.DomUtil.create('div', 'target-width-wrapper', target_wrapper);
-		var width_title = Wu.DomUtil.create('div', 'target-input-title-width', width_wrapper, 'Width');
-		var width_input = Wu.DomUtil.create('input', 'target-input width', width_wrapper);
+		var width_wrapper = M.DomUtil.create('div', 'target-width-wrapper', target_wrapper);
+		var width_title = M.DomUtil.create('div', 'target-input-title-width', width_wrapper, 'Width');
+		var width_input = M.DomUtil.create('input', 'target-input width', width_wrapper);
 		width_input.value = options.width;
 
 		// blur event
-		Wu.DomEvent.on(width_input, 'blur', this._targetWidthSelected, this);
+		M.DomEvent.on(width_input, 'blur', this._targetWidthSelected, this);
 
 		// remember
 		this._content[this.type].targets.selectors = this._content[this.type].targets.selectors || [];

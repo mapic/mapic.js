@@ -1,4 +1,4 @@
-Wu.Chrome.SettingsContent.Extras = Wu.Chrome.SettingsContent.extend({
+M.Chrome.SettingsContent.Extras = M.Chrome.SettingsContent.extend({
 
 	_ : 'extras',
 
@@ -20,21 +20,21 @@ Wu.Chrome.SettingsContent.Extras = Wu.Chrome.SettingsContent.extend({
 
 	_initContainer : function () {
 		// Create Container
-		this._container = Wu.DomUtil.create('div', 'chrome chrome-content chrome-pane extras', this.options.appendTo);
+		this._container = M.DomUtil.create('div', 'chrome chrome-content chrome-pane extras', this.options.appendTo);
 
 	},
 
 	_initLayout : function () {
 		this._layers = this._project.getDataLayers();
 
-		this._midSection = Wu.DomUtil.create('div', 'chrome-middle-section', this._container);
-		this._midOuterScroller = Wu.DomUtil.create('div', 'chrome-middle-section-outer-scroller', this._midSection);	
-		this._midInnerScroller = Wu.DomUtil.create('div', 'chrome-middle-section-inner-scroller', this._midOuterScroller);	
+		this._midSection = M.DomUtil.create('div', 'chrome-middle-section', this._container);
+		this._midOuterScroller = M.DomUtil.create('div', 'chrome-middle-section-outer-scroller', this._midSection);	
+		this._midInnerScroller = M.DomUtil.create('div', 'chrome-middle-section-inner-scroller', this._midOuterScroller);	
 
 		this._initLayout_activeLayers('Layer', 'Select layer', this._midInnerScroller, this._layers);		
 
 		// Create Field Wrapper
-		this._fieldsWrapper = Wu.DomUtil.create('div', 'chrome-field-wrapper', this._midInnerScroller);
+		this._fieldsWrapper = M.DomUtil.create('div', 'chrome-field-wrapper', this._midInnerScroller);
 	},
 
 	_selectedActiveLayer : function (value, uuid) {
@@ -112,12 +112,12 @@ Wu.Chrome.SettingsContent.Extras = Wu.Chrome.SettingsContent.extend({
 
 		}
 
-		var wrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
-		var header = Wu.DomUtil.create('div', 'chrome-content-header globesar-extras', wrapper, 'Satellite Settings');
+		var wrapper = M.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
+		var header = M.DomUtil.create('div', 'chrome-content-header globesar-extras', wrapper, 'Satellite Settings');
 
 		this.layer = this._project.getLayer(this.layerUuid);
 
-		var satpos = Wu.parse(this.layer.getSatellitePosition());
+		var satpos = M.parse(this.layer.getSatellitePosition());
 		var path = satpos.path ? satpos.path : false;
 		var angle = satpos.angle ? satpos.angle : false;
 
@@ -125,14 +125,14 @@ Wu.Chrome.SettingsContent.Extras = Wu.Chrome.SettingsContent.extend({
 		// ANGLE
 		// ANGLE
 
-		var angleLine = new Wu.fieldLine({
+		var angleLine = new M.fieldLine({
 			id       : 'satelliteAngle',
 			appendTo : wrapper,
 			title    : 'Satellite angle',
 			input    : false
 		});
 
-		var angleMiniInput = new Wu.button({
+		var angleMiniInput = new M.button({
 			id 	    : 'satelliteAngle',
 			type 	    : 'miniInput',
 			right 	    : true,
@@ -149,14 +149,14 @@ Wu.Chrome.SettingsContent.Extras = Wu.Chrome.SettingsContent.extend({
 		// PATH
 		// PATH
 
-		var pathLine = new Wu.fieldLine({
+		var pathLine = new M.fieldLine({
 			id       : 'satellitePath',
 			appendTo : wrapper,
 			title    : 'Satellite path',
 			input    : false
 		});
 
-		var pathMiniInput = new Wu.button({
+		var pathMiniInput = new M.button({
 			id 	    : 'satellitePath',
 			type 	    : 'miniInput',
 			right 	    : true,
@@ -173,8 +173,8 @@ Wu.Chrome.SettingsContent.Extras = Wu.Chrome.SettingsContent.extend({
 
 	// ON BLUR IN MINI FIELDS
 	_saveMiniBlur : function (e) {
-		var angle = Wu.DomUtil.get('field_mini_input_satelliteAngle').value;
-		var path  = Wu.DomUtil.get('field_mini_input_satellitePath').value;
+		var angle = M.DomUtil.get('field_mini_input_satelliteAngle').value;
+		var path  = M.DomUtil.get('field_mini_input_satellitePath').value;
 		this.layer = this._project.getLayer(this.layerUuid);
 
 		// Save object
@@ -288,7 +288,7 @@ Wu.Chrome.SettingsContent.Extras = Wu.Chrome.SettingsContent.extend({
 				return done && done(err);
 			}
 			// new layer
-			var newLayerStyle = Wu.parse(newLayerJSON);
+			var newLayerStyle = M.parse(newLayerJSON);
 
 			// catch errors
 			if (newLayerStyle.error) {

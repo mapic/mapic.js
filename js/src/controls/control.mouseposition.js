@@ -23,7 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // app.MapPane.mousepositionControl
 
-L.Control.Mouseposition = Wu.Control.extend({
+L.Control.Mouseposition = M.Control.extend({
 
         type : 'mouseposition',
 

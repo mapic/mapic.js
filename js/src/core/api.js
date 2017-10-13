@@ -1,8 +1,8 @@
-Wu.Api = Wu.Class.extend({
+M.Api = M.Class.extend({
 
 
 	initialize : function (options) {
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 	},
 
 	// PORTAL
@@ -514,7 +514,7 @@ Wu.Api = Wu.Class.extend({
 
 	_post : function (path, json, done, context, baseurl) {
 		var http = new XMLHttpRequest();
-		var url = baseurl || this.options.url || Wu.Util._getServerUrl();
+		var url = baseurl || this.options.url || M.Util._getServerUrl();
 		url += path;
 
 		// open
@@ -536,9 +536,9 @@ Wu.Api = Wu.Class.extend({
 
 		// add access_token to request
 		var access_token = (window.app && app.tokens) ? app.tokens.access_token : null;
-		var options = _.isString(json) ? Wu.parse(json) : json;
+		var options = _.isString(json) ? M.parse(json) : json;
 		options.access_token = options.access_token || access_token;
-		var send_json = Wu.stringify(options);
+		var send_json = M.stringify(options);
 		// send
 		http.send(send_json);
 	},
@@ -551,7 +551,7 @@ Wu.Api = Wu.Class.extend({
 
 	_get : function (path, options, done, context, baseurl) {
 		var http = new XMLHttpRequest();
-		var url = baseurl || this.options.url || Wu.Util._getServerUrl();
+		var url = baseurl || this.options.url || M.Util._getServerUrl();
 		url += path;
 
 		// add options to query
@@ -580,7 +580,7 @@ Wu.Api = Wu.Class.extend({
 
 	_addQueryOptions : function (url, options) {
 		var options = options || {};
-		options = _.isObject(options) ? options : Wu.parse(options);
+		options = _.isObject(options) ? options : M.parse(options);
 		options.access_token = (window.app && app.tokens) ? app.tokens.access_token : null;
 		if (!_.isEmpty(options)) {
 			_.forOwn(options, function (value, key) {

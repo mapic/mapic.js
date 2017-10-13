@@ -1,4 +1,4 @@
-Wu.Styler.Line = Wu.Styler.extend({
+M.Styler.Line = M.Styler.extend({
 
 	type : 'line',
 
@@ -47,13 +47,13 @@ Wu.Styler.Line = Wu.Styler.extend({
 		var targets 		= content.targets.wrapper;
 
 		// remove divs
-		color_wrapper && 	Wu.DomUtil.remove(color_wrapper);
-		color_children && 	Wu.DomUtil.remove(color_children);
-		opacity_wrapper && 	Wu.DomUtil.remove(opacity_wrapper);
-		opacity_children && 	Wu.DomUtil.remove(opacity_children);
-		width_wrapper && 	Wu.DomUtil.remove(width_wrapper);
-		width_children && 	Wu.DomUtil.remove(width_children);
-		targets && 		Wu.DomUtil.remove(targets);
+		color_wrapper && 	M.DomUtil.remove(color_wrapper);
+		color_children && 	M.DomUtil.remove(color_children);
+		opacity_wrapper && 	M.DomUtil.remove(opacity_wrapper);
+		opacity_children && 	M.DomUtil.remove(opacity_children);
+		width_wrapper && 	M.DomUtil.remove(width_wrapper);
+		width_children && 	M.DomUtil.remove(width_children);
+		targets && 		M.DomUtil.remove(targets);
 
 		// clear targets
 	}

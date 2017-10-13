@@ -1,9 +1,9 @@
-Wu.Evented = L.Evented.extend({ // inheriting from 1.0.0-rc3 L.Evented, makes it possible to do this._layer.fire() etc..
+M.Evented = L.Evented.extend({ // inheriting from 1.0.0-rc3 L.Evented, makes it possible to do this._layer.fire() etc..
 
     initialize : function (options) {
 
         // set options
-        Wu.setOptions(this, options);
+        M.setOptions(this, options);
 
         // listen up
         this._listen();
@@ -13,21 +13,21 @@ Wu.Evented = L.Evented.extend({ // inheriting from 1.0.0-rc3 L.Evented, makes it
     },      
 
     _listen : function () {
-        Wu.Mixin.Events.on('projectUnload',   this._onProjectUnload, this);
-        Wu.Mixin.Events.on('projectSelected', this._projectSelected, this);
-        Wu.Mixin.Events.on('projectDeleted',  this._onProjectDeleted, this);
-        Wu.Mixin.Events.on('projectChanged',  this._onProjectChanged, this);
-        Wu.Mixin.Events.on('editEnabled',     this._editEnabled, this);
-        Wu.Mixin.Events.on('editDisabled',    this._editDisabled, this);
-        Wu.Mixin.Events.on('layerEnabled',    this._layerEnabled, this);
-        Wu.Mixin.Events.on('layerDisabled',   this._layerDisabled, this);
-        Wu.Mixin.Events.on('fileImported',    this._onFileImported, this);
-        Wu.Mixin.Events.on('fileDeleted',     this._onFileDeleted, this);
-        Wu.Mixin.Events.on('layerAdded',      this._onLayerAdded, this);
-        Wu.Mixin.Events.on('layerEdited',     this._onLayerEdited, this);
-        Wu.Mixin.Events.on('layerDeleted',    this._onLayerDeleted, this);
-        Wu.Mixin.Events.on('closePopups',     this._onClosePopups, this);
-        Wu.Mixin.Events.on('doingScreenshot', this._onDoingScreenshot, this);
+        M.Mixin.Events.on('projectUnload',   this._onProjectUnload, this);
+        M.Mixin.Events.on('projectSelected', this._projectSelected, this);
+        M.Mixin.Events.on('projectDeleted',  this._onProjectDeleted, this);
+        M.Mixin.Events.on('projectChanged',  this._onProjectChanged, this);
+        M.Mixin.Events.on('editEnabled',     this._editEnabled, this);
+        M.Mixin.Events.on('editDisabled',    this._editDisabled, this);
+        M.Mixin.Events.on('layerEnabled',    this._layerEnabled, this);
+        M.Mixin.Events.on('layerDisabled',   this._layerDisabled, this);
+        M.Mixin.Events.on('fileImported',    this._onFileImported, this);
+        M.Mixin.Events.on('fileDeleted',     this._onFileDeleted, this);
+        M.Mixin.Events.on('layerAdded',      this._onLayerAdded, this);
+        M.Mixin.Events.on('layerEdited',     this._onLayerEdited, this);
+        M.Mixin.Events.on('layerDeleted',    this._onLayerDeleted, this);
+        M.Mixin.Events.on('closePopups',     this._onClosePopups, this);
+        M.Mixin.Events.on('doingScreenshot', this._onDoingScreenshot, this);
     },
 
     // dummies

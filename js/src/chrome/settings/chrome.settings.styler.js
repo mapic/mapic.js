@@ -1,4 +1,4 @@
-Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
+M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 
 	_carto : {},
 
@@ -35,7 +35,7 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 	_initContainer : function () {
 
 		// Create container
-		this._container = Wu.DomUtil.create('div', 'chrome chrome-content chrome-pane styler', this.options.appendTo);
+		this._container = M.DomUtil.create('div', 'chrome chrome-content chrome-pane styler', this.options.appendTo);
 	},
 
 	_initLayout : function () {
@@ -43,28 +43,28 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		if (!this._project) return;
 
 		// Scroller
-		this._midSection 	= Wu.DomUtil.create('div', 'chrome-middle-section', this._container);
-		this._midOuterScroller 	= Wu.DomUtil.create('div', 'chrome-middle-section-outer-scroller', this._midSection);		
-		this._midInnerScroller 	= Wu.DomUtil.create('div', 'chrome-middle-section-inner-scroller', this._midOuterScroller);
+		this._midSection 	= M.DomUtil.create('div', 'chrome-middle-section', this._container);
+		this._midOuterScroller 	= M.DomUtil.create('div', 'chrome-middle-section-outer-scroller', this._midSection);		
+		this._midInnerScroller 	= M.DomUtil.create('div', 'chrome-middle-section-inner-scroller', this._midOuterScroller);
 
 		// Active layer
 		this.layerSelector = this._initLayout_activeLayers(false, false, this._midInnerScroller); // appending to this._midSection
 
 		// Style settings wrapper
-		this._fieldsWrapper = Wu.DomUtil.create('div', 'chrome-field-wrapper', this._midInnerScroller);
+		this._fieldsWrapper = M.DomUtil.create('div', 'chrome-field-wrapper', this._midInnerScroller);
 
 		// Legends wrapper
-		this._legendWrapper = Wu.DomUtil.create('dov', 'chrome-legend-wrapper', this._midInnerScroller);
+		this._legendWrapper = M.DomUtil.create('dov', 'chrome-legend-wrapper', this._midInnerScroller);
 
 		// update style button
-		this._buttonWrapper = Wu.DomUtil.create('div', 'button-wrapper displayNone', this._container);
-		this._updateStyleButton = Wu.DomUtil.create('div', 'smooth-fullscreen-save update-style', this._buttonWrapper, 'Update Style');
+		this._buttonWrapper = M.DomUtil.create('div', 'button-wrapper displayNone', this._container);
+		this._updateStyleButton = M.DomUtil.create('div', 'smooth-fullscreen-save update-style', this._buttonWrapper, 'Update Style');
 
-		this._preRenderButton = Wu.DomUtil.create('div', 'smooth-fullscreen-save pre-render', this._buttonWrapper, 'Render');
+		this._preRenderButton = M.DomUtil.create('div', 'smooth-fullscreen-save pre-render', this._buttonWrapper, 'Render');
 
 		// Event for click button
-		Wu.DomEvent.on(this._updateStyleButton, 'click', this._updateStyle, this);		
-		Wu.DomEvent.on(this._preRenderButton, 'click', this._preRender, this);		
+		M.DomEvent.on(this._updateStyleButton, 'click', this._updateStyle, this);		
+		M.DomEvent.on(this._preRenderButton, 'click', this._preRender, this);		
 
 		// Ability to save styling as a template
 		this._initTemplateContent();
@@ -120,7 +120,7 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 			rangeMax  : 255
 		};
 
-		this._rasterStyler = new Wu.RasterStyler(options);
+		this._rasterStyler = new M.RasterStyler(options);
 	},
 
 	_initRasterStyler : function () {
@@ -149,7 +149,7 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 			rangeMax  : rangeMax
 		};
 
-		this._rasterStyler = new Wu.RasterStyler(options);
+		this._rasterStyler = new M.RasterStyler(options);
 
 		// Init legend options
 		// this._initLegendOptions();
@@ -171,9 +171,9 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		};
 
 		// create stylers
-		this._pointStyler = new Wu.Styler.Point(options);
-		this._polygonStyler = new Wu.Styler.Polygon(options);
-		this._lineStyler = new Wu.Styler.Line(options);
+		this._pointStyler = new M.Styler.Point(options);
+		this._polygonStyler = new M.Styler.Polygon(options);
+		this._lineStyler = new M.Styler.Line(options);
 	},
 
 	_initRasterLegendOptions : function () {
@@ -185,9 +185,9 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 			container : this._legendWrapper
 		};
 
-		this._legendStyler = new Wu.Legend.Raster(legendOptions);
+		this._legendStyler = new M.Legend.Raster(legendOptions);
 
-		Wu.DomUtil.removeClass(this._legendStyler._legensOuter, 'displayNone');		
+		M.DomUtil.removeClass(this._legendStyler._legensOuter, 'displayNone');		
 	},
 
 
@@ -200,46 +200,46 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 			container : this._legendWrapper
 		};
 
-		this._legendStyler = new Wu.Legend(legendOptions);
+		this._legendStyler = new M.Legend(legendOptions);
 
-		Wu.DomUtil.removeClass(this._legendStyler._legensOuter, 'displayNone');		
+		M.DomUtil.removeClass(this._legendStyler._legensOuter, 'displayNone');		
 	},
 
 	// Inits Save Template HTML
 	_initTemplateContent : function () {
 
 		// Save template stuff
-		this._saveAsTemplateButton = Wu.DomUtil.create('div', 'save-as-template-button', this._buttonWrapper, 'Save as template');
-		this._templateSaverWrapper = Wu.DomUtil.create('div', 'save-as-template-wrapper hidden-template-dialogue', this._buttonWrapper);
-		this._templateSaverError = Wu.DomUtil.create('div', 'save-as-template-error', this._templateSaverWrapper);
-		this._templateSaverInput = Wu.DomUtil.create('input', 'save-as-template-input-name', this._templateSaverWrapper);
+		this._saveAsTemplateButton = M.DomUtil.create('div', 'save-as-template-button', this._buttonWrapper, 'Save as template');
+		this._templateSaverWrapper = M.DomUtil.create('div', 'save-as-template-wrapper hidden-template-dialogue', this._buttonWrapper);
+		this._templateSaverError = M.DomUtil.create('div', 'save-as-template-error', this._templateSaverWrapper);
+		this._templateSaverInput = M.DomUtil.create('input', 'save-as-template-input-name', this._templateSaverWrapper);
 		this._templateSaverInput.setAttribute('tabindex', -1);
 		this._templateSaverInput.setAttribute('placeholder', 'template name');
 		this._templateSaverInput.setAttribute('type', 'text');
-		this._templateSaverOK = Wu.DomUtil.create('div', 'save-as-template-OK-button smooth-fullscreen-save', this._templateSaverWrapper, 'OK');
-		this._templateSaverCancel = Wu.DomUtil.create('div', 'save-as-template-cancel-button', this._templateSaverWrapper, 'Cancel');
+		this._templateSaverOK = M.DomUtil.create('div', 'save-as-template-OK-button smooth-fullscreen-save', this._templateSaverWrapper, 'OK');
+		this._templateSaverCancel = M.DomUtil.create('div', 'save-as-template-cancel-button', this._templateSaverWrapper, 'Cancel');
 
 		// Open save template dialogue
-		Wu.DomEvent.on(this._saveAsTemplateButton, 'click', this._openSaveTempateDialogue, this);
+		M.DomEvent.on(this._saveAsTemplateButton, 'click', this._openSaveTempateDialogue, this);
 
 		// Cancel save template dialogie
-		Wu.DomEvent.on(this._templateSaverCancel, 'click', this._cancelTemplateDialogue, this);
+		M.DomEvent.on(this._templateSaverCancel, 'click', this._cancelTemplateDialogue, this);
 
 		// OK, save template button
-		Wu.DomEvent.on(this._templateSaverOK, 'click', this._okSaveTemplate, this);
+		M.DomEvent.on(this._templateSaverOK, 'click', this._okSaveTemplate, this);
 	},
 
 	// Open Save Template Dialogue.
 	_openSaveTempateDialogue : function () {
-		Wu.DomUtil.removeClass(this._templateSaverWrapper, 'hidden-template-dialogue');
+		M.DomUtil.removeClass(this._templateSaverWrapper, 'hidden-template-dialogue');
 		this._templateSaverInput.innerHTML = '';
 		this._templateSaverInput.value = '';
 	},
 
 	// Cancel save template
 	_cancelTemplateDialogue : function () {
-		Wu.DomUtil.addClass(this._templateSaverWrapper, 'hidden-template-dialogue');
-		Wu.DomUtil.removeClass(this._templateSaverInput, 'error-template-input');
+		M.DomUtil.addClass(this._templateSaverWrapper, 'hidden-template-dialogue');
+		M.DomUtil.removeClass(this._templateSaverInput, 'error-template-input');
 
 		this._templateSaverError.innerHTML = '';
 		this._templateSaverInput.innerHTML = '';
@@ -279,14 +279,14 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 	// Save template error message
 	_templateSaveError : function (message) {
 		this._templateSaverError.innerHTML = message;
-		Wu.DomUtil.addClass(this._templateSaverInput, 'error-template-input');
+		M.DomUtil.addClass(this._templateSaverInput, 'error-template-input');
 	},
 
 	// Do save template
 	_saveTemplate : function (name) {
 		this._templateSaverError.innerHTML = '';
-		Wu.DomUtil.removeClass(this._templateSaverInput, 'error-template-input');
-		Wu.DomUtil.addClass(this._templateSaverWrapper, 'hidden-template-dialogue');
+		M.DomUtil.removeClass(this._templateSaverInput, 'error-template-input');
+		M.DomUtil.addClass(this._templateSaverWrapper, 'hidden-template-dialogue');
 
 		this.saveStyleTemplate(name);
 	},
@@ -300,11 +300,11 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		if ( this.templates.length < 1 ) return;
 
 		// create dropdown
-		var selectWrap = Wu.DomUtil.create('div', 'chrome chrome-content active-layer select-wrap', this._fieldsWrapper);
-		var select = this._select = Wu.DomUtil.create('select', 'active-layer-select', selectWrap);
+		var selectWrap = M.DomUtil.create('div', 'chrome chrome-content active-layer select-wrap', this._fieldsWrapper);
+		var select = this._select = M.DomUtil.create('select', 'active-layer-select', selectWrap);
 
 		// placeholder
-		var option = Wu.DomUtil.create('option', '', select);
+		var option = M.DomUtil.create('option', '', select);
 		option.innerHTML = 'Select styling templates';
 		option.setAttribute('disabled', '');
 		option.setAttribute('selected', '');
@@ -313,13 +313,13 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		this.templates.forEach(function (template) {
 
 			// create option
-			var option = Wu.DomUtil.create('option', 'active-layer-option', select);
+			var option = M.DomUtil.create('option', 'active-layer-option', select);
 			option.value = template.uuid;
 			option.innerHTML = template.name;
 		});
 
 		// select event
-		Wu.DomEvent.on(select, 'change', this._selectTemplate, this); // todo: mem leak?
+		M.DomEvent.on(select, 'change', this._selectTemplate, this); // todo: mem leak?
 
 	},
 
@@ -376,7 +376,7 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		
 		// Create template
 		var template = {
-		   uuid : Wu.Util.guid('style-template'),
+		   uuid : M.Util.guid('style-template'),
 		   timestamp : Date.now(),
 		   carto : this._carto,
 		   legend : this._layer.store.legends,
@@ -393,12 +393,12 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 
 	// Marks button to changed state
 	markChanged : function () {
-		Wu.DomUtil.addClass(this._updateStyleButton, 'marked-changed');
+		M.DomUtil.addClass(this._updateStyleButton, 'marked-changed');
 	},
 
 	// Unmarks button to changed state
 	unmarkChanged : function () {
-		Wu.DomUtil.removeClass(this._updateStyleButton, 'marked-changed');
+		M.DomUtil.removeClass(this._updateStyleButton, 'marked-changed');
 	},
 
 	// Update style
@@ -445,7 +445,7 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 			});
 
 			// new layer
-			var newLayerStyle = Wu.parse(newLayerJSON);
+			var newLayerStyle = M.parse(newLayerJSON);
 
 			// catch errors
 			if (newLayerStyle && newLayerStyle.error) return console.error(newLayerStyle.error);
@@ -579,7 +579,7 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 		this._container.style.display = 'block';
 
 		// mark button
-		Wu.DomUtil.addClass(this.options.trigger, 'active-tab');
+		M.DomUtil.addClass(this.options.trigger, 'active-tab');
 		
 		// Enable settings from layer we're working with
 		var layerUuid = this._getActiveLayerUuid();
@@ -598,7 +598,7 @@ Wu.Chrome.SettingsContent.Styler = Wu.Chrome.SettingsContent.extend({
 	// event run when layer selected 
 	_selectedActiveLayer : function (value, uuid) {
 
-		Wu.DomUtil.removeClass(this._buttonWrapper, 'displayNone');
+		M.DomUtil.removeClass(this._buttonWrapper, 'displayNone');
 
 		// clear wrapper content
 		this._fieldsWrapper.innerHTML = '';

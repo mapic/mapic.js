@@ -1,4 +1,4 @@
-Wu.Chrome.SettingsContent = Wu.Chrome.extend({
+M.Chrome.SettingsContent = M.Chrome.extend({
 
 	_initialize : function () {
 	
@@ -13,12 +13,12 @@ Wu.Chrome.SettingsContent = Wu.Chrome.extend({
 
 		var trigger = this.options.trigger;
 		if (trigger) {
-			Wu.DomEvent.on(trigger, 'click', this.show, this);
+			M.DomEvent.on(trigger, 'click', this.show, this);
 		}
 
-		Wu.DomEvent.on(window, 'resize', this._windowResize, this);
+		M.DomEvent.on(window, 'resize', this._windowResize, this);
 
-		Wu.Mixin.Events.on('layerSelected', this._refreshTab, this);
+		M.Mixin.Events.on('layerSelected', this._refreshTab, this);
 	},
 
 	_refreshTab : function (e) {
@@ -34,7 +34,7 @@ Wu.Chrome.SettingsContent = Wu.Chrome.extend({
 
 
 	_removeEvents : function () {
-		Wu.DomEvent.off(window, 'resize', this._windowResize, this);
+		M.DomEvent.off(window, 'resize', this._windowResize, this);
 	},
 
 	_windowResize : function () {
@@ -62,12 +62,12 @@ Wu.Chrome.SettingsContent = Wu.Chrome.extend({
 		this._container.style.display = 'block';
 
 		// mark button
-		Wu.DomUtil.addClass(this.options.trigger, 'active-tab');
+		M.DomUtil.addClass(this.options.trigger, 'active-tab');
 	},
 
 	hide : function () {
 		this._container.style.display = 'none';
-		Wu.DomUtil.removeClass(this.options.trigger, 'active-tab');
+		M.DomUtil.removeClass(this.options.trigger, 'active-tab');
 	},
 
 	hideAll : function () {
@@ -113,13 +113,13 @@ Wu.Chrome.SettingsContent = Wu.Chrome.extend({
 		var sortedLayers = [];
 		
 		// active layer wrapper
-		var wrap = this._activeLayersWrap = Wu.DomUtil.create('div', 'chrome chrome-content styler-content active-layer wrapper', container);
+		var wrap = this._activeLayersWrap = M.DomUtil.create('div', 'chrome chrome-content styler-content active-layer wrapper', container);
 
 		// title
-		title = Wu.DomUtil.create('div', 'chrome chrome-content active-layer title', wrap, title);
+		title = M.DomUtil.create('div', 'chrome chrome-content active-layer title', wrap, title);
 		
 		// create dropdown
-		var selectWrap = Wu.DomUtil.create('div', 'chrome chrome-content active-layer', wrap);
+		var selectWrap = M.DomUtil.create('div', 'chrome chrome-content active-layer', wrap);
 
 		// get layers
 		if ( !layers ) {
@@ -136,7 +136,7 @@ Wu.Chrome.SettingsContent = Wu.Chrome.extend({
 			});
 		});	
 
-		this._stylerDropDown = new Wu.Dropdown({
+		this._stylerDropDown = new M.Dropdown({
 			fn: this._selectedActiveLayer.bind(this),
 			appendTo: selectWrap,
 			content: sortedLayers,
@@ -233,7 +233,7 @@ Wu.Chrome.SettingsContent = Wu.Chrome.extend({
 	},	
 
 	_validateDateFormat : function (key) {
-		return Wu.Tools.validateDateFormat(key);
+		return M.Tools.validateDateFormat(key);
 	},
 
 	// Returns a number between 0 and 1 from a range

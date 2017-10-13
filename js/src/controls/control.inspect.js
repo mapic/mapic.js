@@ -1,4 +1,4 @@
-L.Control.Inspect = Wu.Control.extend({
+L.Control.Inspect = M.Control.extend({
 	
 	type : 'inspect',
 
@@ -13,10 +13,10 @@ L.Control.Inspect = Wu.Control.extend({
 		var options   = this.options;
 
 		// add html
-		this._content 	= Wu.DomUtil.create('div', 'inspect-control-inner-content', container);
-		this._header 	= Wu.DomUtil.create('div', 'menucollapser inspector-header', this._content, 'Layer inspector');
-		this._scroller  = Wu.DomUtil.create('div', 'inspector-list-outer-scroller', this._content);
-		this._list 	= Wu.DomUtil.create('div', 'inspector-list', this._scroller);
+		this._content 	= M.DomUtil.create('div', 'inspect-control-inner-content', container);
+		this._header 	= M.DomUtil.create('div', 'menucollapser inspector-header', this._content, 'Layer inspector');
+		this._scroller  = M.DomUtil.create('div', 'inspector-list-outer-scroller', this._content);
+		this._list 	= M.DomUtil.create('div', 'inspector-list', this._scroller);
 
 		// add tooltip
 		app.Tooltip.add(container, 'Shows a list of active layers', { extends : 'systyle', tipJoint : 'top left'});
@@ -48,7 +48,7 @@ L.Control.Inspect = Wu.Control.extend({
 		}
 
 		// stop
-		Wu.DomEvent.on(container, 'mousedown click dblclick', Wu.DomEvent.stop, this);
+		M.DomEvent.on(container, 'mousedown click dblclick', M.DomEvent.stop, this);
 
 		
 		return this;
@@ -143,8 +143,8 @@ L.Control.Inspect = Wu.Control.extend({
 
 	// 	// get vars
 	// 	this._project  = project || app.activeProject;
-	// 	// this._content = Wu.DomUtil.get('inspect-control-inner-content'); 
-	// 	// this._list    = Wu.DomUtil.get('inspector-list');
+	// 	// this._content = M.DomUtil.get('inspect-control-inner-content'); 
+	// 	// this._list    = M.DomUtil.get('inspector-list');
 
 	// 	// reset layers
 	// 	this._layers = [];           
@@ -177,10 +177,10 @@ L.Control.Inspect = Wu.Control.extend({
 
 		// prevent map scrollzoom
                 var map = app._map;
-                Wu.DomEvent.on(this._container, 'mouseenter', function () { 
+                M.DomEvent.on(this._container, 'mouseenter', function () { 
                 	map.scrollWheelZoom.disable(); 
                 }, this);
-                Wu.DomEvent.on(this._container, 'mouseleave', function () { 
+                M.DomEvent.on(this._container, 'mouseleave', function () { 
                 	map.scrollWheelZoom.enable();  
                 }, this); 
 	},
@@ -189,8 +189,8 @@ L.Control.Inspect = Wu.Control.extend({
 
 		// reset map scrollzoom
                 var map = app._map;
-                Wu.DomEvent.off(this._container, 'mouseenter', function () { map.scrollWheelZoom.disable(); }, this);
-                Wu.DomEvent.off(this._container, 'mouseleave', function () { map.scrollWheelZoom.enable();  }, this); 
+                M.DomEvent.off(this._container, 'mouseenter', function () { map.scrollWheelZoom.disable(); }, this);
+                M.DomEvent.off(this._container, 'mouseleave', function () { map.scrollWheelZoom.enable();  }, this); 
 	},
 
 
@@ -202,14 +202,14 @@ L.Control.Inspect = Wu.Control.extend({
 		this._content.style.display = 'block';
 
 		// create divs
-		var wrapper 	= Wu.DomUtil.create('div', 'inspect-layer');
-		var arrowsWrap 	= Wu.DomUtil.create('div', 'inspect-arrows-wrap', wrapper);
-		var upArrow 	= Wu.DomUtil.create('div', 'inspect-arrow-up', arrowsWrap);
-		var downArrow 	= Wu.DomUtil.create('div', 'inspect-arrow-down', arrowsWrap);
-		var text 	= Wu.DomUtil.create('div', 'inspect-text', wrapper, layer.getTitle());
-		var fly 	= Wu.DomUtil.create('div', 'inspect-fly', wrapper);
-		var eye 	= Wu.DomUtil.create('div', 'inspect-eye', wrapper);
-		var kill 	= Wu.DomUtil.create('div', 'inspect-kill', wrapper);
+		var wrapper 	= M.DomUtil.create('div', 'inspect-layer');
+		var arrowsWrap 	= M.DomUtil.create('div', 'inspect-arrows-wrap', wrapper);
+		var upArrow 	= M.DomUtil.create('div', 'inspect-arrow-up', arrowsWrap);
+		var downArrow 	= M.DomUtil.create('div', 'inspect-arrow-down', arrowsWrap);
+		var text 	= M.DomUtil.create('div', 'inspect-text', wrapper, layer.getTitle());
+		var fly 	= M.DomUtil.create('div', 'inspect-fly', wrapper);
+		var eye 	= M.DomUtil.create('div', 'inspect-eye', wrapper);
+		var kill 	= M.DomUtil.create('div', 'inspect-kill', wrapper);
 
 		// // add tooltip 
 		// todo: this is MEMORY LEAK! must remove tooltip when removing this wrapper
@@ -238,13 +238,13 @@ L.Control.Inspect = Wu.Control.extend({
 		this._layers.unshift(entry);
 
 		// add stops
-		Wu.DomEvent.on(upArrow,   'dblclick click', function (e) { Wu.DomEvent.stop(e); this.moveUp(entry);   	 }, this);
-		Wu.DomEvent.on(downArrow, 'dblclick click', function (e) { Wu.DomEvent.stop(e); this.moveDown(entry); 	 }, this);
-		Wu.DomEvent.on(fly, 	  'dblclick click', function (e) { Wu.DomEvent.stop(e); this.flyTo(entry);	 }, this);
-		Wu.DomEvent.on(eye, 	  'dblclick click', function (e) { Wu.DomEvent.stop(e); this.isolateToggle(entry);}, this);
-		Wu.DomEvent.on(kill, 	  'dblclick click', function (e) { Wu.DomEvent.stop(e); this.killLayer(entry);	 }, this);
-		Wu.DomEvent.on(text, 	  'dblclick click', function (e) { Wu.DomEvent.stop(e); this.select(entry);	 }, this);
-		// Wu.DomEvent.on(wrapper,   'mousedown dblclick click',  	   Wu.DomEvent.stop, 				    this);		
+		M.DomEvent.on(upArrow,   'dblclick click', function (e) { M.DomEvent.stop(e); this.moveUp(entry);   	 }, this);
+		M.DomEvent.on(downArrow, 'dblclick click', function (e) { M.DomEvent.stop(e); this.moveDown(entry); 	 }, this);
+		M.DomEvent.on(fly, 	  'dblclick click', function (e) { M.DomEvent.stop(e); this.flyTo(entry);	 }, this);
+		M.DomEvent.on(eye, 	  'dblclick click', function (e) { M.DomEvent.stop(e); this.isolateToggle(entry);}, this);
+		M.DomEvent.on(kill, 	  'dblclick click', function (e) { M.DomEvent.stop(e); this.killLayer(entry);	 }, this);
+		M.DomEvent.on(text, 	  'dblclick click', function (e) { M.DomEvent.stop(e); this.select(entry);	 }, this);
+		// M.DomEvent.on(wrapper,   'mousedown dblclick click',  	   M.DomEvent.stop, 				    this);		
 
 		// make draggable
 		if (this.options.draggable) this._makeSortable(entry);
@@ -258,7 +258,7 @@ L.Control.Inspect = Wu.Control.extend({
 		var el = entry.wrapper;
 		
 		// drag start
-		Wu.DomEvent.on(el, 'mousedown', function (e) {
+		M.DomEvent.on(el, 'mousedown', function (e) {
 			entry.e = e;
 			this._dragStart(entry);
 		}, this);
@@ -274,8 +274,8 @@ L.Control.Inspect = Wu.Control.extend({
 		this._initedSortable = true;
 
 		// hooks
-		Wu.DomEvent.on(document, 'mousemove', this._dragMove, this);
-		Wu.DomEvent.on(document, 'mouseup', this._dragStop, this);
+		M.DomEvent.on(document, 'mousemove', this._dragMove, this);
+		M.DomEvent.on(document, 'mouseup', this._dragStop, this);
 	},
 
 
@@ -385,7 +385,7 @@ L.Control.Inspect = Wu.Control.extend({
 		if (!this._layers || !entry) return;
 
 		// remove from DOM
-		Wu.DomUtil.remove(entry.wrapper);
+		M.DomUtil.remove(entry.wrapper);
 
 		// remove from array
 		_.remove(this._layers, function (l) { return l.uuid == entry.uuid; });
@@ -455,7 +455,7 @@ L.Control.Inspect = Wu.Control.extend({
 			this.isolateLayers();
 
 			// remove class from eye
-			Wu.DomUtil.removeClass(entry.eye, 'inspecting');
+			M.DomUtil.removeClass(entry.eye, 'inspecting');
 		} else {
 
 			// isolate layer
@@ -463,7 +463,7 @@ L.Control.Inspect = Wu.Control.extend({
 			this.isolateLayers();
 
 			// add class to eye
-			Wu.DomUtil.addClass(entry.eye, 'inspecting');
+			M.DomUtil.addClass(entry.eye, 'inspecting');
 		}
 
 	},

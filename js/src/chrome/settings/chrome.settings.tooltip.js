@@ -1,4 +1,4 @@
-Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
+M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
 
 
     _initialize : function () {
@@ -19,7 +19,7 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
     _initContainer : function () {
 
         // create container
-        this._container = Wu.DomUtil.create('div', 'chrome chrome-content chrome-pane chrome-tooltip', this.options.appendTo);
+        this._container = M.DomUtil.create('div', 'chrome chrome-content chrome-pane chrome-tooltip', this.options.appendTo);
     },
 
     _initLayout : function () {
@@ -29,15 +29,15 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
   
 
         // Scroller
-        this._midSection = Wu.DomUtil.create('div', 'chrome-middle-section', this._container);
-        this._midOuterScroller = Wu.DomUtil.create('div', 'chrome-middle-section-outer-scroller', this._midSection);
-        this._midInnerScroller = Wu.DomUtil.create('div', 'chrome-middle-section-inner-scroller', this._midOuterScroller);
+        this._midSection = M.DomUtil.create('div', 'chrome-middle-section', this._container);
+        this._midOuterScroller = M.DomUtil.create('div', 'chrome-middle-section-outer-scroller', this._midSection);
+        this._midInnerScroller = M.DomUtil.create('div', 'chrome-middle-section-inner-scroller', this._midOuterScroller);
 
         // active layer
         this.layerSelector = this._initLayout_activeLayers(false, false, this._midInnerScroller);
 
         // Fields wrapper
-        this._fieldsWrapper = Wu.DomUtil.create('div', 'chrome-field-wrapper', this._midInnerScroller);
+        this._fieldsWrapper = M.DomUtil.create('div', 'chrome-field-wrapper', this._midInnerScroller);
 
         // mark as inited
         this._inited = true;
@@ -75,7 +75,7 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
         this._container.style.display = 'block';
 
         // mark button
-        Wu.DomUtil.addClass(this.options.trigger, 'active-tab');
+        M.DomUtil.addClass(this.options.trigger, 'active-tab');
 
         // Enable settings from layer we're working with
         var layerUuid = this._getActiveLayerUuid();
@@ -107,7 +107,7 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
         this.tooltipMeta = this._layer.getTooltip();
         
         // Get layermeta
-        var layerMeta = Wu.parse(this._layer.store.metadata);
+        var layerMeta = M.parse(this._layer.store.metadata);
 
         // If no tooltip meta stored, create from layer meta
         if ( !this.tooltipMeta ) this.tooltipMeta = this.createTooltipMeta(layerMeta);
@@ -132,12 +132,12 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
         var title = this.tooltipMeta.title;
 
         // Wrapper
-        var sectionWrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
+        var sectionWrapper = M.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
         
         // Header
-        var header = Wu.DomUtil.create('div', 'chrome-content-header', sectionWrapper, 'Title');
+        var header = M.DomUtil.create('div', 'chrome-content-header', sectionWrapper, 'Title');
 
-        var titleInput = Wu.DomUtil.create('input', 'chrome-content-tooltip-title-field', sectionWrapper);
+        var titleInput = M.DomUtil.create('input', 'chrome-content-tooltip-title-field', sectionWrapper);
         titleInput.id = 'tooltip-title-input';
         titleInput.name = 'tooltip-title-input';
         titleInput.setAttribute('placeholder', this._layer.store.title);
@@ -145,18 +145,18 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
         if (title) titleInput.value = title;
 
         // set save event
-        Wu.DomEvent.on(titleInput, 'blur', this.saveTitle, this);
+        M.DomEvent.on(titleInput, 'blur', this.saveTitle, this);
     },
 
 
     initDisable : function () {
 
         // Wrapper
-        var sectionWrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
+        var sectionWrapper = M.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
         
         // Header
-        var header = Wu.DomUtil.create('div', 'chrome-content-header', sectionWrapper, 'Popup/labels');
-        // var headerExtra = Wu.DomUtil.create('span', 'chrome-content-header-gray', header, ' (auto detected)');
+        var header = M.DomUtil.create('div', 'chrome-content-header', sectionWrapper, 'Popup/labels');
+        // var headerExtra = M.DomUtil.create('span', 'chrome-content-header-gray', header, ' (auto detected)');
 
         if ( typeof this.tooltipMeta.enable == 'undefined' ) {
             this.tooltipMeta.enable = true;
@@ -166,14 +166,14 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
         // Enable/disable switch
         // Enable/disable switch
 
-        var enableDisableLine = new Wu.fieldLine({
+        var enableDisableLine = new M.fieldLine({
             id       : 'enable',
             appendTo : sectionWrapper,
             title    : 'Enable popup',
             input    : false
         });     
 
-        var timeSeriesSwitch = new Wu.button({
+        var timeSeriesSwitch = new M.button({
             id       : 'enable-pop-up',
             type     : 'switch',
             isOn     : this.tooltipMeta.enable,
@@ -183,14 +183,14 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
         });
 
 
-        var labelsToggleLine = new Wu.fieldLine({
+        var labelsToggleLine = new M.fieldLine({
             id       : 'enable',
             appendTo : sectionWrapper,
             title    : 'Enable labels',
             input    : false
         });     
 
-        var labelsToggle = new Wu.button({
+        var labelsToggle = new M.button({
             id       : 'enable-pop-up',
             type     : 'switch',
             isOn     : this.tooltipMeta.labels,
@@ -228,8 +228,8 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
 
         var fields = timeSeries ? this.tooltipMeta.timeSeries : this.tooltipMeta.metaFields;
 
-        var sectionWrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
-        var header = Wu.DomUtil.create('div', 'chrome-content-header', sectionWrapper, title);
+        var sectionWrapper = M.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
+        var header = M.DomUtil.create('div', 'chrome-content-header', sectionWrapper, title);
 
         // Function that saves on blur/click
         var saveFunction = timeSeries ? this._saveSwitchTimeSeries : this._saveSwitch;
@@ -245,7 +245,7 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
             // Block 
             if ( key == 'enable' || key == 'minmaxRange' || key == 'graphstyle' ) return;
 
-            var line = new Wu.fieldLine({
+            var line = new M.fieldLine({
                 id       : key,
                 appendTo : sectionWrapper,
                 title    : title,
@@ -253,7 +253,7 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
                 fn       : this._saveFromBlur.bind(this)
             });     
 
-            var _switch = new Wu.button({
+            var _switch = new M.button({
                 id       : key,
                 type     : 'switch',
                 isOn     : isOn,
@@ -267,25 +267,25 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
     // Cretes section with time series
     initTimeSeries : function () {
         // Wrapper
-        var sectionWrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
+        var sectionWrapper = M.DomUtil.create('div', 'chrome-content-section-wrapper', this._fieldsWrapper);
         
         // Header
-        var header = Wu.DomUtil.create('div', 'chrome-content-header', sectionWrapper, 'Time series');
-        var headerExtra = Wu.DomUtil.create('span', 'chrome-content-header-gray', header, ' (auto detected)');
+        var header = M.DomUtil.create('div', 'chrome-content-header', sectionWrapper, 'Time series');
+        var headerExtra = M.DomUtil.create('span', 'chrome-content-header-gray', header, ' (auto detected)');
 
 
         // Time series switch
         // Time series switch
         // Time series switch
 
-        var timeSeriesLine = new Wu.fieldLine({
+        var timeSeriesLine = new M.fieldLine({
             id       : 'enable',
             appendTo : sectionWrapper,
             title    : 'Enable time series',
             input    : false
         });     
 
-        var timeSeriesSwitch = new Wu.button({
+        var timeSeriesSwitch = new M.button({
             id      : 'enable',
             type     : 'switch',
             isOn     : this.tooltipMeta.timeSeries.enable,
@@ -300,14 +300,14 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
         // RANGE
         // RANGE
 
-        var rangeLine = new Wu.fieldLine({
+        var rangeLine = new M.fieldLine({
             id       : 'minmaxRange',
             appendTo : sectionWrapper,
             title    : 'Range',
             input    : false
         });
 
-        var rangeMiniInput = new Wu.button({
+        var rangeMiniInput = new M.button({
             id      : 'minmaxRange',
             type        : 'miniInput',
             right       : false,
@@ -350,7 +350,7 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
         var key   = e.target.id.substring(12, e.target.id.length);
         var title = e.target.value;
         
-        var thisSwitch = Wu.DomUtil.get('switch_' + key);
+        var thisSwitch = M.DomUtil.get('switch_' + key);
         var thisSwitchState = thisSwitch.getAttribute('state');
 
         // var on = thisSwitchState ? true : false;
@@ -368,7 +368,7 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
 
         var elem = e.target;
         var key  = elem.getAttribute('key');
-        var titleField = Wu.DomUtil.get('field_input_' + key);
+        var titleField = M.DomUtil.get('field_input_' + key);
         var title = titleField ? titleField.value : false;
         this._saveToServer(key, on, title);
     },
@@ -377,7 +377,7 @@ Wu.Chrome.SettingsContent.Tooltip = Wu.Chrome.SettingsContent.extend({
 
         var elem = e.target;
         var key  = elem.getAttribute('key');
-        var titleField = Wu.DomUtil.get('field_input_' + key);
+        var titleField = M.DomUtil.get('field_input_' + key);
         var title = titleField ? titleField.value : false;
         this._saveToServer(key, on, title, true);
     },

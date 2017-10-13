@@ -1,4 +1,4 @@
-Wu.Legend = Wu.Class.extend({
+M.Legend = M.Class.extend({
 
 	type : 'legend',
 
@@ -19,7 +19,7 @@ Wu.Legend = Wu.Class.extend({
 	},
 
 	refreshLegend : function (legend) {
-		this.legendObj = legend ? Wu.parse(legend) : this.legendObj;
+		this.legendObj = legend ? M.parse(legend) : this.legendObj;
 		this.updateLegend();	
 	},
 
@@ -34,10 +34,10 @@ Wu.Legend = Wu.Class.extend({
 		// get correct legend builder function
 		if (this.options.layer.isDefo()) {
 			// create legend objecct
-			this.legendObj = Wu.Tools.Legend.buildRasterDeformationLegend(styleJSON, this.options.layer, this.legendObj);
+			this.legendObj = M.Tools.Legend.buildRasterDeformationLegend(styleJSON, this.options.layer, this.legendObj);
 		} else {
 			// create legend objecct
-			this.legendObj = Wu.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, this.legendObj);
+			this.legendObj = M.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, this.legendObj);
 		}
 
 		// Rolls out the HTML
@@ -48,7 +48,7 @@ Wu.Legend = Wu.Class.extend({
 
 		// fire event
 		var layerID = this.options.layer.options.uuid;
-		Wu.Mixin.Events.fire('updateLegend', { detail : { layerUuid : layerID }}); 
+		M.Mixin.Events.fire('updateLegend', { detail : { layerUuid : layerID }}); 
 
 	},
 
@@ -65,14 +65,14 @@ Wu.Legend = Wu.Class.extend({
 	initLegends : function () {
 
 		// Legend section
-		this._legensOuter = Wu.DomUtil.create('div', 'chrome-field-wrapper field-legend displayNone', this.options.container);
-		this._legendSection = Wu.DomUtil.create('div', 'chrome-content-section-wrapper toggles-wrapper', this._legensOuter);
+		this._legensOuter = M.DomUtil.create('div', 'chrome-field-wrapper field-legend displayNone', this.options.container);
+		this._legendSection = M.DomUtil.create('div', 'chrome-content-section-wrapper toggles-wrapper', this._legensOuter);
 
 		// Container for legend title and switch (this is always there).
-		this._legendTopLineWrapper = Wu.DomUtil.create('div', 'chrome-legend-top-section', this._legendSection);
+		this._legendTopLineWrapper = M.DomUtil.create('div', 'chrome-legend-top-section', this._legendSection);
 
 		// Where the legends are + the switches for opacity slider and legend meta
-		this._legendContent = Wu.DomUtil.create('div', 'legend-content', this._legendSection);
+		this._legendContent = M.DomUtil.create('div', 'legend-content', this._legendSection);
 
 		// get style & legends
 		var styleJSON = this.options.carto;
@@ -80,7 +80,7 @@ Wu.Legend = Wu.Class.extend({
 		var oldLegend = legends ? JSON.parse(legends) : false;
 
 		// Creates legend object as JSON
-		this.legendObj = Wu.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, oldLegend);
+		this.legendObj = M.Tools.Legend.buildLegendObject(styleJSON, this.options.layer, oldLegend);
 
 		// Create legend styler
 		this.createLegendStyler();
@@ -115,7 +115,7 @@ Wu.Legend = Wu.Class.extend({
 		var _isOn = this.legendObj.enable;
 
 		// wrapper
-		var line = new Wu.fieldLine({
+		var line = new M.fieldLine({
 			id           : 'legend-section',
 			appendTo     : this._legendTopLineWrapper,
 			title        : '<b>Legend</b>',
@@ -123,7 +123,7 @@ Wu.Legend = Wu.Class.extend({
 		});
 
 		// Switch
-		this.enableLegendButton = new Wu.button({
+		this.enableLegendButton = new M.button({
 			id 	     	 : 'legen-section-switch',
 			type 	     : 'switch',
 			isOn 	     : _isOn,
@@ -141,7 +141,7 @@ Wu.Legend = Wu.Class.extend({
 		// Legend meta
 		// Legend meta
 
-		var legendMetaOptionsWrapper = Wu.DomUtil.create('div', 'legend-meta-options-wrapper', this._legendContent);
+		var legendMetaOptionsWrapper = M.DomUtil.create('div', 'legend-meta-options-wrapper', this._legendContent);
 
 
 		// Layer meta option switch
@@ -149,7 +149,7 @@ Wu.Legend = Wu.Class.extend({
 		// Layer meta option switch
 
 		// wrapper
-		var layerMetaOption = new Wu.fieldLine({
+		var layerMetaOption = new M.fieldLine({
 			id           : 'layer-meta-option',
 			appendTo     : legendMetaOptionsWrapper,
 			title        : '<b>Layer meta</b>',
@@ -170,7 +170,7 @@ Wu.Legend = Wu.Class.extend({
 
 
 		// Layer meta switch
-		var button = new Wu.button({
+		var button = new M.button({
 			id 	     : 'layerMeta',
 			type 	     : 'switch',
 			isOn 	     : _isOn,
@@ -186,7 +186,7 @@ Wu.Legend = Wu.Class.extend({
 		// Opacity slider switch
 
 		// wrapper
-		var opacitySliderOption = new Wu.fieldLine({
+		var opacitySliderOption = new M.fieldLine({
 			id           : 'opacity-slider-option',
 			appendTo     : legendMetaOptionsWrapper,
 			title        : '<b>Opacity slider</b>',
@@ -206,7 +206,7 @@ Wu.Legend = Wu.Class.extend({
 	
 
 		// Opacity slider switch
-		var button = new Wu.button({
+		var button = new M.button({
 			id 	     : 'opacitySlider',
 			type 	     : 'switch',
 			isOn 	     : _isOn,
@@ -227,7 +227,7 @@ Wu.Legend = Wu.Class.extend({
 		// they will need to be part of the same legend.
 		// this.polygonAndLinesHTML(polygons, lines);
 
-		var legendArray = Wu.Tools.Legend.getLegendArray(points, lines, polygons);
+		var legendArray = M.Tools.Legend.getLegendArray(points, lines, polygons);
 
 		// Create legend settings from array
 		this.createLegendSettingsFromArray(legendArray);
@@ -250,9 +250,9 @@ Wu.Legend = Wu.Class.extend({
 		legendArray.forEach(function (l) {
 			
 			if ( l.gradient ) {
-				gradientHTML += Wu.Tools.Legend.gradientLegendHTML(l, this);
+				gradientHTML += M.Tools.Legend.gradientLegendHTML(l, this);
 			} else {
-				legendHTML += Wu.Tools.Legend.eachLegendHTML(l, this.satelliteView);
+				legendHTML += M.Tools.Legend.eachLegendHTML(l, this.satelliteView);
 			}
 			
 		}.bind(this));
@@ -269,10 +269,10 @@ Wu.Legend = Wu.Class.extend({
 		var object = options.object;
 
 		// Create container for each legend
-		var container = Wu.DomUtil.create('div', 'legend-each-container', this._legendContent);
+		var container = M.DomUtil.create('div', 'legend-each-container', this._legendContent);
 
 		// Color space to the left (can be line, dot or polygon)
-		var color = Wu.DomUtil.create('div', 'legend-each-color', container);
+		var color = M.DomUtil.create('div', 'legend-each-color', container);
 		    color.setAttribute('style', style);
 
 		// Legend name
@@ -284,7 +284,7 @@ Wu.Legend = Wu.Class.extend({
 		// NAME INPUT
 		// NAME INPUT
 
-		var input = new Wu.button({
+		var input = new M.button({
 			id 	     : 'test',
 			type 	     : 'input',
 			right 	     : false,
@@ -301,7 +301,7 @@ Wu.Legend = Wu.Class.extend({
 		});
 
 
-		Wu.DomEvent.on(input.input, 'keydown', this.checkKey);
+		M.DomEvent.on(input.input, 'keydown', this.checkKey);
 
 		// Each legend on/off button
 		// Each legend on/off button
@@ -314,10 +314,10 @@ Wu.Legend = Wu.Class.extend({
 		}
 
 		// Put on/off state to wrapper
-		object.isOn ? Wu.DomUtil.removeClass(container, 'is-off') : Wu.DomUtil.addClass(container, 'is-off');
+		object.isOn ? M.DomUtil.removeClass(container, 'is-off') : M.DomUtil.addClass(container, 'is-off');
 
 		// Switch to toggle this specific legend on or off
-		var button = new Wu.button({
+		var button = new M.button({
 			id 	     : name,
 			type 	     : 'switch',
 			isOn 	     : object.isOn,
@@ -342,16 +342,16 @@ Wu.Legend = Wu.Class.extend({
 		var maxVal = options.gradient.maxVal;
 		var bline = options.gradient.bline;
 		var gradientName = object.name ? object.name : bline;
-		var container = Wu.DomUtil.create('div', 'legend-each-container', this._legendContent);
+		var container = M.DomUtil.create('div', 'legend-each-container', this._legendContent);
 
 		container.style.paddingLeft = 0;
 
-		var gradientWrapper = Wu.DomUtil.create('div', 'info-legend-container', container);
-		var gradientInfoWrapper = Wu.DomUtil.create('div', 'info-legend-frame', gradientWrapper);
-		var gradientInfoMinVal = Wu.DomUtil.create('div', 'info-legend-val info-legend-min-val', gradientInfoWrapper, minVal);
+		var gradientWrapper = M.DomUtil.create('div', 'info-legend-container', container);
+		var gradientInfoWrapper = M.DomUtil.create('div', 'info-legend-frame', gradientWrapper);
+		var gradientInfoMinVal = M.DomUtil.create('div', 'info-legend-val info-legend-min-val', gradientInfoWrapper, minVal);
 
 		// Switch to toggle this specific legend on or off
-		var input = new Wu.button({
+		var input = new M.button({
 			id 	     : 'gradient-header',
 			type 	     : 'input',
 			isOn 	     : true,
@@ -365,11 +365,11 @@ Wu.Legend = Wu.Class.extend({
 			context      : this
 		});
 
-		Wu.DomEvent.on(input.input, 'keydown', this.checkKey);		    
+		M.DomEvent.on(input.input, 'keydown', this.checkKey);		    
 		
 
-		var gradientInfoMaxVal = Wu.DomUtil.create('div', 'info-legend-val info-legend-max-val', gradientInfoWrapper, maxVal);
-		var gradientLegend = Wu.DomUtil.create('div', 'info-legend-gradient-container', gradientInfoWrapper);
+		var gradientInfoMaxVal = M.DomUtil.create('div', 'info-legend-val info-legend-max-val', gradientInfoWrapper, maxVal);
+		var gradientLegend = M.DomUtil.create('div', 'info-legend-gradient-container', gradientInfoWrapper);
 		    gradientLegend.setAttribute('style', gradientStyle);
 
 		// Set on to true by default
@@ -378,10 +378,10 @@ Wu.Legend = Wu.Class.extend({
 		}
 
 		// Put on/off state to wrapper
-		options.object.isOn ? Wu.DomUtil.removeClass(container, 'is-off') : Wu.DomUtil.addClass(container, 'is-off');
+		options.object.isOn ? M.DomUtil.removeClass(container, 'is-off') : M.DomUtil.addClass(container, 'is-off');
 
 		// Switch to toggle this specific legend on or off
-		var button = new Wu.button({
+		var button = new M.button({
 			id 	     : 'random',
 			type 	     : 'switch',
 			isOn 	     : options.object.isOn,
@@ -402,21 +402,21 @@ Wu.Legend = Wu.Class.extend({
 	gradientBottom : function (options) {
 		if ( !this.satelliteView ) return;
 
-		var container = Wu.DomUtil.create('div', 'legend-each-container', this._legendContent);
+		var container = M.DomUtil.create('div', 'legend-each-container', this._legendContent);
 
 		container.style.paddingLeft = 0;
 
-		var cont     = Wu.DomUtil.create('div', 'info-legend-gradient-bottomline', container);
-		var leg      = Wu.DomUtil.create('div', 'legend-gradient-footer', cont);
+		var cont     = M.DomUtil.create('div', 'info-legend-gradient-bottomline', container);
+		var leg      = M.DomUtil.create('div', 'legend-gradient-footer', cont);
 		leg.id   	 = 'legend-gradient-footer';
-		var top      = Wu.DomUtil.create('div', 'legend-gradient-footer-top', leg, 'Deformation in satellite line of sight')
-		var lineCont = Wu.DomUtil.create('div', 'legend-gradient-footer-line-container', leg);
-		var line     = Wu.DomUtil.create('div', 'legend-gradient-footer-line', lineCont);
-		var arrowL   = Wu.DomUtil.create('div', 'legend-gradient-footer-arrow-left', lineCont);
-		var arrowR   = Wu.DomUtil.create('div', 'legend-gradient-footer-arrow-right', lineCont);
-		var midLine  = Wu.DomUtil.create('div', 'legend-gradient-footer-middle-line', lineCont);
-		var textL    = Wu.DomUtil.create('div', 'legend-gradient-footer-toward', leg, 'Towards satellite');
-		var textR    = Wu.DomUtil.create('div', 'legend-gradient-footer-from', leg, 'Away from satellite');
+		var top      = M.DomUtil.create('div', 'legend-gradient-footer-top', leg, 'Deformation in satellite line of sight')
+		var lineCont = M.DomUtil.create('div', 'legend-gradient-footer-line-container', leg);
+		var line     = M.DomUtil.create('div', 'legend-gradient-footer-line', lineCont);
+		var arrowL   = M.DomUtil.create('div', 'legend-gradient-footer-arrow-left', lineCont);
+		var arrowR   = M.DomUtil.create('div', 'legend-gradient-footer-arrow-right', lineCont);
+		var midLine  = M.DomUtil.create('div', 'legend-gradient-footer-middle-line', lineCont);
+		var textL    = M.DomUtil.create('div', 'legend-gradient-footer-toward', leg, 'Towards satellite');
+		var textR    = M.DomUtil.create('div', 'legend-gradient-footer-from', leg, 'Away from satellite');
 	},
 
 	checkKey : function (e) {
@@ -475,10 +475,10 @@ Wu.Legend = Wu.Class.extend({
 
 	_switchEnableLegend : function  (e) {
 		if ( this.legendObj.enable ) {
-			// Wu.DomUtil.addClass(this._legendContent, 'displayNone');
+			// M.DomUtil.addClass(this._legendContent, 'displayNone');
 			this.legendObj.enable = false;
 		} else {
-			// Wu.DomUtil.removeClass(this._legendContent, 'displayNone');
+			// M.DomUtil.removeClass(this._legendContent, 'displayNone');
 			this.legendObj.enable = true;
 		}
 
@@ -488,11 +488,11 @@ Wu.Legend = Wu.Class.extend({
 	_switchLegend : function () {		
 
 		if ( this.sourceObject.isOn ) {
-			Wu.DomUtil.addClass(this.appendTo, 'is-off');
+			M.DomUtil.addClass(this.appendTo, 'is-off');
 			this.sourceObject.isOn = false;	
 
 		} else {
-			Wu.DomUtil.removeClass(this.appendTo, 'is-off');
+			M.DomUtil.removeClass(this.appendTo, 'is-off');
 			this.sourceObject.isOn = true;
 		}
 
@@ -504,10 +504,10 @@ Wu.Legend = Wu.Class.extend({
 	_switchGradient : function () {		
 
 		if ( this.sourceObject.isOn ) {
-			Wu.DomUtil.addClass(this.appendTo, 'is-off');
+			M.DomUtil.addClass(this.appendTo, 'is-off');
 			this.sourceObject.isOn = false;
 		} else {
-			Wu.DomUtil.removeClass(this.appendTo, 'is-off');
+			M.DomUtil.removeClass(this.appendTo, 'is-off');
 			this.sourceObject.isOn = true;
 		}
 
@@ -528,7 +528,7 @@ Wu.Legend = Wu.Class.extend({
 
 
 
-Wu.Tools.Legend = {
+M.Tools.Legend = {
 
 	buildRasterDeformationLegend : function (json, layer, prev_legend) {
 
@@ -1249,7 +1249,7 @@ Wu.Tools.Legend = {
 			// Color & opacity
 			var color   = point.color,
 			    opacity = point.opacity,
-			    RGB     = Wu.Tools.color2RGB(color),
+			    RGB     = M.Tools.color2RGB(color),
 			    rgba    = 'rgba(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ',' + opacity + ');',
 			    style   = 'background:' + rgba + '; ';
 		
@@ -1299,7 +1299,7 @@ Wu.Tools.Legend = {
 
 			var color   = points.all.color.value;
 			var opacity = points.all.opacity.value;			
-			var RGB = Wu.Tools.color2RGB(color);
+			var RGB = M.Tools.color2RGB(color);
 			var rgba = 'rgba(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ',' + opacity + ');';
 			pointStyle += 'background:' + rgba + ';';
 
@@ -1396,7 +1396,7 @@ Wu.Tools.Legend = {
 					var lineColor   = l.color;
 					var lineOpacity = l.opacity;
 					var lineWidth   = l.width;
-					var lineRGB     = Wu.Tools.color2RGB(lineColor);
+					var lineRGB     = M.Tools.color2RGB(lineColor);
 					var lineRgba    = 'rgba(' + lineRGB.r + ',' + lineRGB.g + ',' + lineRGB.b + ',' + lineOpacity + ');';
 					var lineStyle   = 'border: ' + (lineWidth/2) + 'px solid ' + lineRgba;
 
@@ -1408,7 +1408,7 @@ Wu.Tools.Legend = {
 					// Polygon style
 					var polygonColor   = p.color;
 					var polygonOpacity = p.opacity;
-					var polygonRGB     = Wu.Tools.color2RGB(polygonColor);
+					var polygonRGB     = M.Tools.color2RGB(polygonColor);
 					var polygonRgba    = 'rgba(' + polygonRGB.r + ',' + polygonRGB.g + ',' + polygonRGB.b + ',' + polygonOpacity + ');';
 					var polygonStyle   = 'background:' + polygonRgba;
 
@@ -1439,7 +1439,7 @@ Wu.Tools.Legend = {
 			// Style
 			var color   = line.color;
 			var opacity = line.opacity;
-			var RGB     = Wu.Tools.color2RGB(color);
+			var RGB     = M.Tools.color2RGB(color);
 			var rgba    = 'rgba(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ',' + opacity + ');';
 			var style   = 'border: ' + 2 + 'px solid ' + rgba;
 
@@ -1478,7 +1478,7 @@ Wu.Tools.Legend = {
 			} else {
 				var color   = polygon.color;
 				var opacity = polygon.opacity;
-				var RGB     = Wu.Tools.color2RGB(color);
+				var RGB     = M.Tools.color2RGB(color);
 				var rgba    = 'rgba(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ',' + opacity + ');';
 				var style   = 'background:' + rgba;
 			}
@@ -1517,7 +1517,7 @@ Wu.Tools.Legend = {
 		if ( polygons.all.color && !polygons.all.color.column ) {
 			var color   = polygons.all.color.value;
 			var opacity = polygons.all.opacity.value;			
-			var RGB = Wu.Tools.color2RGB(color);
+			var RGB = M.Tools.color2RGB(color);
 			var rgba = 'rgba(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ',' + opacity + ');';
 			allStyle += 'background:' + rgba;
 
@@ -1529,7 +1529,7 @@ Wu.Tools.Legend = {
 			var color   = lines.all.color.value;
 			var opacity = lines.all.opacity.value;
 			var width   = lines.all.width.value;
-			var RGB = Wu.Tools.color2RGB(color);
+			var RGB = M.Tools.color2RGB(color);
 			var rgba = 'rgba(' + RGB.r + ',' + RGB.g + ',' + RGB.b + ',' + opacity + ');';
 
 			if ( !polygons.all.color ) {
@@ -1768,7 +1768,7 @@ Wu.Tools.Legend = {
 
 
 
-Wu.Legend.Raster = Wu.Legend.extend({
+M.Legend.Raster = M.Legend.extend({
 
 	
 });

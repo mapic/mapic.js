@@ -1,6 +1,6 @@
 // app.ZIndexControl
 
-Wu.ZIndexControl = Wu.Class.extend({
+M.ZIndexControl = M.Class.extend({
 
 	initialize : function () {
 		
@@ -101,7 +101,7 @@ Wu.ZIndexControl = Wu.Class.extend({
 
 });
 
-Wu.ZIndexControl.Baselayers = Wu.ZIndexControl.extend({
+M.ZIndexControl.Baselayers = M.ZIndexControl.extend({
 
 	// baselayers start with zindex 0
 	_z : 0,
@@ -109,7 +109,7 @@ Wu.ZIndexControl.Baselayers = Wu.ZIndexControl.extend({
 
 });
 
-Wu.ZIndexControl.Layermenu = Wu.ZIndexControl.extend({
+M.ZIndexControl.Layermenu = M.ZIndexControl.extend({
 
 	// layermenu start w zindex 1000, to stay on top of baselayers
 	_z : 1000,

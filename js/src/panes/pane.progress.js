@@ -1,4 +1,4 @@
-Wu.ProgressPane = Wu.Class.extend({
+M.ProgressPane = M.Class.extend({
 
 	options : {
 
@@ -9,7 +9,7 @@ Wu.ProgressPane = Wu.Class.extend({
 	initialize : function (options) {
 		
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// init container
 		this.initContainer();
@@ -18,8 +18,8 @@ Wu.ProgressPane = Wu.Class.extend({
 
 	initContainer : function () {
 
-		// create progress bar (share dom with other instances of Wu.ProgressPane)
-		this._progressBar = app._progressBar = app._progressBar || Wu.DomUtil.create('div', 'status-progress-bar', app._appPane);
+		// create progress bar (share dom with other instances of M.ProgressPane)
+		this._progressBar = app._progressBar = app._progressBar || M.DomUtil.create('div', 'status-progress-bar', app._appPane);
 
 		// add to sidepane if assigned container in options
 		if (this.options.addTo) this.addTo(this.options.addTo);

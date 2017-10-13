@@ -1,4 +1,4 @@
-Wu.Data = Wu.Class.extend({
+M.Data = M.Class.extend({
 
 	initialize : function () {
 
@@ -10,7 +10,7 @@ Wu.Data = Wu.Class.extend({
 	_initResumable : function () {
 
 		// create resumable
-		this._resumable = new Wu.Resumable({
+		this._resumable = new M.Resumable({
 			onUploadDone : this._onUploadDone.bind(this)
 		});
 
@@ -18,7 +18,7 @@ Wu.Data = Wu.Class.extend({
 
 	_refreshResumable : function () {
 		// create resumable
-		this._resumable = new Wu.Resumable({
+		this._resumable = new M.Resumable({
 			onUploadDone : this._onUploadDone.bind(this)
 		});
 
@@ -31,7 +31,7 @@ Wu.Data = Wu.Class.extend({
 		this._buttonContainer = appendTo;
 
 		// create button
-		var button = this._uploadButton = Wu.DomUtil.create('div', className);
+		var button = this._uploadButton = M.DomUtil.create('div', className);
 
 		// append to container
 		this._buttonContainer.appendChild(button);
@@ -40,13 +40,13 @@ Wu.Data = Wu.Class.extend({
 		this._resumable.assignBrowse(button);	
 
 		// add other options
-		var optionsDiv = Wu.DomUtil.create('div', 'upload-button-options', this._buttonContainer, '<i class="fa fa-caret-down"></i>');
+		var optionsDiv = M.DomUtil.create('div', 'upload-button-options', this._buttonContainer, '<i class="fa fa-caret-down"></i>');
 
 		// create dropdown
-        var optionsDropdownDiv = Wu.DomUtil.create('div', 'upload-button-dropdown displayNone', this._buttonContainer);
+        var optionsDropdownDiv = M.DomUtil.create('div', 'upload-button-dropdown displayNone', this._buttonContainer);
 
         // create cube item
-        var createCube = Wu.DomUtil.create('div', 'upload-button-create-cube', optionsDropdownDiv, 'Create cube...');
+        var createCube = M.DomUtil.create('div', 'upload-button-create-cube', optionsDropdownDiv, 'Create cube...');
              
         // return all divs
 		var returnObject = {
@@ -99,7 +99,7 @@ Wu.Data = Wu.Class.extend({
 		xhr.open("GET", url, true);
 		xhr.onreadystatechange = function() {
 			if(xhr.readyState == 4 && xhr.status == 200) {
-				var fileObject = Wu.parse(xhr.responseText);
+				var fileObject = M.parse(xhr.responseText);
 
 				// return file
 				if (fileObject && fileObject.file) return callback(fileObject);
@@ -120,7 +120,7 @@ Wu.Data = Wu.Class.extend({
 		var file = user.setFile(fileStore);
 
 		// fire event (for data lib to pick up changes)
-		Wu.Mixin.Events.fire('fileImported', { detail : {
+		M.Mixin.Events.fire('fileImported', { detail : {
 			file : file
 		}});
 	},

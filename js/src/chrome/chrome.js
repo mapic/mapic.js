@@ -1,9 +1,9 @@
-Wu.Chrome = Wu.Class.extend({
+M.Chrome = M.Class.extend({
 
     initialize : function (options) {
 
         // set options
-        Wu.setOptions(this, options);
+        M.setOptions(this, options);
 
         // listen up
         this._listen();
@@ -13,30 +13,30 @@ Wu.Chrome = Wu.Class.extend({
     },      
 
     _listen : function () {
-        Wu.Mixin.Events.on('projectSelected',      this._projectSelected, this);
-        Wu.Mixin.Events.on('projectDeleted',       this._onProjectDeleted, this);
-        Wu.Mixin.Events.on('projectChanged',       this._onProjectChanged, this);
-        Wu.Mixin.Events.on('editEnabled',          this._editEnabled, this);
-        Wu.Mixin.Events.on('editDisabled',         this._editDisabled, this);
-        Wu.Mixin.Events.on('layerEnabled',         this._layerEnabled, this);
-        Wu.Mixin.Events.on('layerDisabled',        this._layerDisabled, this);
-        Wu.Mixin.Events.on('fileImported',         this._onFileImported, this);
-        Wu.Mixin.Events.on('fileDeleted',          this._onFileDeleted, this);
-        Wu.Mixin.Events.on('layerAdded',           this._onLayerAdded, this);
-        Wu.Mixin.Events.on('layerEdited',          this._onLayerEdited, this);
-        Wu.Mixin.Events.on('layerDeleted',         this._onLayerDeleted, this);
-        Wu.Mixin.Events.on('closeMenuTabs',        this._onCloseMenuTabs, this);
-        Wu.Mixin.Events.on('fileProcessing',       this._onFileProcessing, this);
-        Wu.Mixin.Events.on('processingProgress',   this._onProcessingProgress, this);
-        Wu.Mixin.Events.on('processingError',      this._onProcessingError, this);
-        Wu.Mixin.Events.on('tileCount',            this._onTileCount, this);
-        Wu.Mixin.Events.on('tileset_meta',         this._onTilesetMeta, this);
-        Wu.Mixin.Events.on('generatedTiles',       this._onGeneratedTiles, this);
-        Wu.Mixin.Events.on('closeFullscreen',      this._onCloseFullscreen, this);
-        Wu.Mixin.Events.on('updatedProjectAccess', this._onUpdatedProjectAccess, this);
-        Wu.Mixin.Events.on('maskUploaded',         this._onMaskUploaded, this);
+        M.Mixin.Events.on('projectSelected',      this._projectSelected, this);
+        M.Mixin.Events.on('projectDeleted',       this._onProjectDeleted, this);
+        M.Mixin.Events.on('projectChanged',       this._onProjectChanged, this);
+        M.Mixin.Events.on('editEnabled',          this._editEnabled, this);
+        M.Mixin.Events.on('editDisabled',         this._editDisabled, this);
+        M.Mixin.Events.on('layerEnabled',         this._layerEnabled, this);
+        M.Mixin.Events.on('layerDisabled',        this._layerDisabled, this);
+        M.Mixin.Events.on('fileImported',         this._onFileImported, this);
+        M.Mixin.Events.on('fileDeleted',          this._onFileDeleted, this);
+        M.Mixin.Events.on('layerAdded',           this._onLayerAdded, this);
+        M.Mixin.Events.on('layerEdited',          this._onLayerEdited, this);
+        M.Mixin.Events.on('layerDeleted',         this._onLayerDeleted, this);
+        M.Mixin.Events.on('closeMenuTabs',        this._onCloseMenuTabs, this);
+        M.Mixin.Events.on('fileProcessing',       this._onFileProcessing, this);
+        M.Mixin.Events.on('processingProgress',   this._onProcessingProgress, this);
+        M.Mixin.Events.on('processingError',      this._onProcessingError, this);
+        M.Mixin.Events.on('tileCount',            this._onTileCount, this);
+        M.Mixin.Events.on('tileset_meta',         this._onTilesetMeta, this);
+        M.Mixin.Events.on('generatedTiles',       this._onGeneratedTiles, this);
+        M.Mixin.Events.on('closeFullscreen',      this._onCloseFullscreen, this);
+        M.Mixin.Events.on('updatedProjectAccess', this._onUpdatedProjectAccess, this);
+        M.Mixin.Events.on('maskUploaded',         this._onMaskUploaded, this);
 
-        Wu.DomEvent.on(window, 'resize', _.throttle(this._onWindowResize, 1000), this);
+        M.DomEvent.on(window, 'resize', _.throttle(this._onWindowResize, 1000), this);
     },
 
     _projectSelected : function (e) {

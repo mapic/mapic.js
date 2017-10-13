@@ -1,4 +1,4 @@
-Wu.Chrome.SettingsContent.SettingsSelector = Wu.Chrome.SettingsContent.extend({
+M.Chrome.SettingsContent.SettingsSelector = M.Chrome.SettingsContent.extend({
 
 	_ : 'settingsSelector',
 
@@ -32,7 +32,7 @@ Wu.Chrome.SettingsContent.SettingsSelector = Wu.Chrome.SettingsContent.extend({
 	_initialize : function (options) {
 
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// init container
 		this._initContainer();
@@ -60,9 +60,9 @@ Wu.Chrome.SettingsContent.SettingsSelector = Wu.Chrome.SettingsContent.extend({
 		// this._settingsButton.style.display = )app.activeProject.isEditable( ? '' : 'none';
 
 		if (app.activeProject.isEditable()) {
-			Wu.DomUtil.removeClass(this._settingsButton, 'disabledBtn');
+			M.DomUtil.removeClass(this._settingsButton, 'disabledBtn');
 		} else {
-			Wu.DomUtil.addClass(this._settingsButton, 'disabledBtn');
+			M.DomUtil.addClass(this._settingsButton, 'disabledBtn');
 		}
 	},
 
@@ -70,19 +70,19 @@ Wu.Chrome.SettingsContent.SettingsSelector = Wu.Chrome.SettingsContent.extend({
 	_initContainer : function () {
 
 		// create container
-		this._container = Wu.DomUtil.create('div', 'chrome chrome-content settingsSelector', this.options.appendTo);
+		this._container = M.DomUtil.create('div', 'chrome chrome-content settingsSelector', this.options.appendTo);
 
 		// header wrapper
-		this._header = Wu.DomUtil.create('div', 'settingsSelector-header', this._container);
+		this._header = M.DomUtil.create('div', 'settingsSelector-header', this._container);
 
 		// tabs wrapper
-		this._tabsWrapper = Wu.DomUtil.create('div', 'chrome chrome-content settings-tabs-wrapper', this._container);
+		this._tabsWrapper = M.DomUtil.create('div', 'chrome chrome-content settings-tabs-wrapper', this._container);
 	},
 
 	_initContent : function () {
 
 		// title
-		// this._title = Wu.DomUtil.create('div', 'chrome chrome-content settings-title', this._header, 'Settings');
+		// this._title = M.DomUtil.create('div', 'chrome chrome-content settings-title', this._header, 'Settings');
 
 		// tabs
 		this._initTabs();
@@ -112,7 +112,7 @@ Wu.Chrome.SettingsContent.SettingsSelector = Wu.Chrome.SettingsContent.extend({
 		this._tabs = {};
 
 		// button wrapper
-		this._buttonWrapper = Wu.DomUtil.create('div', 'chrome chrome-content settings-button-wrapper', this._header);
+		this._buttonWrapper = M.DomUtil.create('div', 'chrome chrome-content settings-button-wrapper', this._header);
 		
 		// create tabs
 		for (var o in this.options.tabs) {
@@ -122,13 +122,13 @@ Wu.Chrome.SettingsContent.SettingsSelector = Wu.Chrome.SettingsContent.extend({
 				var tab = o.camelize();
 
 				// create tab contents
-				if (Wu.Chrome.SettingsContent[tab]) {
+				if (M.Chrome.SettingsContent[tab]) {
 
 					// create tab button
-					var trigger = Wu.DomUtil.create('div', 'chrome chrome-content settings-button', this._buttonWrapper, text);
+					var trigger = M.DomUtil.create('div', 'chrome chrome-content settings-button', this._buttonWrapper, text);
 
 					// create content
-					this._tabs[tab] = new Wu.Chrome.SettingsContent[tab]({
+					this._tabs[tab] = new M.Chrome.SettingsContent[tab]({
 						options : this._options,
 						trigger : trigger,
 						appendTo : this._tabsWrapper,
@@ -178,22 +178,22 @@ Wu.Chrome.SettingsContent.SettingsSelector = Wu.Chrome.SettingsContent.extend({
 
 	_show : function () {
 
-		Wu.DomUtil.addClass(this._settingsButton, 'active');
+		M.DomUtil.addClass(this._settingsButton, 'active');
 
 		this._container.style.display = 'block';
 		this._isOpen = true;
 
-		Wu.DomUtil.addClass(this._settingsButton, 'active');
+		M.DomUtil.addClass(this._settingsButton, 'active');
 	},
 
 	_hide : function () {
 
-		Wu.DomUtil.removeClass(this._settingsButton, 'active');
+		M.DomUtil.removeClass(this._settingsButton, 'active');
 
 		this._container.style.display = 'none';
 		this._isOpen = false;
 
-		Wu.DomUtil.removeClass(this._settingsButton, 'active');
+		M.DomUtil.removeClass(this._settingsButton, 'active');
 	},
 
 	onOpened : function () {

@@ -1,4 +1,4 @@
-Wu.Chrome.Left = Wu.Chrome.extend({
+M.Chrome.Left = M.Chrome.extend({
 
 	_ : 'leftchrome', 
 
@@ -23,13 +23,13 @@ Wu.Chrome.Left = Wu.Chrome.extend({
 
 
 		// create container
-		this._container = Wu.DomUtil.create('div', 'chrome chrome-container chrome-left', app._appPane);
+		this._container = M.DomUtil.create('div', 'chrome chrome-container chrome-left', app._appPane);
 
 		// Outer scroller
-		this._outerScroller = Wu.DomUtil.create('div', 'chrome-left-outer-scroller', this._container);
+		this._outerScroller = M.DomUtil.create('div', 'chrome-left-outer-scroller', this._container);
 
 		// Inner scroller
-		this._innerScroller = Wu.DomUtil.create('div', 'chrome-left-inner-scroller', this._outerScroller);
+		this._innerScroller = M.DomUtil.create('div', 'chrome-left-inner-scroller', this._outerScroller);
 
 		// holder for all tabs
 		this._tabs = {};
@@ -38,7 +38,7 @@ Wu.Chrome.Left = Wu.Chrome.extend({
 		if (this.options.tabs.projects) {
 
 			// create settings selector
-			this._tabs.projects = new Wu.Chrome.Projects({
+			this._tabs.projects = new M.Chrome.Projects({
 				appendTo : this._innerScroller,
 				chrome : this
 			});
@@ -48,7 +48,7 @@ Wu.Chrome.Left = Wu.Chrome.extend({
 		if (this.options.tabs.users) {
 
 			// create settings selector
-			this._tabs.users = new Wu.Chrome.Users({
+			this._tabs.users = new M.Chrome.Users({
 				appendTo : this._innerScroller,
 				chrome : this // ie. left chrome
 			});

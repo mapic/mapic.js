@@ -1,5 +1,5 @@
-Wu.Tool = Wu.Class.extend({});
-Wu.Tool.FreeDraw = Wu.Tool.extend({
+M.Tool = M.Class.extend({});
+M.Tool.FreeDraw = M.Tool.extend({
 
 	options : {
 
@@ -109,7 +109,7 @@ Wu.Tool.FreeDraw = Wu.Tool.extend({
 			geojson : geojson,
 			layer : layer
 		}, function (err, results) {
-			var resultObject = Wu.parse(results);
+			var resultObject = M.parse(results);
 
 			console.log('fetched results: ', resultObject);
 
@@ -135,7 +135,7 @@ Wu.Tool.FreeDraw = Wu.Tool.extend({
 		console.log('_polygonClick', polygon, event, this);
 
 		var e = event.originalEvent;
-		Wu.DomEvent.stop(e);
+		M.DomEvent.stop(e);
 
 		// add to popup
 		app.MapPane._addPopupContentDraw(this._latestFetch);

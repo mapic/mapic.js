@@ -1,4 +1,4 @@
-Wu.List = Wu.Class.extend({
+M.List = M.Class.extend({
 	
 	canEdit : false,
 	folder  : 'Folder',
@@ -18,7 +18,7 @@ Wu.List = Wu.Class.extend({
 		if (this.listOptions.button) {
 			
 			// Select all button
-			this.selectAllButton = Wu.DomUtil.create('div', 'item-select-button select-all-button', this.D3container[0][0]);
+			this.selectAllButton = M.DomUtil.create('div', 'item-select-button select-all-button', this.D3container[0][0]);
 		}
 
 		// set hooks
@@ -27,10 +27,10 @@ Wu.List = Wu.Class.extend({
 
 	setHooks : function (on) {
 		
-		Wu.DomEvent[on](this.searchField, 'keyup', this.searchList, this);
+		M.DomEvent[on](this.searchField, 'keyup', this.searchList, this);
 		
 		if (this.listOptions.button)  {
-			Wu.DomEvent[on](this.selectAllButton, 'mousedown', this.selectAllClick, this);
+			M.DomEvent[on](this.selectAllButton, 'mousedown', this.selectAllClick, this);
 		}
 
 	},
@@ -90,7 +90,7 @@ Wu.List = Wu.Class.extend({
 	save : function (saveJSON) {},
 
 	stop : function (e) {
-		Wu.DomEvent.stopPropagation(e);
+		M.DomEvent.stopPropagation(e);
 	},	
 
 
@@ -499,7 +499,7 @@ Wu.List = Wu.Class.extend({
 	_D3input : function (options, blurFunction) {
 
 		// Create input box
-		var input 	    = Wu.DomUtil.create('input');
+		var input 	    = M.DomUtil.create('input');
 
 		input.type 	    = 'text';
 		input.className = 'autocarto-input';
@@ -1007,10 +1007,10 @@ Wu.List = Wu.Class.extend({
 			
 				// Set active state of button
 				if ( this.className == 'item-select-button active' ) {
-					Wu.DomUtil.removeClass(this, 'active');
+					M.DomUtil.removeClass(this, 'active');
 					d.checked = true;
 				} else {
-					Wu.DomUtil.addClass(this, 'active');
+					M.DomUtil.addClass(this, 'active');
 					d.checked = false;
 				}			
 
@@ -1949,7 +1949,7 @@ Wu.List = Wu.Class.extend({
                                          
 
 
-Wu.UserList = Wu.List.extend({
+M.UserList = M.List.extend({
 
 
 

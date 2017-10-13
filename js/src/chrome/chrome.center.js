@@ -1,4 +1,4 @@
-Wu.Chrome.Center = Wu.Chrome.extend({
+M.Chrome.Center = M.Chrome.extend({
 
 	_ : 'centerchrome', 
 
@@ -14,7 +14,7 @@ Wu.Chrome.Center = Wu.Chrome.extend({
 
 	initContainer : function () {
 
-		this._container = Wu.DomUtil.create('div', 'chrome chrome-container chrome-center', app._appPane);
+		this._container = M.DomUtil.create('div', 'chrome chrome-container chrome-center', app._appPane);
 
 	},
 

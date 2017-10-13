@@ -36,7 +36,7 @@
 //
 // websocket loading of tiles
 //  - as an add-on later, in order to request tiles faster
-//  - until then, try to separate request logic as much as possible, so that Wu.CubeLayer.Websockets can easily override Wu.CubeLayer
+//  - until then, try to separate request logic as much as possible, so that M.CubeLayer.Websockets can easily override M.CubeLayer
 
 
 
@@ -64,7 +64,7 @@
 
 
 // metalayer with several postgis raster layers 
-Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
+M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     // languages
     localization : {
@@ -189,7 +189,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         this.store = store;
 
         // parse cube json
-        this._cube = Wu.parse(this.store.data.cube);
+        this._cube = M.parse(this.store.data.cube);
     },
 
     add : function (type) {
@@ -368,14 +368,14 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     _initGraph : function (done) {
 
         // create animator
-        this._animator = new Wu.Graph.Animator({ // refactor to project controls (or some editor control)
+        this._animator = new M.Graph.Animator({ // refactor to project controls (or some editor control)
             layer : this
         });
 
         var masks = this.getMasks();
 
         // create graph
-        this._graph = new Wu.Graph.SnowCoverFraction({ 
+        this._graph = new M.Graph.SnowCoverFraction({ 
             // data     : this._data.annual,
             data     : masks[0].data, // todo: create dummy data in graph
             appendTo : this._animator.getContainer(),
@@ -510,7 +510,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     _initGeoJSONMask : function (mask, done) {
 
         // create mask (geojson) layer
-        var maskLayer = new Wu.Model.Layer.GeoJSONMaskLayer({
+        var maskLayer = new M.Model.Layer.GeoJSONMaskLayer({
             geojson : mask.geometry,
             style : this.options.mask.defaultStyle,
             id : mask.id
@@ -696,7 +696,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         }.bind(this));
 
         // // fire mask selected event
-        // Wu.Mixin.Events.fire('maskSelected', { detail : { 
+        // M.Mixin.Events.fire('maskSelected', { detail : { 
         //     layer : layer 
         // }}); 
 
@@ -717,7 +717,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         }.bind(this));
 
         // // fire mask selected event
-        // Wu.Mixin.Events.fire('maskUnselected', { detail : { 
+        // M.Mixin.Events.fire('maskUnselected', { detail : { 
         //     layer : layer 
         // }}); 
 
@@ -791,7 +791,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             if (err) return done(err);
 
             // parse
-            var fractions = Wu.parse(data);
+            var fractions = M.parse(data);
 
             // catch bad data
             if (!fractions) return done('Failed to parse data');
@@ -827,7 +827,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
                 done && done(err);
             }
             // parse
-            var masked_cube = Wu.parse(result);
+            var masked_cube = M.parse(result);
 
             // save updated cube
             this._saveCube(masked_cube);
@@ -914,7 +914,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             // console.log('--------------------------');
 
             // fire missing layer event (for animator to fix manually)
-            // Wu.Mixin.Events.fire('cubeCacheNoLayer', { detail : { 
+            // M.Mixin.Events.fire('cubeCacheNoLayer', { detail : { 
             //     cube : this 
             // }});
             
@@ -974,7 +974,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
                 // set layer options
                 var layerOptions = {
                     dataset_id : dataset.id,
-                    cache : Wu.Util.getRandomChars(6),
+                    cache : M.Util.getRandomChars(6),
                     mask_id : this.getFilterMask() ? this.getActiveMask() : null,
                 }
 
@@ -1144,7 +1144,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             if (err) return console.error('Error updating Cube Style:', err, cubeJSON);
 
             // parse
-            var cube = Wu.parse(cubeJSON)
+            var cube = M.parse(cubeJSON)
 
             // save updated cube
             this._saveCube(cube);
@@ -1177,7 +1177,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
         this._cache.forEach(function (cache) {
             var layer = cache.layer;
             layer.setOptions({
-                cache : Wu.Util.getRandomChars(6) // change url to avoid browser cache
+                cache : M.Util.getRandomChars(6) // change url to avoid browser cache
             });
             layer.redraw();
         });
@@ -1220,7 +1220,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
             if (err) return console.error('Error updating Cube Style:', err, cubeJSON);
 
             // parse
-            var cube = Wu.parse(cubeJSON)
+            var cube = M.parse(cubeJSON)
 
             // save updated cube
             this._saveCube(cube);
@@ -1258,7 +1258,7 @@ Wu.Model.Layer.CubeLayer = Wu.Model.Layer.extend({
     _createLegend : function () {
 
         // create legend container
-        this._legendContainer = Wu.DomUtil.create('div', 'snow-raster-legend-container', app._map._controlContainer);
+        this._legendContainer = M.DomUtil.create('div', 'snow-raster-legend-container', app._map._controlContainer);
 
         // set legend
         this._legendContainer.innerHTML = '<div class="info-legend-frame snow-raster"><div class="info-legend-val info-legend-min-val">1%</div><div class="info-legend-header scf">Snow</div><div class="info-legend-val info-legend-max-val">100%</div><div class="info-legend-gradient-container" style="background: -webkit-linear-gradient(0deg, #8C8C8C, white);background: -o-linear-gradient(0deg, #8C8C8C, white);background: -moz-linear-gradient(0deg, #8C8C8C, white);"></div></div>'

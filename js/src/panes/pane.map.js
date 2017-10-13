@@ -1,4 +1,4 @@
-Wu.MapPane = Wu.Pane.extend({
+M.MapPane = M.Pane.extend({
 
     _ : 'mappane',
 
@@ -23,8 +23,8 @@ Wu.MapPane = Wu.Pane.extend({
     _initialize : function () {
 
         // create zindex controls
-        this._baselayerZIndex = new Wu.ZIndexControl.Baselayers();
-        this._layermenuZIndex = new Wu.ZIndexControl.Layermenu();
+        this._baselayerZIndex = new M.ZIndexControl.Baselayers();
+        this._layermenuZIndex = new M.ZIndexControl.Layermenu();
 
         // active layers
         this._activeLayers = [];
@@ -33,10 +33,10 @@ Wu.MapPane = Wu.Pane.extend({
     _initContainer : function () {
         
         // init container
-        this._container = app._mapPane = Wu.DomUtil.createId('div', 'map', app._mapContainer);
+        this._container = app._mapPane = M.DomUtil.createId('div', 'map', app._mapContainer);
     
         // add help pseudo
-        Wu.DomUtil.addClass(this._container, 'click-to-start');
+        M.DomUtil.addClass(this._container, 'click-to-start');
 
         // init map
         this._initLeaflet();
@@ -52,7 +52,7 @@ Wu.MapPane = Wu.Pane.extend({
 
         // experimental: hover popup
         if (app.options.custom && app.options.custom.hoverPopup) {
-            this.hoverPopup = Wu.hoverPopup();
+            this.hoverPopup = M.hoverPopup();
         }
     },
 
@@ -140,7 +140,7 @@ Wu.MapPane = Wu.Pane.extend({
 
         // add map click (bug: layer won't listen to click)
         map.on('click', function (e) {
-            Wu.Mixin.Events.fire('mapClick', {details : {e : e}});
+            M.Mixin.Events.fire('mapClick', {details : {e : e}});
         }, this);
 
         // add attribution
@@ -233,14 +233,14 @@ Wu.MapPane = Wu.Pane.extend({
 
     _onMove : function () {
         var project = this._project || app.activeProject;
-        // Wu.Mixin.Events.fire('projectChanged', {detail : {
+        // M.Mixin.Events.fire('projectChanged', {detail : {
         //     projectUuid : project.getUuid()
         // }});
     },
 
     _onZoom : function () {
         var project = this._project || app.activeProject;
-        // Wu.Mixin.Events.fire('projectChanged', {detail : {
+        // M.Mixin.Events.fire('projectChanged', {detail : {
         //     projectUuid : project.getUuid()
         // }});
     },
@@ -283,7 +283,7 @@ Wu.MapPane = Wu.Pane.extend({
     },
 
     addBaseLayer : function (baseLayer) {
-        // Wu.Layer
+        // M.Layer
         var layer = this._project.layers[baseLayer.uuid];
         if (layer) layer.add('baselayer');
     },
@@ -410,8 +410,8 @@ Wu.MapPane = Wu.Pane.extend({
     clearBounds : function () {
         
         // get actual Project object
-        var project = Wu.app.activeProject;
-        var map = Wu.app._map;
+        var project = M.app.activeProject;
+        var map = M.app._map;
         var nullBounds = {
             northEast : {
                 lat : '90',
@@ -486,9 +486,9 @@ Wu.MapPane = Wu.Pane.extend({
             
             // Check for Layer Inspector
             if (controls.inspect) {
-                Wu.DomUtil.removeClass(bottomright, 'no-inspector');
+                M.DomUtil.removeClass(bottomright, 'no-inspector');
             } else {
-                Wu.DomUtil.addClass(bottomright, 'no-inspector');
+                M.DomUtil.addClass(bottomright, 'no-inspector');
             }
         }
 
@@ -500,9 +500,9 @@ Wu.MapPane = Wu.Pane.extend({
 
             // Check for Layer Menu Control
             if (controls.layermenu) {
-                if (legendsContainer) Wu.DomUtil.removeClass(legendsContainer, 'legends-padding-right');
+                if (legendsContainer) M.DomUtil.removeClass(legendsContainer, 'legends-padding-right');
             } else {
-                if (legendsContainer) Wu.DomUtil.addClass(legendsContainer, 'legends-padding-right');
+                if (legendsContainer) M.DomUtil.addClass(legendsContainer, 'legends-padding-right');
             }
 
             // Check for Description Control
@@ -569,12 +569,12 @@ Wu.MapPane = Wu.Pane.extend({
 
     hideControls : function () {
 
-        Wu.DomUtil.addClass(app._map._controlContainer, 'displayNone');
+        M.DomUtil.addClass(app._map._controlContainer, 'displayNone');
     },
 
     showControls : function () {
 
-        Wu.DomUtil.removeClass(app._map._controlContainer, 'displayNone');
+        M.DomUtil.removeClass(app._map._controlContainer, 'displayNone');
     },
 
     addLayer : function (layerID) {
@@ -651,7 +651,8 @@ Wu.MapPane = Wu.Pane.extend({
                 multiPopUp : multiPopUp
             };
         
-        this._chart = new Wu.Control.Chart(options);
+        // this._chart = new M.Control.Chart(options);
+        this._chart = M.chart(options);
 
     },
 
@@ -689,7 +690,7 @@ Wu.MapPane = Wu.Pane.extend({
 // experimental: hover popup with config switch
 
 
-Wu.HoverPopup = L.Evented.extend({
+M.HoverPopup = L.Evented.extend({
 
     options : {
         // contentType : 'table',
@@ -710,14 +711,14 @@ Wu.HoverPopup = L.Evented.extend({
         var appendTo = app._appPane;
 
         // create container, append
-        this._container = Wu.DomUtil.create('div', 'hover-popup-container displayNone', appendTo);
+        this._container = M.DomUtil.create('div', 'hover-popup-container displayNone', appendTo);
 
     },
 
     addContent : function (options) {
 
         // show container
-        Wu.DomUtil.removeClass(this._container, 'displayNone');
+        M.DomUtil.removeClass(this._container, 'displayNone');
 
         // check if already added
         if (this._cache[options.id]) return;
@@ -735,14 +736,14 @@ Wu.HoverPopup = L.Evented.extend({
         var container = this._cache[options.id];
 
         // remove from DOM
-        Wu.DomUtil.remove(this._cache[options.id]);
+        M.DomUtil.remove(this._cache[options.id]);
 
         // remove from cache
         delete this._cache[options.id];
 
         // hide popup if no content in cache
         if (!_.size(this._cache)) {
-            Wu.DomUtil.addClass(this._container, 'displayNone');
+            M.DomUtil.addClass(this._container, 'displayNone');
         }
 
     },
@@ -751,13 +752,13 @@ Wu.HoverPopup = L.Evented.extend({
     _createContent : function (options) {
 
         // create wrapper
-        var container = Wu.DomUtil.create('div', 'hover-popup-content', this._container);
+        var container = M.DomUtil.create('div', 'hover-popup-content', this._container);
        
         // save in cache
         this._cache[options.id] = container;
         
         // create title
-        var title = Wu.DomUtil.create('div', 'hover-popup-title', container, options.data.title);
+        var title = M.DomUtil.create('div', 'hover-popup-title', container, options.data.title);
 
         var sorted_rows = _.sortBy(options.data.rows, 't').reverse();
 
@@ -783,58 +784,58 @@ Wu.HoverPopup = L.Evented.extend({
 
         // create each row
         _.forEach(sorted_rows, function (r) {
-            var row = Wu.DomUtil.create('div', 'hover-popup-line', container);
-            var t = Wu.DomUtil.create('div', 'hover-popup-t', row); // todo: tilstandsklasse farge
-            var key = Wu.DomUtil.create('div', 'hover-popup-key', row, r.key);
-            var value = Wu.DomUtil.create('div', 'hover-popup-value', row, r.value.toString());
-            var legend = Wu.DomUtil.create('div', 'hover-popup-legend', row, r.legend);
+            var row = M.DomUtil.create('div', 'hover-popup-line', container);
+            var t = M.DomUtil.create('div', 'hover-popup-t', row); // todo: tilstandsklasse farge
+            var key = M.DomUtil.create('div', 'hover-popup-key', row, r.key);
+            var value = M.DomUtil.create('div', 'hover-popup-value', row, r.value.toString());
+            var legend = M.DomUtil.create('div', 'hover-popup-legend', row, r.legend);
 
             value.setAttribute('key', r.k); // debugging
 
             // set color for tilstandsklasse
-            Wu.DomUtil.addClass(t, 't-color-' + r.t);
+            M.DomUtil.addClass(t, 't-color-' + r.t);
         });
     },
 
     _fillTableContent : function (sorted_rows, container) {
 
         // <table>
-        var table = Wu.DomUtil.create('table', 'hover-popup-table', container);
+        var table = M.DomUtil.create('table', 'hover-popup-table', container);
 
         // <thead>
-        var thead = Wu.DomUtil.create('thead', 'hover-popup-thead', table);
+        var thead = M.DomUtil.create('thead', 'hover-popup-thead', table);
         
         // <tr>
-        var theadtr = Wu.DomUtil.create('tr', 'hover-popup-tr', thead);
+        var theadtr = M.DomUtil.create('tr', 'hover-popup-tr', thead);
 
         // <th>
-        var th1 = Wu.DomUtil.create('th', 'hover-popup-th', theadtr, ''); // color
-        var th2 = Wu.DomUtil.create('th', 'hover-popup-th', theadtr, 'Compound'); // color
-        var th3 = Wu.DomUtil.create('th', 'hover-popup-th', theadtr, 'Value'); // color
-        var th4 = Wu.DomUtil.create('th', 'hover-popup-th', theadtr, 'Legend'); // color
+        var th1 = M.DomUtil.create('th', 'hover-popup-th', theadtr, ''); // color
+        var th2 = M.DomUtil.create('th', 'hover-popup-th', theadtr, 'Compound'); // color
+        var th3 = M.DomUtil.create('th', 'hover-popup-th', theadtr, 'Value'); // color
+        var th4 = M.DomUtil.create('th', 'hover-popup-th', theadtr, 'Legend'); // color
 
         // <tbody>
-        var tbody = Wu.DomUtil.create('tbody', 'hover-popup-tr', table);
+        var tbody = M.DomUtil.create('tbody', 'hover-popup-tr', table);
 
 
         // create each row
         _.forEach(sorted_rows, function (r) {
 
-            var row = Wu.DomUtil.create('tr', 'hover-popup-tr', tbody);
-            var t = Wu.DomUtil.create('td', 'hover-popup-t', row); // todo: tilstandsklasse farge
-            var key = Wu.DomUtil.create('td', 'hover-popup-key', row, r.key);
-            var value = Wu.DomUtil.create('td', 'hover-popup-value', row, r.value.toString());
-            var legend = Wu.DomUtil.create('td', 'hover-popup-legend', row, r.legend);
+            var row = M.DomUtil.create('tr', 'hover-popup-tr', tbody);
+            var t = M.DomUtil.create('td', 'hover-popup-t', row); // todo: tilstandsklasse farge
+            var key = M.DomUtil.create('td', 'hover-popup-key', row, r.key);
+            var value = M.DomUtil.create('td', 'hover-popup-value', row, r.value.toString());
+            var legend = M.DomUtil.create('td', 'hover-popup-legend', row, r.legend);
 
             // value.setAttribute('key', r.k); // debugging
 
             // set color for tilstandsklasse
-            Wu.DomUtil.addClass(t, 't-color-' + r.t);
+            M.DomUtil.addClass(t, 't-color-' + r.t);
         });
     },
 
 });
 
-Wu.hoverPopup = function (options) {
-    return new Wu.HoverPopup(options);
+M.hoverPopup = function (options) {
+    return new M.HoverPopup(options);
 }

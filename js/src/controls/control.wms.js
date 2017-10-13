@@ -1,5 +1,5 @@
 // app.MapPane.baselayerToggle
-L.Control.Wms = Wu.Control.extend({
+L.Control.Wms = M.Control.extend({
 
     type : 'wms',
 
@@ -18,12 +18,12 @@ L.Control.Wms = Wu.Control.extend({
 
     _addHooks : function () {
         // add events
-        Wu.DomEvent.on(this._container, 'mousedown', this.toggle, this);
-        Wu.DomEvent.on(this._container, 'dblclick', Wu.DomEvent.stop, this);
-        Wu.DomEvent.on(this._container, 'mouseleave', this.mouseOut, this);
+        M.DomEvent.on(this._container, 'mousedown', this.toggle, this);
+        M.DomEvent.on(this._container, 'dblclick', M.DomEvent.stop, this);
+        M.DomEvent.on(this._container, 'mouseleave', this.mouseOut, this);
 
         // add stops
-        Wu.DomEvent.on(this._container, 'mousedown dblclick mouseup click', Wu.DomEvent.stopPropagation, this);
+        M.DomEvent.on(this._container, 'mousedown dblclick mouseup click', M.DomEvent.stopPropagation, this);
     },
 
     addTo: function (map) {
@@ -82,7 +82,7 @@ L.Control.Wms = Wu.Control.extend({
     _flush : function () {
         // empty old
         if (this._list) {
-            Wu.DomUtil.remove(this._list);
+            M.DomUtil.remove(this._list);
             this._list = null;
         }
 
@@ -97,7 +97,7 @@ L.Control.Wms = Wu.Control.extend({
         
         // create wrapper
         this._list = L.DomUtil.create('div', 'baselayertoggle-list', this._container);
-        Wu.DomEvent.on(this._list, 'dblclick', Wu.DomEvent.stop, this);
+        M.DomEvent.on(this._list, 'dblclick', M.DomEvent.stop, this);
 
         // // build menu
         // var baseLayers = this._getBaselayers();
@@ -164,7 +164,7 @@ L.Control.Wms = Wu.Control.extend({
         
         // create div
         var layerName = baseLayer.layer.getTitle();
-        var item = Wu.DomUtil.create('div', 'baselayertoggle-item', this._list, layerName);
+        var item = M.DomUtil.create('div', 'baselayertoggle-item', this._list, layerName);
         
         // set active by default
         baseLayer.active = false;
@@ -174,20 +174,20 @@ L.Control.Wms = Wu.Control.extend({
         this._layers[id] = baseLayer;
 
         // add click event
-        Wu.DomEvent.on(item, 'mousedown', function (e) {
-            Wu.DomEvent.stop(e);
+        M.DomEvent.on(item, 'mousedown', function (e) {
+            M.DomEvent.stop(e);
             this.toggleLayer(baseLayer, item);
         }, this);
     },
 
     addBlankLayer : function () {       
         
-        var item = Wu.DomUtil.create('div', 'baselayertoggle-item', this._list, 'NONE');
+        var item = M.DomUtil.create('div', 'baselayertoggle-item', this._list, 'NONE');
         
         // add click event
-        Wu.DomEvent.on(item, 'mousedown', function (e) {
+        M.DomEvent.on(item, 'mousedown', function (e) {
 
-            Wu.DomEvent.stop(e);            
+            M.DomEvent.stop(e);            
 
             var bgLayers = this._getBaselayers();
 
@@ -199,7 +199,7 @@ L.Control.Wms = Wu.Control.extend({
 
                     // disable
                     layer2.disable();
-                    Wu.DomUtil.removeClass(item, 'active');
+                    M.DomUtil.removeClass(item, 'active');
 
                     // mark not active
                     var bl = _.find(this._layers, function (bl2) {
@@ -214,10 +214,10 @@ L.Control.Wms = Wu.Control.extend({
 
             for (var i=0; i < children.length; i++) {
                 var div = children[i];
-                Wu.DomUtil.removeClass(div, 'active');
+                M.DomUtil.removeClass(div, 'active');
             }
 
-            Wu.DomUtil.addClass(item, 'active');
+            M.DomUtil.addClass(item, 'active');
 
         }, this);
 
@@ -242,7 +242,7 @@ L.Control.Wms = Wu.Control.extend({
 
                     // disable
                     layer2.disable();
-                    Wu.DomUtil.removeClass(item, 'active');
+                    M.DomUtil.removeClass(item, 'active');
 
                     // mark not active
                     var bl = _.find(this._layers, function (bl2) {
@@ -257,13 +257,13 @@ L.Control.Wms = Wu.Control.extend({
 
             for (var i=0; i < children.length; i++) {
                 var div = children[i];
-                Wu.DomUtil.removeClass(div, 'active');
+                M.DomUtil.removeClass(div, 'active');
             }
 
             // turn on this baselayer
             layer.add('baselayer');
             baseLayer.active = true;
-            Wu.DomUtil.addClass(item, 'active');
+            M.DomUtil.addClass(item, 'active');
         }
 
 
@@ -276,12 +276,12 @@ L.Control.Wms = Wu.Control.extend({
 
     collapse : function () {
         this._isOpen = false;
-        Wu.DomUtil.removeClass(this._container, 'open');
+        M.DomUtil.removeClass(this._container, 'open');
     },
 
     expand : function () {
         this._isOpen = true;
-        Wu.DomUtil.addClass(this._container, 'open');
+        M.DomUtil.addClass(this._container, 'open');
     }
 
 });

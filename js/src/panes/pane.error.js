@@ -1,4 +1,4 @@
-Wu.ErrorPane = Wu.Class.extend({
+M.ErrorPane = M.Class.extend({
 
 	options : {
 
@@ -25,15 +25,15 @@ Wu.ErrorPane = Wu.Class.extend({
 	initLayout : function () {
 
 		// create divs
-		this._container = Wu.DomUtil.create('div', 'error-pane displayNone', app._appPane);
-		this._content = Wu.DomUtil.create('div', 'error-pane-content', this._container);
+		this._container = M.DomUtil.create('div', 'error-pane displayNone', app._appPane);
+		this._content = M.DomUtil.create('div', 'error-pane-content', this._container);
 
-		this._title = Wu.DomUtil.create('div', 'error-pane-title', this._content);
-		this._description = Wu.DomUtil.create('div', 'error-pane-description', this._content);
-		this._icon = Wu.DomUtil.create('div', 'error-pane-icon', this._content);
+		this._title = M.DomUtil.create('div', 'error-pane-title', this._content);
+		this._description = M.DomUtil.create('div', 'error-pane-description', this._content);
+		this._icon = M.DomUtil.create('div', 'error-pane-icon', this._content);
 
 		// x
-		this._x = Wu.DomUtil.create('div', 'error-pane-x', this._container, 'X');
+		this._x = M.DomUtil.create('div', 'error-pane-x', this._container, 'X');
 
 		// events
 		this.addEvents();
@@ -43,9 +43,9 @@ Wu.ErrorPane = Wu.Class.extend({
 	addEvents : function () {
 
 		// close on click
-		// Wu.DomEvent.on(this._container, 'click', this.clear, this);
+		// M.DomEvent.on(this._container, 'click', this.clear, this);
 
-		Wu.DomEvent.on(this._x, 'click', this.clear, this);
+		M.DomEvent.on(this._x, 'click', this.clear, this);
 	},
 
 	set : function (title, description, severity) {
@@ -93,11 +93,11 @@ Wu.ErrorPane = Wu.Class.extend({
 	},
 
 	hide : function () {
-		Wu.DomUtil.addClass(this._container, 'displayNone');
+		M.DomUtil.addClass(this._container, 'displayNone');
 	},
 
 	show : function () {
-		Wu.DomUtil.removeClass(this._container, 'displayNone');
+		M.DomUtil.removeClass(this._container, 'displayNone');
 	}
 
 

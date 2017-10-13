@@ -1,4 +1,4 @@
-Wu.FeedbackPane = Wu.Class.extend({
+M.FeedbackPane = M.Class.extend({
 
 	initialize : function () {
 
@@ -19,10 +19,10 @@ Wu.FeedbackPane = Wu.Class.extend({
 
 		var appendHere = app.MapPane._map._controlCorners.topleft;
 
-		this._container = Wu.DomUtil.create('div', 'feedback-pane', appendHere);
-		this._innerWrapper = Wu.DomUtil.create('div', 'feedback-pane-inner-wrapper', this._container);
+		this._container = M.DomUtil.create('div', 'feedback-pane', appendHere);
+		this._innerWrapper = M.DomUtil.create('div', 'feedback-pane-inner-wrapper', this._container);
 
-		Wu.DomEvent.on(this._container, 'click', Wu.DomEvent.stopPropagation);
+		M.DomEvent.on(this._container, 'click', M.DomEvent.stopPropagation);
             
 		// .on(link, 'dblclick', L.DomEvent.stopPropagation)
 		// .on(link, 'click', L.DomEvent.preventDefault)
@@ -54,7 +54,7 @@ Wu.FeedbackPane = Wu.Class.extend({
 	add : function (message, severity) {
 
 		// Create random number
-		var id = Wu.Util.createRandom(5);
+		var id = M.Util.createRandom(5);
 
 		// gets passed from sidepane.dataLibrary.js
 		if (message.id) id = message.id;
@@ -75,7 +75,7 @@ Wu.FeedbackPane = Wu.Class.extend({
 		} else {
 
 			// create and save in stack
-			this._messages[id] = new Wu.FeedbackPane.Message(Wu.extend(options, message));
+			this._messages[id] = new M.FeedbackPane.Message(M.extend(options, message));
 
 			// Store message boxes in array
 			this._messagesArray.push(this._messages[id]);
@@ -105,8 +105,8 @@ Wu.FeedbackPane = Wu.Class.extend({
 		var title 	   = message.title;
 		var description    = message.description;
 		var id 		   = message.id;
-		var newTitle 	   = Wu.DomUtil.create('div', 'feedback-pane-title2', 	    this._messages[id]._content, title);
-		var newDescription = Wu.DomUtil.create('div', 'feedback-pane-description2', this._messages[id]._content, description);		
+		var newTitle 	   = M.DomUtil.create('div', 'feedback-pane-title2', 	    this._messages[id]._content, title);
+		var newDescription = M.DomUtil.create('div', 'feedback-pane-description2', this._messages[id]._content, description);		
 
 		// Update severity
 		this._messages[id].options.severity = severity;
@@ -121,14 +121,14 @@ Wu.FeedbackPane = Wu.Class.extend({
 		if (!pane) return;
 
 		var container = pane._content;
-		Wu.DomUtil.remove(container);
+		M.DomUtil.remove(container);
 		delete this._messages[id];
 	}
 });
 
 
 
-Wu.FeedbackPane.Message = Wu.Class.extend({
+M.FeedbackPane.Message = M.Class.extend({
 
 	options : {
 
@@ -147,7 +147,7 @@ Wu.FeedbackPane.Message = Wu.Class.extend({
 	initialize : function (options) {
 		
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// init layout
 		this.initLayout();
@@ -160,14 +160,14 @@ Wu.FeedbackPane.Message = Wu.Class.extend({
 	initLayout : function () {
 
 		// create divs
-		// this._innerWrapper = Wu.DomUtil.create('div', 'feedback-pane-inner-wrapper', this.options.container);			
+		// this._innerWrapper = M.DomUtil.create('div', 'feedback-pane-inner-wrapper', this.options.container);			
 
-		// this._content = Wu.DomUtil.create('div', 'feedback-pane-content', this.options.container);
-		this._content 		= Wu.DomUtil.create('div', 'feedback-pane-content', 	this.options.innerWrapper);
-		this._title 		= Wu.DomUtil.create('div', 'feedback-pane-title', 	this._content);
-		this._icon 		= Wu.DomUtil.create('div', 'feedback-pane-icon', 	this._content);
-		this._iconImg 		= Wu.DomUtil.create('img', 'feedback-pane-icon-img', 	this._icon);
-		this._description 	= Wu.DomUtil.create('div', 'feedback-pane-description', this._content);
+		// this._content = M.DomUtil.create('div', 'feedback-pane-content', this.options.container);
+		this._content 		= M.DomUtil.create('div', 'feedback-pane-content', 	this.options.innerWrapper);
+		this._title 		= M.DomUtil.create('div', 'feedback-pane-title', 	this._content);
+		this._icon 		= M.DomUtil.create('div', 'feedback-pane-icon', 	this._content);
+		this._iconImg 		= M.DomUtil.create('img', 'feedback-pane-icon-img', 	this._icon);
+		this._description 	= M.DomUtil.create('div', 'feedback-pane-description', this._content);
 		
 		// set transition
 		this._content.style.opacity = 0;
@@ -175,7 +175,7 @@ Wu.FeedbackPane.Message = Wu.Class.extend({
 		this._content.style.transition 	     = 'opacity ' + this.options.transitionDelay + 's';
 
 		// x
-		this._x = Wu.DomUtil.create('div', 'feedback-pane-x displayNone', this._content, 'X');
+		this._x = M.DomUtil.create('div', 'feedback-pane-x displayNone', this._content, 'X');
 
 		// events
 		this.addEvents();
@@ -184,10 +184,10 @@ Wu.FeedbackPane.Message = Wu.Class.extend({
 
 	addEvents : function () {
 		// close on click
-		Wu.DomEvent.on(this._x, 'click', this.clear, this);
+		M.DomEvent.on(this._x, 'click', this.clear, this);
 
-		Wu.DomEvent.on(this._content, 'mouseenter', this._mouseEnter, this);
-		Wu.DomEvent.on(this._content, 'mouseleave', this._mouseLeave, this);
+		M.DomEvent.on(this._content, 'mouseenter', this._mouseEnter, this);
+		M.DomEvent.on(this._content, 'mouseleave', this._mouseLeave, this);
 	},
 
 	set : function () {
@@ -256,8 +256,8 @@ Wu.FeedbackPane.Message = Wu.Class.extend({
 		// Remove previous styles, and set the new one
 		_style.forEach(function(s) {
 
-			if ( s == style ) Wu.DomUtil.addClass(this._content, style);
-			else 		  Wu.DomUtil.removeClass(this._content, s);
+			if ( s == style ) M.DomUtil.addClass(this._content, style);
+			else 		  M.DomUtil.removeClass(this._content, s);
 
 		}, this);
 

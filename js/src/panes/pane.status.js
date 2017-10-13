@@ -1,11 +1,11 @@
-Wu.StatusPane = Wu.Class.extend({
+M.StatusPane = M.Class.extend({
 
 	_ : 'statuspane', 
 
 	initialize : function (options) {
 		
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// init container
 		this.initContainer();
@@ -50,7 +50,7 @@ Wu.StatusPane = Wu.Class.extend({
 	close : function (e) {
 		
 		// trying to stop event from propagating
-		if (e) Wu.DomEvent.stop(e);
+		if (e) M.DomEvent.stop(e);
 
 		this.isOpen = false;
 
@@ -62,7 +62,7 @@ Wu.StatusPane = Wu.Class.extend({
 
 
 		// removes the blur on map if it's set by one of the fullpanes
-		Wu.DomUtil.removeClass(app.MapPane._container, "map-blur");
+		M.DomUtil.removeClass(app.MapPane._container, "map-blur");
 
 		// unregister auto-close events
 		this._removeAutoCloseEvents();
@@ -70,11 +70,11 @@ Wu.StatusPane = Wu.Class.extend({
 
 	_addAutoCloseEvents : function () {
 
-		Wu.DomEvent.on(app.MapPane._container, 'click', this.close, this);
+		M.DomEvent.on(app.MapPane._container, 'click', this.close, this);
 
 		if (app.StartPane._container) {
 			
-			Wu.DomEvent.on(app.StartPane._container, 'click', this.close, this);
+			M.DomEvent.on(app.StartPane._container, 'click', this.close, this);
 
 			// disable "select project" event in startpane
 			app.StartPane.disableHooks();
@@ -83,12 +83,12 @@ Wu.StatusPane = Wu.Class.extend({
 
 	_removeAutoCloseEvents : function () {
 
-		Wu.DomEvent.off(app.MapPane._container, 'click', this.close, this);
+		M.DomEvent.off(app.MapPane._container, 'click', this.close, this);
 
 	    	if (app.StartPane._container) {
 	    		
 	    		//necessary check for the state that follows after having chosen a project
-			Wu.DomEvent.off(app.StartPane._container, 'click', this.close, this);
+			M.DomEvent.off(app.StartPane._container, 'click', this.close, this);
 
 			// enable "select project" event in startpane
 			app.StartPane.enableHooks();

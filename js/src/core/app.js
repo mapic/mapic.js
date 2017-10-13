@@ -1,5 +1,5 @@
-Wu.version = '1.6.2';
-Wu.App = Wu.Class.extend({
+M.version = '1.6.2';
+M.App = M.Class.extend({
 	_ : 'app',
 
 	// default options
@@ -11,19 +11,19 @@ Wu.App = Wu.Class.extend({
 	initialize : function (options) {
 		
 		// print version
-		console.log('Mapic v.' + Wu.version);
+		console.log('Mapic v.' + M.version);
 
 		// set global app
-		window.app = Wu.app = this; // todo: remove Wu.app, use only window.app
+		window.app = M.app = this; // todo: remove M.app, use only window.app
 
 		// merge options
-		Wu.setOptions(app, options);
+		M.setOptions(app, options);
 
 		// init api
-		app.api = new Wu.Api({});
+		app.api = new M.Api({});
 
 		// analytics
-		app.analytics = new Wu.Analytics();
+		app.analytics = new M.Analytics();
 
 		// auth
 		app.api.auth(app.authed);
@@ -36,10 +36,10 @@ Wu.App = Wu.Class.extend({
 		if (err) return console.error('Something went wrong: ', err);
 
 		// set access_token
-		app.tokens = Wu.parse(access_token);
+		app.tokens = M.parse(access_token);
 
 		// init socket
-		app.Socket = new Wu.Socket();
+		app.Socket = new M.Socket();
 
 		// error handling
 		app._initErrorHandling();
@@ -112,7 +112,7 @@ Wu.App = Wu.Class.extend({
 			if (err) return console.error('Something went wrong.');
 
 			// parse
-			var store = Wu.parse(response);
+			var store = M.parse(response);
 
 			// build app
 			app.build(store)
@@ -144,7 +144,7 @@ Wu.App = Wu.Class.extend({
 		app._ready = true; // todo: fire app ready event
 
 		// select project
-		Wu.Mixin.Events.fire('appReady');
+		M.Mixin.Events.fire('appReady');
 
 		// init sniffers
 		app._initSniffers();
@@ -184,21 +184,21 @@ Wu.App = Wu.Class.extend({
 	_initObjects : function () {
 
 		// data controller
-		app.Data = new Wu.Data();
+		app.Data = new M.Data();
 
 		// controller .. todo: refactor what's in controller.. or expand..
-		app.Controller = new Wu.Controller();
+		app.Controller = new M.Controller();
 
 		// main user account
-		app.Account = new Wu.User(app.options.json.account);
+		app.Account = new M.User(app.options.json.account);
 
 		// contact list
 		app.Users = {};
 		app.Account.getContactList().forEach(function(user) {
-		       app.Users[user.uuid] = new Wu.User(user);    
+		       app.Users[user.uuid] = new M.User(user);    
 		});
 		app.options.json.users.project_users.forEach(function(user) {
-		       if (!app.Users[user.uuid]) app.Users[user.uuid] = new Wu.User(user);             
+		       if (!app.Users[user.uuid]) app.Users[user.uuid] = new M.User(user);             
 		});
 
 		// add self to users list
@@ -207,11 +207,11 @@ Wu.App = Wu.Class.extend({
 		// create project objects
 		app.Projects = {};
 		app.options.json.projects.forEach(function(store, i, arr) {
-		       	app.Projects[store.uuid] = new Wu.Model.Project(store);
+		       	app.Projects[store.uuid] = new M.Model.Project(store);
 		});
 
 		// phantomjs
-		app.phantomjs = new Wu.PhantomJS();
+		app.phantomjs = new M.PhantomJS();
 	},
 
 	_initChrome : function () {
@@ -220,50 +220,50 @@ Wu.App = Wu.Class.extend({
 		app.Chrome = {};
 
 		// top chrome
-		app.Chrome.Top = new Wu.Chrome.Top();
+		app.Chrome.Top = new M.Chrome.Top();
 
 		// right chrome
-		app.Chrome.Right = new Wu.Chrome.Right();
+		app.Chrome.Right = new M.Chrome.Right();
 
 		// right chrome
-		app.Chrome.Left = new Wu.Chrome.Left();
+		app.Chrome.Left = new M.Chrome.Left();
 	},
 
 	_initPanes : function () {
 
 		// render tooltip
-		app.Tooltip = new Wu.Tooltip();
+		app.Tooltip = new M.Tooltip();
 
 		// render style handler
-		app.Style = new Wu.Style();
+		app.Style = new M.Style();
 
 		// render progress bar
-		app.ProgressBar = new Wu.ProgressPane({
+		app.ProgressBar = new M.ProgressPane({
 			color : 'white',
 			addTo : app._appPane
 		});
 
 		// render map pane
-		app.MapPane = new Wu.MapPane();
+		app.MapPane = new M.MapPane();
 
 		// render eror pane
-		app.FeedbackPane = new Wu.FeedbackPane();
+		app.FeedbackPane = new M.FeedbackPane();
 
 		// settings pane
-		app.MapSettingsPane = new Wu.MapSettingsPane();
+		app.MapSettingsPane = new M.MapSettingsPane();
 
 		// share pane
-		app.Share = new Wu.Share();
+		app.Share = new M.Share();
 
 		// // big slider
-		// app.Animator = new Wu.Animator({ // refactor to project controls
+		// app.Animator = new M.Animator({ // refactor to project controls
 		// 	// data : 'allYears',
 		// 	data : 'scf.average.2000.2015', // todo: refactor data fetching
 		// 	hide : true
 		// });
 
 		// add account tab
-		app.AccountPane = new Wu.Pane.Account();
+		app.AccountPane = new M.Pane.Account();
 
 		// load public stylesheet
 		if (app.Account.isPublic()) {
@@ -289,7 +289,7 @@ Wu.App = Wu.Class.extend({
 		if (!project) return false;
 
 		// select project
-		Wu.Mixin.Events.fire('projectSelected', {detail : {
+		M.Mixin.Events.fire('projectSelected', {detail : {
 			projectUuid : project.id
 		}});
 
@@ -303,7 +303,7 @@ Wu.App = Wu.Class.extend({
 
 		// parse error prone content of hotlink..
 		var hotlink = hotlink || window.hotlink;
-		app.hotlink = Wu.parse(hotlink);
+		app.hotlink = M.parse(hotlink);
 
 		// return if no hotlink
 		if (_.isEmpty(app.hotlink)) return false;
@@ -322,7 +322,7 @@ Wu.App = Wu.Class.extend({
 		}, function (err, project_json) {
 			if (err) return app._login('Please log in to view this private project.');
 
-			var project_store = Wu.parse(project_json);
+			var project_store = M.parse(project_json);
 
 			// import project
 			app._importProject(project_store, function (err, project) {
@@ -339,7 +339,7 @@ Wu.App = Wu.Class.extend({
 
 	_login : function (msg) {
 		// open login
-		var login = new Wu.Pane.Login();
+		var login = new M.Pane.Login();
 		login.setDescription(msg);
 		login.open();
 	},
@@ -352,7 +352,7 @@ Wu.App = Wu.Class.extend({
 		}
 
 		// create project model
-		var project = new Wu.Model.Project(project_store);
+		var project = new M.Model.Project(project_store);
 		app.Projects[project.getUuid()] = project;
 		app.Chrome.Projects._addProject(project);
 
@@ -366,10 +366,10 @@ Wu.App = Wu.Class.extend({
 		var project_slug = hotlink.project; 
 		var username = hotlink.username;
 
-		// find project slug in Wu.app.Projects
+		// find project slug in M.app.Projects
 		var project_slug = project_slug || window.hotlink.project;
-		for (var p in Wu.app.Projects) {
-			var project = Wu.app.Projects[p];
+		for (var p in M.app.Projects) {
+			var project = M.app.Projects[p];
 			if (project_slug == project.store.slug) {
 				if (project.store.createdByUsername == username) {
 					return project; 
@@ -401,16 +401,16 @@ Wu.App = Wu.Class.extend({
 
 		// find or create container
 		var id = app.options.id;
-		app._appPane = Wu.DomUtil.get(id) || Wu.DomUtil.createId('div', id || 'app', document.body);
+		app._appPane = M.DomUtil.get(id) || M.DomUtil.createId('div', id || 'app', document.body);
 
 		// create map container
-		app._mapContainer = Wu.DomUtil.createId('div', 'map-container', app._appPane);
+		app._mapContainer = M.DomUtil.createId('div', 'map-container', app._appPane);
 	},
 
 	_setProject : function (project) {
 
 		// select project
-		Wu.Mixin.Events.fire('projectSelected', {detail : {
+		M.Mixin.Events.fire('projectSelected', {detail : {
 			projectUuid : project.getUuid()
 		}});
 	},
@@ -424,7 +424,7 @@ Wu.App = Wu.Class.extend({
 	// todo: move to own script
 	detectMobile : function() {
 		
-		app.isMobile = Wu.Util.isMobile();
+		app.isMobile = M.Util.isMobile();
 
 		if (app.isMobile) {
 
@@ -439,7 +439,7 @@ Wu.App = Wu.Class.extend({
 
 	mobileListners : function () {
 
-		Wu.DomEvent.on(window, 'resize', this.setMobileSize, this);
+		M.DomEvent.on(window, 'resize', this.setMobileSize, this);
 
 	},
 

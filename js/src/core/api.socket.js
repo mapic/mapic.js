@@ -1,4 +1,4 @@
-Wu.Socket = Wu.Class.extend({
+M.Socket = M.Class.extend({
 
 	initialize : function () {
 
@@ -72,13 +72,13 @@ Wu.Socket = Wu.Class.extend({
 		});
 
 		socket.on('tile_count', function(data){
-			Wu.Mixin.Events.fire('tileCount', {
+			M.Mixin.Events.fire('tileCount', {
 				detail : data
 			});
 		});
 		
 		socket.on('tileset_meta', function(data){
-			Wu.Mixin.Events.fire('tileset_meta', {
+			M.Mixin.Events.fire('tileset_meta', {
 				detail : data
 			});
 		});
@@ -101,7 +101,7 @@ Wu.Socket = Wu.Class.extend({
 		});
 		
 		socket.on('processingProgress', function(data) {
-			Wu.Mixin.Events.fire('processingProgress', {
+			M.Mixin.Events.fire('processingProgress', {
 				detail : data
 			});
 		});
@@ -116,7 +116,7 @@ Wu.Socket = Wu.Class.extend({
 			if (!data || data.err) return;
 
 			// fire
-			Wu.Mixin.Events.fire('generatedTiles', {
+			M.Mixin.Events.fire('generatedTiles', {
 				detail : data
 			});
 
@@ -124,7 +124,7 @@ Wu.Socket = Wu.Class.extend({
 		
 		socket.on('downloadReady', function (data) {
 			var event_id = 'downloadReady-' + data.file_id;
-			Wu.Mixin.Events.fire(event_id, {detail : data});
+			M.Mixin.Events.fire(event_id, {detail : data});
 		});
 		
 		socket.on('processingDone', function (data) {
@@ -144,7 +144,7 @@ Wu.Socket = Wu.Class.extend({
 			if (uniqueIdentifier) {
 				
 				// file error
-				Wu.Mixin.Events.fire('processingError', {
+				M.Mixin.Events.fire('processingError', {
 					detail : content
 				});
 

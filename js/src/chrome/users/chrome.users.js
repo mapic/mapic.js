@@ -1,4 +1,4 @@
-Wu.Chrome.Users = Wu.Chrome.extend({
+M.Chrome.Users = M.Chrome.extend({
 
 	_ : 'users', 
 
@@ -16,13 +16,13 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 	},
 
 	_initContainer : function () {
-		this._container = Wu.DomUtil.create('div', 'chrome-left-section chrome-users', this.options.appendTo);
+		this._container = M.DomUtil.create('div', 'chrome-left-section chrome-users', this.options.appendTo);
 	},
 	
 	_initContent : function () {
 
-		var usersContainer = Wu.DomUtil.create('div', 'chrome-left-container contacts', this._container);
-		var usersTitle = Wu.DomUtil.create('div', 'chrome-left-title users-title', usersContainer, 'Contacts');
+		var usersContainer = M.DomUtil.create('div', 'chrome-left-container contacts', this._container);
+		var usersTitle = M.DomUtil.create('div', 'chrome-left-title users-title', usersContainer, 'Contacts');
 		var users = this.users = app.Users;
 
 		// Define D3 container
@@ -34,8 +34,8 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 		this._refresh();
 
 		// add invite
-		this._inviteButton = Wu.DomUtil.create('div', 'chrome-left-invite-users', this._container, '+ Invite People');
-		Wu.DomEvent.on(this._inviteButton, 'click', this._openInvite, this);
+		this._inviteButton = M.DomUtil.create('div', 'chrome-left-invite-users', this._container, '+ Invite People');
+		M.DomEvent.on(this._inviteButton, 'click', this._openInvite, this);
 
 	},
 
@@ -51,18 +51,18 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 
 		// label
 		var invite_label = options.label;
-		var name = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label invite-emails', content, invite_label);
+		var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label invite-emails', content, invite_label);
 		
 		// container
-		var invite_container = Wu.DomUtil.create('div', 'invite-container narrow', content);
+		var invite_container = M.DomUtil.create('div', 'invite-container narrow', content);
 		
-		var invite_inner = Wu.DomUtil.create('div', 'invite-inner', invite_container);
-		var invite_input_container = Wu.DomUtil.create('div', 'invite-input-container', invite_inner);
+		var invite_inner = M.DomUtil.create('div', 'invite-inner', invite_container);
+		var invite_input_container = M.DomUtil.create('div', 'invite-input-container', invite_inner);
 
 		// input box
-		var invite_input = Wu.DomUtil.create('input', 'invite-email-input-form', invite_input_container);
+		var invite_input = M.DomUtil.create('input', 'invite-email-input-form', invite_input_container);
 		invite_input.setAttribute('placeholder', 'name@domain.com');
-		var invite_error = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label', content);
+		var invite_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', content);
 
 		// remember
 		this._emails.push({
@@ -77,10 +77,10 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 	_openInvite : function (e) {
 
 		// stop propagation
-		e && Wu.DomEvent.stop(e);
+		e && M.DomEvent.stop(e);
 		
 		// create fullscreen
-		this._fullscreen = new Wu.Fullscreen({
+		this._fullscreen = new M.Fullscreen({
 			title : '<span style="font-weight:200;">Invite people to Mapic</span>',
 			innerClassName : 'smooth-fullscreen-inner invite'
 		});
@@ -96,35 +96,35 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 		var content = this._fullscreen._content;
 
 		// personlized message
-		var linkText = Wu.DomUtil.create('div', 'smooth-fullscreen-link-label', content, '<a id="share-link"><i class="fa fa-share-alt"></i> Get shareable link</a>');
+		var linkText = M.DomUtil.create('div', 'smooth-fullscreen-link-label', content, '<a id="share-link"><i class="fa fa-share-alt"></i> Get shareable link</a>');
 
 		// emails wrapper
-		this._emailsWrapper = Wu.DomUtil.create('div', 'invite-emails-wrapper', content);
+		this._emailsWrapper = M.DomUtil.create('div', 'invite-emails-wrapper', content);
 
 		// create email input
 		this._createEmailInput();
 
 		// add another + button
-		var addAnotherWrapper = Wu.DomUtil.create('div', 'invite-add-another-wrapper', content);
-		var addAnotherBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label add-another-email', addAnotherWrapper, '+ Add another');
-		Wu.DomEvent.on(addAnotherBtn, 'click', this._createEmailInput, this);
+		var addAnotherWrapper = M.DomUtil.create('div', 'invite-add-another-wrapper', content);
+		var addAnotherBtn = M.DomUtil.create('div', 'smooth-fullscreen-name-label add-another-email', addAnotherWrapper, '+ Add another');
+		M.DomEvent.on(addAnotherBtn, 'click', this._createEmailInput, this);
 
 		// personlized message
-		var emailMessageWrap = Wu.DomUtil.create('div', 'invite-email-message-wrap', content);
-		var messageText = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label add-message', emailMessageWrap, 'Make your invite more personal by adding a <a id="custom_message_btn">custom message</a>');
-		var messageBtn = Wu.DomUtil.get('custom_message_btn');
-		var messageBoxWrap = Wu.DomUtil.create('div', 'invite-custom-message-wrapper', emailMessageWrap);
-		var messageBoxLabel = Wu.DomUtil.create('div', 'invite-custom-message-wrapper-label', messageBoxWrap, 'Custom Message'); 
-		this._customMessage = Wu.DomUtil.create('textarea', 'invite-custom-message-wrapper-textarea', messageBoxWrap); 
+		var emailMessageWrap = M.DomUtil.create('div', 'invite-email-message-wrap', content);
+		var messageText = M.DomUtil.create('div', 'smooth-fullscreen-name-label add-message', emailMessageWrap, 'Make your invite more personal by adding a <a id="custom_message_btn">custom message</a>');
+		var messageBtn = M.DomUtil.get('custom_message_btn');
+		var messageBoxWrap = M.DomUtil.create('div', 'invite-custom-message-wrapper', emailMessageWrap);
+		var messageBoxLabel = M.DomUtil.create('div', 'invite-custom-message-wrapper-label', messageBoxWrap, 'Custom Message'); 
+		this._customMessage = M.DomUtil.create('textarea', 'invite-custom-message-wrapper-textarea', messageBoxWrap); 
 
 		// event
-		Wu.DomEvent.on(messageBtn, 'click', function () {
-			Wu.DomUtil.addClass(emailMessageWrap, 'hideme');
-			Wu.DomUtil.addClass(messageBoxWrap, 'showme');
+		M.DomEvent.on(messageBtn, 'click', function () {
+			M.DomUtil.addClass(emailMessageWrap, 'hideme');
+			M.DomUtil.addClass(messageBoxWrap, 'showme');
 			this._customMessage.focus();
 		}, this);
 
-		var toggles_wrapper = Wu.DomUtil.create('div', 'toggles-wrapper', content);
+		var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper', content);
 
 		// create invite input for projects
 		this._createInviteInput({
@@ -146,12 +146,12 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 
 
 		// save button
-		var saveBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save invite', content, 'Send Invites');
-		var save_message = Wu.DomUtil.create('div', 'invite-success-message', content, '');
+		var saveBtn = M.DomUtil.create('div', 'smooth-fullscreen-save invite', content, 'Send Invites');
+		var save_message = M.DomUtil.create('div', 'invite-success-message', content, '');
 
 		// save button trigger
-		Wu.DomEvent.on(saveBtn, 'click', this._sendInvites, this);
-		Wu.DomEvent.on(linkText, 'click', this._openLinkShare, this);
+		M.DomEvent.on(saveBtn, 'click', this._sendInvites, this);
+		M.DomEvent.on(linkText, 'click', this._openLinkShare, this);
 
 	},
 
@@ -161,10 +161,10 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 		this._fullscreen.close();
 
 		// stop propagation
-		e && Wu.DomEvent.stop(e);
+		e && M.DomEvent.stop(e);
 		
 		// create fullscreen
-		this._fullscreen = new Wu.Fullscreen({
+		this._fullscreen = new M.Fullscreen({
 			title : '<span style="font-weight:200;">Invite people to Systemapic</span>',
 			innerClassName : 'smooth-fullscreen-inner invite'
 		});
@@ -180,28 +180,28 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 		var content = this._fullscreen._content;
 
 		// emails wrapper
-		this._emailsWrapper = Wu.DomUtil.create('div', 'invite-emails-wrapper', content);
+		this._emailsWrapper = M.DomUtil.create('div', 'invite-emails-wrapper', content);
 
 		// label
-		var name = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label invite-emails', content, 'Share this link');
+		var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label invite-emails', content, 'Share this link');
 		
 		// input box
-		var invite_container = Wu.DomUtil.create('div', 'invite-container narrow', content);
-		var invite_inner = Wu.DomUtil.create('div', 'invite-inner', invite_container);
-		var invite_input_container = Wu.DomUtil.create('div', 'invite-input-container', invite_inner);
-		this._shareLinkInput = Wu.DomUtil.create('input', 'invite-email-input-form', invite_input_container);
+		var invite_container = M.DomUtil.create('div', 'invite-container narrow', content);
+		var invite_inner = M.DomUtil.create('div', 'invite-inner', invite_container);
+		var invite_input_container = M.DomUtil.create('div', 'invite-input-container', invite_inner);
+		this._shareLinkInput = M.DomUtil.create('input', 'invite-email-input-form', invite_input_container);
 		this._shareLinkInput.value = app.options.servers.portal + 'invite';
-		this._inviteFeedback = Wu.DomUtil.create('div', 'smooth-fullscreen-feedback-label', content);
+		this._inviteFeedback = M.DomUtil.create('div', 'smooth-fullscreen-feedback-label', content);
 
-		var clipboardWrapper = Wu.DomUtil.create('div', 'clipboard-wrapper', invite_input_container);
-		var clipboardBtn = Wu.DomUtil.create('div', 'clipboard-button', clipboardWrapper);
+		var clipboardWrapper = M.DomUtil.create('div', 'clipboard-wrapper', invite_input_container);
+		var clipboardBtn = M.DomUtil.create('div', 'clipboard-button', clipboardWrapper);
 		clipboardBtn.innerHTML = '<i class="fa fa-clipboard"></i>';	
 
 		// clipboard events
-		Wu.DomEvent.on(clipboardWrapper, 'mousedown', this._removeClipFeedback, this);
-		Wu.DomEvent.on(clipboardWrapper, 'mouseup', this._copypasted, this);
+		M.DomEvent.on(clipboardWrapper, 'mousedown', this._removeClipFeedback, this);
+		M.DomEvent.on(clipboardWrapper, 'mouseup', this._copypasted, this);
 
-		var toggles_wrapper = Wu.DomUtil.create('div', 'toggles-wrapper', content);
+		var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper', content);
 
 		// create invite input for projects
 		var readInput = this._createInviteInput({
@@ -224,15 +224,15 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 		});
 
 		// save button
-		var closeBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save invite', content, 'Close');
+		var closeBtn = M.DomUtil.create('div', 'smooth-fullscreen-save invite', content, 'Close');
 
 		// select text on focus
-		Wu.DomEvent.on(this._shareLinkInput, 'focus click', function () {
+		M.DomEvent.on(this._shareLinkInput, 'focus click', function () {
 			this._shareLinkInput.select();
 		}, this);
 
 		// save button trigger
-		Wu.DomEvent.on(closeBtn, 'click', this._fullscreen.close.bind(this._fullscreen), this);
+		M.DomEvent.on(closeBtn, 'click', this._fullscreen.close.bind(this._fullscreen), this);
 
 		// add current project to READ
 		this._checkedProjects['read'][app.activeProject.getTitle()] = app.activeProject;
@@ -310,10 +310,10 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 	_inviteToProject : function (user, e) {
 
 		// stop propagation
-		e && Wu.DomEvent.stop(e);
+		e && M.DomEvent.stop(e);
 		
 		// create fullscreen
-		this._fullscreen = new Wu.Fullscreen({
+		this._fullscreen = new M.Fullscreen({
 			title : '<span style="font-weight:200;">Invite ' + user.getFullName() + ' to projects</span>',
 			innerClassName : 'smooth-fullscreen-inner invite'
 		});
@@ -327,7 +327,7 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 		// shortcut
 		var content = this._fullscreen._content;
 
-		var toggles_wrapper = Wu.DomUtil.create('div', 'toggles-wrapper', content);
+		var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper', content);
 
 		// create invite input for projects
 		this._createInviteInput({
@@ -349,9 +349,9 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 
 
 		// save button
-		var saveBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save invite', content, 'Invite');
-		var save_message = Wu.DomUtil.create('div', 'invite-success-message', content, '');
-		Wu.DomEvent.on(saveBtn, 'click', this._updateInvites, this);
+		var saveBtn = M.DomUtil.create('div', 'smooth-fullscreen-save invite', content, 'Invite');
+		var save_message = M.DomUtil.create('div', 'invite-success-message', content, '');
+		M.DomEvent.on(saveBtn, 'click', this._updateInvites, this);
 
 		// remember user
 		this._access.user = user;
@@ -521,34 +521,34 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 
 		// label
 		var invite_label = options.label;
-		var name = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label invite', content, invite_label);
+		var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label invite', content, invite_label);
 		
 		// container
-		var invite_container = Wu.DomUtil.create('div', 'invite-container', content);
+		var invite_container = M.DomUtil.create('div', 'invite-container', content);
 		
 		// sub-label
-		var sublabel = Wu.DomUtil.create('div', 'smooth-fullscreen-sub-label', content, options.sublabel);
+		var sublabel = M.DomUtil.create('div', 'smooth-fullscreen-sub-label', content, options.sublabel);
 
-		var invite_inner = Wu.DomUtil.create('div', 'invite-inner', invite_container);
-		var invite_input_container = Wu.DomUtil.create('div', 'invite-input-container', invite_inner);
+		var invite_inner = M.DomUtil.create('div', 'invite-inner', invite_container);
+		var invite_input_container = M.DomUtil.create('div', 'invite-input-container', invite_inner);
 
 		// input box
-		var invite_input = Wu.DomUtil.create('input', 'invite-input-form', invite_input_container);
+		var invite_input = M.DomUtil.create('input', 'invite-input-form', invite_input_container);
 
 		// invite list
-		var invite_list_container = Wu.DomUtil.create('div', 'invite-list-container', invite_container);
-		var invite_list_inner = Wu.DomUtil.create('div', 'invite-list-inner', invite_list_container);
+		var invite_list_container = M.DomUtil.create('div', 'invite-list-container', invite_container);
+		var invite_list_inner = M.DomUtil.create('div', 'invite-list-inner', invite_list_container);
 
 		// remember div
 		this._divs[options.type].invite_list_container = invite_list_container;
 
 		// for manual scrollbar (js)
-		var monkey_scroll_bar = Wu.DomUtil.create('div', 'monkey-scroll-bar', invite_list_inner);
+		var monkey_scroll_bar = M.DomUtil.create('div', 'monkey-scroll-bar', invite_list_inner);
 		
 		// for holding list
-		var monkey_scroll_hider = Wu.DomUtil.create('div', 'monkey-scroll-hider', invite_list_inner);
-		var monkey_scroll_inner = Wu.DomUtil.create('div', 'monkey-scroll-inner', monkey_scroll_hider);
-		var monkey_scroll_list = Wu.DomUtil.create('div', 'monkey-scroll-list', monkey_scroll_inner);
+		var monkey_scroll_hider = M.DomUtil.create('div', 'monkey-scroll-hider', invite_list_inner);
+		var monkey_scroll_inner = M.DomUtil.create('div', 'monkey-scroll-inner', monkey_scroll_hider);
+		var monkey_scroll_list = M.DomUtil.create('div', 'monkey-scroll-list', monkey_scroll_inner);
 
 		// list of all projects, sort alphabetically
 		var allProjects = _.sortBy(_.toArray(app.Projects), function (u) {
@@ -607,11 +607,11 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 			if (options.type == 'edit' && isSpectator) return;
 
 			// divs
-			var list_item_container = Wu.DomUtil.create('div', 'monkey-scroll-list-item-container project', monkey_scroll_list);
-			var avatar_container = Wu.DomUtil.create('div', 'monkey-scroll-list-item-avatar-container', list_item_container);
-			var avatar = Wu.DomUtil.create('div', 'monkey-scroll-list-item-avatar project', avatar_container, '<i class="project fa fa-map-o"></i>');
-			var name_container = Wu.DomUtil.create('div', 'monkey-scroll-list-item-name-container project', list_item_container);
-			var name_bold = Wu.DomUtil.create('div', 'monkey-scroll-list-item-name-bold project', name_container);
+			var list_item_container = M.DomUtil.create('div', 'monkey-scroll-list-item-container project', monkey_scroll_list);
+			var avatar_container = M.DomUtil.create('div', 'monkey-scroll-list-item-avatar-container', list_item_container);
+			var avatar = M.DomUtil.create('div', 'monkey-scroll-list-item-avatar project', avatar_container, '<i class="project fa fa-map-o"></i>');
+			var name_container = M.DomUtil.create('div', 'monkey-scroll-list-item-name-container project', list_item_container);
+			var name_bold = M.DomUtil.create('div', 'monkey-scroll-list-item-name-bold project', name_container);
 
 			// set name
 			name_bold.innerHTML = project.getTitle();
@@ -632,7 +632,7 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 			}
 
 			// click event
-			Wu.DomEvent.on(list_item_container, 'click', function () {
+			M.DomEvent.on(list_item_container, 'click', function () {
 
 				this._checkedProjects[options.type][project.getTitle()] = project;
 				// add selected project item to input box
@@ -656,7 +656,7 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 				onKeyUp.call(this);
 			}, this);
 
-			Wu.DomEvent.on(list_item_container, 'mouseenter', function () {
+			M.DomEvent.on(list_item_container, 'mouseenter', function () {
 				_.forEach(items, function (_list_item_container) {
 					if (_list_item_container.list_item_container != list_item_container) {
 						_list_item_container.list_item_container.style.backgroundColor = '';
@@ -672,19 +672,19 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 
 
 		// input focus, show dropdown
-		Wu.DomEvent.on(invite_input, 'focus', function () {
+		M.DomEvent.on(invite_input, 'focus', function () {
 			this._closeInviteInputs();
 			onKeyUp.call(this);
 		}, this);
 		
 
 		// focus input on any click
-		Wu.DomEvent.on(invite_input_container, 'click', function () {
+		M.DomEvent.on(invite_input_container, 'click', function () {
 			invite_input.focus();
 		}, this);
 
 		// input keyup
-		Wu.DomEvent.on(invite_input, 'keydown', function (e) {
+		M.DomEvent.on(invite_input, 'keydown', function (e) {
 
 			// get which key
 			var key = event.which ? event.which : event.keyCode;
@@ -741,7 +741,7 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 
 			if (key === 40 || key === 9) {
 				if (key === 9) {
-					Wu.DomEvent.stop(e);
+					M.DomEvent.stop(e);
 				}
 
 				_.find(items, function (_list_item_container, index) {
@@ -821,7 +821,7 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 				// remove last item
 				var last = _.last(this._access[options.type]);
 				var popped = this._access[options.type].pop();
-				Wu.DomUtil.remove(popped.user_container);
+				M.DomUtil.remove(popped.user_container);
 				var item = _.find(_.keys(this._checkedProjects[options.type]), function (projectTitle) {
 					return projectTitle == last.project.getTitle();
 				});
@@ -844,10 +844,10 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 
 		}, this);
 
-		Wu.DomEvent.on(invite_input, 'keyup', onKeyUp, this);
+		M.DomEvent.on(invite_input, 'keyup', onKeyUp, this);
 
 		// close dropdown on any click
-		Wu.DomEvent.on(container, 'click', function (e) {
+		M.DomEvent.on(container, 'click', function (e) {
 
 			// only if target == self
 			var relevantTarget = 	e.target == container || 
@@ -889,21 +889,21 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 		if (existing) return;
 
 		// insert project box in input area
-		var user_container = Wu.DomUtil.create('div', 'mini-user-container');
-		var user_inner = Wu.DomUtil.create('div', 'mini-user-inner', user_container);
-		var user_avatar = Wu.DomUtil.create('div', 'mini-project-avatar', user_inner, '<i class="fa fa-map"></i>');
-		var user_name = Wu.DomUtil.create('div', 'mini-user-name', user_inner, project.getTitle());
-		var user_kill = Wu.DomUtil.create('div', 'mini-user-kill', user_inner, 'x');
+		var user_container = M.DomUtil.create('div', 'mini-user-container');
+		var user_inner = M.DomUtil.create('div', 'mini-user-inner', user_container);
+		var user_avatar = M.DomUtil.create('div', 'mini-project-avatar', user_inner, '<i class="fa fa-map"></i>');
+		var user_name = M.DomUtil.create('div', 'mini-user-name', user_inner, project.getTitle());
+		var user_kill = M.DomUtil.create('div', 'mini-user-kill', user_inner, 'x');
 
 		// insert before input
 		var invite_input_container = invite_input.parentNode;
 		invite_input_container.insertBefore(user_container, invite_input);
 
 		// click event (kill)
-		Wu.DomEvent.on(user_container, 'click', function () {
+		M.DomEvent.on(user_container, 'click', function () {
 			
 			// remove div
-			Wu.DomUtil.remove(user_container);
+			M.DomUtil.remove(user_container);
 			
 			// remove from array
 			_.remove(this._access[options.type], function (i) {
@@ -934,7 +934,7 @@ Wu.Chrome.Users = Wu.Chrome.extend({
 		if (existing) {
 
 			// remove div
-			Wu.DomUtil.remove(existing.user_container);
+			M.DomUtil.remove(existing.user_container);
 			
 			var item = _.find(_.keys(this._checkedProjects[otherType]), function (projectTitle) {
 				return projectTitle == project.getTitle(); 

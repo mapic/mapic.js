@@ -1,4 +1,4 @@
-Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
+M.Chrome.SettingsContent.Cartocss = M.Chrome.SettingsContent.extend({
 
 	_initialize : function () {
 
@@ -13,19 +13,19 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 	_initContainer : function () {
 
 		// create container
-		this._container = Wu.DomUtil.create('div', 'chrome chrome-content chrome-pane cartocss', this.options.appendTo);
+		this._container = M.DomUtil.create('div', 'chrome chrome-content chrome-pane cartocss', this.options.appendTo);
 	},
 
 	_initLayout : function () {
 
 		// Mid section
-		this._midSection = Wu.DomUtil.create('div', 'chrome-middle-section', this._container);
+		this._midSection = M.DomUtil.create('div', 'chrome-middle-section', this._container);
 
 		// active layer
 		this.layerSelector = this._initLayout_activeLayers(false, false, this._midSection);
 
 		// wrapper
-		this._codewrap = Wu.DomUtil.create('input', 'chrome chrome-content cartocss code-wrapper', this._midSection);
+		this._codewrap = M.DomUtil.create('input', 'chrome chrome-content cartocss code-wrapper', this._midSection);
 
 		// sql editor
 		// this._createSqlEditor();
@@ -81,14 +81,14 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 
 	_removeEvents : function () {
 
-		// Wu.DomEvent.off(window, 'resize', this._windowResize, this);
+		// M.DomEvent.off(window, 'resize', this._windowResize, this);
 
 	},
 
 	_createTitles : function () {
 		
 		// create
-		this._cartotitle = Wu.DomUtil.create('div', 'chrome chrome-content cartocss title');
+		this._cartotitle = M.DomUtil.create('div', 'chrome chrome-content cartocss title');
 		this._cartotitle.innerHTML = 'CartoCSS';
 		
 		// insert
@@ -180,12 +180,12 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 	_createRefresh : function () {
 
 		// create fixed bottom container
-		this._bottomContainer = Wu.DomUtil.create('div', 'chrome-content-bottom-container displayNone', this._container);		
+		this._bottomContainer = M.DomUtil.create('div', 'chrome-content-bottom-container displayNone', this._container);		
 
 		var text = (navigator.platform == 'MacIntel') ? 'Save (⌘-S)' : 'Save (Ctrl-S)';
-		this._refreshButton = Wu.DomUtil.create('div', 'chrome-right-big-button', this._bottomContainer, text);
+		this._refreshButton = M.DomUtil.create('div', 'chrome-right-big-button', this._bottomContainer, text);
 
-		Wu.DomEvent.on(this._refreshButton, 'click', this._updateStyle, this);
+		M.DomEvent.on(this._refreshButton, 'click', this._updateStyle, this);
 	},
 
 
@@ -276,7 +276,7 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 				return done && done(err);
 			}
 			// new layer
-			var newLayerStyle = Wu.parse(newLayerJSON);
+			var newLayerStyle = M.parse(newLayerJSON);
 
 			// catch errors
 			if (newLayerStyle.error) {
@@ -332,7 +332,7 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 
 
 		// Display bottom container
-		Wu.DomUtil.removeClass(this._bottomContainer, 'displayNone');		
+		M.DomUtil.removeClass(this._bottomContainer, 'displayNone');		
 	},
 
 	
@@ -397,7 +397,7 @@ Wu.Chrome.SettingsContent.Cartocss = Wu.Chrome.SettingsContent.extend({
 		this._container.style.display = 'block';
 
 		// mark button
-		Wu.DomUtil.addClass(this.options.trigger, 'active-tab');
+		M.DomUtil.addClass(this.options.trigger, 'active-tab');
 
 		// Enable settings from layer we're working with
 		var layerUuid = this._getActiveLayerUuid();

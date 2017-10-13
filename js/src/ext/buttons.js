@@ -1,4 +1,4 @@
-Wu.button = Wu.Class.extend({
+M.button = M.Class.extend({
 
 	initialize : function (options) {
 
@@ -42,7 +42,7 @@ Wu.button = Wu.Class.extend({
 
 
 		// create max input
-		var miniInputMax = Wu.DomUtil.createId('input', 'field_mini_input_max_' + key, appendTo);
+		var miniInputMax = M.DomUtil.createId('input', 'field_mini_input_max_' + key, appendTo);
 		miniInputMax.className = prefix;
 		miniInputMax.setAttribute('placeholder', 'auto');
 		miniInputMax.setAttribute('tabindex', tabindex[1]);
@@ -50,12 +50,12 @@ Wu.button = Wu.Class.extend({
 		if (value) miniInputMax.value = value[1];
 
 		// set blur save event
-		Wu.DomEvent.on(miniInputMax, 'blur', function () { 
+		M.DomEvent.on(miniInputMax, 'blur', function () { 
 			this.saveDualBlur(miniInputMax, miniInputMin, minmax[1], minmax[0], this.options);  // todo: mem leak
 		}.bind(this), this);
 
 		// Force numeric
-		miniInputMax.onkeypress = Wu.Tools.forceNumeric;
+		miniInputMax.onkeypress = M.Tools.forceNumeric;
 		
 		// remember
 		this.max = miniInputMax;
@@ -63,7 +63,7 @@ Wu.button = Wu.Class.extend({
 
 
 		// create min input
-		var miniInputMin = Wu.DomUtil.createId('input', 'field_mini_input_min_' + key, appendTo);
+		var miniInputMin = M.DomUtil.createId('input', 'field_mini_input_min_' + key, appendTo);
 		miniInputMin.className = 'chrome-field-mini-input mini-input-dual';
 		miniInputMin.setAttribute('placeholder', 'auto');
 		miniInputMin.setAttribute('tabindex', tabindex[0]);
@@ -71,12 +71,12 @@ Wu.button = Wu.Class.extend({
 		if (value) miniInputMin.value = value[0];
 
 		// set blur save event
-		Wu.DomEvent.on(miniInputMin, 'blur', function () { 
+		M.DomEvent.on(miniInputMin, 'blur', function () { 
 			this.saveDualBlur(miniInputMax, miniInputMin, minmax[1], minmax[0], this.options);  	// todo: mem leak
 		}.bind(this), this);
 
 		// Force numeric
-		miniInputMin.onkeypress = Wu.Tools.forceNumeric;
+		miniInputMin.onkeypress = M.Tools.forceNumeric;
 
 		// remember
 		this.min = miniInputMin;
@@ -111,11 +111,11 @@ Wu.button = Wu.Class.extend({
 		var _class = 'chrome-color-range-wrapper ';
 		if ( className ) _class += className;
 
-		var colorRangeWrapper = Wu.DomUtil.create('div', _class, appendTo)
+		var colorRangeWrapper = M.DomUtil.create('div', _class, appendTo)
 		    colorRangeWrapper.setAttribute('key', key);
 
 
-		var color = Wu.DomUtil.create('div', 'chrome-color-range', colorRangeWrapper);
+		var color = M.DomUtil.create('div', 'chrome-color-range', colorRangeWrapper);
 		color.id = 'chrome-color-range_' + key;
 		color.setAttribute('key', key);
 		color.setAttribute('style', gradientStyle);
@@ -125,7 +125,7 @@ Wu.button = Wu.Class.extend({
 
 
 
-		var clickCatcher = Wu.DomUtil.create('div', 'click-catcher displayNone', appendTo);
+		var clickCatcher = M.DomUtil.create('div', 'click-catcher displayNone', appendTo);
 		clickCatcher.id = 'click-catcher-' + key;
 		clickCatcher.setAttribute('key', key);
 
@@ -136,7 +136,7 @@ Wu.button = Wu.Class.extend({
 
 
 
-		var colorSelectorWrapper = Wu.DomUtil.create('div', 'chrome-color-selector-wrapper displayNone', colorRangeWrapper);
+		var colorSelectorWrapper = M.DomUtil.create('div', 'chrome-color-selector-wrapper displayNone', colorRangeWrapper);
 		colorSelectorWrapper.id = 'chrome-color-selector-wrapper-' + key;
 
 		// remember;
@@ -146,9 +146,9 @@ Wu.button = Wu.Class.extend({
 
 
 
-		var colorBallWrapper = Wu.DomUtil.create('div', 'chrome-color-ball-wrapper', colorSelectorWrapper)
+		var colorBallWrapper = M.DomUtil.create('div', 'chrome-color-ball-wrapper', colorSelectorWrapper)
 
-		var colorBall_3 = Wu.DomUtil.create('div', 'chrome-color-ball color-range-ball rangeball-3', colorBallWrapper);
+		var colorBall_3 = M.DomUtil.create('div', 'chrome-color-ball color-range-ball rangeball-3', colorBallWrapper);
 		colorBall_3.id = 'color-range-ball-3-' + key;
 		colorBall_3.style.background = value[4];
 		colorBall_3.setAttribute('hex', value[4]);
@@ -158,7 +158,7 @@ Wu.button = Wu.Class.extend({
 		    
 
 
-		var colorBall_2 = Wu.DomUtil.create('div', 'chrome-color-ball color-range-ball rangeball-2', colorBallWrapper);
+		var colorBall_2 = M.DomUtil.create('div', 'chrome-color-ball color-range-ball rangeball-2', colorBallWrapper);
 		colorBall_2.id = 'color-range-ball-2-' + key;
 		colorBall_2.style.background = value[2];
 		colorBall_2.setAttribute('hex', value[2]);
@@ -167,7 +167,7 @@ Wu.button = Wu.Class.extend({
 		this._colorball2 = colorBall_2;
 
 
-		var colorBall_1 = Wu.DomUtil.create('div', 'chrome-color-ball color-range-ball rangeball-1', colorBallWrapper);
+		var colorBall_1 = M.DomUtil.create('div', 'chrome-color-ball color-range-ball rangeball-1', colorBallWrapper);
 		colorBall_1.id = 'color-range-ball-1-' + key;
 		colorBall_1.style.background = value[0];
 		colorBall_1.setAttribute('hex', value[0]);
@@ -185,7 +185,7 @@ Wu.button = Wu.Class.extend({
 		// Color range presets
 		// Color range presets
 
-		var colorRangePresetWrapper = Wu.DomUtil.create('div', 'color-range-preset-wrapper', colorSelectorWrapper);
+		var colorRangePresetWrapper = M.DomUtil.create('div', 'color-range-preset-wrapper', colorSelectorWrapper);
 
 		// colorbrewer2.org
 		var colorRangesPresets = this.options.colors;
@@ -196,32 +196,32 @@ Wu.button = Wu.Class.extend({
 		colorRangesPresets.forEach(function(preset, i) {
 
 			var gradientStyle = this._gradientStyle(preset);
-			var colorRangePreset = Wu.DomUtil.create('div', 'color-range-preset', colorRangePresetWrapper);
+			var colorRangePreset = M.DomUtil.create('div', 'color-range-preset', colorRangePresetWrapper);
 			colorRangePreset.id = 'color-range-preset-' + i;
 			colorRangePreset.setAttribute('style', gradientStyle);
 			colorRangePreset.setAttribute('hex', preset.join(','));
 
 			this._presets.push(colorRangePreset);
 
-			Wu.DomEvent.on(colorRangePreset, 'click', presetFn);
+			M.DomEvent.on(colorRangePreset, 'click', presetFn);
 
 		}.bind(this));
 
 		// select color on range
-		Wu.DomEvent.on(color, 'click', function (e) {
-			Wu.DomUtil.removeClass(colorSelectorWrapper, 'displayNone');
-			Wu.DomUtil.removeClass(clickCatcher, 'displayNone');
+		M.DomEvent.on(color, 'click', function (e) {
+			M.DomUtil.removeClass(colorSelectorWrapper, 'displayNone');
+			M.DomUtil.removeClass(clickCatcher, 'displayNone');
 
 		}, this);
 
-		Wu.DomEvent.on(clickCatcher, 'click', function (e) {
-			Wu.DomUtil.addClass(colorSelectorWrapper, 'displayNone');
-			Wu.DomUtil.addClass(clickCatcher, 'displayNone');
+		M.DomEvent.on(clickCatcher, 'click', function (e) {
+			M.DomUtil.addClass(colorSelectorWrapper, 'displayNone');
+			M.DomUtil.addClass(clickCatcher, 'displayNone');
 
 		}, this);
 
 
-		// Wu.DomEvent.on(clickCatcher, 'click', this.stopEditingColorRange, this);
+		// M.DomEvent.on(clickCatcher, 'click', this.stopEditingColorRange, this);
 
 	},
 
@@ -229,11 +229,11 @@ Wu.button = Wu.Class.extend({
 	        
 		var key = e.target.getAttribute('key');
 
-		var rangeSelector = Wu.DomUtil.get('chrome-color-selector-wrapper-' + key);
-		var clickCatcher = Wu.DomUtil.get('click-catcher-' + key);
+		var rangeSelector = M.DomUtil.get('chrome-color-selector-wrapper-' + key);
+		var clickCatcher = M.DomUtil.get('click-catcher-' + key);
 
-		Wu.DomUtil.removeClass(rangeSelector, 'displayNone');
-		Wu.DomUtil.removeClass(clickCatcher, 'displayNone');
+		M.DomUtil.removeClass(rangeSelector, 'displayNone');
+		M.DomUtil.removeClass(clickCatcher, 'displayNone');
 
 	},
 
@@ -241,11 +241,11 @@ Wu.button = Wu.Class.extend({
 
 		var key = e.target.getAttribute('key');
 
-		var rangeSelector = Wu.DomUtil.get('chrome-color-selector-wrapper-' + key);
-		var clickCatcher = Wu.DomUtil.get('click-catcher-' + key);
+		var rangeSelector = M.DomUtil.get('chrome-color-selector-wrapper-' + key);
+		var clickCatcher = M.DomUtil.get('click-catcher-' + key);
 
-		Wu.DomUtil.addClass(rangeSelector, 'displayNone');
-		Wu.DomUtil.addClass(clickCatcher, 'displayNone');
+		M.DomUtil.addClass(rangeSelector, 'displayNone');
+		M.DomUtil.addClass(clickCatcher, 'displayNone');
 
 	},
 
@@ -281,12 +281,12 @@ Wu.button = Wu.Class.extend({
 
 		if ( className ) _class += className;
 
-		this.color = Wu.DomUtil.create('div', _class, appendTo);
+		this.color = M.DomUtil.create('div', _class, appendTo);
 		this.color.id = 'color_ball_' + key;
 		this.color.style.background = value;
 
-		if ( !on ) Wu.DomUtil.addClass(this.color, 'disable-color-ball');
-		if ( !right ) Wu.DomUtil.addClass(this.color, 'left-ball');
+		if ( !on ) M.DomUtil.addClass(this.color, 'disable-color-ball');
+		if ( !right ) M.DomUtil.addClass(this.color, 'left-ball');
 
 		
 		// var that = this;
@@ -338,7 +338,7 @@ Wu.button = Wu.Class.extend({
 						a : col._a
 					}
 
-					var bg = Wu.Tools.rgbaStyleStr(color);
+					var bg = M.Tools.rgbaStyleStr(color);
 
 
 				} else {
@@ -385,15 +385,15 @@ Wu.button = Wu.Class.extend({
 		if ( className ) _class += className;
 
 		// create dropdown
-		var selectWrap = this.container = Wu.DomUtil.create('div', _class, appendTo);
-		var select = this._select = Wu.DomUtil.create('select', 'active-field-select', selectWrap);
+		var selectWrap = this.container = M.DomUtil.create('div', _class, appendTo);
+		var select = this._select = M.DomUtil.create('select', 'active-field-select', selectWrap);
 		select.setAttribute('key', key);
 
 		// if ( selected ) 
 		if ( reversed ) {
-			if ( !selected ) Wu.DomUtil.addClass(selectWrap, 'full-width');
+			if ( !selected ) M.DomUtil.addClass(selectWrap, 'full-width');
 		} else {
-			if ( selected )  Wu.DomUtil.addClass(selectWrap, 'full-width');
+			if ( selected )  M.DomUtil.addClass(selectWrap, 'full-width');
 		}
 
 
@@ -403,7 +403,7 @@ Wu.button = Wu.Class.extend({
 
 		// fill select options
 		array.forEach(function (field, i) {
-			var option = Wu.DomUtil.create('option', 'active-layer-option', select);
+			var option = M.DomUtil.create('option', 'active-layer-option', select);
 			option.value = field;		
 			option.innerHTML = field;
 
@@ -421,21 +421,21 @@ Wu.button = Wu.Class.extend({
 		// WITH PLACEHOLDER!!!
 
 		// // placeholder
-		// var option = Wu.DomUtil.create('option', '', select);
+		// var option = M.DomUtil.create('option', '', select);
 		// option.innerHTML = 'Select column...';
 		// option.setAttribute('disabled', '');
 		// option.setAttribute('selected', '');
 
 		// // fill select options
 		// array.forEach(function (field, i) {
-		// 	var option = Wu.DomUtil.create('option', 'active-layer-option', select);
+		// 	var option = M.DomUtil.create('option', 'active-layer-option', select);
 		// 	option.value = field;		
 		// 	option.innerHTML = field;
 		// 	if ( field == selected ) option.selected = true;
 		// });
 
 		// select event
-		Wu.DomEvent.on(select, 'change', fn); // todo: mem leak?
+		M.DomEvent.on(select, 'change', fn); // todo: mem leak?
 
 	},
 
@@ -461,7 +461,7 @@ Wu.button = Wu.Class.extend({
 		if ( className ) _class += className;
 
 		// create
-		var input = Wu.DomUtil.createId('input', 'field_input_' + key, appendTo);
+		var input = M.DomUtil.createId('input', 'field_input_' + key, appendTo);
 		input.className = _class;
 		input.setAttribute('placeholder', placeholder);
 		input.setAttribute('tabindex', tabindex);
@@ -474,16 +474,16 @@ Wu.button = Wu.Class.extend({
 		if (!value) input.value = placeholder;
 
 		// other options
-		if ( !right ) Wu.DomUtil.addClass(input, 'left-input');
-		if ( !isOn  ) Wu.DomUtil.addClass(input, 'left-input-kill');
+		if ( !right ) M.DomUtil.addClass(input, 'left-input');
+		if ( !isOn  ) M.DomUtil.addClass(input, 'left-input-kill');
 
 		// set event
-		// Wu.DomEvent.on(input, 'blur', fn);
+		// M.DomEvent.on(input, 'blur', fn);
 
 		// Force numeric
-		if ( !allowText ) input.onkeypress = Wu.Tools.forceNumeric;
+		if ( !allowText ) input.onkeypress = M.Tools.forceNumeric;
 
-		Wu.DomEvent.on(input, 'blur', this.blurInput, this);
+		M.DomEvent.on(input, 'blur', this.blurInput, this);
 
 		return input;	
 	},
@@ -515,7 +515,7 @@ Wu.button = Wu.Class.extend({
 		if ( className ) _class += className;
 
 		// create
-		var miniInput = Wu.DomUtil.createId('input', 'field_mini_input_' + key, appendTo);
+		var miniInput = M.DomUtil.createId('input', 'field_mini_input_' + key, appendTo);
 		miniInput.className = _class;
 		miniInput.setAttribute('placeholder', placeholder);
 		miniInput.setAttribute('tabindex', tabindex);
@@ -530,14 +530,14 @@ Wu.button = Wu.Class.extend({
 		// if (!value) miniInput.value = 1;		
 
 		// other options
-		if ( !right ) Wu.DomUtil.addClass(miniInput, 'left-mini');
-		if ( !isOn  ) Wu.DomUtil.addClass(miniInput, 'left-mini-kill');
+		if ( !right ) M.DomUtil.addClass(miniInput, 'left-mini');
+		if ( !isOn  ) M.DomUtil.addClass(miniInput, 'left-mini-kill');
 
 		// set event
-		Wu.DomEvent.on(miniInput, 'blur', fn);
+		M.DomEvent.on(miniInput, 'blur', fn);
 
 		// Force numeric
-		if ( !allowText ) miniInput.onkeypress = Wu.Tools.forceNumeric;		    
+		if ( !allowText ) miniInput.onkeypress = M.Tools.forceNumeric;		    
 
 	},
 
@@ -559,10 +559,10 @@ Wu.button = Wu.Class.extend({
 		if (this._cidx > 0) this._cidx = 1;
 
 		// create button
-		var button = this._button = Wu.DomUtil.create('div', 'clicker-button ' + className, appendTo, selected);
+		var button = this._button = M.DomUtil.create('div', 'clicker-button ' + className, appendTo, selected);
 
 		// click event, toggle array content
-		Wu.DomEvent.on(button, 'click', function (e) {
+		M.DomEvent.on(button, 'click', function (e) {
 
 			// set index
 			this._cidx = this._cidx + 1;
@@ -607,17 +607,17 @@ Wu.button = Wu.Class.extend({
 
 		if ( className ) _class += className;
 
-		var radio = Wu.DomUtil.create('div', _class, appendTo);
+		var radio = M.DomUtil.create('div', _class, appendTo);
 		radio.id = 'radio_' + key;
 
 		if ( on ) {
-			Wu.DomUtil.addClass(radio, 'radio-on');
+			M.DomUtil.addClass(radio, 'radio-on');
 			radio.setAttribute('state', 'true');
 		} else {
 			radio.setAttribute('state', 'false');
 		}
 
-		Wu.DomEvent.on(radio, 'click', this.toggleRadio, this);
+		M.DomEvent.on(radio, 'click', this.toggleRadio, this);
 
 		return radio;
 
@@ -630,10 +630,10 @@ Wu.button = Wu.Class.extend({
 		    on = elem.getAttribute('state');
 
 		if ( on == 'false' ) {
-			Wu.DomUtil.addClass(elem, 'radio-on');
+			M.DomUtil.addClass(elem, 'radio-on');
 			elem.setAttribute('state', 'true');
 		} else {
-			Wu.DomUtil.removeClass(elem, 'radio-on');
+			M.DomUtil.removeClass(elem, 'radio-on');
 			elem.setAttribute('state', 'false');
 		}
 
@@ -657,11 +657,11 @@ Wu.button = Wu.Class.extend({
 		if ( className ) _class += className;
 
 		// create
-		var set = Wu.DomUtil.create('div', _class, appendTo);
+		var set = M.DomUtil.create('div', _class, appendTo);
 		set.setAttribute('key', key);
 		set.innerHTML = 'SET';
 
-		Wu.DomEvent.on(set, 'click', this.toggleSet, this);
+		M.DomEvent.on(set, 'click', this.toggleSet, this);
 
 		return set;
 
@@ -694,20 +694,20 @@ Wu.button = Wu.Class.extend({
 		if ( className ) _class += className;
 
 		// create
-		var setClear = Wu.DomUtil.create('div', _class, appendTo);
+		var setClear = M.DomUtil.create('div', _class, appendTo);
 		setClear.setAttribute('key', key);
 		setClear.innerHTML = 'SET';
 
 		// if on, mark
 		if (isOn) {
-			Wu.DomUtil.addClass(setClear, 'setClear-on');
+			M.DomUtil.addClass(setClear, 'setClear-on');
 			setClear.setAttribute('state', 'true');
 			setClear.innerHTML = 'CLEAR';
 		} else {
 			setClear.setAttribute('state', 'false');
 		}
 
-		Wu.DomEvent.on(setClear, 'click', this.toggleSetClear, this);
+		M.DomEvent.on(setClear, 'click', this.toggleSetClear, this);
 
 		return setClear;
 
@@ -723,12 +723,12 @@ Wu.button = Wu.Class.extend({
 		var on 	  = (state == 'true');
 
 		if (on) {
-			Wu.DomUtil.removeClass(elem, 'setClear-on');
+			M.DomUtil.removeClass(elem, 'setClear-on');
 			elem.setAttribute('state', 'false');
 			elem.innerHTML = 'SET';
 			var isOn = false;
 		} else {
-			Wu.DomUtil.addClass(elem, 'setClear-on');
+			M.DomUtil.addClass(elem, 'setClear-on');
 			elem.setAttribute('state', 'true');
 			elem.innerHTML = 'CLEAR';
 			var isOn = true;
@@ -762,7 +762,7 @@ Wu.button = Wu.Class.extend({
 		if (className) divclass += ' ' + className;
 
 		// Create button
-		var _switch = this._switch = Wu.DomUtil.create('div', divclass, appendTo);
+		var _switch = this._switch = M.DomUtil.create('div', divclass, appendTo);
 		_switch.setAttribute('key', id);
 		_switch.id = 'switch_' + id;
 
@@ -774,7 +774,7 @@ Wu.button = Wu.Class.extend({
 		}
 
 		// Add hooks
-		if ( !disabled ) Wu.DomEvent.on(_switch, 'click', this.toggleSwitch, this);
+		if ( !disabled ) M.DomEvent.on(_switch, 'click', this.toggleSwitch, this);
 
 		return _switch;
 
@@ -790,12 +790,12 @@ Wu.button = Wu.Class.extend({
 
 		if (on) {
 			e.target.setAttribute('state', 'false');
-			Wu.DomUtil.removeClass(e.target, 'switch-on');
+			M.DomUtil.removeClass(e.target, 'switch-on');
 			var isOn = false;
 
 		} else {
 			e.target.setAttribute('state', 'true');
-			Wu.DomUtil.addClass(e.target, 'switch-on');
+			M.DomUtil.addClass(e.target, 'switch-on');
 			var isOn = true;
 		}	
 
@@ -824,12 +824,12 @@ Wu.button = Wu.Class.extend({
 		if (className) divclass += ' ' + className;
 
 		// Create button
-		var _toggleButton = this._toggleButton = Wu.DomUtil.create('div', divclass, appendTo);
+		var _toggleButton = this._toggleButton = M.DomUtil.create('div', divclass, appendTo);
 		_toggleButton.setAttribute('key', id);
 		_toggleButton.id = 'togglebutton_' + id;
 
-		var _option1 = Wu.DomUtil.create('div', 'toggle-button-option-one', _toggleButton, option1)
-		var _option2 = Wu.DomUtil.create('div', 'toggle-button-option-one', _toggleButton, option2)
+		var _option1 = M.DomUtil.create('div', 'toggle-button-option-one', _toggleButton, option1)
+		var _option2 = M.DomUtil.create('div', 'toggle-button-option-one', _toggleButton, option2)
 
 		
 
@@ -845,7 +845,7 @@ Wu.button = Wu.Class.extend({
 
 
 
-Wu.fieldLine = Wu.Class.extend({
+M.fieldLine = M.Class.extend({
 
 	initialize : function (options) {
 
@@ -866,12 +866,12 @@ Wu.fieldLine = Wu.Class.extend({
 		var childWrapper = options.childWrapper;
 		var cName = 'chrome-metafield-line ' + className;
 
-		this.container = Wu.DomUtil.create('div', cName, appendTo);
+		this.container = M.DomUtil.create('div', cName, appendTo);
 		this.container.id = 'field_wrapper_' + key;
 
 		// Children container
 		if ( childWrapper ) {
-			this.childWrapper = Wu.DomUtil.create('div', 'chrome-metafield-line-children', appendTo);
+			this.childWrapper = M.DomUtil.create('div', 'chrome-metafield-line-children', appendTo);
 			this.childWrapper.id = childWrapper;
 		}
 
@@ -879,7 +879,7 @@ Wu.fieldLine = Wu.Class.extend({
 		if ( input ) {
 			
 			// create
-			var fieldName = Wu.DomUtil.createId('input', 'field_input_' + key, this.container);
+			var fieldName = M.DomUtil.createId('input', 'field_input_' + key, this.container);
 			fieldName.className = 'chrome-field-input';
 			fieldName.setAttribute('name', 'field_input_' + key);
 			fieldName.setAttribute('placeholder', key);
@@ -888,13 +888,13 @@ Wu.fieldLine = Wu.Class.extend({
 			if (title) fieldName.value = title;
 
 			// set event
-			Wu.DomEvent.on(fieldName, 'blur', fn);
+			M.DomEvent.on(fieldName, 'blur', fn);
 		
 		
 		} else {
 
 			// Create "normal" text line
-			var fieldName = Wu.DomUtil.create('div', 'chrome-field-line', this.container);
+			var fieldName = M.DomUtil.create('div', 'chrome-field-line', this.container);
 			fieldName.innerHTML = title ? title : key;
 		}
 

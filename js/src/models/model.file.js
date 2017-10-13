@@ -1,4 +1,4 @@
-Wu.Model.File = Wu.Model.extend({
+M.Model.File = M.Model.extend({
 
     _ : 'file',
 
@@ -62,7 +62,7 @@ Wu.Model.File = Wu.Model.extend({
 
     getCreatedPretty : function () {
         var date_created = this.store.created;
-        return Wu.Util.prettyDate(date_created);
+        return M.Util.prettyDate(date_created);
     },
 
     getCategory : function () {
@@ -112,7 +112,7 @@ Wu.Model.File = Wu.Model.extend({
                 description : response.error.message
             });
 
-            Wu.Mixin.Events.fire('fileHasBeenAdded', { detail : {}});
+            M.Mixin.Events.fire('fileHasBeenAdded', { detail : {}});
         }.bind(this));
     },
 
@@ -143,7 +143,7 @@ Wu.Model.File = Wu.Model.extend({
 
     // // template can look like anything, since it's stored as JSON string, but should contain at least:
     // var template = {
-    //  uuid : Wu.Util.guid('style-template'), // "style-template-23424-asddsa-23223-asdasd"
+    //  uuid : M.Util.guid('style-template'), // "style-template-23424-asddsa-23223-asdasd"
     //  timestamp : Date.now(),
     //  carto : [object], // should be non-stringified json2carto object
     //  createdBy : app.Account.getUuid(), // uuid of user that created template
@@ -213,7 +213,7 @@ Wu.Model.File = Wu.Model.extend({
                 description : response.error
             });
 
-            Wu.Mixin.Events.fire('fileChanged', { detail : {
+            M.Mixin.Events.fire('fileChanged', { detail : {
                 fileUuid : options.uuid
             }});
         }); 
@@ -246,7 +246,7 @@ Wu.Model.File = Wu.Model.extend({
             var postgisOptions = this._getLayerData();
 
             app.api.deleteDataset({file_id : this.getUuid()}, function (err, response) {
-                var removedObjects = Wu.parse(response);
+                var removedObjects = M.parse(response);
 
                 // clean up locally
                 this._fileDeleted(removedObjects, layers);
@@ -270,7 +270,7 @@ Wu.Model.File = Wu.Model.extend({
         this._removeLayersLocally(layers);
 
         // fire event
-        Wu.Mixin.Events.fire('fileDeleted', {detail : {
+        M.Mixin.Events.fire('fileDeleted', {detail : {
             fileUuid : this.getUuid()
         }});
     },
@@ -290,7 +290,7 @@ Wu.Model.File = Wu.Model.extend({
         });
 
         // fire event
-        Wu.Mixin.Events.fire('layerDeleted', {detail : {
+        M.Mixin.Events.fire('layerDeleted', {detail : {
             fileUuid : 'lol'
         }});
     },
@@ -307,7 +307,7 @@ Wu.Model.File = Wu.Model.extend({
                 });
             }
 
-            var layers = Wu.parse(response);
+            var layers = M.parse(response);
             callback(err, layers);
         });
     },
@@ -357,7 +357,7 @@ Wu.Model.File = Wu.Model.extend({
         };
 
         // set download id for feedback
-        this._downloadingID = Wu.Util.createRandom(5);
+        this._downloadingID = M.Util.createRandom(5);
 
         // post download request to server
         app.api.downloadDataset(options, function (err, response) {
@@ -530,12 +530,12 @@ Wu.Model.File = Wu.Model.extend({
         });
 
         ops.push(function (datasetJSON, callback) {
-            var dataset = Wu.parse(datasetJSON);
+            var dataset = M.parse(datasetJSON);
             var check_status = setInterval(function () {
                 app.api.importStatus({
                     file_id : dataset.file_id
                 }, function (err, status_json) {
-                    var status = Wu.parse(status_json);
+                    var status = M.parse(status_json);
                     if (status.processing_success) {
                         clearInterval(check_status);
                         callback(null, status);
@@ -569,7 +569,7 @@ Wu.Model.File = Wu.Model.extend({
 
         ops.push(function (tileLayer, callback) {
 
-            var layer = Wu.parse(tileLayer);
+            var layer = M.parse(tileLayer);
             if (!layer) return callback('Error parsing layer: ' + tileLayer);
 
                 var layerModel = {
@@ -601,7 +601,7 @@ Wu.Model.File = Wu.Model.extend({
             });     
 
             // select project
-            Wu.Mixin.Events.fire('layerAdded', {detail : {
+            M.Mixin.Events.fire('layerAdded', {detail : {
                     projectUuid : project.getUuid(),
                     layerUuid : layer.getUuid()
             }});
@@ -695,7 +695,7 @@ Wu.Model.File = Wu.Model.extend({
         ops.push(function (layerJSON, callback) {
 
             // parse
-            var layer = Wu.parse(layerJSON);
+            var layer = M.parse(layerJSON);
             if (!layer) return callback('Error parsing layer.');
 
             var layerModelJSON = {
@@ -731,7 +731,7 @@ Wu.Model.File = Wu.Model.extend({
             }); 
 
             // fire layerAdded event
-            Wu.Mixin.Events.fire('layerAdded', {detail : {
+            M.Mixin.Events.fire('layerAdded', {detail : {
                 projectUuid : project.getUuid(),
                 layerUuid : layer.getUuid()
             }});
@@ -802,7 +802,7 @@ Wu.Model.File = Wu.Model.extend({
             if (err) return done(err);
 
             // parse 
-            var layer = Wu.parse(layerJSON);
+            var layer = M.parse(layerJSON);
 
             // catch error
             if (!layer || !layer.options) return done('failed to parse layer');
@@ -825,10 +825,10 @@ Wu.Model.File = Wu.Model.extend({
                 if (err) return done(err);
 
                 // parse
-                var layerModel = Wu.parse(body);
+                var layerModel = M.parse(body);
 
                 // create layer model
-                var layer = new Wu.createLayer(layerModel);
+                var layer = new M.createLayer(layerModel);
 
                 // callback
                 done && done(null, layer);
@@ -905,7 +905,7 @@ Wu.Model.File = Wu.Model.extend({
                 });
             }
 
-            var layer = Wu.parse(layerJSON);
+            var layer = M.parse(layerJSON);
             if (!layer || !layer.options) {
                 return app.feedback.setError({
                     title : 'Unexpected layerJSON',
@@ -940,7 +940,7 @@ Wu.Model.File = Wu.Model.extend({
                 }); 
 
                 // select project
-                Wu.Mixin.Events.fire('layerAdded', { detail : {
+                M.Mixin.Events.fire('layerAdded', { detail : {
                     projectUuid : project.getUuid(),
                     layerUuid : layerModel.uuid
                 }});
@@ -955,7 +955,7 @@ Wu.Model.File = Wu.Model.extend({
     _createLayerModel : function (options, done) {
         app.api.createLayer(options, function (err, body) {
             if (err) return done(err);
-            var layerModel = Wu.parse(body);
+            var layerModel = M.parse(body);
             done(null, layerModel);
         });
     },
@@ -976,14 +976,14 @@ Wu.Model.File = Wu.Model.extend({
     getPostgisMeta : function () {
         if (!this.store.data.postgis) return false;
         if (!this.store.data.postgis.metadata) return false;
-        var meta = Wu.parse(this.store.data.postgis.metadata);
+        var meta = M.parse(this.store.data.postgis.metadata);
         return meta;
     },
 
     getRasterMeta : function () {
         if (!this.store.data.raster) return false;
         if (!this.store.data.raster.metadata) return false;
-        var meta = Wu.parse(this.store.data.raster.metadata);
+        var meta = M.parse(this.store.data.raster.metadata);
         return meta;
     },
 
@@ -1025,7 +1025,7 @@ Wu.Model.File = Wu.Model.extend({
 
     getDatasizePretty : function () {
         var size = this.getDatasize();
-        var pretty = Wu.Util.bytesToSize(size);
+        var pretty = M.Util.bytesToSize(size);
         return pretty;
     },
 

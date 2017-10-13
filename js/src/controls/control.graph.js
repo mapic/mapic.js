@@ -1,3 +1,3 @@
-Wu.Graph = Wu.Evented.extend({
+M.Graph = M.Evented.extend({
 
 });

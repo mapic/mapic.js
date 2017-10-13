@@ -1,4 +1,4 @@
-L.Control.Draw = Wu.Control.extend({
+L.Control.Draw = M.Control.extend({
 
 	options: {
 		position: 'topleft'
@@ -135,20 +135,20 @@ L.Control.Draw = Wu.Control.extend({
 	},
 
 	_createPolygonButtons : function (container) {
-		var wrapper = Wu.DomUtil.create('div',  'leaflet-draw-button-wrapper polygon');
-		this._polygonButton = Wu.DomUtil.create('div',  'leaflet-draw-button polygon', wrapper, 'Draw Polygon');
-		this._polygonSave = Wu.DomUtil.create('div',  'leaflet-draw-button-save polygon', wrapper, 'Save');
-		this._polygonCancel = Wu.DomUtil.create('div',  'leaflet-draw-button-cancel polygon', wrapper, 'Cancel');
-		this._polygonUndo = Wu.DomUtil.create('div',  'leaflet-draw-button-undo polygon', wrapper, 'Undo');
+		var wrapper = M.DomUtil.create('div',  'leaflet-draw-button-wrapper polygon');
+		this._polygonButton = M.DomUtil.create('div',  'leaflet-draw-button polygon', wrapper, 'Draw Polygon');
+		this._polygonSave = M.DomUtil.create('div',  'leaflet-draw-button-save polygon', wrapper, 'Save');
+		this._polygonCancel = M.DomUtil.create('div',  'leaflet-draw-button-cancel polygon', wrapper, 'Cancel');
+		this._polygonUndo = M.DomUtil.create('div',  'leaflet-draw-button-undo polygon', wrapper, 'Undo');
 		return wrapper;
 	},
 
 	_createPolylineButtons : function () {
-		var wrapper = Wu.DomUtil.create('div',  'leaflet-draw-button-wrapper polyline');
-		this._polylineButton = Wu.DomUtil.create('div', 'leaflet-draw-button polyline', wrapper, 'Draw Line');
-		this._polylineSave = Wu.DomUtil.create('div', 'leaflet-draw-button-save polyline', wrapper, 'Save');
-		this._polylineCancel = Wu.DomUtil.create('div', 'leaflet-draw-button-cancel polyline', wrapper, 'Cancel');
-		this._polylineUndo = Wu.DomUtil.create('div',  'leaflet-draw-button-undo polyline', wrapper, 'Undo');
+		var wrapper = M.DomUtil.create('div',  'leaflet-draw-button-wrapper polyline');
+		this._polylineButton = M.DomUtil.create('div', 'leaflet-draw-button polyline', wrapper, 'Draw Line');
+		this._polylineSave = M.DomUtil.create('div', 'leaflet-draw-button-save polyline', wrapper, 'Save');
+		this._polylineCancel = M.DomUtil.create('div', 'leaflet-draw-button-cancel polyline', wrapper, 'Cancel');
+		this._polylineUndo = M.DomUtil.create('div',  'leaflet-draw-button-undo polyline', wrapper, 'Undo');
 		return wrapper;
 	},
 
@@ -246,7 +246,7 @@ L.Control.Draw = Wu.Control.extend({
 		// create layer from geojson,
 		// add to layermenu, project, data library, sidepanes
 		// 
-		var geojsonLayer = new Wu.GeoJSONLayer(geojson);
+		var geojsonLayer = new M.GeoJSONLayer(geojson);
 		// console.log('gg', geojsonLayer);
 
 		// add to map

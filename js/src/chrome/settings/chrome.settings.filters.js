@@ -1,4 +1,4 @@
-Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
+M.Chrome.SettingsContent.Filters = M.Chrome.SettingsContent.extend({
 
 	options : {
 		num_buckets : 50
@@ -16,29 +16,29 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 	_initContainer : function () {
 
 		// create container
-		this._container = Wu.DomUtil.create('div', 'chrome chrome-content chrome-pane filters', this.options.appendTo);
+		this._container = M.DomUtil.create('div', 'chrome chrome-content chrome-pane filters', this.options.appendTo);
 	},
 
 	_initLayout : function () {
 
 		// Scroller
-		this._midSection = Wu.DomUtil.create('div', 'chrome-middle-section', this._container);
-		this._midOuterScroller = Wu.DomUtil.create('div', 'chrome-middle-section-outer-scroller', this._midSection);
-		this._midInnerScroller = Wu.DomUtil.create('div', 'chrome-middle-section-inner-scroller', this._midOuterScroller);
+		this._midSection = M.DomUtil.create('div', 'chrome-middle-section', this._container);
+		this._midOuterScroller = M.DomUtil.create('div', 'chrome-middle-section-outer-scroller', this._midSection);
+		this._midInnerScroller = M.DomUtil.create('div', 'chrome-middle-section-inner-scroller', this._midOuterScroller);
 
 		// active layer
 		this.layerSelector = this._initLayout_activeLayers('Datasets', 'Select a dataset to filter...', this._midInnerScroller);
 
 		// create fixed bottom container
-		this._bottomContainer = Wu.DomUtil.create('div', 'sql-bottom-container', this._container);
+		this._bottomContainer = M.DomUtil.create('div', 'sql-bottom-container', this._container);
 
 		// titles
-		this._sqltitle = Wu.DomUtil.create('div', 'chrome chrome-content sql title', this._bottomContainer, 'SQL');
-		this._sqlSave = Wu.DomUtil.create('div', 'sql-save', this._bottomContainer, 'Save');
+		this._sqltitle = M.DomUtil.create('div', 'chrome chrome-content sql title', this._bottomContainer, 'SQL');
+		this._sqlSave = M.DomUtil.create('div', 'sql-save', this._bottomContainer, 'Save');
 
 		// CodeMirror
-		this._codeWrapOuter = Wu.DomUtil.create('div', 'chrome-content sql-wrapper-outer', this._bottomContainer);
-		this._codewrap = Wu.DomUtil.create('input', 'chrome chrome-content cartocss code-wrapper', this._codeWrapOuter);
+		this._codeWrapOuter = M.DomUtil.create('div', 'chrome-content sql-wrapper-outer', this._bottomContainer);
+		this._codewrap = M.DomUtil.create('input', 'chrome chrome-content cartocss code-wrapper', this._codeWrapOuter);
 
 		// sql editor
 		this._createSqlEditor();
@@ -58,22 +58,22 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 	},
 
 	initHooks : function () {
-		Wu.DomEvent.on(this._sqlSave, 'click', this._updateStyle, this);
-		Wu.DomEvent.on(this._sqltitle, 'click', this.toggleSql, this);
+		M.DomEvent.on(this._sqlSave, 'click', this._updateStyle, this);
+		M.DomEvent.on(this._sqltitle, 'click', this.toggleSql, this);
 	},
 
 	toggleSql : function () {
 		if (this.sqlOpen) {
-			Wu.DomUtil.removeClass(this._codeWrapOuter, 'active');
-			Wu.DomUtil.removeClass(this._sqlSave, 'active');
-			Wu.DomUtil.removeClass(this._bottomContainer, 'active');
-			Wu.DomUtil.addClass(this._midSection, 'no-sql');
+			M.DomUtil.removeClass(this._codeWrapOuter, 'active');
+			M.DomUtil.removeClass(this._sqlSave, 'active');
+			M.DomUtil.removeClass(this._bottomContainer, 'active');
+			M.DomUtil.addClass(this._midSection, 'no-sql');
 			this.sqlOpen = false;
 		} else {
-			Wu.DomUtil.addClass(this._codeWrapOuter, 'active');
-			Wu.DomUtil.addClass(this._sqlSave, 'active');
-			Wu.DomUtil.addClass(this._bottomContainer, 'active');
-			Wu.DomUtil.removeClass(this._midSection, 'no-sql');
+			M.DomUtil.addClass(this._codeWrapOuter, 'active');
+			M.DomUtil.addClass(this._sqlSave, 'active');
+			M.DomUtil.addClass(this._bottomContainer, 'active');
+			M.DomUtil.removeClass(this._midSection, 'no-sql');
 			this.sqlOpen = true;			
 		}
 	},
@@ -201,7 +201,7 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 				});
 			}
 			// new layer
-			var newLayerStyle = Wu.parse(newLayerJSON);
+			var newLayerStyle = M.parse(newLayerJSON);
 
 			// catch errors
 			if (newLayerStyle.error) {
@@ -256,7 +256,7 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 		this._bottomContainer.style.opacity = 1;
 
 		// Pad up scroller
-		Wu.DomUtil.addClass(this._midSection, 'middle-section-padding-bottom');
+		M.DomUtil.addClass(this._midSection, 'middle-section-padding-bottom');
 	},
 
 	opened : function () {
@@ -319,7 +319,7 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 		this._container.style.display = 'block';
 
 		// mark button
-		Wu.DomUtil.addClass(this.options.trigger, 'active-tab');
+		M.DomUtil.addClass(this.options.trigger, 'active-tab');
 
 		// Enable settings from layer we're working with
 		var layerUuid = this._getActiveLayerUuid();
@@ -360,7 +360,7 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 
 		if (!this._layer.getPostGISData) return false;
 	
-		var meta = Wu.parse(this._layer.getPostGISData().metadata);
+		var meta = M.parse(this._layer.getPostGISData().metadata);
 		var columns = meta.columns;
 		var keys = Object.keys(columns);
 
@@ -371,7 +371,7 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 
 		// remove already existing dropdown
 		if (this._filterDropdown) {
-			Wu.DomUtil.remove(this._filterDropdown);
+			M.DomUtil.remove(this._filterDropdown);
 		}
 
 		// set titles
@@ -379,16 +379,16 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 		var subtitle = 'Select a column to filter by...';
 
 		// active layer wrapper
-		var wrap = this._filterDropdown = Wu.DomUtil.create('div', 'chrome chrome-content styler-content active-layer wrapper');
+		var wrap = this._filterDropdown = M.DomUtil.create('div', 'chrome chrome-content styler-content active-layer wrapper');
 
 		// insert on top of container
 		this._midInnerScroller.insertBefore(wrap, this._midInnerScroller.children[1]);
 
 		// title
-		var titleDiv = Wu.DomUtil.create('div', 'chrome chrome-content active-layer title', wrap, title);
+		var titleDiv = M.DomUtil.create('div', 'chrome chrome-content active-layer title', wrap, title);
 		
 		// create dropdown
-		var selectWrap = Wu.DomUtil.create('div', 'chrome chrome-content active-layer', wrap);
+		var selectWrap = M.DomUtil.create('div', 'chrome chrome-content active-layer', wrap);
 
 		// get layers
 		var columns = this._getSortedColumns();
@@ -409,7 +409,7 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 			}
 		});
 
-		this._layerFiltersDropDown = new Wu.Dropdown({
+		this._layerFiltersDropDown = new M.Dropdown({
 			fn: this._selectedFilterColumn.bind(this),
 			appendTo: selectWrap,
 			content: sortedLayers,
@@ -436,7 +436,7 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 		if (!this._layer) return;
 		if (!this._layer.isVector()) return this._selectNone();
 		
-		var filter = Wu.parse(this._layer.getFilter());
+		var filter = M.parse(this._layer.getFilter());
 
 		if (!filter.length) return; 
 
@@ -487,11 +487,11 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 	_createHistogram : function (column) {
 
 		// create div
-		this._filterDiv = Wu.DomUtil.createId('div', 'chrome-content-filter-chart');
+		this._filterDiv = M.DomUtil.createId('div', 'chrome-content-filter-chart');
 		this._midInnerScroller.insertBefore(this._filterDiv, this._filterDropdown.nextSibling);
 
 		// create filter label div
-		this._filterLabel = Wu.DomUtil.create('div', 'chrome-content-filter-label', this._filterDiv);
+		this._filterLabel = M.DomUtil.create('div', 'chrome-content-filter-label', this._filterDiv);
 
 		// Create null historgram
 		var histogram = this.nullHistogram();
@@ -515,9 +515,9 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 			// Create null historgram
 			if (!histogram) {
 				histogram = this.nullHistogram();
-				Wu.DomUtil.addClass(this._filterDiv, 'null-histogram');
+				M.DomUtil.addClass(this._filterDiv, 'null-histogram');
 			} else {
-				Wu.DomUtil.removeClass(this._filterDiv, 'null-histogram');
+				M.DomUtil.removeClass(this._filterDiv, 'null-histogram');
 			}
 
 			// Update chart
@@ -603,16 +603,16 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 
 	_onBrushMousedown : function (e) {
 		// add full screen mouseup/mouseout catcher
-		this._brushCatcher = Wu.DomUtil.create('div', 'brush-catcher', app._appPane);
-		Wu.DomEvent.on(this._brushCatcher, 'mouseup', this._onBrushMouseup, this);
-		Wu.DomEvent.on(this._brushCatcher, 'mouseout', this._onBrushMouseup, this);
+		this._brushCatcher = M.DomUtil.create('div', 'brush-catcher', app._appPane);
+		M.DomEvent.on(this._brushCatcher, 'mouseup', this._onBrushMouseup, this);
+		M.DomEvent.on(this._brushCatcher, 'mouseout', this._onBrushMouseup, this);
 	},
 
 	_onBrushMouseup : function (e) {
 		// remove catcher
-		Wu.DomEvent.off(this._brushCatcher, 'mouseup', this._onBrushMouseup, this);
-		Wu.DomEvent.off(this._brushCatcher, 'mouseout', this._onBrushMouseup, this);
-		Wu.DomUtil.remove(this._brushCatcher);
+		M.DomEvent.off(this._brushCatcher, 'mouseup', this._onBrushMouseup, this);
+		M.DomEvent.off(this._brushCatcher, 'mouseout', this._onBrushMouseup, this);
+		M.DomUtil.remove(this._brushCatcher);
 
 		// timeout hack, due to d3 race conditions on brush events
 		setTimeout(this._applyFilter.bind(this), 500);
@@ -622,7 +622,7 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 		var filter = this._layer.getFilter();
 		if (!filter) return;
 
-		var f = Wu.parse(filter);
+		var f = M.parse(filter);
 
 		// find column
 		var c = _.find(f, function (col) {
@@ -855,7 +855,7 @@ Wu.Chrome.SettingsContent.Filters = Wu.Chrome.SettingsContent.extend({
 				});
 			}
 			// parse
-			var histogramData = Wu.parse(histogramJSON);
+			var histogramData = M.parse(histogramJSON);
 
 			// return
 			done && done(null, histogramData);

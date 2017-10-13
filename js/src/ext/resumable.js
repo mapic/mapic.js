@@ -1,4 +1,4 @@
-Wu.Resumable = Wu.Class.extend({
+M.Resumable = M.Class.extend({
 
 	options : {
 		target : '/v2/data/import/chunked',
@@ -12,7 +12,7 @@ Wu.Resumable = Wu.Class.extend({
 	initialize : function (options) {
 		
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// options fn's
 		this.options.generateUniqueIdentifier = this._generateUniqueIdentifier;
@@ -75,7 +75,7 @@ Wu.Resumable = Wu.Class.extend({
 		r.on('fileAdded', function(file){
 
 			// fire layer edited
-			Wu.Mixin.Events.fire('fileProcessing', {detail : {
+			M.Mixin.Events.fire('fileProcessing', {detail : {
 				file: file
 			}});
 
@@ -97,7 +97,7 @@ Wu.Resumable = Wu.Class.extend({
 
 		// file success
 		r.on('fileSuccess', function(file, message){
-			var data = Wu.parse(message);
+			var data = M.parse(message);
 			var file_id = data.file_id;
 
 			// hide progess bar
@@ -118,7 +118,7 @@ Wu.Resumable = Wu.Class.extend({
 			app.ProgressBar.setProgress(progress);
 
 			// set processing progress
-			Wu.Mixin.Events.fire('processingProgress', {
+			M.Mixin.Events.fire('processingProgress', {
 				detail : {
 					text : 'Uploading...',
 					error : null,
@@ -154,7 +154,7 @@ Wu.Resumable = Wu.Class.extend({
 		// get upload status
 		this.getUploadStatus(file_id, function (status) {
 
-			var us = Wu.parse(status);
+			var us = M.parse(status);
 
 			// success
 			if (us.processing_success && us.upload_success) {
@@ -167,7 +167,7 @@ Wu.Resumable = Wu.Class.extend({
 				console.error('us.error', us.error);
 
 				// file error
-				Wu.Mixin.Events.fire('processingError', {
+				M.Mixin.Events.fire('processingError', {
 					detail : {
 						uniqueIdentifier : us.uniqueIdentifier,
 						description : us.error_text
@@ -192,7 +192,7 @@ Wu.Resumable = Wu.Class.extend({
 
 	getUploadStatus : function (file_id, callback) {
 		var url = 'api/import/status?file_id=' + file_id + '&access_token=' + app.tokens.access_token;
-		Wu.getJSON(url, callback);
+		M.getJSON(url, callback);
 	},
 
 	_removeEvents : function () {
@@ -223,12 +223,12 @@ Wu.Resumable = Wu.Class.extend({
 	feedbackUploadStarted : function (file) {
 
 		// calc sizes for feedback message
-		var size = Wu.Util.bytesToSize(file.size),
+		var size = M.Util.bytesToSize(file.size),
 		    fileName = file.fileName,
 		    message = 'File: ' + fileName + '<br>Size: ' + size;
 		
 		// set processing progress
-		Wu.Mixin.Events.fire('processingProgress', {
+		M.Mixin.Events.fire('processingProgress', {
 			detail : {
 				text : 'Uploading...',
 				error : null,
@@ -242,7 +242,7 @@ Wu.Resumable = Wu.Class.extend({
 	feedbackUploadSuccess : function (file, message) {
 
 		// get file_id
-		var m 		= Wu.parse(message),
+		var m 		= M.parse(message),
 		    r 		= this.r,
 		    file_id 	= m.file_id,
 		    endTime 	= new Date().getTime(),
@@ -257,7 +257,7 @@ Wu.Resumable = Wu.Class.extend({
 		var message = 'Estimated time: ' + procTime;
 
 		// set processing progress
-		Wu.Mixin.Events.fire('processingProgress', {
+		M.Mixin.Events.fire('processingProgress', {
 			detail : {
 				text : 'Uploaded!',
 				error : null,
@@ -270,7 +270,7 @@ Wu.Resumable = Wu.Class.extend({
 
 	// get/set id
 	_set_id : function () {
-		this._id = Wu.Util.getRandomChars(5);
+		this._id = M.Util.getRandomChars(5);
 	},
 	_get_id : function () {
 		return this._id;
@@ -283,7 +283,7 @@ Wu.Resumable = Wu.Class.extend({
 	},
 	_generateQuery : function () {
 		var query = {
-			fileUuid : Wu.Util.guid('r'),
+			fileUuid : M.Util.guid('r'),
 			access_token : app.tokens.access_token
 		};
 		return query;

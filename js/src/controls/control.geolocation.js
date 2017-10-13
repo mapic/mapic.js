@@ -1,6 +1,6 @@
 (function() {
 
-L.Control.Geolocation = Wu.Control.extend({
+L.Control.Geolocation = M.Control.extend({
 
 	type : 'geolocation',
 

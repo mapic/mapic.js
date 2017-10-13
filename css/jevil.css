@@ -2788,3 +2788,17 @@ input.stop-color {
     top: 13px;
     position: relative;    
 }
+
+
+
+
+
+
+
+
+.leaflet-popup-content-wrapper {
+    border: 2px solid #3d485a;
+    -webkit-box-shadow: 15px 10px 74px -31px rgba(0,0,0,0.75);
+    -moz-box-shadow: 15px 10px 74px -31px rgba(0,0,0,0.75);
+    box-shadow: 15px 10px 74px -31px rgba(0,0,0,0.75);
+}

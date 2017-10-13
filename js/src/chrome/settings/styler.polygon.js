@@ -1,4 +1,4 @@
-Wu.Styler.Polygon = Wu.Styler.extend({
+M.Styler.Polygon = M.Styler.extend({
 
 	type : 'polygon',
 
@@ -42,11 +42,11 @@ Wu.Styler.Polygon = Wu.Styler.extend({
 		var targets 		= content.targets.wrapper;
 
 		// remove divs
-		color_wrapper && Wu.DomUtil.remove(color_wrapper);
-		color_children && Wu.DomUtil.remove(color_children);
-		opacity_wrapper && Wu.DomUtil.remove(opacity_wrapper);
-		opacity_children && Wu.DomUtil.remove(opacity_children);
-		targets && 		Wu.DomUtil.remove(targets);
+		color_wrapper && M.DomUtil.remove(color_wrapper);
+		color_children && M.DomUtil.remove(color_children);
+		opacity_wrapper && M.DomUtil.remove(opacity_wrapper);
+		opacity_children && M.DomUtil.remove(opacity_children);
+		targets && 		M.DomUtil.remove(targets);
 	},
 
 
@@ -67,21 +67,21 @@ Wu.Styler.Polygon = Wu.Styler.extend({
 		var wrapper = this._content[this.type].targets.wrapper;
 
 		// create target wrapper
-		var target_wrapper = Wu.DomUtil.create('div', 'target-wrapper', wrapper);
+		var target_wrapper = M.DomUtil.create('div', 'target-wrapper', wrapper);
 
 
 		// (-) button
-		var rembtn_wrapper = Wu.DomUtil.create('div', 'target-remove', target_wrapper);
+		var rembtn_wrapper = M.DomUtil.create('div', 'target-remove', target_wrapper);
 		rembtn_wrapper.innerHTML = '<i class="fa fa-minus-circle"></i>';
 		
 		// event
-		Wu.DomEvent.on(rembtn_wrapper, 'click', this._removeTarget, this);	
+		M.DomEvent.on(rembtn_wrapper, 'click', this._removeTarget, this);	
 
 		
 		// column dropdown
-		var column_wrapper = Wu.DomUtil.create('div', 'target-column-wrapper', target_wrapper);
-		var column_title = Wu.DomUtil.create('div', 'target-column-title', column_wrapper, 'Column');
-		var column_dropdown = new Wu.button({
+		var column_wrapper = M.DomUtil.create('div', 'target-column-wrapper', target_wrapper);
+		var column_title = M.DomUtil.create('div', 'target-column-title', column_wrapper, 'Column');
+		var column_dropdown = new M.button({
 			id 	 : 'target',
 			type 	 : 'dropdown',
 			isOn 	 : true,
@@ -95,8 +95,8 @@ Wu.Styler.Polygon = Wu.Styler.extend({
 
 
 		// < = > input
-		var operator_wrapper = Wu.DomUtil.create('div', 'target-column-wrapper', target_wrapper);
-		var operator_dropdown = new Wu.button({
+		var operator_wrapper = M.DomUtil.create('div', 'target-column-wrapper', target_wrapper);
+		var operator_dropdown = new M.button({
 			id 	 : 'equals_selection',
 			type 	 : 'clicker',
 			appendTo : operator_wrapper,
@@ -108,20 +108,20 @@ Wu.Styler.Polygon = Wu.Styler.extend({
 
 		
 		// value input
-		var input_wrapper = Wu.DomUtil.create('div', 'target-input-wrapper', target_wrapper);
-		var input_title = Wu.DomUtil.create('div', 'target-input-title', input_wrapper, 'Value');
-		var column_input = Wu.DomUtil.create('input', 'target-input polygon', input_wrapper);
+		var input_wrapper = M.DomUtil.create('div', 'target-input-wrapper', target_wrapper);
+		var input_title = M.DomUtil.create('div', 'target-input-title', input_wrapper, 'Value');
+		var column_input = M.DomUtil.create('input', 'target-input polygon', input_wrapper);
 		column_input.value = options.value;
 
 		// blur event
-		Wu.DomEvent.on(column_input, 'blur', this._targetValueSelected, this);
+		M.DomEvent.on(column_input, 'blur', this._targetValueSelected, this);
 
 
 
 		// color ball
-		var color_wrapper = Wu.DomUtil.create('div', 'target-color-wrapper', target_wrapper);
-		var input_title = Wu.DomUtil.create('div', 'target-input-title', color_wrapper, 'Color');
-		var ball = new Wu.button({
+		var color_wrapper = M.DomUtil.create('div', 'target-color-wrapper', target_wrapper);
+		var input_title = M.DomUtil.create('div', 'target-input-title', color_wrapper, 'Color');
+		var ball = new M.button({
 			id 	 : 'target-color',
 			type 	 : 'colorball',
 			right    : true,
@@ -136,13 +136,13 @@ Wu.Styler.Polygon = Wu.Styler.extend({
 
 
 		// opacity input
-		var opacity_wrapper = Wu.DomUtil.create('div', 'target-opacity-wrapper', target_wrapper);
-		var opacity_title = Wu.DomUtil.create('div', 'target-input-title-opacity', opacity_wrapper, 'Opacity');
-		var opacity_input = Wu.DomUtil.create('input', 'target-input opacity', opacity_wrapper);
+		var opacity_wrapper = M.DomUtil.create('div', 'target-opacity-wrapper', target_wrapper);
+		var opacity_title = M.DomUtil.create('div', 'target-input-title-opacity', opacity_wrapper, 'Opacity');
+		var opacity_input = M.DomUtil.create('input', 'target-input opacity', opacity_wrapper);
 		opacity_input.value = options.opacity;
 
 		// blur event
-		Wu.DomEvent.on(opacity_input, 'blur', this._targetOpacitySelected, this);
+		M.DomEvent.on(opacity_input, 'blur', this._targetOpacitySelected, this);
 
 
 

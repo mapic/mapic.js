@@ -1,4 +1,4 @@
-Wu.DebugPane = Wu.Class.extend({
+M.DebugPane = M.Class.extend({
 
 
 	initialize : function () {

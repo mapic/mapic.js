@@ -7,7 +7,7 @@
 // - currently, CUBE layer is updated on `set`
 //   and GRAPH is updated on `update` 
 
-Wu.Graph.Animator = Wu.Evented.extend({
+M.Graph.Animator = M.Evented.extend({
 
     options : {
 
@@ -52,11 +52,11 @@ Wu.Graph.Animator = Wu.Evented.extend({
         var onoff = onoff || 'on';
 
         // dom events
-        Wu.DomEvent[onoff](this._fastBackBtn,       'click', this._moveFastBack, this);
-        Wu.DomEvent[onoff](this._backBtn,           'click', this._moveBack, this);
-        Wu.DomEvent[onoff](this._fastForwardBtn,    'click', this._moveFastForward, this);
-        Wu.DomEvent[onoff](this._forwardBtn,        'click', this._moveForward, this);
-        Wu.DomEvent[onoff](this._playBtn,           'click', this.play, this);
+        M.DomEvent[onoff](this._fastBackBtn,       'click', this._moveFastBack, this);
+        M.DomEvent[onoff](this._backBtn,           'click', this._moveBack, this);
+        M.DomEvent[onoff](this._fastForwardBtn,    'click', this._moveFastForward, this);
+        M.DomEvent[onoff](this._forwardBtn,        'click', this._moveForward, this);
+        M.DomEvent[onoff](this._playBtn,           'click', this.play, this);
 
         // slider events
         this.slider[onoff]('update', this._sliderUpdateEvent.bind(this));
@@ -64,16 +64,16 @@ Wu.Graph.Animator = Wu.Evented.extend({
         this.slider[onoff]('slide', this._onSlide.bind(this));
 
         // listen for events
-        Wu.Mixin.Events[onoff]('setSlider', this.setSlider, this);
-        Wu.Mixin.Events[onoff]('updateSliderButtons', this.updateButtons, this);
-        Wu.Mixin.Events[onoff]('setSliderRange', this._onSetSliderRange, this);
-        Wu.Mixin.Events[onoff]('unsetSliderRange', this._onUnsetSliderRange, this);
-        Wu.Mixin.Events[onoff]('shadeButtons', this._onShadeButtons, this);
-        Wu.Mixin.Events[onoff]('unshadeButtons', this._onUnshadeButtons, this);
-        Wu.Mixin.Events[onoff]('cubeCacheNoLayer', this._onCubeCacheNoLayer, this);
+        M.Mixin.Events[onoff]('setSlider', this.setSlider, this);
+        M.Mixin.Events[onoff]('updateSliderButtons', this.updateButtons, this);
+        M.Mixin.Events[onoff]('setSliderRange', this._onSetSliderRange, this);
+        M.Mixin.Events[onoff]('unsetSliderRange', this._onUnsetSliderRange, this);
+        M.Mixin.Events[onoff]('shadeButtons', this._onShadeButtons, this);
+        M.Mixin.Events[onoff]('unshadeButtons', this._onUnshadeButtons, this);
+        M.Mixin.Events[onoff]('cubeCacheNoLayer', this._onCubeCacheNoLayer, this);
         
-        // Wu.Mixin.Events[onoff]('hideAnimator', this._onHideAnimator, this);
-        // Wu.Mixin.Events[onoff]('showAnimator', this._onShowAnimator, this);
+        // M.Mixin.Events[onoff]('hideAnimator', this._onHideAnimator, this);
+        // M.Mixin.Events[onoff]('showAnimator', this._onShowAnimator, this);
 
         this._layer.on('enabled', this._layerEnabled.bind(this));
         this._layer.on('disabled', this._layerDisabled.bind(this));
@@ -91,7 +91,7 @@ Wu.Graph.Animator = Wu.Evented.extend({
         this.options.fps = fps;
 
         // propagate
-        Wu.Mixin.Events.fire('setFPS', {detail : {
+        M.Mixin.Events.fire('setFPS', {detail : {
             fps : fps
         }});
     },  
@@ -99,18 +99,18 @@ Wu.Graph.Animator = Wu.Evented.extend({
     _createSlider : function () {
 
         // create divs
-        this.sliderOuterContainer       = Wu.DomUtil.create('div', 'big-slider-outer-container', app._appPane);
-        this.sliderInnerContainer        = Wu.DomUtil.create('div', 'big-slider-inner-container', this.sliderOuterContainer);
-        var slider                      = Wu.DomUtil.create('div', 'big-slider', this.sliderInnerContainer);
-        this.sliderButtonsContainer     = Wu.DomUtil.create('div', 'big-slider-button-container', this.sliderInnerContainer);
-        this.tickContainer              = Wu.DomUtil.create('div', 'big-slider-tick-container', this.sliderInnerContainer);
+        this.sliderOuterContainer       = M.DomUtil.create('div', 'big-slider-outer-container', app._appPane);
+        this.sliderInnerContainer        = M.DomUtil.create('div', 'big-slider-inner-container', this.sliderOuterContainer);
+        var slider                      = M.DomUtil.create('div', 'big-slider', this.sliderInnerContainer);
+        this.sliderButtonsContainer     = M.DomUtil.create('div', 'big-slider-button-container', this.sliderInnerContainer);
+        this.tickContainer              = M.DomUtil.create('div', 'big-slider-tick-container', this.sliderInnerContainer);
 
         // animator buttons
-        this._fastBackBtn               = Wu.DomUtil.create('div', 'big-slider-step-backward', this.sliderButtonsContainer, '<i class="fa fa-fast-backward"></i>');
-        this._backBtn                   = Wu.DomUtil.create('div', 'big-slider-tap-backward', this.sliderButtonsContainer, '<i class="fa fa-step-backward"></i>');
-        this._forwardBtn                = Wu.DomUtil.create('div', 'big-slider-tap-forward', this.sliderButtonsContainer, '<i class="fa fa-step-forward"></i>');
-        this._fastForwardBtn            = Wu.DomUtil.create('div', 'big-slider-step-forward', this.sliderButtonsContainer, '<i class="fa fa-fast-forward"></i>');
-        this._playBtn                   = Wu.DomUtil.create('div', 'big-slider-play-button', this.sliderButtonsContainer, '<i class="fa fa-play"></i>');        
+        this._fastBackBtn               = M.DomUtil.create('div', 'big-slider-step-backward', this.sliderButtonsContainer, '<i class="fa fa-fast-backward"></i>');
+        this._backBtn                   = M.DomUtil.create('div', 'big-slider-tap-backward', this.sliderButtonsContainer, '<i class="fa fa-step-backward"></i>');
+        this._forwardBtn                = M.DomUtil.create('div', 'big-slider-tap-forward', this.sliderButtonsContainer, '<i class="fa fa-step-forward"></i>');
+        this._fastForwardBtn            = M.DomUtil.create('div', 'big-slider-step-forward', this.sliderButtonsContainer, '<i class="fa fa-fast-forward"></i>');
+        this._playBtn                   = M.DomUtil.create('div', 'big-slider-play-button', this.sliderButtonsContainer, '<i class="fa fa-play"></i>');        
 
         // Set number of slider steps
         // var dataLength = (_.size(this._data) > this.options.maxLength) ? this.options.maxLength : _.size(this._data);
@@ -138,15 +138,15 @@ Wu.Graph.Animator = Wu.Evented.extend({
     },
 
     addExtraPane : function () {
-        Wu.DomUtil.addClass(this.sliderInnerContainer, 'bottom-right-border-radius-only');
+        M.DomUtil.addClass(this.sliderInnerContainer, 'bottom-right-border-radius-only');
     },
     removeExtraPane : function () {
-        Wu.DomUtil.removeClass(this.sliderInnerContainer, 'bottom-right-border-radius-only');
+        M.DomUtil.removeClass(this.sliderInnerContainer, 'bottom-right-border-radius-only');
     },
 
     remove : function () {
         // this._addHooks('off');
-        // Wu.DomUtil.remove(this.sliderOuterContainer);
+        // M.DomUtil.remove(this.sliderOuterContainer);
     },  
 
     _onCubeCacheNoLayer : function (e) {
@@ -195,7 +195,7 @@ Wu.Graph.Animator = Wu.Evented.extend({
         this._forwardBtn.style.color = 'rgb(81, 92, 111)';
 
         // remove event
-        Wu.DomEvent.off(this._forwardBtn,  'click', this._moveForward, this);
+        M.DomEvent.off(this._forwardBtn,  'click', this._moveForward, this);
 
         // shade slider handle
         this._getSliderHandle().style.background = 'rgb(82, 93, 111)';
@@ -208,7 +208,7 @@ Wu.Graph.Animator = Wu.Evented.extend({
         this._forwardBtn.style.color = '#FCFCFC';
 
         // reactivate event
-        Wu.DomEvent.on(this._forwardBtn,  'click', this._moveForward, this);
+        M.DomEvent.on(this._forwardBtn,  'click', this._moveForward, this);
 
         // shade slider handle
         this._getSliderHandle().style.background = '#ECEDEF';
@@ -274,7 +274,7 @@ Wu.Graph.Animator = Wu.Evented.extend({
         setTimeout(function () {
 
             // fire slider set event
-            Wu.Mixin.Events.fire('sliderSet', { detail : {
+            M.Mixin.Events.fire('sliderSet', { detail : {
                 value : this._sliderValue,
                 timestamp : timestamp
             }});
@@ -336,15 +336,15 @@ Wu.Graph.Animator = Wu.Evented.extend({
         var disableBackward = e.detail.diableBackward
 
         if (disableForward) { 
-            Wu.DomUtil.addClass(this._fastForwardBtn, 'disable-button');
+            M.DomUtil.addClass(this._fastForwardBtn, 'disable-button');
         } else { 
-            Wu.DomUtil.removeClass(this._fastForwardBtn, 'disable-button'); 
+            M.DomUtil.removeClass(this._fastForwardBtn, 'disable-button'); 
         }
 
         if (disableBackward) { 
-            Wu.DomUtil.addClass(this._fastBackBtn, 'disable-button');
+            M.DomUtil.addClass(this._fastBackBtn, 'disable-button');
         } else { 
-            Wu.DomUtil.removeClass(this._fastBackBtn, 'disable-button'); 
+            M.DomUtil.removeClass(this._fastBackBtn, 'disable-button'); 
         }
     },
 
@@ -355,7 +355,7 @@ Wu.Graph.Animator = Wu.Evented.extend({
         if (!this._currentLayer) return;
 
         // fire event
-        Wu.Mixin.Events.fire('setSliderTitle', {detail : {
+        M.Mixin.Events.fire('setSliderTitle', {detail : {
             title : title
         }});
     },
@@ -391,7 +391,7 @@ Wu.Graph.Animator = Wu.Evented.extend({
         }.bind(this), (1000/this.options.fps)) 
 
         // fire animation play
-        Wu.Mixin.Events.fire('animationPlay');
+        M.Mixin.Events.fire('animationPlay');
     },
 
     stopPlaying : function () {
@@ -404,7 +404,7 @@ Wu.Graph.Animator = Wu.Evented.extend({
         this.playing = false;
 
         // fire animation stop
-        Wu.Mixin.Events.fire('animationStop');
+        M.Mixin.Events.fire('animationStop');
     },
 
     _moveForward : function () {      
@@ -439,23 +439,23 @@ Wu.Graph.Animator = Wu.Evented.extend({
     },
 
     _movePreviousYear : function (day) {
-        Wu.Mixin.Events.fire('animatorMovePreviousYear', {detail : {
+        M.Mixin.Events.fire('animatorMovePreviousYear', {detail : {
             day : day
         }});
     },
 
     _moveNextYear : function (day) {
-        Wu.Mixin.Events.fire('animatorMoveNextYear', {detail : {
+        M.Mixin.Events.fire('animatorMoveNextYear', {detail : {
             day : day
         }});
     },    
 
     _moveFastBack : function () {
-        Wu.Mixin.Events.fire('sliderMoveBackward');
+        M.Mixin.Events.fire('sliderMoveBackward');
     },
 
     _moveFastForward : function () {
-        Wu.Mixin.Events.fire('sliderMoveForward');
+        M.Mixin.Events.fire('sliderMoveForward');
     },  
 
     // Update message box, if it exists before

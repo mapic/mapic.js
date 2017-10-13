@@ -1,9 +1,9 @@
-Wu.Pane = Wu.Class.extend({
+M.Pane = M.Class.extend({
 
 	initialize : function (options) {
 
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// local initialize
 		this._initialize();
@@ -16,12 +16,12 @@ Wu.Pane = Wu.Class.extend({
 	},      
 
 	_listen : function () {
-		Wu.Mixin.Events.on('projectSelected', this._projectSelected, this);
-		Wu.Mixin.Events.on('editEnabled',     this._editEnabled, this);
-		Wu.Mixin.Events.on('editDisabled',    this._editDisabled, this);
-		Wu.Mixin.Events.on('layerEnabled',    this._layerEnabled, this);
-		Wu.Mixin.Events.on('layerDisabled',   this._layerDisabled, this);
-		Wu.Mixin.Events.on('closeMenuTabs',   this._onCloseMenuTabs, this);
+		M.Mixin.Events.on('projectSelected', this._projectSelected, this);
+		M.Mixin.Events.on('editEnabled',     this._editEnabled, this);
+		M.Mixin.Events.on('editDisabled',    this._editDisabled, this);
+		M.Mixin.Events.on('layerEnabled',    this._layerEnabled, this);
+		M.Mixin.Events.on('layerDisabled',   this._layerDisabled, this);
+		M.Mixin.Events.on('closeMenuTabs',   this._onCloseMenuTabs, this);
 	},
 
 	_projectSelected : function (e) {

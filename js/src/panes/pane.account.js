@@ -1,4 +1,4 @@
-Wu.Pane.Account = Wu.Pane.extend({
+M.Pane.Account = M.Pane.extend({
 
 	_initialize : function (options) {
 		this.addAccountTab();
@@ -28,11 +28,11 @@ Wu.Pane.Account = Wu.Pane.extend({
 	},
 
 
-	// todo: refactor into new Wu.Pane.Account()
+	// todo: refactor into new M.Pane.Account()
 	_openAccountTab : function () {
 
 		// close other tabs
-		Wu.Mixin.Events.fire('closeMenuTabs');
+		M.Mixin.Events.fire('closeMenuTabs');
 
 		// for public account
 		if (app.Account.isPublic()) {
@@ -42,39 +42,39 @@ Wu.Pane.Account = Wu.Pane.extend({
 
 			// create login button if public account
 			// create dropdown
-			this._accountDropdown = Wu.DomUtil.create('div', 'share-dropdown account-dropdown', app._appPane);
+			this._accountDropdown = M.DomUtil.create('div', 'share-dropdown account-dropdown', app._appPane);
 			var account_name = 'Not logged in';
 
 			// temp hack, set to left
 			this._accountDropdown.style.left = 0;
 
 			// items
-			// this._accountName = Wu.DomUtil.create('div', 'share-item no-hover', this._accountDropdown, '<i class="fa fa-user logout-icon"></i>' + account_name);
-			this._logoutDiv = Wu.DomUtil.create('div', 'share-item', this._accountDropdown, '<i class="fa fa-sign-in logout-icon"></i>Log in');
+			// this._accountName = M.DomUtil.create('div', 'share-item no-hover', this._accountDropdown, '<i class="fa fa-user logout-icon"></i>' + account_name);
+			this._logoutDiv = M.DomUtil.create('div', 'share-item', this._accountDropdown, '<i class="fa fa-sign-in logout-icon"></i>Log in');
 
 			// events
-			Wu.DomEvent.on(this._logoutDiv,  'click', this.openLogin, this);
+			M.DomEvent.on(this._logoutDiv,  'click', this.openLogin, this);
 
 
 		// normal user account
 		} else {
 
 			// create dropdown
-			this._accountDropdown = Wu.DomUtil.create('div', 'share-dropdown account-dropdown', app._appPane);
+			this._accountDropdown = M.DomUtil.create('div', 'share-dropdown account-dropdown', app._appPane);
 			var account_name = app.Account.getUsername();
 
 			// locate me
-			this._locate = Wu.DomUtil.create('div', 'share-item locate-me', this._accountDropdown, '<i class="fa fa-location-arrow" aria-hidden="true"></i> Locate me!');
+			this._locate = M.DomUtil.create('div', 'share-item locate-me', this._accountDropdown, '<i class="fa fa-location-arrow" aria-hidden="true"></i> Locate me!');
 
 			// items
-			this._accountName = Wu.DomUtil.create('div', 'share-item no-hover', this._accountDropdown, '<i class="fa fa-user logout-icon"></i>' + account_name);
-			this._logoutDiv = Wu.DomUtil.create('div', 'share-item', this._accountDropdown, '<i class="fa fa-sign-out logout-icon"></i>Log out');
+			this._accountName = M.DomUtil.create('div', 'share-item no-hover', this._accountDropdown, '<i class="fa fa-user logout-icon"></i>' + account_name);
+			this._logoutDiv = M.DomUtil.create('div', 'share-item', this._accountDropdown, '<i class="fa fa-sign-out logout-icon"></i>Log out');
 
 			
 			// events
-			Wu.DomEvent.on(this._logoutDiv,  'click', this.logout, this);
+			M.DomEvent.on(this._logoutDiv,  'click', this.logout, this);
 
-			Wu.DomEvent.on(this._locate, 'click', this._toggleLocate, this);
+			M.DomEvent.on(this._locate, 'click', this._toggleLocate, this);
 
 		}
 		
@@ -82,7 +82,7 @@ Wu.Pane.Account = Wu.Pane.extend({
 		this._accountTabOpen = true;
 
 		// mark active
-		Wu.DomUtil.addClass(this._accountTab, 'active');
+		M.DomUtil.addClass(this._accountTab, 'active');
 
 	},
 
@@ -182,14 +182,14 @@ Wu.Pane.Account = Wu.Pane.extend({
 	_closeAccountTab : function () {
 		if (!this._accountTabOpen) return;
 
-		Wu.DomEvent.off(this._logoutDiv,  'click', this.logout, this);
+		M.DomEvent.off(this._logoutDiv,  'click', this.logout, this);
 
-		Wu.DomUtil.remove(this._accountDropdown);
+		M.DomUtil.remove(this._accountDropdown);
 
 		this._accountTabOpen = false;
 
 		// mark closed
-		Wu.DomUtil.removeClass(this._accountTab, 'active');
+		M.DomUtil.removeClass(this._accountTab, 'active');
 	},
 
 	logout : function () {
@@ -212,10 +212,10 @@ Wu.Pane.Account = Wu.Pane.extend({
 	openLogin : function () {
 		
 		// close other tabs
-		Wu.Mixin.Events.fire('closeMenuTabs');
+		M.Mixin.Events.fire('closeMenuTabs');
 
 		// open login
-		var login = new Wu.Pane.Login();
+		var login = new M.Pane.Login();
 		login.open();
 	},
 

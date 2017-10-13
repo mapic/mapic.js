@@ -1,7 +1,7 @@
 
 
 // todo: move to separate file
-Wu.Model.Layer.GeoJSONMaskLayer = Wu.Model.Layer.extend({
+M.Model.Layer.GeoJSONMaskLayer = M.Model.Layer.extend({
 
     options : {
         style : {
@@ -15,7 +15,7 @@ Wu.Model.Layer.GeoJSONMaskLayer = Wu.Model.Layer.extend({
     initialize : function (options) {
         
         // set options
-        Wu.setOptions(this, options);
+        M.setOptions(this, options);
 
         // set map
         this._map = app._map;

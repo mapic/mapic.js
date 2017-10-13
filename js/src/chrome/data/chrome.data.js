@@ -1,4 +1,4 @@
-Wu.Chrome.Data = Wu.Chrome.extend({
+M.Chrome.Data = M.Chrome.extend({
 
     _ : 'data',
 
@@ -48,7 +48,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         }
 
         // Get layer meta
-        var layerMeta = Wu.parse(layer.store.metadata);
+        var layerMeta = M.parse(layer.store.metadata);
 
         // Build tooltip object
         var tooltipMeta = app.Tools.Tooltip._buildTooltipMeta(layerMeta); // TODO: use event?
@@ -77,17 +77,17 @@ Wu.Chrome.Data = Wu.Chrome.extend({
     _initContainer : function () {
 
         // create the container (just a div to hold errythign)
-        this._container = Wu.DomUtil.create('div', 'chrome chrome-content data', this.options.appendTo);
+        this._container = M.DomUtil.create('div', 'chrome chrome-content data', this.options.appendTo);
 
         // Middle container
-        this._innerContainer = Wu.DomUtil.create('div', 'chrome-data-inner', this._container);
+        this._innerContainer = M.DomUtil.create('div', 'chrome-data-inner', this._container);
 
         // LAYER LIST OUTER SCROLLER
-        this._listOuterScroller = Wu.DomUtil.create('div', 'chrome-data-outer-scroller', this._innerContainer);
+        this._listOuterScroller = M.DomUtil.create('div', 'chrome-data-outer-scroller', this._innerContainer);
         this._listOuterScroller.style.height = '100%';
 
         // List container
-        this._listContainer = Wu.DomUtil.create('div', 'chrome-data-scroller', this._listOuterScroller);
+        this._listContainer = M.DomUtil.create('div', 'chrome-data-scroller', this._listOuterScroller);
 
         // LAYER LIST
         this._createLayerListContainer();
@@ -96,12 +96,12 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         this._createFileListContainer();
 
         // Top container (with upload button)
-        this.topContainer = Wu.DomUtil.create('div', 'chrome-data-top', this._container);
+        this.topContainer = M.DomUtil.create('div', 'chrome-data-top', this._container);
 
         // close event
-        Wu.DomEvent.on(this._innerContainer, 'click', this._closeActionPopUps, this);
-        Wu.DomEvent.on(document.getElementById("app"), 'click', function () {
-            Wu.Mixin.Events.fire('appClick');
+        M.DomEvent.on(this._innerContainer, 'click', this._closeActionPopUps, this);
+        M.DomEvent.on(document.getElementById("app"), 'click', function () {
+            M.Mixin.Events.fire('appClick');
         });
     },
 
@@ -113,14 +113,14 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         //       - clean up DOM, wrap categories
 
         // data layers
-        this._layerListWrapper = Wu.DomUtil.create('div', 'chrome-layer-list-wrapper', this._listContainer);
-        this._layerListTitle = Wu.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'Layers');
-        this._layersContainer = Wu.DomUtil.create('div', 'layers-container', this._layerListWrapper);
+        this._layerListWrapper = M.DomUtil.create('div', 'chrome-layer-list-wrapper', this._listContainer);
+        this._layerListTitle = M.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'Layers');
+        this._layersContainer = M.DomUtil.create('div', 'layers-container', this._layerListWrapper);
 
         // base layers
-        this._baseLayers = Wu.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'Background layer');
-        this._baseLayerDropdownContainer = Wu.DomUtil.create('div', 'base-layer-dropdown-container', this._layerListWrapper);
-        this._colorSelectorWrapper = Wu.DomUtil.create('div', 'base-layer-color-selector-wrapper displayNone', this._layerListWrapper);
+        this._baseLayers = M.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'Background layer');
+        this._baseLayerDropdownContainer = M.DomUtil.create('div', 'base-layer-dropdown-container', this._layerListWrapper);
+        this._colorSelectorWrapper = M.DomUtil.create('div', 'base-layer-color-selector-wrapper displayNone', this._layerListWrapper);
 
 
         var wms_debug = false;
@@ -133,14 +133,14 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
 
         // separator line
-        this._fileListSeparator = Wu.DomUtil.create('div', 'file-list-separator', this._layerListWrapper);
+        this._fileListSeparator = M.DomUtil.create('div', 'file-list-separator', this._layerListWrapper);
 
     },
 
     _createWMSLayers : function () {
         
         // wms layers
-        this._wmsLayers = Wu.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'WMS layers');
+        this._wmsLayers = M.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'WMS layers');
 
         // get available wms layers from server
         app.api.getWMSLayers({}, function (err, wms_layers) {
@@ -148,12 +148,12 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         });
 
         // debug btn
-        var btn = Wu.DomUtil.create('div', 'wms-button', this._wmsLayers, 'Create layer');
-        Wu.DomEvent.on(btn, 'click', function () {
+        var btn = M.DomUtil.create('div', 'wms-button', this._wmsLayers, 'Create layer');
+        M.DomEvent.on(btn, 'click', function () {
 
             var project = app.activeProject;
 
-             // create Wu.CubeLayer
+             // create M.CubeLayer
             var wmsLayer = {
                 projectUuid : project.getUuid(), // pass to automatically attach to project
                 data : { 
@@ -180,14 +180,14 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
                 console.log('createLayer', wmsLayer, wmsLayerJSON);
 
-                var wmsLayer = Wu.parse(wmsLayerJSON);
+                var wmsLayer = M.parse(wmsLayerJSON);
 
                 var layer = project.addLayer(wmsLayer);
 
                 console.log('added to layer', layer);
 
                 // select project
-                Wu.Mixin.Events.fire('layerAdded', { detail : {
+                M.Mixin.Events.fire('layerAdded', { detail : {
                     projectUuid : project.getUuid(),
                     layerUuid : wmsLayer.uuid
                 }});
@@ -206,14 +206,14 @@ Wu.Chrome.Data = Wu.Chrome.extend({
     _createFileListContainer : function () {
 
         // HEADER
-        this._fileListTitle = Wu.DomUtil.create('div', 'chrome-content-header layer-list-container-title layer-list', this._listContainer, '<i class="fa fa-database"></i> My Datasets');
+        this._fileListTitle = M.DomUtil.create('div', 'chrome-content-header layer-list-container-title layer-list', this._listContainer, '<i class="fa fa-database"></i> My Datasets');
 
         // Upload button container
-        this._uploadButtonContainer = Wu.DomUtil.create('div', 'upload-button-container', this._listContainer);
+        this._uploadButtonContainer = M.DomUtil.create('div', 'upload-button-container', this._listContainer);
 
         // Containers
-        this._filesContainerHeader = Wu.DomUtil.create('div', 'files-container-header', this._listContainer);
-        this._filesContainer = Wu.DomUtil.create('div', 'files-container', this._listContainer);
+        this._filesContainerHeader = M.DomUtil.create('div', 'files-container-header', this._listContainer);
+        this._filesContainer = M.DomUtil.create('div', 'files-container', this._listContainer);
     },
 
     _initContent : function () {
@@ -258,7 +258,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         app.MapPane._controls.layermenu.open();
 
         // mark button active
-        Wu.DomUtil.addClass(this._topButton, 'active');
+        M.DomUtil.addClass(this._topButton, 'active');
         this._container.style.display = 'block';
 
         this._isOpen = true;
@@ -274,7 +274,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
     _hide : function () {
 
         // mark button inactive
-        Wu.DomUtil.removeClass(this._topButton, 'active');
+        M.DomUtil.removeClass(this._topButton, 'active');
         this._container.style.display = 'none';
 
         if (this._isOpen) {
@@ -361,7 +361,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
         // remove temp files
         _.each(this._tempFiles, function (tempFile, etc) {
-            Wu.DomUtil.remove(tempFile.datawrap);
+            M.DomUtil.remove(tempFile.datawrap);
         });
         this._tempFiles = {};
 
@@ -403,9 +403,9 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         // hide layers if not editor
         if (!this._project.isEditable()) {
             // todo: put layers in wrapper and hide
-            Wu.DomUtil.addClass(this._layerListWrapper, 'displayNone');
+            M.DomUtil.addClass(this._layerListWrapper, 'displayNone');
         } else {
-            Wu.DomUtil.removeClass(this._layerListWrapper, 'displayNone');
+            M.DomUtil.removeClass(this._layerListWrapper, 'displayNone');
         }
 
         // mark inited
@@ -425,10 +425,10 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         this._uploadButton.uploadDiv.innerHTML = '<i class="fa fa-cloud-upload"></i>Upload data';
 
         // set event for options button
-        Wu.DomEvent.on(this._uploadButton.optionsDiv, 'mousedown', this._optionsBtnClick, this);
+        M.DomEvent.on(this._uploadButton.optionsDiv, 'mousedown', this._optionsBtnClick, this);
 
         // set event for create-cube item
-        Wu.DomEvent.on(this._uploadButton.createCube, 'mousedown', this._createCubeClick, this);
+        M.DomEvent.on(this._uploadButton.createCube, 'mousedown', this._createCubeClick, this);
 
     },
 
@@ -440,9 +440,9 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         app.api.createCube({}, function (err, cubeJSON) {
             if (err) return console.error('createCube err: ', err);
 
-            var cube = Wu.parse(cubeJSON);
+            var cube = M.parse(cubeJSON);
 
-            // create Wu.CubeLayer
+            // create M.CubeLayer
             var cubeLayer = {
                 projectUuid : project.getUuid(), // pass to automatically attach to project
                 data : { cube : cube },
@@ -456,12 +456,12 @@ Wu.Chrome.Data = Wu.Chrome.extend({
             // create Wu layer
             app.api.createLayer(cubeLayer, function (err, cubeLayerJSON) {
 
-                var cubeLayer = Wu.parse(cubeLayerJSON);
+                var cubeLayer = M.parse(cubeLayerJSON);
 
                 var layer = project.addLayer(cubeLayer);
 
                 // select project
-                Wu.Mixin.Events.fire('layerAdded', { detail : {
+                M.Mixin.Events.fire('layerAdded', { detail : {
                     projectUuid : project.getUuid(),
                     layerUuid : cubeLayer.uuid
                 }});
@@ -503,7 +503,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         if (this._optionsDropdownOpen) {
 
             // remove dropdown
-            Wu.DomUtil.addClass(this._uploadButton.dropdown, 'displayNone');
+            M.DomUtil.addClass(this._uploadButton.dropdown, 'displayNone');
 
             // mark closed
             this._optionsDropdownOpen = false;
@@ -511,7 +511,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         } else {
             
             // show dropdown
-            Wu.DomUtil.removeClass(this._uploadButton.dropdown, 'displayNone');
+            M.DomUtil.removeClass(this._uploadButton.dropdown, 'displayNone');
              
             // mark open
             this._optionsDropdownOpen = true;
@@ -532,29 +532,29 @@ Wu.Chrome.Data = Wu.Chrome.extend({
             return;
         }
 
-        this.sortMenu = Wu.DomUtil.create('div', 'files-sort-menu', this._filesContainerHeader);
-        this.sortSelect = Wu.DomUtil.create('div', 'files-sort-select', this._filesContainerHeader, 'Sort');
-        this.expendedContaner = Wu.DomUtil.create('div', 'expended-container', this._filesContainerHeader);
-        this.searchInputWraper = Wu.DomUtil.create('div', 'files-search-input-wraper', this._filesContainerHeader);
+        this.sortMenu = M.DomUtil.create('div', 'files-sort-menu', this._filesContainerHeader);
+        this.sortSelect = M.DomUtil.create('div', 'files-sort-select', this._filesContainerHeader, 'Sort');
+        this.expendedContaner = M.DomUtil.create('div', 'expended-container', this._filesContainerHeader);
+        this.searchInputWraper = M.DomUtil.create('div', 'files-search-input-wraper', this._filesContainerHeader);
 
-        var searchIcon = Wu.DomUtil.create('i', 'fa fa-search search-files', this.searchInputWraper);
+        var searchIcon = M.DomUtil.create('i', 'fa fa-search search-files', this.searchInputWraper);
 
-        this.searchInput = Wu.DomUtil.create('input', 'files-search-input', this.searchInputWraper);
+        this.searchInput = M.DomUtil.create('input', 'files-search-input', this.searchInputWraper);
         this.searchInput.placeholder = 'sort: date';
         this.currentSort = 'lastUpdated';
 
-        Wu.DomEvent.on(this.searchInput, 'keyup', this._onKeyup, this);
+        M.DomEvent.on(this.searchInput, 'keyup', this._onKeyup, this);
 
-        Wu.DomEvent.on(this.sortSelect, 'click', this._onSortSelectClick, this);
+        M.DomEvent.on(this.sortSelect, 'click', this._onSortSelectClick, this);
 
-        this.sortOptions = Wu.DomUtil.create('div', 'files-sort-options', this.expendedContaner);
+        this.sortOptions = M.DomUtil.create('div', 'files-sort-options', this.expendedContaner);
 
         _.forEach(_.keys(sortType), function (type) {
-            var option = Wu.DomUtil.create('div', 'sort-option', this.sortOptions);
+            var option = M.DomUtil.create('div', 'sort-option', this.sortOptions);
             option.innerHTML = 'Sort by ' + type;
 
-            Wu.DomEvent.on(option, 'click', function (e) {
-                Wu.DomEvent.stop(e);
+            M.DomEvent.on(option, 'click', function (e) {
+                M.DomEvent.stop(e);
                 this.searchInput.placeholder = 'sort: ' + type;
                 this.currentSort = sortType[type];
                 this._sortFiles();
@@ -562,11 +562,11 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
         }.bind(this));
 
-        this.sortOrderWraper = Wu.DomUtil.create('div', 'files-sort-order-switch-wraper', this.sortOptions);
+        this.sortOrderWraper = M.DomUtil.create('div', 'files-sort-order-switch-wraper', this.sortOptions);
 
-        var sort_order_toggle_label = Wu.DomUtil.create('div', 'sort-order-label');
+        var sort_order_toggle_label = M.DomUtil.create('div', 'sort-order-label');
 
-        this.orderSwitch = new Wu.button({
+        this.orderSwitch = new M.button({
             id: 'order-switch',
             type: 'switch',
             isOn: this.reverse,
@@ -580,7 +580,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         this.sortOptions.style.display = 'none';
 
         // close dropdown on any click
-        Wu.DomEvent.on(app._appPane, 'click', function (e) {
+        M.DomEvent.on(app._appPane, 'click', function (e) {
 
             // only if target == self
             var relevantTarget = e.target == this.expendedContaner || e.target == this.sortOptions || e.target == this.sortOrderWraper;
@@ -588,16 +588,16 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
         }, this);
 
-        Wu.DomEvent.on(this._filesContainerHeader, 'click', function (e) {
+        M.DomEvent.on(this._filesContainerHeader, 'click', function (e) {
             this._closeSortSelect();
-            Wu.DomEvent.stop(e);
+            M.DomEvent.stop(e);
         }, this);
     },
 
     _toggleSortOrder : function (e, isOn) {
         isOn ? this.reverse = true : this.reverse = false;
         if (e) {
-            Wu.DomEvent.stop(e);
+            M.DomEvent.stop(e);
         }
         this._refreshFiles();
     },
@@ -605,16 +605,16 @@ Wu.Chrome.Data = Wu.Chrome.extend({
     _onSortSelectClick : function (e) {
         this.sortOptions.style.display === 'none' ? this.sortOptions.style.display = 'block' : this.sortOptions.style.display = 'none';
 
-        var toggleClass = Wu.DomUtil.hasClass(this.sortSelect, 'expanded') ? Wu.DomUtil.removeClass : Wu.DomUtil.addClass;
+        var toggleClass = M.DomUtil.hasClass(this.sortSelect, 'expanded') ? M.DomUtil.removeClass : M.DomUtil.addClass;
         toggleClass(this.sortSelect, 'expanded');
         if (e) {
-            Wu.DomEvent.stop(e);
+            M.DomEvent.stop(e);
         }
     },
 
     _closeSortSelect : function () {
         this.sortOptions.style.display = 'none';
-        Wu.DomUtil.removeClass(this.sortSelect, 'expanded');
+        M.DomUtil.removeClass(this.sortSelect, 'expanded');
     },
 
     _onKeyup : function (e) {
@@ -694,10 +694,10 @@ Wu.Chrome.Data = Wu.Chrome.extend({
             this.fileListContainers[f] = {};
 
             // Create wrapper
-            this.fileListContainers[f].wrapper = Wu.DomUtil.create('div', 'file-list-container', this._filesContainer);
+            this.fileListContainers[f].wrapper = M.DomUtil.create('div', 'file-list-container', this._filesContainer);
 
             // D3 Container
-            this.fileListContainers[f].fileList = Wu.DomUtil.create('div', 'file-list-container-file-list', this.fileListContainers[f].wrapper);
+            this.fileListContainers[f].fileList = M.DomUtil.create('div', 'file-list-container-file-list', this.fileListContainers[f].wrapper);
             this.fileListContainers[f].D3container = d3.select(this.fileListContainers[f].fileList);
         }
 
@@ -763,10 +763,10 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var filename = file.fileName;
 
         // add temp file holder
-        var datawrap = Wu.DomUtil.create('div', 'data-list-line processing');
-        var title = Wu.DomUtil.create('div', 'file-name-content processing', datawrap, filename);
-        var feedback = Wu.DomUtil.create('div', 'file-feedback processing', datawrap);
-        var percent = Wu.DomUtil.create('div', 'file-feedback-percent processing', datawrap);
+        var datawrap = M.DomUtil.create('div', 'data-list-line processing');
+        var title = M.DomUtil.create('div', 'file-name-content processing', datawrap, filename);
+        var feedback = M.DomUtil.create('div', 'file-feedback processing', datawrap);
+        var percent = M.DomUtil.create('div', 'file-feedback-percent processing', datawrap);
 
         // remember
         this._tempFiles = this._tempFiles || {};
@@ -817,10 +817,10 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         tempfile.percent.innerHTML = 'Upload failed';
 
         // add error class
-        Wu.DomUtil.addClass(tempfile.datawrap, 'upload-error');
+        M.DomUtil.addClass(tempfile.datawrap, 'upload-error');
 
         // close on click
-        Wu.DomEvent.on(tempfile.datawrap, 'click', this._refresh, this);
+        M.DomEvent.on(tempfile.datawrap, 'click', this._refresh, this);
 
         app.log('processing:error', {info : {
             error : feedbackText
@@ -933,7 +933,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
             // Size
             var bytes = d.getStore().dataSize;
-            var size = Wu.Util.bytesToSize(bytes);
+            var size = M.Util.bytesToSize(bytes);
             _str += ' – <span class="file-meta-size">' + size + '</span>';
 
             return _str;
@@ -1307,7 +1307,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
     _openCubeLayerEditFullscreen : function (layer) {
 
         // create fullscreen
-        var fullscreen = this._fullscreen = new Wu.Fullscreen({
+        var fullscreen = this._fullscreen = new M.Fullscreen({
             title : '<i class="fa fa-bars file-option"></i>Timeseries: ' + layer.getTitle(),
             titleClassName : 'slim-font'
         });
@@ -1342,26 +1342,26 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var layer = options.layer;
 
         // create divs
-        var toggles_wrapper = Wu.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var name = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Add mask');
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Add mask');
 
         // check for html5 file reader compatability
         if (_.isUndefined(window.FileReader)) return console.error('no filereader available');
 
         // create file upload input
-        var wrap_uploader = Wu.DomUtil.create('div', 'upload-mask-wrapper', toggles_wrapper);
-        var uploader_title = Wu.DomUtil.create('div', 'dropdown-mask-title', wrap_uploader, 'Upload vector mask');
-        var mask_uploader = Wu.DomUtil.create('input', 'mask-upload-input', wrap_uploader);
+        var wrap_uploader = M.DomUtil.create('div', 'upload-mask-wrapper', toggles_wrapper);
+        var uploader_title = M.DomUtil.create('div', 'dropdown-mask-title', wrap_uploader, 'Upload vector mask');
+        var mask_uploader = M.DomUtil.create('input', 'mask-upload-input', wrap_uploader);
         mask_uploader.setAttribute('type', 'file');
 
         // get, sort datasets (rasters only)
         var mask_datasets = this._getRasterDatasets();
 
         // create dropdown of datasets
-        var wrap_dropdown = Wu.DomUtil.create('div', 'dropdown-mask-wrapper', toggles_wrapper);
-        var dropdown_title = Wu.DomUtil.create('div', 'dropdown-mask-title', wrap_dropdown, 'Add raster mask from datasets');
+        var wrap_dropdown = M.DomUtil.create('div', 'dropdown-mask-wrapper', toggles_wrapper);
+        var dropdown_title = M.DomUtil.create('div', 'dropdown-mask-title', wrap_dropdown, 'Add raster mask from datasets');
 
-        this._cubesetDrowdown = new Wu.Dropdown({
+        this._cubesetDrowdown = new M.Dropdown({
             fn: this._addDatasetAsMask.bind(this, layer),
             appendTo: wrap_dropdown,
             content: mask_datasets,
@@ -1370,7 +1370,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
 
         // create feedback box
-        this._maskFeedback = Wu.DomUtil.create('div', 'mask-feedback', toggles_wrapper);
+        this._maskFeedback = M.DomUtil.create('div', 'mask-feedback', toggles_wrapper);
         
         // file input event
         mask_uploader.onchange = function (e) {
@@ -1424,7 +1424,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
                 layer.addMask(data);
 
                 // fire layer edited
-                Wu.Mixin.Events.fire('maskUploaded', {detail : {
+                M.Mixin.Events.fire('maskUploaded', {detail : {
                     name : file.name
                 }});
 
@@ -1520,21 +1520,21 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var layer = options.layer;
 
         // create divs
-        var toggles_wrapper = Wu.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var name = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Cube name');
-        var name_input = Wu.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Cube name');
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
         name_input.setAttribute('placeholder', 'Enter name here');
         name_input.value = layer.getName();
-        var name_error = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
 
-        var cube_id_name = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Cube ID');
-        var cube_id_title = Wu.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        var cube_id_name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Cube ID');
+        var cube_id_title = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
         cube_id_title.value = layer.getCubeId();
         cube_id_title.readOnly = true;
         cube_id_title.style.background = '#F7F7F7';
 
         // event
-        Wu.DomEvent.on(name_input, 'keyup', _.throttle(function () {
+        M.DomEvent.on(name_input, 'keyup', _.throttle(function () {
             var updatedName = name_input.value;
 
             // set title
@@ -1552,18 +1552,18 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var layer = options.layer;
 
         // create divs
-        var toggles_wrapper = this._cubesetBoxWrapper = Wu.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var name = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Datasets in timeseries');
+        var toggles_wrapper = this._cubesetBoxWrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Datasets in timeseries');
 
         // add-button
-        var addBtn = Wu.DomUtil.create('div', 'cubesets-add-btn', toggles_wrapper, '<i class="fa fa-plus"></i>&nbsp;&nbsp;Add dataset ');
+        var addBtn = M.DomUtil.create('div', 'cubesets-add-btn', toggles_wrapper, '<i class="fa fa-plus"></i>&nbsp;&nbsp;Add dataset ');
 
-        Wu.DomEvent.on(addBtn, 'click', function () {
+        M.DomEvent.on(addBtn, 'click', function () {
             this._addCubesetDropdown(layer);
         }, this);
 
         // create list of datasets
-        this._cubesetContainer = Wu.DomUtil.create('div', 'cubesets-list-wrapper', toggles_wrapper);
+        this._cubesetContainer = M.DomUtil.create('div', 'cubesets-list-wrapper', toggles_wrapper);
 
         // create cubeset list
         this._refreshCubeset(layer);
@@ -1608,9 +1608,9 @@ Wu.Chrome.Data = Wu.Chrome.extend({
             if (err) return console.error(err);
                
             // parse
-            var cube = Wu.parse(updatedCube);
+            var cube = M.parse(updatedCube);
 
-            // update Wu.CubeLayer
+            // update M.CubeLayer
             var updatedLayer = layer._saveCube(cube);
 
             // refresh list
@@ -1674,24 +1674,24 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var uuid = dataset.id;
 
         // wrapper
-        var wrap = Wu.DomUtil.create('div', 'cubeset-wrapper', appendTo);
+        var wrap = M.DomUtil.create('div', 'cubeset-wrapper', appendTo);
         wrap.setAttribute('dataset-uuid', uuid);
 
         // content
-        // var count = Wu.DomUtil.create('div', 'cubeset-count', wrap, index);
-        var dataset_name = Wu.DomUtil.create('div', 'cubeset-name', wrap, name);
-        var dataset_time = Wu.DomUtil.create('div', 'cubeset-time', wrap, timestamp);
+        // var count = M.DomUtil.create('div', 'cubeset-count', wrap, index);
+        var dataset_name = M.DomUtil.create('div', 'cubeset-name', wrap, name);
+        var dataset_time = M.DomUtil.create('div', 'cubeset-time', wrap, timestamp);
 
         // buttons
-        var removeBtn = Wu.DomUtil.create('div', 'cubeset-remove-btn', wrap, '<i class="fa fa-trash-o"></i>');
+        var removeBtn = M.DomUtil.create('div', 'cubeset-remove-btn', wrap, '<i class="fa fa-trash-o"></i>');
 
         // remove click
-        Wu.DomEvent.on(removeBtn, 'click', function () {        // todo: mem leaks if not removed
+        M.DomEvent.on(removeBtn, 'click', function () {        // todo: mem leaks if not removed
             this._removeCubesetItem(dataset);
         }, this);
 
         // change date click
-        Wu.DomEvent.on(dataset_time, 'dblclick', function () {  // todo: mem leaks if not removed
+        M.DomEvent.on(dataset_time, 'dblclick', function () {  // todo: mem leaks if not removed
 
             this._addDatePicker({
                 dataset : dataset,
@@ -1741,7 +1741,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
                 picker.destroy();
 
                 // remove close event
-                Wu.DomEvent.off(container, 'click', picker.destroy, picker);
+                M.DomEvent.off(container, 'click', picker.destroy, picker);
             }
         });
 
@@ -1749,16 +1749,16 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         div.parentNode.insertBefore(this._datePicker.el, div.nextSibling);
 
         // add close event
-        Wu.DomEvent.on(container, 'click', picker.destroy, picker);
+        M.DomEvent.on(container, 'click', picker.destroy, picker);
 
     },
 
     _addCubesetDropdown : function (layer) {
 
-        var container = Wu.DomUtil.create('div', 'cubeset-dropdown-container', this._cubesetBoxWrapper);
+        var container = M.DomUtil.create('div', 'cubeset-dropdown-container', this._cubesetBoxWrapper);
 
         // create dropdown
-        this._cubesetDrowdown = new Wu.Dropdown({
+        this._cubesetDrowdown = new M.Dropdown({
             fn: this._addCubesetItemByUuid.bind(this),
             appendTo: container,
             content: this._getDropdownDatasets(),
@@ -1810,7 +1810,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         $('.cubesets-list-wrapper').sortable();
 
         // remove dropdown
-        Wu.DomUtil.remove(this._cubesetDrowdown._baseLayerDropdownContainer);
+        M.DomUtil.remove(this._cubesetDrowdown._baseLayerDropdownContainer);
         delete this._cubesetDrowdown;
 
     },
@@ -1892,9 +1892,9 @@ Wu.Chrome.Data = Wu.Chrome.extend({
             if (err) return console.error(err);
 
             // parse cube
-            var cube = Wu.parse(updatedCube);
+            var cube = M.parse(updatedCube);
 
-            // update Wu.CubeLayer
+            // update M.CubeLayer
             var updatedLayer = layer._saveCube(cube);
 
             // refresh list
@@ -1920,9 +1920,9 @@ Wu.Chrome.Data = Wu.Chrome.extend({
             if (err) return console.error(err);
 
             // parse cube
-            var cube = Wu.parse(updatedCube);
+            var cube = M.parse(updatedCube);
 
-            // update Wu.CubeLayer
+            // update M.CubeLayer
             var updatedLayer = this._fullscreen._layer = layer._saveCube(cube);
 
             // refresh list
@@ -1941,7 +1941,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var file = app.Account.getFile(uuid);
 
         // create fullscreen
-        var fullscreen = this._fullscreen = new Wu.Fullscreen({
+        var fullscreen = this._fullscreen = new M.Fullscreen({
             title : '<i class="fa fa-bars file-option"></i>Options for ' + file.getName(),
             titleClassName : 'slim-font'
         });
@@ -2017,12 +2017,12 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var file = options.file;
 
         // create divs
-        var toggles_wrapper = Wu.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var name = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Dataset name');
-        var name_input = Wu.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Dataset name');
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
         name_input.setAttribute('placeholder', 'Enter name here');
         name_input.value = file.getName();
-        var name_error = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
 
         // return wrapper
         return toggles_wrapper;
@@ -2035,11 +2035,11 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var toggles_wrapper = container;
 
         // meta info
-        var meta_title = Wu.DomUtil.create('div', 'file-option title', toggles_wrapper, 'Dataset meta');
-        var type_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Type:</span> Vector');
-        var filesize_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Size:</span> ' + file.getDatasizePretty());
-        var createdby_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Created by:</span> ' + file.getCreatedByName());
-        var createdby_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Created on:</span> ' + moment(file.getCreated()).format('MMMM Do YYYY, h:mm:ss a'));
+        var meta_title = M.DomUtil.create('div', 'file-option title', toggles_wrapper, 'Dataset meta');
+        var type_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Type:</span> Vector');
+        var filesize_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Size:</span> ' + file.getDatasizePretty());
+        var createdby_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Created by:</span> ' + file.getCreatedByName());
+        var createdby_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Created on:</span> ' + moment(file.getCreated()).format('MMMM Do YYYY, h:mm:ss a'));
 
     },
 
@@ -2056,14 +2056,14 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var sizeY = meta.size ? meta.size.y : 'n/a';
 
         // meta info
-        var meta_title = Wu.DomUtil.create('div', 'file-option title', toggles_wrapper, 'Dataset meta');
-        var type_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Type:</span> Raster');
-        var filesize_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Size:</span> ' + file.getDatasizePretty());
-        var bands_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Bands:</span> ' + meta.bands);
-        var size_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Raster size:</span> ' + sizeX + 'x' + sizeY);
-        var projection_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Projection:</span> ' + meta.projection);
-        var createdby_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Created by:</span> ' + file.getCreatedByName());
-        var createdby_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Created on:</span> ' + moment(file.getCreated()).format('MMMM Do YYYY, h:mm:ss a'));
+        var meta_title = M.DomUtil.create('div', 'file-option title', toggles_wrapper, 'Dataset meta');
+        var type_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Type:</span> Raster');
+        var filesize_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Size:</span> ' + file.getDatasizePretty());
+        var bands_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Bands:</span> ' + meta.bands);
+        var size_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Raster size:</span> ' + sizeX + 'x' + sizeY);
+        var projection_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Projection:</span> ' + meta.projection);
+        var createdby_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Created by:</span> ' + file.getCreatedByName());
+        var createdby_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Created on:</span> ' + moment(file.getCreated()).format('MMMM Do YYYY, h:mm:ss a'));
     },
 
     _createTilesetBox : function (options) {
@@ -2072,20 +2072,20 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var meta = file.getMeta();
 
         // nice border box
-        var toggles_wrapper = Wu.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var tiles_title = Wu.DomUtil.create('div', 'file-option title', toggles_wrapper, 'Tileset');
-        var generated_tiles_title = Wu.DomUtil.create('div', 'file-option title generated-tiles', toggles_wrapper, 'Generated tile-range');
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var tiles_title = M.DomUtil.create('div', 'file-option title', toggles_wrapper, 'Tileset');
+        var generated_tiles_title = M.DomUtil.create('div', 'file-option title generated-tiles', toggles_wrapper, 'Generated tile-range');
 
         // zoom levels
-        var zoomlevels_wrapper = Wu.DomUtil.create('div', 'zoomlevels-wrapper', toggles_wrapper);
+        var zoomlevels_wrapper = M.DomUtil.create('div', 'zoomlevels-wrapper', toggles_wrapper);
         var zoom_levels = _.sortBy(meta.zoom_levels);
         var zoom_min = _.first(zoom_levels);
         var zoom_max = _.last(zoom_levels);
         var zoom_levels_text = zoom_min  + ' to ' + zoom_max;
-        var zoomlevels_div = Wu.DomUtil.create('div', 'file-option sub padding-top-10', zoomlevels_wrapper, '<span class="bold-font">Zoom-levels:</span> ' + zoom_levels_text);
+        var zoomlevels_div = M.DomUtil.create('div', 'file-option sub padding-top-10', zoomlevels_wrapper, '<span class="bold-font">Zoom-levels:</span> ' + zoom_levels_text);
 
         // create slider
-        var stepSlider = Wu.DomUtil.create('div', 'tiles-slider', zoomlevels_wrapper);
+        var stepSlider = M.DomUtil.create('div', 'tiles-slider', zoomlevels_wrapper);
         noUiSlider.create(stepSlider, {
             start: [zoom_min, zoom_max],
             step: 1,
@@ -2102,15 +2102,15 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         });
 
         // total tiles div
-        var totaltiles_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Total tiles:</span> ' + meta.total_tiles);
-        var tilesize_div = Wu.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Tileset size:</span> ');
+        var totaltiles_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Total tiles:</span> ' + meta.total_tiles);
+        var tilesize_div = M.DomUtil.create('div', 'file-option sub', toggles_wrapper, '<span class="bold-font">Tileset size:</span> ');
 
         // error feedback
-        var generated_tiles_error = this._generated_tiles_error = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label tiles-error', toggles_wrapper);
+        var generated_tiles_error = this._generated_tiles_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label tiles-error', toggles_wrapper);
 
         // generate button
-        var generateBtnWrap = Wu.DomUtil.create('div', 'pos-rel height-22', toggles_wrapper);
-        var generateBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save generate-tiles', generateBtnWrap, 'Generate tiles');
+        var generateBtnWrap = M.DomUtil.create('div', 'pos-rel height-22', toggles_wrapper);
+        var generateBtn = M.DomUtil.create('div', 'smooth-fullscreen-save generate-tiles', generateBtnWrap, 'Generate tiles');
 
         // slider events
         stepSlider.noUiSlider.on('update', function (values, handle) {
@@ -2138,7 +2138,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
                     generated_tiles_error.innerHTML = '<span class="bold-font">The tile count is too high. Please select a lower zoom-level.</span>';
 
                     // disable button
-                    Wu.DomUtil.addClass(generateBtn, 'disabled-btn');
+                    M.DomUtil.addClass(generateBtn, 'disabled-btn');
 
                 } else {
 
@@ -2149,14 +2149,14 @@ Wu.Chrome.Data = Wu.Chrome.extend({
                     generated_tiles_error.innerHTML = '';
 
                     // enable button
-                    Wu.DomUtil.removeClass(generateBtn, 'disabled-btn');
+                    M.DomUtil.removeClass(generateBtn, 'disabled-btn');
                 }
             });
 
         }.bind(this));
 
         // generate button event
-        Wu.DomEvent.on(generateBtn, 'click', function () {
+        M.DomEvent.on(generateBtn, 'click', function () {
 
             // set zoom levels
             var values = stepSlider.noUiSlider.get();
@@ -2191,7 +2191,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var container = options.container;
 
         // wrapper-5: share box
-        var toggles_wrapper5 = Wu.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var toggles_wrapper5 = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
 
         // create user list input
         this._createInviteUsersInput({
@@ -2203,17 +2203,17 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         });
 
         // share button
-        var shareBtnWrap = Wu.DomUtil.create('div', 'pos-rel height-42', toggles_wrapper5);
-        var shareBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save red-btn', shareBtnWrap, 'Share dataset');
+        var shareBtnWrap = M.DomUtil.create('div', 'pos-rel height-42', toggles_wrapper5);
+        var shareBtn = M.DomUtil.create('div', 'smooth-fullscreen-save red-btn', shareBtnWrap, 'Share dataset');
 
         // feedback
-        var share_feedback = Wu.DomUtil.create('div', 'smooth-fullscreen-sub-label label-share_feedback', toggles_wrapper5, '');
+        var share_feedback = M.DomUtil.create('div', 'smooth-fullscreen-sub-label label-share_feedback', toggles_wrapper5, '');
 
         // remember
         this._divs.share_feedback = share_feedback;
 
         // download button
-        Wu.DomEvent.on(shareBtn, 'click', this._shareDataset, this);
+        M.DomEvent.on(shareBtn, 'click', this._shareDataset, this);
     },
 
     _createDownloadBox : function (options) {
@@ -2221,15 +2221,15 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var file = options.file;
 
         // wrapper-3: download box
-        var toggles_wrapper3 = Wu.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var download_title = Wu.DomUtil.create('div', 'file-option title', toggles_wrapper3, 'Download dataset');
+        var toggles_wrapper3 = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var download_title = M.DomUtil.create('div', 'file-option title', toggles_wrapper3, 'Download dataset');
 
         // download button
-        var downloadBtnWrap = Wu.DomUtil.create('div', 'pos-rel height-42', toggles_wrapper3);
-        var downloadBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save', downloadBtnWrap, 'Download');
+        var downloadBtnWrap = M.DomUtil.create('div', 'pos-rel height-42', toggles_wrapper3);
+        var downloadBtn = M.DomUtil.create('div', 'smooth-fullscreen-save', downloadBtnWrap, 'Download');
 
         // download button
-        Wu.DomEvent.on(downloadBtn, 'click', file._downloadFile, file);
+        M.DomEvent.on(downloadBtn, 'click', file._downloadFile, file);
     },
 
     _createVectorizeBox : function (options) {
@@ -2237,18 +2237,18 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var file = options.file;
 
         // wrapper-3: download box
-        var toggles_wrapper3 = Wu.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var download_title = Wu.DomUtil.create('div', 'file-option title', toggles_wrapper3, 'Vectorize dataset');
+        var toggles_wrapper3 = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var download_title = M.DomUtil.create('div', 'file-option title', toggles_wrapper3, 'Vectorize dataset');
 
         var feedbackText = 'A new layer will be created with the raster data converted into vector format.';
-        var transparency_feedback = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label tiles-transparency', toggles_wrapper3, feedbackText);
+        var transparency_feedback = M.DomUtil.create('div', 'smooth-fullscreen-error-label tiles-transparency', toggles_wrapper3, feedbackText);
 
         // download button
-        var downloadBtnWrap = Wu.DomUtil.create('div', 'pos-rel height-42', toggles_wrapper3);
-        var downloadBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save', downloadBtnWrap, 'Vectorize');
+        var downloadBtnWrap = M.DomUtil.create('div', 'pos-rel height-42', toggles_wrapper3);
+        var downloadBtn = M.DomUtil.create('div', 'smooth-fullscreen-save', downloadBtnWrap, 'Vectorize');
 
         // download button
-        Wu.DomEvent.on(downloadBtn, 'click', file._vectorizeDataset, file);
+        M.DomEvent.on(downloadBtn, 'click', file._vectorizeDataset, file);
     },
 
     _createDeleteBox : function (options) {
@@ -2258,18 +2258,18 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var fullscreen = options.fullscreen;
 
         // wrapper-4: delete box
-        var toggles_wrapper4 = Wu.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var delete_title = Wu.DomUtil.create('div', 'file-option title red-font', toggles_wrapper4, 'Delete');
+        var toggles_wrapper4 = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var delete_title = M.DomUtil.create('div', 'file-option title red-font', toggles_wrapper4, 'Delete');
 
         // download button
-        var deleteBtnWrap = Wu.DomUtil.create('div', 'pos-rel height-42', toggles_wrapper4);
-        var deleteBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save red-btn', deleteBtnWrap, 'Delete');
+        var deleteBtnWrap = M.DomUtil.create('div', 'pos-rel height-42', toggles_wrapper4);
+        var deleteBtn = M.DomUtil.create('div', 'smooth-fullscreen-save red-btn', deleteBtnWrap, 'Delete');
 
         // deleete button event
-        Wu.DomEvent.on(deleteBtn, 'click', function (e) {
+        M.DomEvent.on(deleteBtn, 'click', function (e) {
 
             // confirm dialog
-            Wu.confirm('Are you sure you want to delete this dataset? This cannot be undone!', function (confirmed) {
+            M.confirm('Are you sure you want to delete this dataset? This cannot be undone!', function (confirmed) {
                 if (!confirmed) return;
 
                 // delete file
@@ -2303,18 +2303,18 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var file = options.file;
 
         // create divs
-        var toggles_wrapper9 = Wu.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var ralpha_title = Wu.DomUtil.create('div', 'file-option title', toggles_wrapper9, 'Transparency');
-        // var alpha_input = Wu.DomUtil.create('input', 'invite-input-form alpha-input', toggles_wrapper9);
+        var toggles_wrapper9 = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var ralpha_title = M.DomUtil.create('div', 'file-option title', toggles_wrapper9, 'Transparency');
+        // var alpha_input = M.DomUtil.create('input', 'invite-input-form alpha-input', toggles_wrapper9);
         // alpha_input.setAttribute('placeholder', 'Enter color or #hex value');
         var feedbackText = 'A new layer will be created with the cut color.';
-        var transparency_feedback = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label tiles-transparency', toggles_wrapper9, feedbackText);
-        var alphaBtnWrap = Wu.DomUtil.create('div', 'pos-rel height-42', toggles_wrapper9);
-        var whiteBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save', alphaBtnWrap, 'Cut white');
-        // var blackBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save left140', alphaBtnWrap, 'Cut black');
+        var transparency_feedback = M.DomUtil.create('div', 'smooth-fullscreen-error-label tiles-transparency', toggles_wrapper9, feedbackText);
+        var alphaBtnWrap = M.DomUtil.create('div', 'pos-rel height-42', toggles_wrapper9);
+        var whiteBtn = M.DomUtil.create('div', 'smooth-fullscreen-save', alphaBtnWrap, 'Cut white');
+        // var blackBtn = M.DomUtil.create('div', 'smooth-fullscreen-save left140', alphaBtnWrap, 'Cut black');
 
         // on click
-        Wu.DomEvent.on(whiteBtn, 'click', function (e) {
+        M.DomEvent.on(whiteBtn, 'click', function (e) {
             // var color = alpha_input.value;
 
             // cut raster
@@ -2412,34 +2412,34 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
         // label
         var invite_label = options.label;
-        var name = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label', content, invite_label);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label', content, invite_label);
 
         // container
-        var invite_container = Wu.DomUtil.create('div', 'invite-container', content);
+        var invite_container = M.DomUtil.create('div', 'invite-container', content);
 
         // sub-label
-        var sublabel = Wu.DomUtil.create('div', 'smooth-fullscreen-sub-label', content, options.sublabel);
+        var sublabel = M.DomUtil.create('div', 'smooth-fullscreen-sub-label', content, options.sublabel);
 
-        var invite_inner = Wu.DomUtil.create('div', 'invite-inner', invite_container);
-        var invite_input_container = Wu.DomUtil.create('div', 'invite-input-container', invite_inner);
+        var invite_inner = M.DomUtil.create('div', 'invite-inner', invite_container);
+        var invite_input_container = M.DomUtil.create('div', 'invite-input-container', invite_inner);
 
         // input box
-        var invite_input = Wu.DomUtil.create('input', 'invite-input-form', invite_input_container);
+        var invite_input = M.DomUtil.create('input', 'invite-input-form', invite_input_container);
 
         // invite list
-        var invite_list_container = Wu.DomUtil.create('div', 'invite-list-container', invite_container);
-        var invite_list_inner = Wu.DomUtil.create('div', 'invite-list-inner', invite_list_container);
+        var invite_list_container = M.DomUtil.create('div', 'invite-list-container', invite_container);
+        var invite_list_inner = M.DomUtil.create('div', 'invite-list-inner', invite_list_container);
 
         // remember div
         me._divs.invite_list_container = invite_list_container;
 
         // for manual scrollbar (js)
-        var monkey_scroll_bar = Wu.DomUtil.create('div', 'monkey-scroll-bar', invite_list_inner);
+        var monkey_scroll_bar = M.DomUtil.create('div', 'monkey-scroll-bar', invite_list_inner);
 
         // for holding list
-        var monkey_scroll_hider = Wu.DomUtil.create('div', 'monkey-scroll-hider', invite_list_inner);
-        var monkey_scroll_inner = Wu.DomUtil.create('div', 'monkey-scroll-inner', monkey_scroll_hider);
-        var monkey_scroll_list = Wu.DomUtil.create('div', 'monkey-scroll-list', monkey_scroll_inner);
+        var monkey_scroll_hider = M.DomUtil.create('div', 'monkey-scroll-hider', invite_list_inner);
+        var monkey_scroll_inner = M.DomUtil.create('div', 'monkey-scroll-inner', monkey_scroll_hider);
+        var monkey_scroll_list = M.DomUtil.create('div', 'monkey-scroll-list', monkey_scroll_inner);
 
         // list of all users
         var allUsers = _.sortBy(_.toArray(app.Users), function (u) {
@@ -2458,19 +2458,19 @@ Wu.Chrome.Data = Wu.Chrome.extend({
             if (user.getUuid() == app.Account.getUuid()) return;
 
             // divs
-            var list_item_container = Wu.DomUtil.create('div', 'monkey-scroll-list-item-container', monkey_scroll_list);
-            var avatar_container = Wu.DomUtil.create('div', 'monkey-scroll-list-item-avatar-container', list_item_container);
-            var avatar = Wu.DomUtil.create('div', 'monkey-scroll-list-item-avatar default-avatar', avatar_container);
-            var name_container = Wu.DomUtil.create('div', 'monkey-scroll-list-item-name-container', list_item_container);
-            var name_bold = Wu.DomUtil.create('div', 'monkey-scroll-list-item-name-bold', name_container);
-            var name_subtle = Wu.DomUtil.create('div', 'monkey-scroll-list-item-name-subtle', name_container);
+            var list_item_container = M.DomUtil.create('div', 'monkey-scroll-list-item-container', monkey_scroll_list);
+            var avatar_container = M.DomUtil.create('div', 'monkey-scroll-list-item-avatar-container', list_item_container);
+            var avatar = M.DomUtil.create('div', 'monkey-scroll-list-item-avatar default-avatar', avatar_container);
+            var name_container = M.DomUtil.create('div', 'monkey-scroll-list-item-name-container', list_item_container);
+            var name_bold = M.DomUtil.create('div', 'monkey-scroll-list-item-name-bold', name_container);
+            var name_subtle = M.DomUtil.create('div', 'monkey-scroll-list-item-name-subtle', name_container);
 
             // set name
             name_bold.innerHTML = user.getFullName();
             name_subtle.innerHTML = user.getEmail();
 
             // click event
-            Wu.DomEvent.on(list_item_container, 'click', function () {
+            M.DomEvent.on(list_item_container, 'click', function () {
                 // dont allow adding self
                 if (user.getUuid() == app.Account.getUuid()) return;
 
@@ -2500,17 +2500,17 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         // events
 
         // input focus, show dropdown
-        Wu.DomEvent.on(invite_input, 'focus', function () {
+        M.DomEvent.on(invite_input, 'focus', function () {
             me._onKeyUp();
         }, this);
 
         // focus input on any click
-        Wu.DomEvent.on(invite_input_container, 'click', function () {
+        M.DomEvent.on(invite_input_container, 'click', function () {
             invite_input.focus();
         }, this);
 
         // input keyup
-        Wu.DomEvent.on(invite_input, 'keydown', function (e) {
+        M.DomEvent.on(invite_input, 'keydown', function (e) {
 
             // get which key
             var key = event.which ? event.which : event.keyCode;
@@ -2532,7 +2532,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
                 delete me._onKeyUpparameters.checkedUsers[_.last(_.keys(me._onKeyUpparameters.checkedUsers))];
                 me._divs.users.pop();
-                Wu.DomUtil.remove(popped.user_container);
+                M.DomUtil.remove(popped.user_container);
             }
 
             // enter: blur input
@@ -2544,10 +2544,10 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
         }.bind(this), this);
 
-        Wu.DomEvent.on(invite_input, 'keyup', me._onKeyUp, me);
+        M.DomEvent.on(invite_input, 'keyup', me._onKeyUp, me);
 
         // close dropdown on any click
-        Wu.DomEvent.on(container, 'click', function (e) {
+        M.DomEvent.on(container, 'click', function (e) {
 
             // only if target == self
             var relevantTarget =    e.target == container ||
@@ -2611,7 +2611,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
         var names = userNames.join(', ');
 
-        if (Wu.confirm('Are you sure you want to share the dataset with ' + names + '?')) {
+        if (M.confirm('Are you sure you want to share the dataset with ' + names + '?')) {
 
             var userUuids = [];
             users.forEach(function (u) {
@@ -2624,7 +2624,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
             }, function (err, result) {
                 if (err) console.error('err', err);
 
-                var result = Wu.parse(result);
+                var result = M.parse(result);
 
                 if (result.err || !result.success) {
                     console.error('something went worng', result);
@@ -2661,11 +2661,11 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         if (existing) return;
 
         // insert user box in input area
-        var user_container = Wu.DomUtil.create('div', 'mini-user-container');
-        var user_inner = Wu.DomUtil.create('div', 'mini-user-inner', user_container);
-        var user_avatar = Wu.DomUtil.create('div', 'mini-user-avatar default-avatar', user_inner);
-        var user_name = Wu.DomUtil.create('div', 'mini-user-name', user_inner, user.getFullName());
-        var user_kill = Wu.DomUtil.create('div', 'mini-user-kill', user_inner, 'x');
+        var user_container = M.DomUtil.create('div', 'mini-user-container');
+        var user_inner = M.DomUtil.create('div', 'mini-user-inner', user_container);
+        var user_avatar = M.DomUtil.create('div', 'mini-user-avatar default-avatar', user_inner);
+        var user_name = M.DomUtil.create('div', 'mini-user-name', user_inner, user.getFullName());
+        var user_kill = M.DomUtil.create('div', 'mini-user-kill', user_inner, 'x');
 
         // insert before input
         var invite_input_container = invite_input.parentNode;
@@ -2673,10 +2673,10 @@ Wu.Chrome.Data = Wu.Chrome.extend({
 
 
         // click event (kill)
-        Wu.DomEvent.on(user_container, 'click', function () {
+        M.DomEvent.on(user_container, 'click', function () {
 
             // remove div
-            Wu.DomUtil.remove(user_container);
+            M.DomUtil.remove(user_container);
 
             // remove from array
             _.remove(this._divs.users, function (i) {
@@ -2834,10 +2834,10 @@ Wu.Chrome.Data = Wu.Chrome.extend({
                 this.layerListContainers[provider] = {};
 
                 // Create wrapper
-                this.layerListContainers[provider].wrapper = Wu.DomUtil.create('div', 'layer-list-container', this._layersContainer);
+                this.layerListContainers[provider].wrapper = M.DomUtil.create('div', 'layer-list-container', this._layersContainer);
 
                 // D3 Container
-                this.layerListContainers[provider].layerList = Wu.DomUtil.create('div', 'layer-list-container-layer-list', this.layerListContainers[provider].wrapper);
+                this.layerListContainers[provider].layerList = M.DomUtil.create('div', 'layer-list-container-layer-list', this.layerListContainers[provider].wrapper);
                 this.layerListContainers[provider].D3container = d3.select(this.layerListContainers[provider].layerList);
             }
 
@@ -2959,7 +2959,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         //     value: "Solid background color"
         // });
 
-        // this._backgroundLayerDropdown = new Wu.Dropdown({
+        // this._backgroundLayerDropdown = new M.Dropdown({
         //     fn: this._selectedActiveLayer.bind(this),
         //     appendTo: container,
         //     content: sortedLayers,
@@ -3044,7 +3044,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         var bgc = this._project.getBackgroundColor() ? this._project.getBackgroundColor() : '#000';
 
         // Create color selector
-        this._colorSelector = new Wu.button({
+        this._colorSelector = new M.button({
             id       : 'background-color',
             type     : 'colorball',
             right    : true,
@@ -3057,21 +3057,21 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         });
 
         // Create color selector title
-        this._colorSelectorTitle = Wu.DomUtil.create('div', 'base-layer-color-title', this._colorSelectorWrapper, 'Background color');
+        this._colorSelectorTitle = M.DomUtil.create('div', 'base-layer-color-title', this._colorSelectorWrapper, 'Background color');
 
     },
 
     _enableColorSelector : function () {
 
         // Show wrapper
-        Wu.DomUtil.removeClass(this._colorSelectorWrapper, 'displayNone');
+        M.DomUtil.removeClass(this._colorSelectorWrapper, 'displayNone');
 
     },
 
     _disableColorSelector : function () {
 
         // Hide wrapper
-        Wu.DomUtil.addClass(this._colorSelectorWrapper, 'displayNone');
+        M.DomUtil.addClass(this._colorSelectorWrapper, 'displayNone');
 
     },
 
@@ -3698,7 +3698,7 @@ Wu.Chrome.Data = Wu.Chrome.extend({
         this.editingLayerName = false;
 
         // fire layer edited
-        Wu.Mixin.Events.fire('layerEdited', {detail : {
+        M.Mixin.Events.fire('layerEdited', {detail : {
             layer: layer
         }});
 

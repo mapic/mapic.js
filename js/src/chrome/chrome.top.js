@@ -1,4 +1,4 @@
-Wu.Chrome.Top = Wu.Chrome.extend({
+M.Chrome.Top = M.Chrome.extend({
 
 	_ : 'topchrome',
 
@@ -20,29 +20,29 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 
 
 		// container to hold errything
-		this._container = Wu.DomUtil.create('div', cName, app._appPane);
+		this._container = M.DomUtil.create('div', cName, app._appPane);
 
 		// Menu Button
-		this._menuButton = Wu.DomUtil.create('div', 'chrome-menu-button', this._container);
+		this._menuButton = M.DomUtil.create('div', 'chrome-menu-button', this._container);
 
 		// css experiment
 		// this._menuButton.innerHTML = '<i class="top-button fa fa-bars"></i>';
 		this._menuButton.innerHTML = '<i class="top-button systemapic-icons systemapic-icon-projects-and-users"></i>';
 
 		// Project title container
-		this._projectTitleContainer = Wu.DomUtil.create('div', 'chrome-project-title-container', this._container);
+		this._projectTitleContainer = M.DomUtil.create('div', 'chrome-project-title-container', this._container);
 
 		// WRAPPER FOR BUTTONS			// todo: make pluggable
-		this._buttonWrapper = Wu.DomUtil.create('div', 'chrome-buttons', this._container);
+		this._buttonWrapper = M.DomUtil.create('div', 'chrome-buttons', this._container);
 
 		// Project title
-		// this._projectTitle = Wu.DomUtil.create('div', 'chrome-project-title', this._projectTitleContainer);
-		this._projectTitle = Wu.DomUtil.create('div', 'chrome-button chrome-project-title', this._buttonWrapper);
+		// this._projectTitle = M.DomUtil.create('div', 'chrome-project-title', this._projectTitleContainer);
+		this._projectTitle = M.DomUtil.create('div', 'chrome-button chrome-project-title', this._buttonWrapper);
 
 		// Client Logo
 		var clientLogoConfig = app.options.logos.clientLogo;
 		if (clientLogoConfig && clientLogoConfig.active) {
-			this._clientLogo = Wu.DomUtil.create('div', 'chrome-button chrome-client-logo', this._buttonWrapper);
+			this._clientLogo = M.DomUtil.create('div', 'chrome-button chrome-client-logo', this._buttonWrapper);
 			this._clientLogo.style.backgroundImage = clientLogoConfig.backgroundImage;
 			this._clientLogo.style.backgroundSize = clientLogoConfig.backgroundSize;
 			this._clientLogo.style.backgroundPosition = clientLogoConfig.backgroundPosition;
@@ -51,7 +51,7 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 			// add link
 			var logoLink = app.options.logos.portalLink;
 			if (logoLink) {
-				var linkDiv = Wu.DomUtil.create('a', 'logo-link');
+				var linkDiv = M.DomUtil.create('a', 'logo-link');
 				linkDiv.setAttribute('href', logoLink);
 				linkDiv.setAttribute('target', '_blank');
 				this._clientLogo.appendChild(linkDiv);
@@ -79,7 +79,7 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 		this._buttons = this._buttons || {};
 
 		// create button
-		var buttonDiv = Wu.DomUtil.create('div', className);
+		var buttonDiv = M.DomUtil.create('div', className);
 
 		// css exp // hacky! (depending if logo is shown or not)
 		var clientLogoConfig = app.options.logos.clientLogo;
@@ -93,10 +93,10 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 		};
 
 		// register event
-		Wu.DomEvent.on(buttonDiv, 'mousedown', trigger, ctx);
+		M.DomEvent.on(buttonDiv, 'mousedown', trigger, ctx);
 
 		// analytics
-		Wu.DomEvent.on(buttonDiv, 'mousedown', function () {
+		M.DomEvent.on(buttonDiv, 'mousedown', function () {
 			app.log('clicked:' + name);
 		});
 
@@ -111,12 +111,12 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 
 		if (app.activeProject) {
 			buttons.forEach(function (button) {
-				Wu.DomUtil.removeClass(button.div, 'displayNone');
+				M.DomUtil.removeClass(button.div, 'displayNone');
 			});
 
 		} else {
 			buttons.forEach(function (button) {
-				Wu.DomUtil.addClass(button.div, 'displayNone');
+				M.DomUtil.addClass(button.div, 'displayNone');
 			});
 		}
 	},
@@ -130,12 +130,12 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 	// todo: refactor into own script
 	initCPUclock : function (wrapper) {	
 
-		this._CPUwrapper = Wu.DomUtil.create('div', 'cpu-wrapper', wrapper);
+		this._CPUwrapper = M.DomUtil.create('div', 'cpu-wrapper', wrapper);
 
 		this._CPUbars = [];
 
 		for (var i = 0; i < 10; i++ ) {
-			this._CPUbars[i] = Wu.DomUtil.create('div', 'cpu-bar', this._CPUwrapper);
+			this._CPUbars[i] = M.DomUtil.create('div', 'cpu-bar', this._CPUwrapper);
 		}
 
 	},
@@ -163,16 +163,16 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 			var no = 9 - i;
 
 			// Set the right classes
-			(i >= p) ? Wu.DomUtil.removeClass(this._CPUbars[no], 'cpu-on') : Wu.DomUtil.addClass(this._CPUbars[no], 'cpu-on');
+			(i >= p) ? M.DomUtil.removeClass(this._CPUbars[no], 'cpu-on') : M.DomUtil.addClass(this._CPUbars[no], 'cpu-on');
 		}
 	},
 
 	_setHooks : function (onoff) {
 
 		// Toggle left pane
-		Wu.DomEvent[onoff](this._menuButton, 'click', this._toggleLeftPane, this);
+		M.DomEvent[onoff](this._menuButton, 'click', this._toggleLeftPane, this);
 
-		Wu.Mixin.Events[onoff]('_openLayerMenu', this._onLayMenuOpen, this);
+		M.Mixin.Events[onoff]('_openLayerMenu', this._onLayMenuOpen, this);
 
 	},
 
@@ -245,7 +245,7 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 	},
 
 	_getMaxTitleLength : function () {
-		var screenSize = Wu.Util.getWindowSize();
+		var screenSize = M.Util.getWindowSize();
 		if (screenSize.width < 1120) return 15;
 		if (screenSize.width < 1280) return 30;
 		if (screenSize.width < 1320) return 35;
@@ -262,18 +262,18 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 
 	_toggleLeftPane : function (e) {
 		this._leftPaneisOpen ? this.closeLeftPane() : this.openLeftPane();
-		Wu.Mixin.Events.fire('toggleLeftChrome', {detail : {leftPaneisOpen : this._leftPaneisOpen }}); 
+		M.Mixin.Events.fire('toggleLeftChrome', {detail : {leftPaneisOpen : this._leftPaneisOpen }}); 
 	},
 
 	openLeftPane : function () {
 
 		// close other tabs
-		Wu.Mixin.Events.fire('closeMenuTabs');
+		M.Mixin.Events.fire('closeMenuTabs');
 
 		this._leftPaneisOpen = true;
 
 		// Set active state of button
-		Wu.DomUtil.addClass(this._menuButton, 'active');
+		M.DomUtil.addClass(this._menuButton, 'active');
 
 		// open left chrome
 		app.Chrome.Left.open();
@@ -286,7 +286,7 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 		this._leftPaneisOpen = false;
 
 		// Remove active state of button
-		Wu.DomUtil.removeClass(this._menuButton, 'active');
+		M.DomUtil.removeClass(this._menuButton, 'active');
 
 		// close left chrome
 		app.Chrome.Left.close();
@@ -297,19 +297,19 @@ Wu.Chrome.Top = Wu.Chrome.extend({
 	_addAutoCloseTriggers : function () {
 
 		// map pane
-		Wu.DomEvent.on(app.MapPane._container, 'click', this.closeLeftPane, this);
+		M.DomEvent.on(app.MapPane._container, 'click', this.closeLeftPane, this);
 		
 		// chrome top
-		Wu.DomEvent.on(this._container, 'click', this.closeLeftPane, this);
+		M.DomEvent.on(this._container, 'click', this.closeLeftPane, this);
 	},
 
 	_removeAutoCloseTriggers : function () {
 
 		// map pane
-		Wu.DomEvent.off(app.MapPane._container, 'click', this.closeLeftPane, this);
+		M.DomEvent.off(app.MapPane._container, 'click', this.closeLeftPane, this);
 		
 		// chrome top
-		Wu.DomEvent.on(this._container, 'click', this.closeLeftPane, this);
+		M.DomEvent.on(this._container, 'click', this.closeLeftPane, this);
 	},
 
 	setContentHeights : function () {

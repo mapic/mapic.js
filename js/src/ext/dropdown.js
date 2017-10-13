@@ -1,8 +1,8 @@
-Wu.Dropdown = Wu.Class.extend({
+M.Dropdown = M.Class.extend({
     
-    // this function will run automatically on new Wu.Dropdown()
+    // this function will run automatically on new M.Dropdown()
 	initialize : function (options) {
-  		Wu.setOptions(this, options); // will put options in this.options
+  		M.setOptions(this, options); // will put options in this.options
     	this._initLayout();
 	},
 
@@ -11,31 +11,31 @@ Wu.Dropdown = Wu.Class.extend({
 		var className = 'base-layer-dropdown-container ';
 		if (this.options.className) className += this.options.className;
 
-		this._baseLayerDropdownContainer = Wu.DomUtil.create('div', className, this.options.appendTo);
+		this._baseLayerDropdownContainer = M.DomUtil.create('div', className, this.options.appendTo);
 		this._initLayoutActiveLayers();
 		this._initEventsListners();
 	},
 
 	_initLayoutActiveLayers : function (options) {
 		
-		this._activeLayersWrap = Wu.DomUtil.create('div', 'baselayer-dropdown-wrapper', this._baseLayerDropdownContainer);
-		this._selectWrap = Wu.DomUtil.create('div', 'chrome chrome-content active-layer select-wrap', this._activeLayersWrap);
-		this._select = Wu.DomUtil.create('div', 'form-combobox_inner', this._selectWrap);
-		this._form_combobox_input = Wu.DomUtil.create('div', 'form-combobox_input', this._select);
-		this._form_combobox__options_wrapper = Wu.DomUtil.create('div', 'form-combobox_options_wrapper', this._select);
-		this._form_combobox__options = Wu.DomUtil.create('ul', 'form-combobox_options', this._form_combobox__options_wrapper);
+		this._activeLayersWrap = M.DomUtil.create('div', 'baselayer-dropdown-wrapper', this._baseLayerDropdownContainer);
+		this._selectWrap = M.DomUtil.create('div', 'chrome chrome-content active-layer select-wrap', this._activeLayersWrap);
+		this._select = M.DomUtil.create('div', 'form-combobox_inner', this._selectWrap);
+		this._form_combobox_input = M.DomUtil.create('div', 'form-combobox_input', this._select);
+		this._form_combobox__options_wrapper = M.DomUtil.create('div', 'form-combobox_options_wrapper', this._select);
+		this._form_combobox__options = M.DomUtil.create('ul', 'form-combobox_options', this._form_combobox__options_wrapper);
 
 
 		this.options.options = [];
 
 		// Create select options
 		this.options.content.forEach(function(selectOption, i) {
-			var option = this.options.options[i] = Wu.DomUtil.create('li', 'form-combobox_option item', this._form_combobox__options, selectOption.title);
+			var option = this.options.options[i] = M.DomUtil.create('li', 'form-combobox_option item', this._form_combobox__options, selectOption.title);
 
 			if (selectOption.disabled) {
-				Wu.DomUtil.addClass(option, "disabled-option");
-				Wu.DomEvent.on(option, 'click', function (e) {
-					Wu.DomEvent.stop(e);
+				M.DomUtil.addClass(option, "disabled-option");
+				M.DomEvent.on(option, 'click', function (e) {
+					M.DomEvent.stop(e);
 				}, this);
 				return;
 			}
@@ -44,16 +44,16 @@ Wu.Dropdown = Wu.Class.extend({
 			option.id = selectOption.value;
 
 			if ( selectOption.isSelected ) {
-				Wu.DomUtil.addClass(option, 'hover');
+				M.DomUtil.addClass(option, 'hover');
 				this._selectOption = option;
 				this._hoverItem = option;
 				this._form_combobox_input.setAttribute('data-value', selectOption.value);
 				this._form_combobox_input.innerHTML = selectOption.title;
 			}
 
-			Wu.DomEvent.on(option, 'click', this._changeActive, this);
-			Wu.DomEvent.on(option, 'mouseover', this._optionHover, this);
-			Wu.DomEvent.on(option, 'mousemove', this._optionHover, this);
+			M.DomEvent.on(option, 'click', this._changeActive, this);
+			M.DomEvent.on(option, 'mouseover', this._optionHover, this);
+			M.DomEvent.on(option, 'mousemove', this._optionHover, this);
 
 		}.bind(this));
 
@@ -63,7 +63,7 @@ Wu.Dropdown = Wu.Class.extend({
 		}
 
 		this._form_combobox_input.setAttribute("tabindex", 1);
-		Wu.DomEvent.on(this._form_combobox_input, 'keydown', this._onKeydown, this);
+		M.DomEvent.on(this._form_combobox_input, 'keydown', this._onKeydown, this);
 		
 	},
 
@@ -77,7 +77,7 @@ Wu.Dropdown = Wu.Class.extend({
 
 		for (var k in options) {
 
-			var isElem = Wu.Tools.isElement(options[k]);
+			var isElem = M.Tools.isElement(options[k]);
 			if ( !isElem ) return;
 
 			var uuid = options[k].getAttribute('data-value');
@@ -97,35 +97,35 @@ Wu.Dropdown = Wu.Class.extend({
 
 
 	_initEventsListners : function () {
-		Wu.DomEvent.on(this._select, 'click', this._toggleListItems, this);
-		Wu.DomEvent.on(this._selectWrap, 'click', function (e) {
-			Wu.DomEvent.stop(e);
+		M.DomEvent.on(this._select, 'click', this._toggleListItems, this);
+		M.DomEvent.on(this._selectWrap, 'click', function (e) {
+			M.DomEvent.stop(e);
 		}, this);
-		Wu.Mixin.Events.on('appClick', this._hideListItems, this);
+		M.Mixin.Events.on('appClick', this._hideListItems, this);
 	},
 
 	_toggleListItems : function () {
-		if (Wu.DomUtil.hasClass(this._form_combobox__options_wrapper, "open")) {
-			Wu.DomUtil.removeClass(this._form_combobox__options_wrapper, "open");
+		if (M.DomUtil.hasClass(this._form_combobox__options_wrapper, "open")) {
+			M.DomUtil.removeClass(this._form_combobox__options_wrapper, "open");
 		} else {
-			Wu.DomUtil.addClass(this._form_combobox__options_wrapper, "open");
+			M.DomUtil.addClass(this._form_combobox__options_wrapper, "open");
 		}
 	},
 
 	_showListItems : function () {
-		if (!Wu.DomUtil.hasClass(this._form_combobox__options_wrapper, "open")) {
-			Wu.DomUtil.addClass(this._form_combobox__options_wrapper, "open");
+		if (!M.DomUtil.hasClass(this._form_combobox__options_wrapper, "open")) {
+			M.DomUtil.addClass(this._form_combobox__options_wrapper, "open");
 		}
 	},
 
 	_hideListItems : function () {
-		if (Wu.DomUtil.hasClass(this._form_combobox__options_wrapper, "open")) {
-			Wu.DomUtil.removeClass(this._form_combobox__options_wrapper, "open");
+		if (M.DomUtil.hasClass(this._form_combobox__options_wrapper, "open")) {
+			M.DomUtil.removeClass(this._form_combobox__options_wrapper, "open");
 		}
 	},
 
 	_changeActive : function (e) {
-		Wu.DomEvent.stop(e);
+		M.DomEvent.stop(e);
 		this._toggleListItems();
 		this.setValue({
 			value: e.currentTarget.getAttribute('data-value'),
@@ -145,45 +145,45 @@ Wu.Dropdown = Wu.Class.extend({
 		this._form_combobox_input.setAttribute('data-value', selectOption.value);
 		this._form_combobox_input.innerHTML = selectOption.title;
 
-		if (this._selectOption && Wu.DomUtil.hasClass(this._selectOption, "hover")) {
-			Wu.DomUtil.removeClass(this._selectOption, 'hover');
+		if (this._selectOption && M.DomUtil.hasClass(this._selectOption, "hover")) {
+			M.DomUtil.removeClass(this._selectOption, 'hover');
 		}
 		
 		this._selectOption = document.getElementById(selectOption.value);
-		Wu.DomUtil.addClass(this._selectOption, 'hover');
+		M.DomUtil.addClass(this._selectOption, 'hover');
 		this._hoverItem = this._selectOption;
 		this.options.fn(selectOption.value);
 	},
 
 	_optionHover: function (e) {
-		if (this._hoverItem && Wu.DomUtil.hasClass(this._hoverItem, "hover")) {
-			Wu.DomUtil.removeClass(this._hoverItem, "hover");	
+		if (this._hoverItem && M.DomUtil.hasClass(this._hoverItem, "hover")) {
+			M.DomUtil.removeClass(this._hoverItem, "hover");	
 		}
 		this._hoverItem = e.currentTarget;
-		Wu.DomUtil.addClass(e.currentTarget, "hover");
+		M.DomUtil.addClass(e.currentTarget, "hover");
 	},
 
 	_hoverDown: function () {
-		if (this._hoverItem.nextSibling && Wu.DomUtil.hasClass(this._hoverItem.nextSibling, "form-combobox_option")) {
-			Wu.DomUtil.removeClass(this._hoverItem, "hover");
+		if (this._hoverItem.nextSibling && M.DomUtil.hasClass(this._hoverItem.nextSibling, "form-combobox_option")) {
+			M.DomUtil.removeClass(this._hoverItem, "hover");
 			this._hoverItem = this._hoverItem.nextSibling;
-			if (this._hoverItem && Wu.DomUtil.hasClass(this._hoverItem, "disabled-option")) {
+			if (this._hoverItem && M.DomUtil.hasClass(this._hoverItem, "disabled-option")) {
 				this._hoverDown();
 				return;
 			}
-			Wu.DomUtil.addClass(this._hoverItem, "hover");
+			M.DomUtil.addClass(this._hoverItem, "hover");
 		}
 	},
 
 	_hoverUp: function () {
-		if (this._hoverItem.previousSibling && Wu.DomUtil.hasClass(this._hoverItem.previousSibling, "form-combobox_option")) {
-			Wu.DomUtil.removeClass(this._hoverItem, "hover");
+		if (this._hoverItem.previousSibling && M.DomUtil.hasClass(this._hoverItem.previousSibling, "form-combobox_option")) {
+			M.DomUtil.removeClass(this._hoverItem, "hover");
 			this._hoverItem = this._hoverItem.previousSibling;
-			if (this._hoverItem && Wu.DomUtil.hasClass(this._hoverItem, "disabled-option")) {
+			if (this._hoverItem && M.DomUtil.hasClass(this._hoverItem, "disabled-option")) {
 				this._hoverUp();
 				return;
 			}
-			Wu.DomUtil.addClass(this._hoverItem, "hover");
+			M.DomUtil.addClass(this._hoverItem, "hover");
 		}
 	},
 
@@ -215,7 +215,7 @@ Wu.Dropdown = Wu.Class.extend({
 			this._hideListItems();
 		}
 		if (key === 38 || key === 40 || key === 27 || key === 32 || key === 13) {
-			Wu.DomEvent.stop(e);	
+			M.DomEvent.stop(e);	
 		}
 
 
@@ -229,7 +229,7 @@ Wu.Dropdown = Wu.Class.extend({
 	_setKey : function (key) {
 
 		// Get character
-		var _char = Wu.Tools.keyMap(key).toUpperCase();
+		var _char = M.Tools.keyMap(key).toUpperCase();
 
 		// Go through list of options, jump to first hit
 	 	for ( var k in this.options.content ) {

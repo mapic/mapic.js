@@ -1,4 +1,4 @@
-Wu.User = Wu.Class.extend({ 
+M.User = M.Class.extend({ 
 
 	initialize : function (store) {
 
@@ -12,7 +12,7 @@ Wu.User = Wu.Class.extend({
 	},
 
 	_listen : function () {
-		// Wu.Mixin.Events.on('closeMenuTabs',   this._onCloseMenuTabs, this);
+		// M.Mixin.Events.on('closeMenuTabs',   this._onCloseMenuTabs, this);
 	},
 
 	initFiles : function () {
@@ -24,7 +24,7 @@ Wu.User = Wu.Class.extend({
 
 		// create
 		files.forEach(function (file) {
-			this._files[file.uuid] = new Wu.Model.File(file);
+			this._files[file.uuid] = new M.Model.File(file);
 		}, this);
 	},
 
@@ -96,7 +96,7 @@ Wu.User = Wu.Class.extend({
 					description : err
 				});
 			}
-			var result = Wu.parse(response);
+			var result = M.parse(response);
 
 			// set feedback 
 			app.feedback.setMessage({
@@ -135,7 +135,7 @@ Wu.User = Wu.Class.extend({
 
 	setFile : function (file) {
 		this.store.files.push(file);
-		this._files[file.uuid] = new Wu.Model.File(file);
+		this._files[file.uuid] = new M.Model.File(file);
 		return this._files[file.uuid];
 	},
 
@@ -233,12 +233,12 @@ Wu.User = Wu.Class.extend({
 		app.api.updateUser(changes, function (err, result) {
 			if (err) console.error('err', err);
 
-			result = Wu.parse(result);
+			result = M.parse(result);
 
 			if (result.error) {
 				console.error('something went worng', result);
 			} else {
-				Wu.Mixin.Events.fire('userUpdated', { detail : {
+				M.Mixin.Events.fire('userUpdated', { detail : {
 					userId : changes.uuid
 				}});
 			}

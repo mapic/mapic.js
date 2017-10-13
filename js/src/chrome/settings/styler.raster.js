@@ -1,4 +1,4 @@
-Wu.RasterStyler = Wu.Class.extend({
+M.RasterStyler = M.Class.extend({
 
 	type       : 'cube',
 	pixelWidth : 369,
@@ -43,19 +43,19 @@ Wu.RasterStyler = Wu.Class.extend({
 
 
 		// Create divs
-		this._wrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper raster-styler', this.options.container);
-		this._rangeMarks = Wu.DomUtil.create('div', 'raster-range-marks', this._wrapper);
-		this._sliderContainer = Wu.DomUtil.create('div', 'raster-range-slider', this._wrapper);		
-		this._rangeWrapper = Wu.DomUtil.create('div', 'raster-color-range-wrapper', this._wrapper);
+		this._wrapper = M.DomUtil.create('div', 'chrome-content-section-wrapper raster-styler', this.options.container);
+		this._rangeMarks = M.DomUtil.create('div', 'raster-range-marks', this._wrapper);
+		this._sliderContainer = M.DomUtil.create('div', 'raster-range-slider', this._wrapper);		
+		this._rangeWrapper = M.DomUtil.create('div', 'raster-color-range-wrapper', this._wrapper);
 
 		// Description
-		this._descriptions = Wu.DomUtil.create('div', 'raster-styler-description', this._wrapper);
+		this._descriptions = M.DomUtil.create('div', 'raster-styler-description', this._wrapper);
 		this._descriptions.innerHTML = 'Double click the colored line to create a new handle.<br>Double click the handle to remove it.'
 
 		// For list
-		this._stopListContainer = Wu.DomUtil.create('div', 'raster-stop-list-container', this._wrapper);	
-		this._stopListButtonContainer = Wu.DomUtil.create('div', 'raster-stops-button-container', this._wrapper);
-		this._stopListButton = Wu.DomUtil.create('div', 'raster-stops-view-as-list-button', this._stopListButtonContainer, 'View details');
+		this._stopListContainer = M.DomUtil.create('div', 'raster-stop-list-container', this._wrapper);	
+		this._stopListButtonContainer = M.DomUtil.create('div', 'raster-stops-button-container', this._wrapper);
+		this._stopListButton = M.DomUtil.create('div', 'raster-stops-view-as-list-button', this._stopListButtonContainer, 'View details');
 		
 		// Render slider
 		this._renderSlider();
@@ -63,7 +63,7 @@ Wu.RasterStyler = Wu.Class.extend({
 	},
 
 	addHooks : function () {
-		Wu.DomEvent.on(this._stopListButton, 'click', this.toggleStoplist, this);
+		M.DomEvent.on(this._stopListButton, 'click', this.toggleStoplist, this);
 	},	
 
 	predefinedRange : function (no) {
@@ -110,20 +110,20 @@ Wu.RasterStyler = Wu.Class.extend({
 
 	_clearStop : function (stop) {
 
-		var wrapperElement = Wu.Tools.isElement(stop.DOM.wrapper);
+		var wrapperElement = M.Tools.isElement(stop.DOM.wrapper);
 		if ( wrapperElement ) stop.DOM.wrapper.remove();
 		stop.DOM.wrapper = null;
 
-		var containerElement = Wu.Tools.isElement(stop.DOM.container);
+		var containerElement = M.Tools.isElement(stop.DOM.container);
 		if ( containerElement ) stop.DOM.container.remove();
 		stop.DOM.container = null;	
 
-		var rangeElement = Wu.Tools.isElement(stop.DOM.range);
+		var rangeElement = M.Tools.isElement(stop.DOM.range);
 		if ( rangeElement ) stop.DOM.range.remove();
 		stop.DOM.range = null;
 
 		if ( stop.DOM.colorBall && stop.DOM.colorBall.color ) {
-			var colorElement = Wu.Tools.isElement(stop.DOM.colorBall.color);
+			var colorElement = M.Tools.isElement(stop.DOM.colorBall.color);
 			if ( colorElement ) {
 				stop.DOM.colorBall.color.remove();
 				stop.DOM.colorBall.color = null;
@@ -206,7 +206,7 @@ Wu.RasterStyler = Wu.Class.extend({
 		this.slider.on('hover', function( value ) { this.hoverValue = value; }.bind(this));
 
 		// Click event
-		Wu.DomEvent.on(this.slider.target, 'dblclick', this.rangeClick, this);
+		M.DomEvent.on(this.slider.target, 'dblclick', this.rangeClick, this);
 
 
 		// EACH STOP
@@ -221,25 +221,25 @@ Wu.RasterStyler = Wu.Class.extend({
 			stop.DOM = {}
 
 			// Outer wrapper
-			stop.DOM.wrapper   = Wu.DomUtil.create('div', 'raster-color-selector-wrapper', this._rangeWrapper);
+			stop.DOM.wrapper   = M.DomUtil.create('div', 'raster-color-selector-wrapper', this._rangeWrapper);
 			
 			// Content container
-			stop.DOM.container = Wu.DomUtil.create('div', 'raster-color-selector', stop.DOM.wrapper);
+			stop.DOM.container = M.DomUtil.create('div', 'raster-color-selector', stop.DOM.wrapper);
 
 			// Range container
-			stop.DOM.range     = Wu.DomUtil.create('div', 'raster-color-range', stop.DOM.wrapper);
+			stop.DOM.range     = M.DomUtil.create('div', 'raster-color-range', stop.DOM.wrapper);
 
 			// Number
-			stop.DOM.number    = Wu.DomUtil.create('div', 'raster-color-number', stop.DOM.container, stop.val+this.range.min);
+			stop.DOM.number    = M.DomUtil.create('div', 'raster-color-number', stop.DOM.container, stop.val+this.range.min);
 
 			// Color selector
-			stop.DOM.colorBall = new Wu.button({
+			stop.DOM.colorBall = new M.button({
 				appendTo  : stop.DOM.container,
 				type      : 'colorball',
 				id        : i,
 				fn 	  : this._updateColor.bind(this),
 				right     : false,
-				value     : Wu.Tools.rgbaStyleStr(this.stops[i].col),
+				value     : M.Tools.rgbaStyleStr(this.stops[i].col),
 				className : 'raster-color',
 				on        : true,
 				showAlpha : true,
@@ -301,7 +301,7 @@ Wu.RasterStyler = Wu.Class.extend({
 		this.stops.forEach(function (stop, i) {
 
 			var pixelsFromLeft = Math.round((stop.val / span) * this.pixelWidth);
-			var style = Wu.Tools.transformTranslate(pixelsFromLeft, 0);			
+			var style = M.Tools.transformTranslate(pixelsFromLeft, 0);			
 			stop.DOM.wrapper.setAttribute('style', style);
 
 		}.bind(this));
@@ -429,7 +429,7 @@ Wu.RasterStyler = Wu.Class.extend({
 		var percent = newValRange/valRange;
 
 		// Mix colors
-		var newRGB = Wu.Tools.mixColors(rgba1, rgba2, percent);
+		var newRGB = M.Tools.mixColors(rgba1, rgba2, percent);
 
 		// Data for new stop
 		var newStop = {
@@ -485,7 +485,7 @@ Wu.RasterStyler = Wu.Class.extend({
 	rangeClick : function (e) {
 
 		var target = e.target;
-		var handleClick = Wu.DomUtil.hasClass(target, 'noUi-handle');
+		var handleClick = M.DomUtil.hasClass(target, 'noUi-handle');
 
 		// If we've clicked on a handle, remove stop
 		// If we've clicked on the color strip, add stop
@@ -596,29 +596,29 @@ Wu.RasterStyler = Wu.Class.extend({
 		// CREATE DESCRIPTION LINE
 
 		// LINE
-		var line = Wu.DomUtil.create('div', 'stop-list-each', this._stopListContainer);
+		var line = M.DomUtil.create('div', 'stop-list-each', this._stopListContainer);
 
 		// NUMBER
-		var noWrap  = Wu.DomUtil.create('div', 'stop-list-no stop-list-item', line);
-		var noTitle = Wu.DomUtil.create('div', 'stop-list-no-title', noWrap, '#');
+		var noWrap  = M.DomUtil.create('div', 'stop-list-no stop-list-item', line);
+		var noTitle = M.DomUtil.create('div', 'stop-list-no-title', noWrap, '#');
 
 		// VALUE
-		var valWrap  = Wu.DomUtil.create('div',   'stop-list-val stop-list-item', line);
-		var valInput = Wu.DomUtil.create('div', 'stop-list-title', valWrap, 'Value');
+		var valWrap  = M.DomUtil.create('div',   'stop-list-val stop-list-item', line);
+		var valInput = M.DomUtil.create('div', 'stop-list-title', valWrap, 'Value');
 
 		// COLORS
-		var colWrap = Wu.DomUtil.create('div', 'stop-list-color-wrapper stop-list-item', line);
-		var rInput  = Wu.DomUtil.create('div', 'stop-color', colWrap, 'Red');						
-		var gInput  = Wu.DomUtil.create('div', 'stop-color', colWrap, 'Green');
-		var bInput  = Wu.DomUtil.create('div', 'stop-color', colWrap, 'Blue');
+		var colWrap = M.DomUtil.create('div', 'stop-list-color-wrapper stop-list-item', line);
+		var rInput  = M.DomUtil.create('div', 'stop-color', colWrap, 'Red');						
+		var gInput  = M.DomUtil.create('div', 'stop-color', colWrap, 'Green');
+		var bInput  = M.DomUtil.create('div', 'stop-color', colWrap, 'Blue');
 
 		// ALPHA
-		var alphaWrap = Wu.DomUtil.create('div', 'stop-list-alpha-wrapper stop-list-item', line);			
-		var aInput  = Wu.DomUtil.create('div', 'stop-color', alphaWrap, 'Opacity');
+		var alphaWrap = M.DomUtil.create('div', 'stop-list-alpha-wrapper stop-list-item', line);			
+		var aInput  = M.DomUtil.create('div', 'stop-color', alphaWrap, 'Opacity');
 
 		// COLOR
-		var colorWrap = Wu.DomUtil.create('div', 'stop-list-color-ball-wrapper', line);
-		var color = Wu.DomUtil.create('div', 'stop-list-color-ball', colorWrap);
+		var colorWrap = M.DomUtil.create('div', 'stop-list-color-ball-wrapper', line);
+		var color = M.DomUtil.create('div', 'stop-list-color-ball', colorWrap);
 
 
 
@@ -639,7 +639,7 @@ Wu.RasterStyler = Wu.Class.extend({
 			var a = stop.col.a ? stop.col.a : '0';
 
 			// LINE
-			_h.line = Wu.DomUtil.create('div', 'stop-list-each', this._stopListContainer);
+			_h.line = M.DomUtil.create('div', 'stop-list-each', this._stopListContainer);
 
 			// ADD NEW STOP
 			if ( this.stops[i+1] ) {
@@ -648,66 +648,66 @@ Wu.RasterStyler = Wu.Class.extend({
 				// and after is greater than two.
 				if ( diff >= 2 ) {
 					var icon = '<i class="fa fa-plus-circle" no="' + i + '"></i>';
-					_h.addButton = Wu.DomUtil.create('div', 'stop-list-add-color target-add', _h.line, icon);				
-					Wu.DomEvent.on(_h.addButton, 'click', this.addButtonClick, this);					
+					_h.addButton = M.DomUtil.create('div', 'stop-list-add-color target-add', _h.line, icon);				
+					M.DomEvent.on(_h.addButton, 'click', this.addButtonClick, this);					
 				}
 			}
 
 			// NUMBER
-			_h.noWrap  = Wu.DomUtil.create('div', 'stop-list-no stop-list-item', _h.line);
-			_h.noTitle = Wu.DomUtil.create('div', 'stop-list-no-title', _h.noWrap, '<b>' + (i+1) + '</b>');
+			_h.noWrap  = M.DomUtil.create('div', 'stop-list-no stop-list-item', _h.line);
+			_h.noTitle = M.DomUtil.create('div', 'stop-list-no-title', _h.noWrap, '<b>' + (i+1) + '</b>');
 
 			// VALUE
-			_h.valWrap  = Wu.DomUtil.create('div',   'stop-list-val stop-list-item', _h.line);
-			_h.valInput = Wu.DomUtil.create('input', 'stop-list-title', _h.valWrap, v);
+			_h.valWrap  = M.DomUtil.create('div',   'stop-list-val stop-list-item', _h.line);
+			_h.valInput = M.DomUtil.create('input', 'stop-list-title', _h.valWrap, v);
 			_h.valInput.value = v;
 			_h.valInput.setAttribute('no', i);
 			_h.valInput.setAttribute('type', 'v');
 			_h.valInput.setAttribute('tabindex', tabIndex++);
 
 			// COLORS
-			_h.colWrap = Wu.DomUtil.create('div', 'stop-list-color-wrapper stop-list-item', _h.line);
+			_h.colWrap = M.DomUtil.create('div', 'stop-list-color-wrapper stop-list-item', _h.line);
 			
 			// RED
-			_h.rInput  = Wu.DomUtil.create('input', 'stop-color', _h.colWrap, r);
+			_h.rInput  = M.DomUtil.create('input', 'stop-color', _h.colWrap, r);
 			_h.rInput.value = r;
 			_h.rInput.setAttribute('no', i);
 			_h.rInput.setAttribute('type', 'r');
 			_h.rInput.setAttribute('tabindex', tabIndex++);
 				
 			// GREEN		
-			_h.gInput  = Wu.DomUtil.create('input', 'stop-color', _h.colWrap, g);
+			_h.gInput  = M.DomUtil.create('input', 'stop-color', _h.colWrap, g);
 			_h.gInput.value = g;
 			_h.gInput.setAttribute('no', i);
 			_h.gInput.setAttribute('type', 'g');
 			_h.gInput.setAttribute('tabindex', tabIndex++);
 
 			// BLUE
-			_h.bInput  = Wu.DomUtil.create('input', 'stop-color', _h.colWrap, b);
+			_h.bInput  = M.DomUtil.create('input', 'stop-color', _h.colWrap, b);
 			_h.bInput.value = b;
 			_h.bInput.setAttribute('no', i);
 			_h.bInput.setAttribute('type', 'b');
 			_h.bInput.setAttribute('tabindex', tabIndex++);
 			
 			// ALPHA
-			_h.alphaWrap = Wu.DomUtil.create('div', 'stop-list-alpha-wrapper stop-list-item', _h.line);			
-			_h.aInput  = Wu.DomUtil.create('input', 'stop-color', _h.alphaWrap, a);
+			_h.alphaWrap = M.DomUtil.create('div', 'stop-list-alpha-wrapper stop-list-item', _h.line);			
+			_h.aInput  = M.DomUtil.create('input', 'stop-color', _h.alphaWrap, a);
 			_h.aInput.value = a;
 			_h.aInput.setAttribute('no', i);
 			_h.aInput.setAttribute('type', 'a');
 			_h.aInput.setAttribute('tabindex', tabIndex++);
 
 			// COLOR
-			_h.colorWrap = Wu.DomUtil.create('div', 'stop-list-color-ball-wrapper', _h.line);
+			_h.colorWrap = M.DomUtil.create('div', 'stop-list-color-ball-wrapper', _h.line);
 
 			// Color selector
-			_h.color = new Wu.button({
+			_h.color = new M.button({
 				appendTo  : _h.colorWrap,
 				type      : 'colorball',
 				id        : i,
 				fn 	  : this._forceUpdateColor.bind(this),
 				right     : false,
-				value     : Wu.Tools.rgbaStyleStr(stop.col),
+				value     : M.Tools.rgbaStyleStr(stop.col),
 				className : 'stop-list-color-ball',
 				on        : true,
 				showAlpha : true,
@@ -716,32 +716,32 @@ Wu.RasterStyler = Wu.Class.extend({
 
 
 			// Catch arrow movements			
-			Wu.DomEvent.on(_h.valInput, 'keydown', this.routKey, this);
-			Wu.DomEvent.on(_h.rInput,   'keydown', this.routKey, this);
-			Wu.DomEvent.on(_h.gInput,   'keydown', this.routKey, this);
-			Wu.DomEvent.on(_h.bInput,   'keydown', this.routKey, this);
-			Wu.DomEvent.on(_h.aInput,   'keydown', this.routKey, this);
+			M.DomEvent.on(_h.valInput, 'keydown', this.routKey, this);
+			M.DomEvent.on(_h.rInput,   'keydown', this.routKey, this);
+			M.DomEvent.on(_h.gInput,   'keydown', this.routKey, this);
+			M.DomEvent.on(_h.bInput,   'keydown', this.routKey, this);
+			M.DomEvent.on(_h.aInput,   'keydown', this.routKey, this);
 
 			// Force numeric value
-			_h.valInput.onkeypress = Wu.Tools.forceNumeric;
-			_h.rInput.onkeypress   = Wu.Tools.forceNumeric;
-			_h.gInput.onkeypress   = Wu.Tools.forceNumeric;
-			_h.bInput.onkeypress   = Wu.Tools.forceNumeric;
-			_h.aInput.onkeypress   = Wu.Tools.forceNumeric;
+			_h.valInput.onkeypress = M.Tools.forceNumeric;
+			_h.rInput.onkeypress   = M.Tools.forceNumeric;
+			_h.gInput.onkeypress   = M.Tools.forceNumeric;
+			_h.bInput.onkeypress   = M.Tools.forceNumeric;
+			_h.aInput.onkeypress   = M.Tools.forceNumeric;
 
 			// Update
-			Wu.DomEvent.on(_h.valInput, 'blur', this.rasterInputChange, this);
-			Wu.DomEvent.on(_h.rInput, 'blur', this.rasterInputChange, this);
-			Wu.DomEvent.on(_h.gInput, 'blur', this.rasterInputChange, this);
-			Wu.DomEvent.on(_h.bInput, 'blur', this.rasterInputChange, this);
-			Wu.DomEvent.on(_h.aInput, 'blur', this.rasterInputChange, this);
+			M.DomEvent.on(_h.valInput, 'blur', this.rasterInputChange, this);
+			M.DomEvent.on(_h.rInput, 'blur', this.rasterInputChange, this);
+			M.DomEvent.on(_h.gInput, 'blur', this.rasterInputChange, this);
+			M.DomEvent.on(_h.bInput, 'blur', this.rasterInputChange, this);
+			M.DomEvent.on(_h.aInput, 'blur', this.rasterInputChange, this);
 
 
 			if ( allowKilling ) {
 				
 				var icon = '<i class="fa fa-minus-circle" no="' + i + '"></i>';
-				_h.killButton = Wu.DomUtil.create('div', 'stop-list-kill-color target-remove', _h.line, icon);
-				Wu.DomEvent.on(_h.killButton, 'click', this.killStopClick, this);
+				_h.killButton = M.DomUtil.create('div', 'stop-list-kill-color target-remove', _h.line, icon);
+				M.DomEvent.on(_h.killButton, 'click', this.killStopClick, this);
 
 			}
 
@@ -749,34 +749,34 @@ Wu.RasterStyler = Wu.Class.extend({
 
 
 		// Add line for adjusting range
-		var rangeWrapper = Wu.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
-		var rangeTitle = Wu.DomUtil.create('div', 'raster-styler-range-title', rangeWrapper, 'Data range:');
-		var rangeMinWrapper = Wu.DomUtil.create('div', 'raster-styler-range-min-wrapper', rangeWrapper);
-		var rangeMinDescr   = Wu.DomUtil.create('div', 'stop-color', rangeMinWrapper, 'min');
-		var rangeMinInput   = Wu.DomUtil.create('input', 'raster-styler-range-min stop-color', rangeMinWrapper);
-		var rangeMaxWrapper = Wu.DomUtil.create('div', 'raster-styler-range-max-wrapper', rangeWrapper);
-		var rangeMaxDescr   = Wu.DomUtil.create('div', 'stop-color', rangeMaxWrapper, 'max');
-		var rangeMaxInput   = Wu.DomUtil.create('input', 'raster-styler-range-max stop-color', rangeMaxWrapper);
+		var rangeWrapper = M.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
+		var rangeTitle = M.DomUtil.create('div', 'raster-styler-range-title', rangeWrapper, 'Data range:');
+		var rangeMinWrapper = M.DomUtil.create('div', 'raster-styler-range-min-wrapper', rangeWrapper);
+		var rangeMinDescr   = M.DomUtil.create('div', 'stop-color', rangeMinWrapper, 'min');
+		var rangeMinInput   = M.DomUtil.create('input', 'raster-styler-range-min stop-color', rangeMinWrapper);
+		var rangeMaxWrapper = M.DomUtil.create('div', 'raster-styler-range-max-wrapper', rangeWrapper);
+		var rangeMaxDescr   = M.DomUtil.create('div', 'stop-color', rangeMaxWrapper, 'max');
+		var rangeMaxInput   = M.DomUtil.create('input', 'raster-styler-range-max stop-color', rangeMaxWrapper);
 
 		rangeMinInput.value = this.range.min;
 		rangeMaxInput.value = this.range.max;
-		Wu.DomEvent.on(rangeMinInput, 'blur', this._saveRange, this);
-		Wu.DomEvent.on(rangeMaxInput, 'blur', this._saveRange, this);
-		rangeMaxInput.onkeypress = Wu.Tools.forceNumeric;
-		rangeMinInput.onkeypress = Wu.Tools.forceNumeric;
+		M.DomEvent.on(rangeMinInput, 'blur', this._saveRange, this);
+		M.DomEvent.on(rangeMaxInput, 'blur', this._saveRange, this);
+		rangeMaxInput.onkeypress = M.Tools.forceNumeric;
+		rangeMinInput.onkeypress = M.Tools.forceNumeric;
 		this.rangeMinInput = rangeMinInput;
 		this.rangeMaxInput = rangeMaxInput;
 
 
 		// add line for setting min/max of scale
-		var scaleWrapper = Wu.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
-		var scaleTitle = Wu.DomUtil.create('div', 'raster-styler-range-title', scaleWrapper, 'Scale range:');
-		var scaleMinWrapper = Wu.DomUtil.create('div', 'raster-styler-range-min-wrapper', scaleWrapper);
-		var scaleMinDescr   = Wu.DomUtil.create('div', 'stop-color', scaleMinWrapper, 'min');
-		var scaleMinInput   = Wu.DomUtil.create('input', 'raster-styler-range-min stop-color', scaleMinWrapper);
-		var scaleMaxWrapper = Wu.DomUtil.create('div', 'raster-styler-range-max-wrapper', scaleWrapper);
-		var scaleMaxDescr   = Wu.DomUtil.create('div', 'stop-color', scaleMaxWrapper, 'max');
-		var scaleMaxInput   = Wu.DomUtil.create('input', 'raster-styler-range-max stop-color', scaleMaxWrapper);
+		var scaleWrapper = M.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
+		var scaleTitle = M.DomUtil.create('div', 'raster-styler-range-title', scaleWrapper, 'Scale range:');
+		var scaleMinWrapper = M.DomUtil.create('div', 'raster-styler-range-min-wrapper', scaleWrapper);
+		var scaleMinDescr   = M.DomUtil.create('div', 'stop-color', scaleMinWrapper, 'min');
+		var scaleMinInput   = M.DomUtil.create('input', 'raster-styler-range-min stop-color', scaleMinWrapper);
+		var scaleMaxWrapper = M.DomUtil.create('div', 'raster-styler-range-max-wrapper', scaleWrapper);
+		var scaleMaxDescr   = M.DomUtil.create('div', 'stop-color', scaleMaxWrapper, 'max');
+		var scaleMaxInput   = M.DomUtil.create('input', 'raster-styler-range-max stop-color', scaleMaxWrapper);
 		this.scaleMinInput = scaleMinInput;
 		this.scaleMaxInput = scaleMaxInput;
 
@@ -786,38 +786,38 @@ Wu.RasterStyler = Wu.Class.extend({
 		};
 		scaleMinInput.value = this.scale.min;
 		scaleMaxInput.value = this.scale.max;
-		Wu.DomEvent.on(scaleMinInput, 'blur', this._saveScale, this);
-		Wu.DomEvent.on(scaleMaxInput, 'blur', this._saveScale, this);
-		scaleMaxInput.onkeypress = Wu.Tools.forceNumeric;
-		scaleMinInput.onkeypress = Wu.Tools.forceNumeric;
+		M.DomEvent.on(scaleMinInput, 'blur', this._saveScale, this);
+		M.DomEvent.on(scaleMaxInput, 'blur', this._saveScale, this);
+		scaleMaxInput.onkeypress = M.Tools.forceNumeric;
+		scaleMinInput.onkeypress = M.Tools.forceNumeric;
 
 
 		// add line for setting precision
-		var precisionWrapper 	= Wu.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
-		var precisionTitle 		= Wu.DomUtil.create('div', 'raster-styler-range-title', precisionWrapper, 'Precision:');
-		var precisionMinWrapper = Wu.DomUtil.create('div', 'raster-styler-range-min-wrapper', precisionWrapper);
-		var precisionMinDescr   = Wu.DomUtil.create('div', 'stop-color', precisionMinWrapper, 'factor');
-		var precisionMinInput   = Wu.DomUtil.create('input', 'raster-styler-range-min stop-color', precisionMinWrapper);
+		var precisionWrapper 	= M.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
+		var precisionTitle 		= M.DomUtil.create('div', 'raster-styler-range-title', precisionWrapper, 'Precision:');
+		var precisionMinWrapper = M.DomUtil.create('div', 'raster-styler-range-min-wrapper', precisionWrapper);
+		var precisionMinDescr   = M.DomUtil.create('div', 'stop-color', precisionMinWrapper, 'factor');
+		var precisionMinInput   = M.DomUtil.create('input', 'raster-styler-range-min stop-color', precisionMinWrapper);
 		this.precisionInput = precisionMinInput;
 
 		this.precision = this.styleJSON.precision || 10;
 		precisionMinInput.value = this.precision;
-		Wu.DomEvent.on(precisionMinInput, 'blur', this._savePrecision, this);
-		precisionMinInput.onkeypress = Wu.Tools.forceNumeric;
+		M.DomEvent.on(precisionMinInput, 'blur', this._savePrecision, this);
+		precisionMinInput.onkeypress = M.Tools.forceNumeric;
 
 
 		// add line for setting legend scale title
-		var legendScaleTitleWrapper 	= Wu.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
-		var legendScaleTitleTitle 		= Wu.DomUtil.create('div', 'raster-styler-range-title', legendScaleTitleWrapper, 'Legend scale title:');
-		var legendScaleTitleMinWrapper = Wu.DomUtil.create('div', 'raster-styler-range-min-wrapper', legendScaleTitleWrapper);
-		var legendScaleTitleMinDescr   = Wu.DomUtil.create('div', 'stop-color', legendScaleTitleMinWrapper, 'title');
-		var legendScaleTitleInput   = Wu.DomUtil.create('input', 'raster-styler-range-min stop-color legend-title-input', legendScaleTitleMinWrapper);
+		var legendScaleTitleWrapper 	= M.DomUtil.create('div', 'raster-styler-range-wrapper', this._stopListContainer);
+		var legendScaleTitleTitle 		= M.DomUtil.create('div', 'raster-styler-range-title', legendScaleTitleWrapper, 'Legend scale title:');
+		var legendScaleTitleMinWrapper = M.DomUtil.create('div', 'raster-styler-range-min-wrapper', legendScaleTitleWrapper);
+		var legendScaleTitleMinDescr   = M.DomUtil.create('div', 'stop-color', legendScaleTitleMinWrapper, 'title');
+		var legendScaleTitleInput   = M.DomUtil.create('input', 'raster-styler-range-min stop-color legend-title-input', legendScaleTitleMinWrapper);
 		this.legendScaleTitleInput = legendScaleTitleInput;
 
 		this.legendScaleTitle = this.styleJSON.legendScaleTitle || 'mvel';
 		legendScaleTitleInput.value = this.legendScaleTitle;
-		Wu.DomEvent.on(legendScaleTitleInput, 'blur', this._saveLegendScaleTitle, this);
-		// precisionMinInput.onkeypress = Wu.Tools.forceNumeric;
+		M.DomEvent.on(legendScaleTitleInput, 'blur', this._saveLegendScaleTitle, this);
+		// precisionMinInput.onkeypress = M.Tools.forceNumeric;
 
 	},
 
@@ -916,7 +916,7 @@ Wu.RasterStyler = Wu.Class.extend({
 		// LEFT
 		if ( key == 37 ) {
 			var input = e.target;
-			var cPos = Wu.Tools.getCursorPos(input);
+			var cPos = M.Tools.getCursorPos(input);
 			if ( cPos <= 0 ) this.tab(e, 'left');
 		}		
 
@@ -924,7 +924,7 @@ Wu.RasterStyler = Wu.Class.extend({
 		if ( key == 39 ) {	
 			var input = e.target;
 			var length = input.value.length;
-			var cPos = Wu.Tools.getCursorPos(input);
+			var cPos = M.Tools.getCursorPos(input);
 			if ( cPos >= length ) this.tab(e, 'right')
 		}
 
@@ -1106,7 +1106,7 @@ Wu.RasterStyler = Wu.Class.extend({
 		RGBA[type] = val;
 
 		// get RGBA color
-		var bgColor = Wu.Tools.rgbaStyleStr(RGBA)
+		var bgColor = M.Tools.rgbaStyleStr(RGBA)
 
 		// Set spectrum
 		var stop  = this.stops[no];
@@ -1133,13 +1133,13 @@ Wu.RasterStyler = Wu.Class.extend({
 
 	getGradient : function (c1, c2) {
 
-		var inBetween = Wu.Tools.mixColors(c1, c2, 0.5);
+		var inBetween = M.Tools.mixColors(c1, c2, 0.5);
 
-		var _c1 = Wu.Tools.rgbaStyleStr(c1);
-		var _c2 = Wu.Tools.rgbaStyleStr(inBetween);
-		var _c3 = Wu.Tools.rgbaStyleStr(c2);
+		var _c1 = M.Tools.rgbaStyleStr(c1);
+		var _c2 = M.Tools.rgbaStyleStr(inBetween);
+		var _c3 = M.Tools.rgbaStyleStr(c2);
 
-		var gradient = Wu.Tools.createGradient([_c1,_c2,_c3]);
+		var gradient = M.Tools.createGradient([_c1,_c2,_c3]);
 		return gradient;
 	},
 

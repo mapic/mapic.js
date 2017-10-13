@@ -1,5 +1,5 @@
 
-Wu.Analytics = Wu.Class.extend({
+M.Analytics = M.Class.extend({
 
 	
 
@@ -51,18 +51,18 @@ Wu.Analytics = Wu.Class.extend({
 
 	_listen : function () {
 
-		Wu.Mixin.Events.on('projectSelected', this._projectSelected, this);
-		Wu.Mixin.Events.on('editEnabled',     this._editEnabled, this);
-		Wu.Mixin.Events.on('editDisabled',    this._editDisabled, this);
-		Wu.Mixin.Events.on('layerEnabled',    this._layerEnabled, this);
-		Wu.Mixin.Events.on('layerDisabled',   this._layerDisabled, this);
-		Wu.Mixin.Events.on('layerSelected',   this._layerSelected, this);
-		Wu.Mixin.Events.on('layerAdded',      this._onLayerAdded, this);
-		Wu.Mixin.Events.on('layerEdited',     this._onLayerEdited, this);
-		Wu.Mixin.Events.on('layerStyleEdited',this._onLayerStyleEdited, this);
-		Wu.Mixin.Events.on('layerDeleted',    this._onLayerDeleted, this);
-		Wu.Mixin.Events.on('fileImported',    this._onFileImported, this);
-		Wu.Mixin.Events.on('fileDeleted',     this._onFileDeleted, this);
+		M.Mixin.Events.on('projectSelected', this._projectSelected, this);
+		M.Mixin.Events.on('editEnabled',     this._editEnabled, this);
+		M.Mixin.Events.on('editDisabled',    this._editDisabled, this);
+		M.Mixin.Events.on('layerEnabled',    this._layerEnabled, this);
+		M.Mixin.Events.on('layerDisabled',   this._layerDisabled, this);
+		M.Mixin.Events.on('layerSelected',   this._layerSelected, this);
+		M.Mixin.Events.on('layerAdded',      this._onLayerAdded, this);
+		M.Mixin.Events.on('layerEdited',     this._onLayerEdited, this);
+		M.Mixin.Events.on('layerStyleEdited',this._onLayerStyleEdited, this);
+		M.Mixin.Events.on('layerDeleted',    this._onLayerDeleted, this);
+		M.Mixin.Events.on('fileImported',    this._onFileImported, this);
+		M.Mixin.Events.on('fileDeleted',     this._onFileDeleted, this);
 
 		// map events
 		var map = app._map;
@@ -346,7 +346,7 @@ Wu.Analytics = Wu.Class.extend({
 		var dimension2Value	= app.Account.getFullName();
 
 		// Get Systemapic version
-		var version 		= Wu.version;
+		var version 		= M.version;
 
 		// Pageview OPTIONS for Google Analytics
 		var gaPageview = {
@@ -457,7 +457,7 @@ Wu.Analytics = Wu.Class.extend({
 
 		// Header for GA
 		var userHeader = {
-			trackingID : Wu.app.options.ga.id,
+			trackingID : M.app.options.ga.id,
 			clientID   : userID			// This might have to be session specific
 		};
 

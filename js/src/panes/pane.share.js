@@ -1,4 +1,4 @@
-Wu.Share = Wu.Pane.extend({
+M.Share = M.Pane.extend({
 	
 	type : 'share',
 	title : 'Share',
@@ -31,7 +31,7 @@ Wu.Share = Wu.Pane.extend({
 	initialize : function (options) {
 
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// init container
 		this._initContent();
@@ -52,15 +52,15 @@ Wu.Share = Wu.Pane.extend({
 	_initLayout : function () {
 
 		// create dropdown
-		this._shareDropdown = Wu.DomUtil.create('div', 'share-dropdown displayNone', app._appPane);
+		this._shareDropdown = M.DomUtil.create('div', 'share-dropdown displayNone', app._appPane);
 
 		// items
-		this._shareImageButton = Wu.DomUtil.create('div', 'share-item', this._shareDropdown);
-		this._shareInviteButton  = Wu.DomUtil.create('div', 'share-item', this._shareDropdown);
-		this._feedbackButton = Wu.DomUtil.create('div', 'share-item-processing', this._shareDropdown);
+		this._shareImageButton = M.DomUtil.create('div', 'share-item', this._shareDropdown);
+		this._shareInviteButton  = M.DomUtil.create('div', 'share-item', this._shareDropdown);
+		this._feedbackButton = M.DomUtil.create('div', 'share-item-processing', this._shareDropdown);
 
 		// events
-		Wu.DomEvent.on(this._shareImageButton,  'click', this._shareImage, this);
+		M.DomEvent.on(this._shareImageButton,  'click', this._shareImage, this);
 	},
 
 	_registerButton : function () {
@@ -87,44 +87,44 @@ Wu.Share = Wu.Pane.extend({
 
 	_setFeedback : function (msg) {
 		this._feedbackButton.innerHTML = msg;
-		Wu.DomUtil.addClass(this._feedbackButton, 'invite-feedback-active');
+		M.DomUtil.addClass(this._feedbackButton, 'invite-feedback-active');
 
 	},
 
 	_closeFeedback : function () {
 		this._feedbackButton.innerHTML = '';
-		Wu.DomUtil.removeClass(this._feedbackButton, 'invite-feedback-active');
+		M.DomUtil.removeClass(this._feedbackButton, 'invite-feedback-active');
 	},
 
 	_open : function () {
 
 		// close other tabs
-		Wu.Mixin.Events.fire('closeMenuTabs');
+		M.Mixin.Events.fire('closeMenuTabs');
 
-		Wu.DomUtil.removeClass(this._shareDropdown, 'displayNone');
+		M.DomUtil.removeClass(this._shareDropdown, 'displayNone');
 		this._isOpen = true;
 
 		// mark button active
-		Wu.DomUtil.addClass(this._shareButton, 'active');
+		M.DomUtil.addClass(this._shareButton, 'active');
 
 		// fill titles
 		this._fillTitles();
 	},
 
 	_close : function () {
-		Wu.DomUtil.addClass(this._shareDropdown, 'displayNone');
+		M.DomUtil.addClass(this._shareDropdown, 'displayNone');
 		this._isOpen = false;
 
 		// remove links if open
-		if (this._shareLinkWrapper) Wu.DomUtil.remove(this._shareLinkWrapper);
-		if (this._sharePDFInput) Wu.DomUtil.remove(this._sharePDFInput);
-		if (this._inviteWrapper) Wu.DomUtil.remove(this._inviteWrapper);
+		if (this._shareLinkWrapper) M.DomUtil.remove(this._shareLinkWrapper);
+		if (this._sharePDFInput) M.DomUtil.remove(this._sharePDFInput);
+		if (this._inviteWrapper) M.DomUtil.remove(this._inviteWrapper);
 		
 		this._shareInviteButton.innerHTML = this.options.text.invite;
-		Wu.DomUtil.removeClass(this._shareDropdown, 'wide-share');
+		M.DomUtil.removeClass(this._shareDropdown, 'wide-share');
 
 		// mark button inactive
-		Wu.DomUtil.removeClass(this._shareButton, 'active');
+		M.DomUtil.removeClass(this._shareButton, 'active');
 
 		// close feedback
 		this._closeFeedback();
@@ -146,14 +146,14 @@ Wu.Share = Wu.Pane.extend({
 	},
 
 	_addGhost : function () {
-		this._ghost = Wu.DomUtil.create('div', 'share-ghost', app._appPane);
-		Wu.DomEvent.on(this._ghost, 'click', this._close, this);
+		this._ghost = M.DomUtil.create('div', 'share-ghost', app._appPane);
+		M.DomEvent.on(this._ghost, 'click', this._close, this);
 	},
 
 	_removeGhost : function () {
 		if (!this._ghost) return; 
-		Wu.DomEvent.off(this._ghost, 'click', this._close, this);
-		Wu.DomUtil.remove(this._ghost);
+		M.DomEvent.off(this._ghost, 'click', this._close, this);
+		M.DomUtil.remove(this._ghost);
 	},
 
 	// on select project
@@ -162,11 +162,11 @@ Wu.Share = Wu.Pane.extend({
 		var project = this._project;
 
 		if (project.isShareable()) {
-			Wu.DomUtil.removeClass(this._shareInviteButton, 'disabled');
-			Wu.DomEvent.on(this._shareInviteButton, 'click', this._shareInvite, this);
+			M.DomUtil.removeClass(this._shareInviteButton, 'disabled');
+			M.DomEvent.on(this._shareInviteButton, 'click', this._shareInvite, this);
 		} else {
-			Wu.DomUtil.addClass(this._shareInviteButton, 'disabled');
-			Wu.DomEvent.off(this._shareInviteButton, 'click', this._shareInvite, this);
+			M.DomUtil.addClass(this._shareInviteButton, 'disabled');
+			M.DomEvent.off(this._shareInviteButton, 'click', this._shareInvite, this);
 		}
 		
 	},
@@ -195,7 +195,7 @@ Wu.Share = Wu.Pane.extend({
 	openImage : function (context, file, c) {
 
 		// parse results
-		var result = Wu.parse(file);
+		var result = M.parse(file);
 		var image = result.image;
 		var path = app.options.servers.portal;
 		path += 'pixels/';

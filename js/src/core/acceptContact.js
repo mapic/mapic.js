@@ -1,11 +1,11 @@
-Wu.acceptContact = Wu.Class.extend({
+M.acceptContact = M.Class.extend({
 
 	options : systemapicConfigOptions,
 
 	initialize : function (options) {
 
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// init container
 		this._initContainer();
@@ -15,7 +15,7 @@ Wu.acceptContact = Wu.Class.extend({
 	},
 
 	_initContainer : function () {
-		this._container = Wu.DomUtil.get(this.options.container);
+		this._container = M.DomUtil.get(this.options.container);
 	},
 
 	_initContent : function () {
@@ -24,7 +24,7 @@ Wu.acceptContact = Wu.Class.extend({
 		this._createLogo();
 
 		// wrapper
-		this._centralWrapper = Wu.DomUtil.create('div', 'central', this._container);
+		this._centralWrapper = M.DomUtil.create('div', 'central', this._container);
 
 		this._createMessageTimer();
 	},
@@ -32,7 +32,7 @@ Wu.acceptContact = Wu.Class.extend({
 	_createLogo : function () {
 
 		// wrap
-		var logo_wrap = Wu.DomUtil.create('div', 'logo-wrap', this._container);
+		var logo_wrap = M.DomUtil.create('div', 'logo-wrap', this._container);
 
 		// logo
 		var logo_img = window.systemapicConfigOptions.logos.resetPassword;
@@ -45,7 +45,7 @@ Wu.acceptContact = Wu.Class.extend({
 	_createMessageTimer : function () {
 		var timer = 10;
 		// wrapper
-		this._timeMessage = Wu.DomUtil.create('div', 'redirect-time-message', this._centralWrapper, "Redirect to main page in 10");
+		this._timeMessage = M.DomUtil.create('div', 'redirect-time-message', this._centralWrapper, "Redirect to main page in 10");
 
 		var redirectTimeInterval = setInterval(function () {
 			timer -= 1;

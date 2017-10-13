@@ -1,8 +1,5 @@
-// TODO: not call this one "chart" - simply because it isn't :P
-// ALSO: separate all graph things that is in the pop-up, and have it more "pluggable" (i.e. )
-
-Wu.Popup = {};
-Wu.Popup.Chart = L.Control.extend({
+M.Popup = {};
+M.Popup.Chart = L.Control.extend({
 	includes: L.Mixin.Events,
 
 	options: {
@@ -35,14 +32,12 @@ Wu.Popup.Chart = L.Control.extend({
 	},
 
 	_addEvents : function () {
-		
 		this._map.on({
 			preclick : this.close
 		}, this);
 	},
 
 	_removeEvents : function () {
-		
 		this._map.off({
 			preclick : this.close
 		}, this);
@@ -51,11 +46,11 @@ Wu.Popup.Chart = L.Control.extend({
 	_initLayout : function () {
 
 		// create container
-		var container = this._container = Wu.DomUtil.create('div', 'leflet-container leaflet-popup leaflet-zoom-hide');
+		var container = this._container = M.DomUtil.create('div', 'leflet-container leaflet-popup leaflet-zoom-hide');
 
 		// close button
 		if (this.options.closeButton) {
-			var closeButton = this._closeButton = Wu.DomUtil.create('a', 'leaflet-popup-close-button', container);
+			var closeButton = this._closeButton = M.DomUtil.create('a', 'leaflet-popup-close-button', container);
 			closeButton.href = '#close';
 			closeButton.innerHTML = '&#215;';
 			L.DomEvent.disableClickPropagation(closeButton);
@@ -97,18 +92,14 @@ Wu.Popup.Chart = L.Control.extend({
 		if (!this._added) return;
 		
 		// remove
-		try {
-			this._pane.removeChild(this._container);
-		} catch (e) {}; // lazy hack
+		try { this._pane.removeChild(this._container); } catch (e) {}; 
 		
 		// remove events
 		this._removeEvents();
 	},
 
 	open : function () {
-		// add if not added
 		if (!this._added) this._add();
-	
 		this._map.fire('popupopen')
 	},
 
@@ -122,7 +113,6 @@ Wu.Popup.Chart = L.Control.extend({
 	},
 
 	setContent: function (content, add) {
-
 		this._content = content;
 		this.update(add);
 		return this;
@@ -200,10 +190,10 @@ Wu.Popup.Chart = L.Control.extend({
 	_initDraggable : function () {
 
 		// create drag pane
-		var dragPane = Wu.DomUtil.create('div', 'leaflet-popup-drag', this._wrapper);
+		var dragPane = M.DomUtil.create('div', 'leaflet-popup-drag', this._wrapper);
 
 		// event
-		Wu.DomEvent.on(dragPane, 'mousedown', this._dragStart, this);
+		M.DomEvent.on(dragPane, 'mousedown', this._dragStart, this);
 	},
 
 	_dragStart : function (e) {
@@ -232,22 +222,22 @@ Wu.Popup.Chart = L.Control.extend({
 		this._windowDimensions = this._getWindowDimensions();
 
 		// create ghost pane
-		this._ghost = Wu.DomUtil.create('div', 'leaflet-popup-ghost', app._appPane);
+		this._ghost = M.DomUtil.create('div', 'leaflet-popup-ghost', app._appPane);
 
 		// events
-		Wu.DomEvent.on(this._ghost, 'mouseup', this._dragStop, this);
-		Wu.DomEvent.on(this._ghost, 'mousemove', this._dragging, this);
+		M.DomEvent.on(this._ghost, 'mouseup', this._dragStop, this);
+		M.DomEvent.on(this._ghost, 'mousemove', this._dragging, this);
 
 	},
 
 	_dragStop : function (e) {
 
 		// remove events
-		Wu.DomEvent.off(this._ghost, 'mouseup', this._dragStop, this);
-		Wu.DomEvent.off(this._ghost, 'mousemove', this._dragging, this);
+		M.DomEvent.off(this._ghost, 'mouseup', this._dragStop, this);
+		M.DomEvent.off(this._ghost, 'mousemove', this._dragging, this);
 		
 		// remove ghost div
-		Wu.DomUtil.remove(this._ghost);
+		M.DomUtil.remove(this._ghost);
 
 		// save position
 		var project = app.activeProject;
@@ -298,19 +288,17 @@ Wu.Popup.Chart = L.Control.extend({
 	},
 
 	_listen : function () {
-		Wu.Mixin.Events.on('layerDeleted',    this._onLayerDeleted, this);
-		Wu.Mixin.Events.on('layerDisabled',    this._onLayerDeleted, this);
+		M.Mixin.Events.on('layerDeleted',    this._onLayerDeleted, this);
+		M.Mixin.Events.on('layerDisabled',    this._onLayerDeleted, this);
 	},
 
 	// clean up
 	_onLayerDeleted  : function () {
 		this.close();
 	}
-
-
 	
 });
 
-Wu.popup = function (options, source) {
-	return new Wu.Popup.Chart(options, source);
+M.popup = function (options, source) {
+	return new M.Popup.Chart(options, source);
 };

@@ -1,4 +1,4 @@
-L.Control.Measure = Wu.Control.extend({
+L.Control.Measure = M.Control.extend({
 	
 	type : 'measure', // todo: rename to scale
 
@@ -37,9 +37,9 @@ L.Control.Measure = Wu.Control.extend({
 	},
 
 	_addStops : function () {
-		L.DomEvent.on(this._container, 'dblclick',  Wu.DomEvent.stop, this);
-		L.DomEvent.on(this._container, 'mousedown', Wu.DomEvent.stop, this);
-		L.DomEvent.on(this._container, 'mouseup',   Wu.DomEvent.stop, this);
+		L.DomEvent.on(this._container, 'dblclick',  M.DomEvent.stop, this);
+		L.DomEvent.on(this._container, 'mousedown', M.DomEvent.stop, this);
+		L.DomEvent.on(this._container, 'mouseup',   M.DomEvent.stop, this);
 	},
 
 	_refresh : function () {

@@ -1,4 +1,4 @@
-Wu.Pane.Login = Wu.Pane.extend({
+M.Pane.Login = M.Pane.extend({
 
 	_description : 'Sign in to Mapic',
 	
@@ -9,12 +9,12 @@ Wu.Pane.Login = Wu.Pane.extend({
 	open : function () {
 
 		// select project
-		Wu.Mixin.Events.fire('closePopups');
+		M.Mixin.Events.fire('closePopups');
 
 		// frames
-		this._loginFullscreen = Wu.DomUtil.create('div', 'fullscreen-background', app._appPane);
-		this._login_wrapper = Wu.DomUtil.create('div', 'login-wrapper', this._loginFullscreen);
-		this._login_box = Wu.DomUtil.create('div', 'login-box', this._login_wrapper);
+		this._loginFullscreen = M.DomUtil.create('div', 'fullscreen-background', app._appPane);
+		this._login_wrapper = M.DomUtil.create('div', 'login-wrapper', this._loginFullscreen);
+		this._login_box = M.DomUtil.create('div', 'login-box', this._login_wrapper);
 
 		// colors from login
 		this._login_box.style.backgroundColor = app.options.logos.loginLogo.backgroundColor;
@@ -24,12 +24,12 @@ Wu.Pane.Login = Wu.Pane.extend({
 		this._createLogo();
 
 		// login content wrapper
-		this._loginInner = Wu.DomUtil.create('div', 'login-inner', this._login_box);
-		this._forgotInner = Wu.DomUtil.create('div', 'login-forgot-inner', this._login_box);
+		this._loginInner = M.DomUtil.create('div', 'login-inner', this._login_box);
+		this._forgotInner = M.DomUtil.create('div', 'login-forgot-inner', this._login_box);
 
 		// description
-		this._descriptionDiv = Wu.DomUtil.create('div', 'login-description', this._loginInner, this._description);
-		this.login_form = Wu.DomUtil.create('form', 'login-form', this._loginInner);
+		this._descriptionDiv = M.DomUtil.create('div', 'login-description', this._loginInner, this._description);
+		this.login_form = M.DomUtil.create('form', 'login-form', this._loginInner);
 		this.login_form.setAttribute('action', '/api/token');
 		this.login_form.setAttribute('method', 'post');
 		
@@ -50,19 +50,19 @@ Wu.Pane.Login = Wu.Pane.extend({
 		});
 
 		// error feedback
-		this._error_feedback = Wu.DomUtil.create('div', 'login-error-label', this._loginInner);
+		this._error_feedback = M.DomUtil.create('div', 'login-error-label', this._loginInner);
 
 		// buttons wrapper
-		this._buttons = Wu.DomUtil.create('div', 'login-buttons-wrapper', this._loginInner);
+		this._buttons = M.DomUtil.create('div', 'login-buttons-wrapper', this._loginInner);
 
 		// button
-		this._loginBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save invite', this._buttons, 'Login');
+		this._loginBtn = M.DomUtil.create('div', 'smooth-fullscreen-save invite', this._buttons, 'Login');
 		
 		// cancel button
-		this._cancelBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save invite cancel', this._buttons, 'Cancel');
+		this._cancelBtn = M.DomUtil.create('div', 'smooth-fullscreen-save invite cancel', this._buttons, 'Cancel');
 
 		// forgot password
-		this._forgotLink = Wu.DomUtil.create('a', 'login-forgot-link', this._buttons, 'Forgot your password?');
+		this._forgotLink = M.DomUtil.create('a', 'login-forgot-link', this._buttons, 'Forgot your password?');
 
 		// add events
 		this.addEvents();
@@ -73,7 +73,7 @@ Wu.Pane.Login = Wu.Pane.extend({
 
 	_createLogo : function () {
 		var logoConfig = app.options.logos.loginLogo;
-		var logo = Wu.DomUtil.create('div', 'login-popup-logo', this._login_box);
+		var logo = M.DomUtil.create('div', 'login-popup-logo', this._login_box);
 		logo.style.backgroundImage = logoConfig.image;
 		logo.style.height = logoConfig.height;
 		logo.style.width = logoConfig.width;
@@ -84,10 +84,10 @@ Wu.Pane.Login = Wu.Pane.extend({
 	_openForgotPassword : function () {
 
 		// hide login
-		Wu.DomUtil.addClass(this._loginInner, 'displayNone');
+		M.DomUtil.addClass(this._loginInner, 'displayNone');
 
 		// add buttons
-		this._forgotDescriptionDiv = Wu.DomUtil.create('div', 'login-description', this._forgotInner, 'Request password reset');
+		this._forgotDescriptionDiv = M.DomUtil.create('div', 'login-description', this._forgotInner, 'Request password reset');
 
 		// add input
 		this._forgot_input = this._createInput({
@@ -98,17 +98,17 @@ Wu.Pane.Login = Wu.Pane.extend({
 		});
 
 		// buttons wrapper
-		this._forgotButtons = Wu.DomUtil.create('div', 'login-buttons-wrapper', this._forgotInner);
+		this._forgotButtons = M.DomUtil.create('div', 'login-buttons-wrapper', this._forgotInner);
 
 		// button
-		this._resetBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save invite', this._forgotButtons, 'Reset');
+		this._resetBtn = M.DomUtil.create('div', 'smooth-fullscreen-save invite', this._forgotButtons, 'Reset');
 		
 		// cancel button
-		this._forgotCancelBtn = Wu.DomUtil.create('div', 'smooth-fullscreen-save invite cancel', this._forgotButtons, 'Cancel');
+		this._forgotCancelBtn = M.DomUtil.create('div', 'smooth-fullscreen-save invite cancel', this._forgotButtons, 'Cancel');
 
 		// events
-		Wu.DomEvent.on(this._forgotCancelBtn, 'click', this.close, this);
-		Wu.DomEvent.on(this._resetBtn, 'click', this.requestReset, this);
+		M.DomEvent.on(this._forgotCancelBtn, 'click', this.close, this);
+		M.DomEvent.on(this._resetBtn, 'click', this.requestReset, this);
 
 		// set height
 		this._login_box.style.height = '340px';
@@ -139,23 +139,23 @@ Wu.Pane.Login = Wu.Pane.extend({
 
 	addEvents : function () {
 		// add events
-		// Wu.DomEvent.on(this._loginFullscreen, 'click', this.close, this);
-		Wu.DomEvent.on(this._login_box, 'click', Wu.DomEvent.stop, this);
-		Wu.DomEvent.on(this._loginBtn, 'click', this._doLogin, this);
-		Wu.DomEvent.on(this._cancelBtn, 'click', this.close, this);
-		Wu.DomEvent.on(this._password_input, 'keydown', this._checkEnter, this);
-		Wu.DomEvent.on(this._forgotLink, 'click', this._openForgotPassword, this);
-		Wu.DomEvent.on(window, 'keydown', this._keyDown, this);
+		// M.DomEvent.on(this._loginFullscreen, 'click', this.close, this);
+		M.DomEvent.on(this._login_box, 'click', M.DomEvent.stop, this);
+		M.DomEvent.on(this._loginBtn, 'click', this._doLogin, this);
+		M.DomEvent.on(this._cancelBtn, 'click', this.close, this);
+		M.DomEvent.on(this._password_input, 'keydown', this._checkEnter, this);
+		M.DomEvent.on(this._forgotLink, 'click', this._openForgotPassword, this);
+		M.DomEvent.on(window, 'keydown', this._keyDown, this);
 	},
 
 	removeEvents : function () {
 		// remove events
-		// Wu.DomEvent.off(this._loginFullscreen, 'click', this.close, this);
-		Wu.DomEvent.off(this._login_box, 'click', Wu.DomEvent.stop, this);
-		Wu.DomEvent.off(this._loginBtn, 'click', this._doLogin, this);
-		Wu.DomEvent.off(this._cancelBtn, 'click', this.close, this);
-		Wu.DomEvent.off(this._password_input, 'keydown', this._checkEnter, this);
-		Wu.DomEvent.off(window, 'keydown', this._keyDown, this);
+		// M.DomEvent.off(this._loginFullscreen, 'click', this.close, this);
+		M.DomEvent.off(this._login_box, 'click', M.DomEvent.stop, this);
+		M.DomEvent.off(this._loginBtn, 'click', this._doLogin, this);
+		M.DomEvent.off(this._cancelBtn, 'click', this.close, this);
+		M.DomEvent.off(this._password_input, 'keydown', this._checkEnter, this);
+		M.DomEvent.off(window, 'keydown', this._keyDown, this);
 
 	},
 
@@ -174,7 +174,7 @@ Wu.Pane.Login = Wu.Pane.extend({
 	},
 
 	_doLogin : function (e) {
-		Wu.DomEvent.stop(e);
+		M.DomEvent.stop(e);
 
 		// clear feedback
 		this._error_feedback.innerHTML = '';
@@ -191,7 +191,7 @@ Wu.Pane.Login = Wu.Pane.extend({
 	},
 
 	_didLogin : function (err, result) {
-		var tokens = Wu.parse(result);
+		var tokens = M.parse(result);
 
 		// invalid credentials
 		if (err && err == 400) {
@@ -214,16 +214,16 @@ Wu.Pane.Login = Wu.Pane.extend({
 		var placeholder = options.placeholder;
 
 		// label
-		var name = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label invite-emails', appendTo, label);
+		var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label invite-emails', appendTo, label);
 		
 		// container
-		var invite_container = Wu.DomUtil.create('div', 'invite-container narrow', appendTo);
-		var invite_inner = Wu.DomUtil.create('div', 'invite-inner', invite_container);
-		var invite_input_container = Wu.DomUtil.create('div', 'invite-input-container', invite_inner);
+		var invite_container = M.DomUtil.create('div', 'invite-container narrow', appendTo);
+		var invite_inner = M.DomUtil.create('div', 'invite-inner', invite_container);
+		var invite_input_container = M.DomUtil.create('div', 'invite-input-container', invite_inner);
 
 		// input box
-		var invite_input = Wu.DomUtil.create('input', 'invite-email-input-form', invite_input_container);
-		var invite_error = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label', appendTo);
+		var invite_input = M.DomUtil.create('input', 'invite-email-input-form', invite_input_container);
+		var invite_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', appendTo);
 		if (type) invite_input.setAttribute('type', type);
 		if (placeholder) invite_input.setAttribute('placeholder', placeholder);
 
@@ -232,7 +232,7 @@ Wu.Pane.Login = Wu.Pane.extend({
 
 	close : function () {
 		this.removeEvents();
-		Wu.DomUtil.remove(this._loginFullscreen);
+		M.DomUtil.remove(this._loginFullscreen);
 	},
 
 	_onCloseMenuTabs : function () {

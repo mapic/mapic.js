@@ -1,4 +1,4 @@
-Wu.PhantomJS = Wu.Class.extend({
+M.PhantomJS = M.Class.extend({
 
 	initialize : function () {
 		this.listen();
@@ -10,7 +10,7 @@ Wu.PhantomJS = Wu.Class.extend({
 		this._listening = true;
 
 		// tunnell all phantomjs events to window.callPhantom
-		Wu.Mixin.Events.on('phantomjs', function (e) {
+		M.Mixin.Events.on('phantomjs', function (e) {
 			window.callPhantom && window.callPhantom({text : e.detail});
 		}, this);
 	},
@@ -44,7 +44,7 @@ Wu.PhantomJS = Wu.Class.extend({
 	},
 
 	ping : function (message) {
-		Wu.Mixin.Events.fire('phantomjs', { detail : message });
+		M.Mixin.Events.fire('phantomjs', { detail : message });
 	},
 	
 	develop : function (view) {		
@@ -60,9 +60,9 @@ Wu.PhantomJS = Wu.Class.extend({
 
 
 		// parse if string
-		if (_.isString(view)) view = Wu.parse(view);
+		if (_.isString(view)) view = M.parse(view);
 		
-		this.ping(Wu.stringify(view));
+		this.ping(M.stringify(view));
 
 		var project_id = view.project_id;
 		var position = view.position;
@@ -106,7 +106,7 @@ Wu.PhantomJS = Wu.Class.extend({
 			}
 
 			// parse
-			var project_store = Wu.parse(project_json);
+			var project_store = M.parse(project_json);
 
 			// import project to portal
 			app._importProject(project_store, function (err, project) {
@@ -170,7 +170,7 @@ Wu.PhantomJS = Wu.Class.extend({
 							clearInterval(waiting);
 
 							// close guide
-							Wu.Mixin.Events.fire('doingScreenshot');
+							M.Mixin.Events.fire('doingScreenshot');
 
 							// wait an extra second
 							setTimeout(function () {
@@ -191,7 +191,7 @@ Wu.PhantomJS = Wu.Class.extend({
 		// app.MapPane._controls.description.compactLegend()
 
 
-		this._styletag = Wu.DomUtil.get("styletag");
+		this._styletag = M.DomUtil.get("styletag");
 
 		// append darktheme stylesheet
 		var phantom = document.createElement("link");
@@ -212,7 +212,7 @@ Wu.PhantomJS = Wu.Class.extend({
 	getHash : function (id, project, callback) {
 
 		// get a saved setup - which layers are active, position, 
-		Wu.post('/api/project/hash/get', JSON.stringify({
+		M.post('/api/project/hash/get', JSON.stringify({
 			projectUuid : project.getUuid(),
 			id : id
 		}), callback, this);
@@ -238,7 +238,7 @@ Wu.PhantomJS = Wu.Class.extend({
 		app.MapPane.setPosition(hash.position);
 	},
 
-	// todo: move phantom to own script.. app.phantomjs = new Wu.PhantomJS()
+	// todo: move phantom to own script.. app.phantomjs = new M.PhantomJS()
 	phantomJS : function (args) {
 		var projectUuid = args.projectUuid;
 		var hash    	= args.hash;

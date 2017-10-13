@@ -1,5 +1,5 @@
 // postgis raster layer
-Wu.RasterLayer = Wu.Model.Layer.extend({
+M.RasterLayer = M.Model.Layer.extend({
 
     _type : 'raster-layer',
 
@@ -12,7 +12,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
         this.loaded = false;
 
         // debug
-        console.log('Wu.RasterLayer', this);
+        console.log('M.RasterLayer', this);
 
     },
 
@@ -130,7 +130,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
         }, function (err, results) {
             if (err) return console.error(err);
 
-            var query_result = Wu.parse(results);
+            var query_result = M.parse(results);
 
             if (!query_result || query_result.err) return console.error('bad query');
 
@@ -192,7 +192,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
 
     _parseRasterQueryResults : function (data) {
 
-        var data = Wu.parse(data);
+        var data = M.parse(data);
         var parsed = {};
         var lines = data.query;
 
@@ -294,7 +294,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
        
             var json = this.store.tooltip;
             if (!json) return false;
-            var meta = Wu.parse(json);
+            var meta = M.parse(json);
             return meta;
        
         } else {
@@ -302,14 +302,14 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
             // normal
             var json = this.store.tooltip;
             if (!json) return false;
-            var meta = Wu.parse(json);
+            var meta = M.parse(json);
             return meta;
         }
 
     },
 
 
-    // todo: create Wu.Model.Layer.Raster.Deformation layer instead!
+    // todo: create M.Model.Layer.Raster.Deformation layer instead!
     isDefo : function () {
         if (this.store.layer_type == 'defo_raster') return true;
         return false;
@@ -334,7 +334,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
         // 
         var sets = [];
         defo_rasters.forEach(function (defo) {
-            sets.push(Wu.parse(defo));
+            sets.push(M.parse(defo));
         });
 
         // sort
@@ -354,7 +354,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
 
     getMeta : function () {
         var metajson = this.store.metadata;
-        var meta = Wu.parse(metajson);
+        var meta = M.parse(metajson);
         return meta;
     },
 
@@ -365,7 +365,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
     getFileMeta : function () {
         var file = app.Account.getFile(this.store.file);
         var metajson = file.store.data.raster.metadata;
-        var meta = Wu.parse(metajson);
+        var meta = M.parse(metajson);
         return meta;
     },
 
@@ -505,7 +505,7 @@ Wu.RasterLayer = Wu.Model.Layer.extend({
         this._added = true;
 
         // fire event
-        Wu.Mixin.Events.fire('layerEnabled', { detail : {
+        M.Mixin.Events.fire('layerEnabled', { detail : {
             layer : this
         }}); 
 

@@ -1,4 +1,4 @@
-Wu.Invite = Wu.Class.extend({
+M.Invite = M.Class.extend({
 
 	options : {
 
@@ -7,7 +7,7 @@ Wu.Invite = Wu.Class.extend({
 	initialize : function (options) {
 
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// invite store
 		this._invite = options.store || {};
@@ -16,7 +16,7 @@ Wu.Invite = Wu.Class.extend({
 		this.config = systemapicConfigOptions;
 
 		// set api
-		this.api = new Wu.Api({ url : window.location.origin });
+		this.api = new M.Api({ url : window.location.origin });
 
 		// set page title
 		document.title = this.config.portalTitle;
@@ -29,7 +29,7 @@ Wu.Invite = Wu.Class.extend({
 	},
 
 	_initContainer : function () {
-		this._container = Wu.DomUtil.get(this.options.container);
+		this._container = M.DomUtil.get(this.options.container);
 	},
 
 	_initContent : function () {
@@ -38,7 +38,7 @@ Wu.Invite = Wu.Class.extend({
 		this._createLogo();
 
 		// wrapper
-		this._centralWrapper = Wu.DomUtil.create('div', 'central', this._container);
+		this._centralWrapper = M.DomUtil.create('div', 'central', this._container);
 
 		// login
 		this._createLogin();
@@ -53,10 +53,10 @@ Wu.Invite = Wu.Class.extend({
 	_createLogo : function () {
 
 		// wrap
-		var logo_wrap = Wu.DomUtil.create('div', 'logo-wrap', this._container);
+		var logo_wrap = M.DomUtil.create('div', 'logo-wrap', this._container);
 
 		// logo
-		var logo = Wu.DomUtil.create('div', 'logo', logo_wrap);
+		var logo = M.DomUtil.create('div', 'logo', logo_wrap);
 
 		// set image
 		// var logo_img = this.config.logos.invitationLogo;
@@ -76,48 +76,48 @@ Wu.Invite = Wu.Class.extend({
 	_createLogin : function () {
 
 		// login wrapper
-		var wrapper = Wu.DomUtil.create('div', 'left', this._centralWrapper);
+		var wrapper = M.DomUtil.create('div', 'left', this._centralWrapper);
 
 		// shader
-		this._rightshader = Wu.DomUtil.create('div', 'shader', wrapper);
+		this._rightshader = M.DomUtil.create('div', 'shader', wrapper);
 
 		// label
-		var label = Wu.DomUtil.create('div', 'top-label', wrapper, 'Log in');
+		var label = M.DomUtil.create('div', 'top-label', wrapper, 'Log in');
 	
 		// wrapper
-		var input_wrapper = Wu.DomUtil.create('form', 'input-wrapper', wrapper);
+		var input_wrapper = M.DomUtil.create('form', 'input-wrapper', wrapper);
 
 		// email label
-		var email_input = Wu.DomUtil.create('input', 'input', input_wrapper, 'Email Address');
+		var email_input = M.DomUtil.create('input', 'input', input_wrapper, 'Email Address');
 		email_input.setAttribute('name', 'email');
 
 		// password label
-		var password_input = Wu.DomUtil.create('input', 'input', input_wrapper, 'Password');
+		var password_input = M.DomUtil.create('input', 'input', input_wrapper, 'Password');
 		password_input.setAttribute('type', 'password');
 		password_input.setAttribute('name', 'password');
 
 		// button
-		var button = Wu.DomUtil.create('button', 'button', input_wrapper, 'Login');
+		var button = M.DomUtil.create('button', 'button', input_wrapper, 'Login');
 
 		// // forgot password
-		// var forgotWrapper = Wu.DomUtil.create('div', 'forgot-wrapper', input_wrapper);
-		// var forgotLink = Wu.DomUtil.create('a', 'forgot-link', forgotWrapper, 'Forgot your password?');
+		// var forgotWrapper = M.DomUtil.create('div', 'forgot-wrapper', input_wrapper);
+		// var forgotLink = M.DomUtil.create('a', 'forgot-link', forgotWrapper, 'Forgot your password?');
 		// forgotLink.setAttribute('href', 'https://' + window.location.host + '/forgot');
 
-		var forgotWrapper = Wu.DomUtil.create('div', 'forgot-wrapper', input_wrapper);
-		var forgotLink = Wu.DomUtil.create('div', 'forgot-link', forgotWrapper, 'Forgot your password?');
+		var forgotWrapper = M.DomUtil.create('div', 'forgot-wrapper', input_wrapper);
+		var forgotLink = M.DomUtil.create('div', 'forgot-link', forgotWrapper, 'Forgot your password?');
 
-		Wu.DomEvent.on(forgotLink, 'click', this._openForgotPassword, this);
+		M.DomEvent.on(forgotLink, 'click', this._openForgotPassword, this);
 
 		// shader
-		Wu.DomEvent.on(wrapper, 'mouseenter', function () {
+		M.DomEvent.on(wrapper, 'mouseenter', function () {
 			this._rightshader.style.opacity = 0;
 			this._leftshader.style.opacity = 1;
 		}, this);
 
 
-		Wu.DomEvent.on(button, 'click', function (e) {
-			Wu.DomEvent.stop(e);
+		M.DomEvent.on(button, 'click', function (e) {
+			M.DomEvent.stop(e);
 
 			// accept invite, login
 			this._loginUser({
@@ -132,13 +132,13 @@ Wu.Invite = Wu.Class.extend({
 	_openForgotPassword : function () {
 
 		// hide login
-		// Wu.DomUtil.addClass(this._central, 'displayNone');
+		// M.DomUtil.addClass(this._central, 'displayNone');
 		this._centralWrapper.style.display = 'none';
 
-		this._forgotInner = Wu.DomUtil.create('div', 'forgot-wrapper', this._container);
+		this._forgotInner = M.DomUtil.create('div', 'forgot-wrapper', this._container);
 
 		// add buttons
-		this._forgotDescriptionDiv = Wu.DomUtil.create('div', 'forgot-description', this._forgotInner, 'Request password reset');
+		this._forgotDescriptionDiv = M.DomUtil.create('div', 'forgot-description', this._forgotInner, 'Request password reset');
 
 		// add input
 		this._forgot_input = this._createInput({
@@ -149,24 +149,24 @@ Wu.Invite = Wu.Class.extend({
 		});
 
 		// buttons wrapper
-		this._forgotButtons = Wu.DomUtil.create('div', 'login-buttons-wrapper', this._forgotInner);
+		this._forgotButtons = M.DomUtil.create('div', 'login-buttons-wrapper', this._forgotInner);
 
 		// button
-		this._resetBtn = Wu.DomUtil.create('div', 'button', this._forgotButtons, 'Reset');
+		this._resetBtn = M.DomUtil.create('div', 'button', this._forgotButtons, 'Reset');
 		
 		// cancel button
-		this._forgotCancelBtn = Wu.DomUtil.create('div', 'button', this._forgotButtons, 'Cancel');
+		this._forgotCancelBtn = M.DomUtil.create('div', 'button', this._forgotButtons, 'Cancel');
 
 		// events
-		Wu.DomEvent.on(this._forgotCancelBtn, 'click', this._closeForgot, this);
-		Wu.DomEvent.on(this._resetBtn, 'click', this.requestReset, this);
+		M.DomEvent.on(this._forgotCancelBtn, 'click', this._closeForgot, this);
+		M.DomEvent.on(this._resetBtn, 'click', this.requestReset, this);
 
 		// set height
 		// this._login_box.style.height = '340px';
 	},
 
 	_closeForgot : function () {
-		Wu.DomUtil.remove(this._forgotInner);
+		M.DomUtil.remove(this._forgotInner);
 		this._centralWrapper.style.display = 'block';
 	},
 
@@ -197,13 +197,13 @@ Wu.Invite = Wu.Class.extend({
 
 		
 		// container
-		var invite_container = Wu.DomUtil.create('div', 'invite-container narrow', appendTo);
-		var invite_inner = Wu.DomUtil.create('div', 'invite-inner', invite_container);
-		var invite_input_container = Wu.DomUtil.create('div', 'invite-input-container', invite_inner);
+		var invite_container = M.DomUtil.create('div', 'invite-container narrow', appendTo);
+		var invite_inner = M.DomUtil.create('div', 'invite-inner', invite_container);
+		var invite_input_container = M.DomUtil.create('div', 'invite-input-container', invite_inner);
 
 		// input box
-		var invite_input = Wu.DomUtil.create('input', 'input', invite_input_container);
-		// var invite_error = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label', appendTo);
+		var invite_input = M.DomUtil.create('input', 'input', invite_input_container);
+		// var invite_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', appendTo);
 		if (type) invite_input.setAttribute('type', type);
 		if (placeholder) invite_input.setAttribute('placeholder', placeholder);
 
@@ -214,55 +214,55 @@ Wu.Invite = Wu.Class.extend({
 	_createRegister : function (disableShader) {
 
 		// register
-		var wrapper = this._rightWrapper = Wu.DomUtil.create('div', 'right', this._centralWrapper);
+		var wrapper = this._rightWrapper = M.DomUtil.create('div', 'right', this._centralWrapper);
 
 		// shader
-		this._leftshader = Wu.DomUtil.create('div', 'shader', wrapper);
+		this._leftshader = M.DomUtil.create('div', 'shader', wrapper);
 
 		// label
-		var label = Wu.DomUtil.create('div', 'top-label', wrapper, 'Create account');
+		var label = M.DomUtil.create('div', 'top-label', wrapper, 'Create account');
 
 		// form
-		var input_wrapper = Wu.DomUtil.create('form', 'input-wrapper-right', wrapper);
+		var input_wrapper = M.DomUtil.create('form', 'input-wrapper-right', wrapper);
 
 		// username
-		var username_input = Wu.DomUtil.create('input', 'input firstname', input_wrapper, 'Choose a username');
+		var username_input = M.DomUtil.create('input', 'input firstname', input_wrapper, 'Choose a username');
 		username_input.setAttribute('name', 'username');
 
 		// first name
-		var firstname_input = Wu.DomUtil.create('input', 'input firstname', input_wrapper, 'First Name');
+		var firstname_input = M.DomUtil.create('input', 'input firstname', input_wrapper, 'First Name');
 		firstname_input.setAttribute('name', 'firstname');
 
 		// last name
-		var lastname_input = Wu.DomUtil.create('input', 'input lastname', input_wrapper, 'Last Name');
+		var lastname_input = M.DomUtil.create('input', 'input lastname', input_wrapper, 'Last Name');
 		lastname_input.setAttribute('name', 'lastname');
 
 		// company
-		var company_input = Wu.DomUtil.create('input', 'input company', input_wrapper, 'Company');
+		var company_input = M.DomUtil.create('input', 'input company', input_wrapper, 'Company');
 		company_input.setAttribute('name', 'company');
 
 		// position
-		var position_input = Wu.DomUtil.create('input', 'input position', input_wrapper, 'Position');
+		var position_input = M.DomUtil.create('input', 'input position', input_wrapper, 'Position');
 		position_input.setAttribute('name', 'position');
 
 		// email
-		var email_input = Wu.DomUtil.create('input', 'input email', input_wrapper, 'Email Address');
+		var email_input = M.DomUtil.create('input', 'input email', input_wrapper, 'Email Address');
 		email_input.setAttribute('name', 'email');
 		email_input.value = this._invite.email || '';
 
 		// password label
-		var password_input = Wu.DomUtil.create('input', 'input password', input_wrapper, 'Password (minimum 8 characters)');
+		var password_input = M.DomUtil.create('input', 'input password', input_wrapper, 'Password (minimum 8 characters)');
 		password_input.setAttribute('type', 'password');
 		password_input.setAttribute('name', 'password');
 
 		// hidden
-		var invite_token = Wu.DomUtil.create('input', '', input_wrapper);
+		var invite_token = M.DomUtil.create('input', '', input_wrapper);
 		invite_token.value = this._invite.token || false;
 		invite_token.style.display = 'none';
 		invite_token.setAttribute('name', 'invite_token');
 
 		// privacy policy
-		var privacy_checkbox = Wu.DomUtil.create('input', '', input_wrapper, 'Password (minimum 8 characters)');
+		var privacy_checkbox = M.DomUtil.create('input', '', input_wrapper, 'Password (minimum 8 characters)');
 		privacy_checkbox.setAttribute('type', 'checkbox');
 		privacy_checkbox.id = 'privacy-checkbox';
 		var privacy_label = document.createElement('label')
@@ -271,24 +271,24 @@ Wu.Invite = Wu.Class.extend({
 		input_wrapper.appendChild(privacy_label);
 
 		// submit button
-		var button = this._submitBtn = Wu.DomUtil.create('button', 'button', input_wrapper, 'Sign up');
+		var button = this._submitBtn = M.DomUtil.create('button', 'button', input_wrapper, 'Sign up');
 		button.disabled = true;
 
 		// enable submit button when privacy policy is accepted
-		Wu.DomEvent.on(privacy_checkbox, 'click', function () {
+		M.DomEvent.on(privacy_checkbox, 'click', function () {
 			button.disabled = !privacy_checkbox.checked;
 			this._privacyChecked = privacy_checkbox.checked;
 			this.checkSubmitBtn();
 		}, this);
 
 		// shader
-		Wu.DomEvent.on(wrapper, 'mouseenter', function () {
+		M.DomEvent.on(wrapper, 'mouseenter', function () {
 			this._rightshader.style.opacity = 1;
 			this._leftshader.style.opacity = 0;
 		}, this);
 
-		Wu.DomEvent.on(button, 'click', function (e) {
-			Wu.DomEvent.stop(e);
+		M.DomEvent.on(button, 'click', function (e) {
+			M.DomEvent.stop(e);
 			
 			// create user, accept invite, login
 			this._registerUser({
@@ -305,12 +305,12 @@ Wu.Invite = Wu.Class.extend({
 		}, this);
 
 		// check unique username
-		Wu.DomEvent.on(username_input, 'keyup', this._checkUniqueUsername, this);
-		Wu.DomEvent.on(username_input, 'blur',  this._checkUniqueUsername, this);
+		M.DomEvent.on(username_input, 'keyup', this._checkUniqueUsername, this);
+		M.DomEvent.on(username_input, 'blur',  this._checkUniqueUsername, this);
 		
 		// check unique email
-		Wu.DomEvent.on(email_input, 'keyup', this._checkUniqueEmail, this);
-		Wu.DomEvent.on(email_input, 'blur',  this._checkUniqueEmail, this);
+		M.DomEvent.on(email_input, 'keyup', this._checkUniqueEmail, this);
+		M.DomEvent.on(email_input, 'blur',  this._checkUniqueEmail, this);
 	
 		// check email immediately, since it's autofilled
 		setTimeout(function () { // delay hack due to slow DOM
@@ -326,7 +326,7 @@ Wu.Invite = Wu.Class.extend({
 			if (err) return console.error(err);
 
 			// parse
-			var token = Wu.parse(response);
+			var token = M.parse(response);
 
 			// add access_token to request
 			options.access_token = token.access_token;
@@ -356,7 +356,7 @@ Wu.Invite = Wu.Class.extend({
 				if (err) return console.error(err);
 
 				// parse
-				var token = Wu.parse(response);
+				var token = M.parse(response);
 
 				// add access_token to request
 				options.access_token = token.access_token;
@@ -404,7 +404,7 @@ Wu.Invite = Wu.Class.extend({
 			if (err) return console.error(err);
 
 			// parse
-			var response = Wu.parse(result);
+			var response = M.parse(result);
 
 			// remember
 			this._uniqueEmail = response.unique;
@@ -431,7 +431,7 @@ Wu.Invite = Wu.Class.extend({
 			if (err) console.error(err);
 
 			// parse
-			var response = Wu.parse(result);
+			var response = M.parse(result);
 
 			// return if error
 			if (response.error) return console.error('something went worng', response);
@@ -454,11 +454,11 @@ Wu.Invite = Wu.Class.extend({
 		http.setRequestHeader('Content-type', 'application/json');
 		http.onreadystatechange = function() {
 			if (http.readyState == 4 && http.status == 200) {
-				var answer = Wu.parse(http.responseText);
+				var answer = M.parse(http.responseText);
 				done && done(null, answer);
 			}
 		}
-		if (Wu.Util.isObject(json)) json = JSON.stringify(json);
+		if (M.Util.isObject(json)) json = JSON.stringify(json);
 		http.send(json);
 	},
 
@@ -492,7 +492,7 @@ Wu.Invite = Wu.Class.extend({
 
 	_addQueryOptions : function (url, options) {
 		var options = options || {};
-		options = _.isObject(options) ? options : Wu.parse(options);
+		options = _.isObject(options) ? options : M.parse(options);
 		if (!_.isEmpty(options)) {
 			_.forOwn(options, function (value, key) {
 				// encode and add

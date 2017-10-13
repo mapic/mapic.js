@@ -1,10 +1,10 @@
-Wu.Model.Project = Wu.Model.extend({
+M.Model.Project = M.Model.extend({
 
 	initialize : function (store) {
 
 		// set dB object to store
 		this.store = {};
-		Wu.extend(this.store, store);
+		M.extend(this.store, store);
 
 		// ready save object
 		this.lastSaved = {};
@@ -29,7 +29,7 @@ Wu.Model.Project = Wu.Model.extend({
 
 		// create
 		_.each(roles, function (role) {
-			this._roles[role.uuid] = new Wu.Role({
+			this._roles[role.uuid] = new M.Role({
 				role : role,
 				project : this
 			});
@@ -45,7 +45,7 @@ Wu.Model.Project = Wu.Model.extend({
 
 		// create
 		files.forEach(function (file) {
-			this.files[file.uuid] = new Wu.Model.File(file);
+			this.files[file.uuid] = new M.Model.File(file);
 		}, this);
 	},
 
@@ -58,7 +58,7 @@ Wu.Model.Project = Wu.Model.extend({
 
 		// create
 		layers.forEach(function (layer) {
-			var wuLayer =  new Wu.createLayer(layer);
+			var wuLayer =  new M.createLayer(layer);
 			if (wuLayer) this.layers[layer.uuid] = wuLayer;
 		}, this);
 	},
@@ -70,7 +70,7 @@ Wu.Model.Project = Wu.Model.extend({
 	},
 
 	addLayer : function (layer) {
-		var l = new Wu.createLayer(layer);
+		var l = new M.createLayer(layer);
 		if (l) this.layers[layer.uuid] = l;
 		return l || false;
 	},
@@ -224,7 +224,7 @@ Wu.Model.Project = Wu.Model.extend({
 	select : function () {
 
 		// hide headerpane
- 		if (app._headerPane) Wu.DomUtil.removeClass(app._headerPane, 'displayNone');
+ 		if (app._headerPane) M.DomUtil.removeClass(app._headerPane, 'displayNone');
 
 		// set as active
 		app.activeProject = this;
@@ -241,7 +241,7 @@ Wu.Model.Project = Wu.Model.extend({
 		url += this.getCreatedByUsername();
 		url += '/';
 		url += this.store.slug;
-		Wu.Util.setAddressBar(url);
+		M.Util.setAddressBar(url);
 	},
 
 	getCreatedByUsername : function () {
@@ -276,7 +276,7 @@ Wu.Model.Project = Wu.Model.extend({
  			// set locally
  			this.store.access = projectAccess;
 
-			Wu.Mixin.Events.fire('updatedProjectAccess', {detail : {
+			M.Mixin.Events.fire('updatedProjectAccess', {detail : {
 				projectId: options.project || null
 			}});
  		}.bind(this));
@@ -294,7 +294,7 @@ Wu.Model.Project = Wu.Model.extend({
  		app.api.addInvites(options, function (err, result) {
 			if (err) return console.error('addInvites err:', err);
 
- 			var updatedAccess = Wu.parse(result);
+ 			var updatedAccess = M.parse(result);
 
 			if (updatedAccess.error) {
 				return console.error('add invite error:', updatedAccess.error);
@@ -352,7 +352,7 @@ Wu.Model.Project = Wu.Model.extend({
 
 	// callback for save
 	_saved : function (ctx, json) {
-		var result = Wu.parse(json);
+		var result = M.parse(json);
 		if (result.error) return app.feedback.setError({
 			title : "Could not update project", 
 			description : result.error
@@ -361,7 +361,7 @@ Wu.Model.Project = Wu.Model.extend({
 		// store on server
 		this.store.name = result.project.name;
 		
-		Wu.Mixin.Events.fire('projectChanged', { detail : {
+		M.Mixin.Events.fire('projectChanged', { detail : {
 			projectUuid : this.getUuid(),
 			name : result.project.name
 		}});
@@ -381,7 +381,7 @@ Wu.Model.Project = Wu.Model.extend({
 	// create project on server
 	create : function (opts, callback) {
 
-		// refactor! create on server first, then new Wu.Project(response);
+		// refactor! create on server first, then new M.Project(response);
 
 		var options = {
 			name 		: this.store.name,
@@ -419,7 +419,7 @@ Wu.Model.Project = Wu.Model.extend({
 
 	_deleted : function (err, response) {
 
-		var result = Wu.parse(response);
+		var result = M.parse(response);
 
 		if (!result.deleted) return console.error('Error deleting project.');
 
@@ -438,7 +438,7 @@ Wu.Model.Project = Wu.Model.extend({
 		if(window.testMode) return;
 
 		// set url
-		Wu.Util.setAddressBar(url);
+		M.Util.setAddressBar(url);
 
 		// set no active project if was active
 		if (app.activeProject && app.activeProject.getUuid() == project.getUuid()) {
@@ -450,12 +450,12 @@ Wu.Model.Project = Wu.Model.extend({
 			project._unload();
 			
 			// fire no project
-			Wu.Mixin.Events.fire('projectSelected', { detail : {
+			M.Mixin.Events.fire('projectSelected', { detail : {
 				projectUuid : false
 			}});
 
 			// fire no project
-			Wu.Mixin.Events.fire('projectDeleted', { detail : {
+			M.Mixin.Events.fire('projectDeleted', { detail : {
 				projectUuid : project.getUuid()
 			}});
 
@@ -503,7 +503,7 @@ Wu.Model.Project = Wu.Model.extend({
 				});
 			}
 
-			result = Wu.parse(result);
+			result = M.parse(result);
 
 			if (result.error) {
 				return app.feedback.setError({
@@ -532,7 +532,7 @@ Wu.Model.Project = Wu.Model.extend({
 				});
 			}
 
-			var result = Wu.parse(response);
+			var result = M.parse(response);
 
 			if (result.error) return console.error('layer delete result.error:', result.error);
 
@@ -540,7 +540,7 @@ Wu.Model.Project = Wu.Model.extend({
 			this._removeLayer(this.getLayer(layerUuid));
 
 			// fire event
-			Wu.Mixin.Events.fire('layerDeleted', { detail : {
+			M.Mixin.Events.fire('layerDeleted', { detail : {
 				layer : this
 			}}); 
 
@@ -840,10 +840,10 @@ Wu.Model.Project = Wu.Model.extend({
 
 
 	getHeaderLogo : function () {
-		if(Wu.app.Style.getCurrentTheme() === 'darkTheme'){
+		if(M.app.Style.getCurrentTheme() === 'darkTheme'){
 			var defaultProjectLogo = '/css/images/defaultProjectLogoLight.png';
 		}
-		else if(Wu.app.Style.getCurrentTheme() === 'lightTheme') {
+		else if(M.app.Style.getCurrentTheme() === 'lightTheme') {
 			var defaultProjectLogo = '/css/images/defaultProjectLogo.png';
 		}
 		var logo = this.store.header.logo;
@@ -921,7 +921,7 @@ Wu.Model.Project = Wu.Model.extend({
 
 	setFile : function (file) {
 		this.store.files.push(file);
-		this.files[file.uuid] = new Wu.Model.File(file);
+		this.files[file.uuid] = new M.Model.File(file);
 	},
 
 	setLogo : function (path) {
@@ -957,7 +957,7 @@ Wu.Model.Project = Wu.Model.extend({
 	_getSlugByName : function (name) {
 		var slug = name.replace(/\s+/g, '').toLowerCase();
 		slug = slug.replace(/\W/g, '');
-		slug = Wu.Util.stripAccents(slug);
+		slug = M.Util.stripAccents(slug);
 		return slug;
 	},
 
@@ -1013,7 +1013,7 @@ Wu.Model.Project = Wu.Model.extend({
 	},
 
 	removeFiles : function (files) {
-		return console.error('remove files, needs to be rewritten with new Wu.Data');
+		return console.error('remove files, needs to be rewritten with new M.Data');
 	},
 
 	refreshSettings : function () {
@@ -1132,7 +1132,7 @@ Wu.Model.Project = Wu.Model.extend({
 	selectProject : function () {
 
 		// select project
-		Wu.Mixin.Events.fire('projectSelected', {detail : {
+		M.Mixin.Events.fire('projectSelected', {detail : {
 			projectUuid : this.getUuid()
 		}});
 	},

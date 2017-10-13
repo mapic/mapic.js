@@ -1,4 +1,4 @@
-Wu.Reset = Wu.Class.extend({
+M.Reset = M.Class.extend({
 
 	options : {
 		title : 'Reset your password',
@@ -23,7 +23,7 @@ Wu.Reset = Wu.Class.extend({
 	setOptions : function (options) {
 		
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// get token
 		this._token = this.getParams('token');
@@ -37,7 +37,7 @@ Wu.Reset = Wu.Class.extend({
 	},
 
 	_initContainer : function () {
-		this._container = Wu.DomUtil.get(this.options.container);
+		this._container = M.DomUtil.get(this.options.container);
 	},
 
 	_initContent : function () {
@@ -46,7 +46,7 @@ Wu.Reset = Wu.Class.extend({
 		this._createLogo();
 
 		// wrapper
-		this._centralWrapper = Wu.DomUtil.create('div', 'central', this._container);
+		this._centralWrapper = M.DomUtil.create('div', 'central', this._container);
 
 		// login
 		this._createForgot();
@@ -55,7 +55,7 @@ Wu.Reset = Wu.Class.extend({
 	_createLogo : function () {
 
 		// wrap
-		var logo_wrap = Wu.DomUtil.create('div', 'logo-wrap', this._container);
+		var logo_wrap = M.DomUtil.create('div', 'logo-wrap', this._container);
 
 		// logo
 		var logo_img = window.systemapicConfigOptions.logos.clientLogo;
@@ -68,40 +68,40 @@ Wu.Reset = Wu.Class.extend({
 	_createForgot : function () {
 
 		// login wrapper
-		var wrapper = Wu.DomUtil.create('div', 'center', this._centralWrapper);
+		var wrapper = M.DomUtil.create('div', 'center', this._centralWrapper);
 
 		// label
-		var label = Wu.DomUtil.create('div', 'top-label', wrapper, this.options.title);
+		var label = M.DomUtil.create('div', 'top-label', wrapper, this.options.title);
 	
 		// text
-		var textWrapper = Wu.DomUtil.create('div', 'text-wrapper', wrapper);
-		this._text = Wu.DomUtil.create('div', 'text-content', textWrapper);
+		var textWrapper = M.DomUtil.create('div', 'text-wrapper', wrapper);
+		this._text = M.DomUtil.create('div', 'text-content', textWrapper);
 		this._text.innerHTML = this.options.message;
 
 		// wrapper
-		this._inputs = Wu.DomUtil.create('form', 'input-wrapper', wrapper);
+		this._inputs = M.DomUtil.create('form', 'input-wrapper', wrapper);
 		this._inputs.setAttribute('action', this.options.api);
 		this._inputs.setAttribute('method', 'post');
 
 		// email label
-		this._emailDiv = Wu.DomUtil.create('input', 'input reset', this._inputs, 'Email Address');
+		this._emailDiv = M.DomUtil.create('input', 'input reset', this._inputs, 'Email Address');
 		this._emailDiv.setAttribute('name', 'email');
 		this._emailDiv.value = this._email;
 		this._emailDiv.setAttribute('readonly', 'readonly');
 
 		// password label
-		this._password = Wu.DomUtil.create('input', 'input forgot', this._inputs, 'Create a strong password');
+		this._password = M.DomUtil.create('input', 'input forgot', this._inputs, 'Create a strong password');
 		this._password.setAttribute('name', 'password');
 		this._password.setAttribute('type', 'password');
 
 		// pass token to POST
-		this._tokenInput = Wu.DomUtil.create('input', 'input forgot', this._inputs);
+		this._tokenInput = M.DomUtil.create('input', 'input forgot', this._inputs);
 		this._tokenInput.setAttribute('name', 'token');
 		this._tokenInput.style.display = 'none';
 		this._tokenInput.value = this._token;
 
 		// button
-		var button = Wu.DomUtil.create('button', 'button', this._inputs, this.options.button);
+		var button = M.DomUtil.create('button', 'button', this._inputs, this.options.button);
 		button.setAttribute('type', 'submit');
 		button.setAttribute('name', 'login');
 		

@@ -127,7 +127,7 @@ L.SpinningMap = L.Class.extend({
 	},
 
 	disable : function () {
-		Wu.DomUtil.remove(this._wrapper);
+		M.DomUtil.remove(this._wrapper);
 		setTimeout(this.kill, 1000);
 	},
 

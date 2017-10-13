@@ -1,5 +1,5 @@
 // app.Tooltip
-Wu.Tooltip = Wu.Class.extend({
+M.Tooltip = M.Class.extend({
 
 	options : {
 		fixed : true,

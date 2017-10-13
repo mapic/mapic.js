@@ -1,5 +1,5 @@
 // wms layer
-Wu.WMSLayer = Wu.Model.Layer.extend({
+M.WMSLayer = M.Model.Layer.extend({
 
     initialize : function (layer) {
 
@@ -94,16 +94,16 @@ Wu.WMSLayer = Wu.Model.Layer.extend({
     },
 
     _createInfoBox : function () {
-        var container = Wu.DomUtil.create('div', 'wms-info-box', app._appPane);
-        var content = Wu.DomUtil.create('div', 'wms-info-box-content', container);
-        var closeBtn = Wu.DomUtil.create('div', 'wms-info-box-close-btn', container, 'x');
+        var container = M.DomUtil.create('div', 'wms-info-box', app._appPane);
+        var content = M.DomUtil.create('div', 'wms-info-box-content', container);
+        var closeBtn = M.DomUtil.create('div', 'wms-info-box-close-btn', container, 'x');
 
         // set infobox
         // this._infobox = content;
         this.project()._infobox = content;
 
         // set close event
-        Wu.DomEvent.on(closeBtn, 'click', this.clearSelection.bind(this));
+        M.DomEvent.on(closeBtn, 'click', this.clearSelection.bind(this));
     },
 
     clearSelection : function () {
@@ -133,19 +133,19 @@ Wu.WMSLayer = Wu.Model.Layer.extend({
         if (!this._added) return;
 
         // parse content
-        var content = Wu.parse(results.feature);
+        var content = M.parse(results.feature);
 
         // create containers
-        var html = Wu.DomUtil.create('div', 'wms-content');
-        var main_header = Wu.DomUtil.create('div', 'wms-header', html);
-        var main_content = Wu.DomUtil.create('div', 'wms-content', html);
+        var html = M.DomUtil.create('div', 'wms-content');
+        var main_header = M.DomUtil.create('div', 'wms-header', html);
+        var main_content = M.DomUtil.create('div', 'wms-content', html);
 
         // set header
         main_header.innerHTML = 'Plananalyse';
 
         // address bar
         var address_text = this._getGeocodingAddress(results.geocoding);
-        var address_header = Wu.DomUtil.create('div', 'wms-address', main_content, address_text);
+        var address_header = M.DomUtil.create('div', 'wms-address', main_content, address_text);
 
         var content = _.sortBy(content, function (cont) {
             return cont.FeatureType;
@@ -168,9 +168,9 @@ Wu.WMSLayer = Wu.Model.Layer.extend({
             if (c.FeatureType == 'Teiggrense') return;
 
             // container
-            var container = Wu.DomUtil.create('div', 'wms-content-container', main_content);
-            var header = Wu.DomUtil.create('div', 'wms-content-header', container);
-            var attributes = Wu.DomUtil.create('div', 'wms-content-attributes-container', container);
+            var container = M.DomUtil.create('div', 'wms-content-container', main_content);
+            var header = M.DomUtil.create('div', 'wms-content-header', container);
+            var attributes = M.DomUtil.create('div', 'wms-content-attributes-container', container);
 
             // set header
             header.innerHTML = _.capitalize(c.FeatureType);
@@ -178,9 +178,9 @@ Wu.WMSLayer = Wu.Model.Layer.extend({
             // attributes
             _.forEach(c.AttributesList, function (a) {
 
-                var wrap = Wu.DomUtil.create('div', 'wms-content-attributes-wrapper', attributes)
-                var namediv = Wu.DomUtil.create('div', 'wms-content-attributes-name', wrap);
-                var valuediv = Wu.DomUtil.create('div', 'wms-content-attributes-value', wrap);
+                var wrap = M.DomUtil.create('div', 'wms-content-attributes-wrapper', attributes)
+                var namediv = M.DomUtil.create('div', 'wms-content-attributes-name', wrap);
+                var valuediv = M.DomUtil.create('div', 'wms-content-attributes-value', wrap);
 
                 // set values
                 var name = a.Name + ':';
@@ -229,7 +229,7 @@ Wu.WMSLayer = Wu.Model.Layer.extend({
                 overlay.addTo(app._map);
 
                 // highlight polygon on hover
-                Wu.DomEvent.on(container, 'mouseenter', function (e) {
+                M.DomEvent.on(container, 'mouseenter', function (e) {
                     container.style.background = 'rgb(99, 109, 125)';
                     overlay.setStyle({
                         "color": "red",
@@ -239,7 +239,7 @@ Wu.WMSLayer = Wu.Model.Layer.extend({
                     });
                 });
                 // highlight polygon on hover
-                Wu.DomEvent.on(container, 'mouseleave', function (e) {
+                M.DomEvent.on(container, 'mouseleave', function (e) {
                     container.style.background = '';
                     overlay.setStyle({
                         "color": "red",
@@ -301,12 +301,12 @@ Wu.WMSLayer = Wu.Model.Layer.extend({
                     });
 
                     // highlight polygon on hover
-                    Wu.DomEvent.on(container, 'mouseenter', function (e) {
+                    M.DomEvent.on(container, 'mouseenter', function (e) {
                         container.style.background = 'rgb(99, 109, 125)';
                         overlay.addTo(app._map);
                     });
                     // highlight polygon on hover
-                    Wu.DomEvent.on(container, 'mouseleave', function (e) {
+                    M.DomEvent.on(container, 'mouseleave', function (e) {
                         container.style.background = '';
                         overlay.remove();
                     });
@@ -327,7 +327,7 @@ Wu.WMSLayer = Wu.Model.Layer.extend({
 
     // getMeta : function () {
     //     var metajson = this.store.metadata;
-    //     var meta = Wu.parse(metajson);
+    //     var meta = M.parse(metajson);
     //     return meta;
     // },
 
@@ -338,7 +338,7 @@ Wu.WMSLayer = Wu.Model.Layer.extend({
     // getFileMeta : function () {
     //     var file = app.Account.getFile(this.store.file);
     //     var metajson = file.store.data.raster.metadata;
-    //     var meta = Wu.parse(metajson);
+    //     var meta = M.parse(metajson);
     //     return meta;
     // },
 
@@ -456,7 +456,7 @@ Wu.WMSLayer = Wu.Model.Layer.extend({
         this._added = true;
 
         // fire event
-        Wu.Mixin.Events.fire('layerEnabled', { detail : {
+        M.Mixin.Events.fire('layerEnabled', { detail : {
             layer : this
         }}); 
 

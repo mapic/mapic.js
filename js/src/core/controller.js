@@ -1,12 +1,12 @@
-Wu.Controller = Wu.Class.extend({
+M.Controller = M.Class.extend({
 
 	initialize : function () {
 		this._listen();
 	},
 
 	_listen : function () {
-		Wu.Mixin.Events.on('projectSelected', this._projectSelected, this);
-		Wu.Mixin.Events.on('appReady', this._appReady, this);
+		M.Mixin.Events.on('projectSelected', this._projectSelected, this);
+		M.Mixin.Events.on('appReady', this._appReady, this);
 	},
 
 	_appReady : function () {
@@ -27,7 +27,7 @@ Wu.Controller = Wu.Class.extend({
 		// start guide if public
 		if (isPublic && !seenBefore) {
 			setTimeout(function () {
-				this._guide = new Wu.Guide();
+				this._guide = new M.Guide();
 				this._guide.start();
 			}, 500);
 		}
@@ -42,7 +42,7 @@ Wu.Controller = Wu.Class.extend({
 	_projectSelected : function (e) {
 		var projectUuid = e.detail.projectUuid;
 
-		if (!projectUuid) return Wu.Util.setAddressBar('');
+		if (!projectUuid) return M.Util.setAddressBar('');
 
 		// set project
 		this._project = app.activeProject = app.Projects[projectUuid];
@@ -75,7 +75,7 @@ Wu.Controller = Wu.Class.extend({
 				});
 			}
 
-			var result = Wu.parse(response);
+			var result = M.parse(response);
 
 			var hash = result.hash;
 
@@ -111,7 +111,7 @@ Wu.Controller = Wu.Class.extend({
 		var json = {
 			project_id : project.getUuid(),
 			hash : {
-				id 	 : Wu.Util.createRandom(6),
+				id 	 : M.Util.createRandom(6),
 				position : app.MapPane.getPosition(),
 				layers 	 : layerUuids 			// layermenuItem uuids, todo: order as z-index
 			},
@@ -203,7 +203,7 @@ Wu.Controller = Wu.Class.extend({
 		if (opened) return; 
 
 		if (!_.isEmpty(defaultProject)) {
-			return app._initHotlink(Wu.stringify(defaultProject));
+			return app._initHotlink(M.stringify(defaultProject));
 		}
 
 	},

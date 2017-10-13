@@ -1,8 +1,8 @@
-Wu.Control.Chart = Wu.Control.extend({
+M.Control.Chart = M.Control.extend({
 
 	initialize : function(options) {
 
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// OTHER OPTIONS
 		var multiPopUp = options.multiPopUp;
@@ -95,13 +95,13 @@ Wu.Control.Chart = Wu.Control.extend({
 		var t6 = _.find(csv, {type : 't6'});
 
 		// create container
-		var container = Wu.DomUtil.create('div', 'popup-csv-container');
+		var container = M.DomUtil.create('div', 'popup-csv-container');
 
 		// create header
-		var header = Wu.DomUtil.create('div', 'popup-csv-header', container, layer.getTitle());
+		var header = M.DomUtil.create('div', 'popup-csv-header', container, layer.getTitle());
 
 		// create content wrapper
-		var content = Wu.DomUtil.create('div', 'popup-csv-content', container);
+		var content = M.DomUtil.create('div', 'popup-csv-content', container);
 
 		// create inner content
 		_.forEach(data, function (v, k) {
@@ -119,11 +119,11 @@ Wu.Control.Chart = Wu.Control.extend({
 			if (!isOn) return;
 
 			// create line
-			var line_wrap = Wu.DomUtil.create('div', 'popup-csv-line-wrap', content);
+			var line_wrap = M.DomUtil.create('div', 'popup-csv-line-wrap', content);
 
 			// set name, value
-			var name_div = Wu.DomUtil.create('div', 'popup-csv-line-name', line_wrap, display_name[k]);
-			var value_div = Wu.DomUtil.create('div', 'popup-csv-line-value', line_wrap, v + ' ' + legend[k]);
+			var name_div = M.DomUtil.create('div', 'popup-csv-line-name', line_wrap, display_name[k]);
+			var value_div = M.DomUtil.create('div', 'popup-csv-line-value', line_wrap, v + ' ' + legend[k]);
 
 			// set tilstandsklasse
 			var tclass = this._get_t_class_html(csv, k, v);
@@ -156,7 +156,7 @@ Wu.Control.Chart = Wu.Control.extend({
 		if (t5 && v >= parseFloat(t5[k])) tclass = 6;
 		if (t6 && v >= parseFloat(t6[k])) tclass = 7;
 
-		var content = Wu.DomUtil.create('div', 'popup-csv-class tilstandsklasse-' + tclass);
+		var content = M.DomUtil.create('div', 'popup-csv-class tilstandsklasse-' + tclass);
 		content.innerHTML = tclass ? 'Tilstandsklasse ' + tclass : 'Ukjent tilstandsklasse';
 
 		return content;
@@ -331,7 +331,7 @@ Wu.Control.Chart = Wu.Control.extend({
 
 
 		// create popup
-		var popup = this._popup = Wu.popup({
+		var popup = this._popup = M.popup({
 			offset : [18, 0],			
 			closeButton : true,
 			zoomAnimation : false,
@@ -360,7 +360,7 @@ Wu.Control.Chart = Wu.Control.extend({
 
 
 		if ( !this.popupSettings.timeSeries || this.popupSettings.timeSeries.enable == false ) {
-			Wu.DomUtil.addClass(popup._container, 'tiny-pop-up')
+			M.DomUtil.addClass(popup._container, 'tiny-pop-up')
 		}
 
 
@@ -421,7 +421,7 @@ Wu.Control.Chart = Wu.Control.extend({
 		var _chartContainer = this.createChartContainer();
 		var _footer = this.createFooter();
 
-		var content = this._content = Wu.DomUtil.create('div', 'popup-inner-content');
+		var content = this._content = M.DomUtil.create('div', 'popup-inner-content');
 		content.appendChild(_header);
 		content.appendChild(_chartContainer);
 		content.appendChild(_footer);
@@ -466,7 +466,7 @@ Wu.Control.Chart = Wu.Control.extend({
 		};
 
 
-		var content = Wu.DomUtil.create('div', 'popup-inner-content');
+		var content = M.DomUtil.create('div', 'popup-inner-content');
 
 		// Create header HTML
 		var _header = this.createHeader(headerOptions);
@@ -634,7 +634,7 @@ Wu.Control.Chart = Wu.Control.extend({
 			layer 		: _layer
 		};
 
-		var content = Wu.DomUtil.create('div', 'popup-inner-content');
+		var content = M.DomUtil.create('div', 'popup-inner-content');
 
 		// Create header
 		var _header = this.createHeader(headerOptions);
@@ -681,15 +681,15 @@ Wu.Control.Chart = Wu.Control.extend({
 
 
 	createFooter : function () {
-		var footerContainer = this._footerContainer = Wu.DomUtil.create('div', 'c3-footer');
+		var footerContainer = this._footerContainer = M.DomUtil.create('div', 'c3-footer');
 
-		var dates = this._footerDates = Wu.DomUtil.create('div', 'c3-footer-dates', footerContainer);
+		var dates = this._footerDates = M.DomUtil.create('div', 'c3-footer-dates', footerContainer);
 		return footerContainer;
 	},
 
 
 	createChartContainer : function () {
-		var chartContainer = this._chartContainer = Wu.DomUtil.create('div', 'c3-chart-container');
+		var chartContainer = this._chartContainer = M.DomUtil.create('div', 'c3-chart-container');
 		return chartContainer;
 	},
 
@@ -711,7 +711,7 @@ Wu.Control.Chart = Wu.Control.extend({
 		}
 
 		// Container
-		var container = Wu.DomUtil.createId('div', 'c3-header-metacontainer');
+		var container = M.DomUtil.createId('div', 'c3-header-metacontainer');
 
 		// If not time series, make small pop-up
 		if ( !this.popupSettings.timeSeries || this.popupSettings.timeSeries.enable == false ) {
@@ -719,8 +719,8 @@ Wu.Control.Chart = Wu.Control.extend({
 		}
 
 		// Header
-		var headerWrapper = Wu.DomUtil.create('div', 'c3-header-wrapper', container);
-		var headerName = Wu.DomUtil.create('div', 'c3-header-layer-name', headerWrapper, layerName);
+		var headerWrapper = M.DomUtil.create('div', 'c3-header-wrapper', container);
+		var headerName = M.DomUtil.create('div', 'c3-header-layer-name', headerWrapper, layerName);
 
 		// add more text for multiquery
 		if (multiPopUp) {
@@ -733,7 +733,7 @@ Wu.Control.Chart = Wu.Control.extend({
 
 			// set text
 			var plural = 'Sampling ' + pointCount + ' ' + geom_text + ' over approx. ' + areaSQ;
-			var _pointCount = Wu.DomUtil.create('div', 'c3-point-count', headerWrapper, plural);
+			var _pointCount = M.DomUtil.create('div', 'c3-point-count', headerWrapper, plural);
 		}
 
 
@@ -779,9 +779,9 @@ Wu.Control.Chart = Wu.Control.extend({
 
 
 			if ( _val && _val != -9999) {
-				var metaPair = Wu.DomUtil.create('div', 'tableRow c3-header-metapair metapair-' + c, container);
-				var metaKey = Wu.DomUtil.create('div', 'tableCell c3-header-metakey', metaPair, title);
-				var metaVal = Wu.DomUtil.create('div', 'tableCell c3-header-metaval', metaPair, _val);
+				var metaPair = M.DomUtil.create('div', 'tableRow c3-header-metapair metapair-' + c, container);
+				var metaKey = M.DomUtil.create('div', 'tableCell c3-header-metakey', metaPair, title);
+				var metaVal = M.DomUtil.create('div', 'tableCell c3-header-metaval', metaPair, _val);
 			}
 
 		}.bind(this));
@@ -857,7 +857,7 @@ Wu.Control.Chart = Wu.Control.extend({
 		_columns = [x, y];
 
 		// Create container
-		var _C3Container = Wu.DomUtil.createId('div', 'c3-container');	
+		var _C3Container = M.DomUtil.createId('div', 'c3-container');	
 
 
 		if ( app.isMobile.mobile ) {
@@ -974,9 +974,9 @@ Wu.Control.Chart = Wu.Control.extend({
 	_addRegressionButton : function () {
 
 
-		var w = Wu.DomUtil.create('div', 'regression-button-wrapper', this._footerContainer);
+		var w = M.DomUtil.create('div', 'regression-button-wrapper', this._footerContainer);
 
-		this.regressionButton = new Wu.button({ 
+		this.regressionButton = new M.button({ 
 			type 	  : 'switch',
 			isOn 	  : false,
 			right 	  : false,
@@ -987,7 +987,7 @@ Wu.Control.Chart = Wu.Control.extend({
 		});
 
 		// label
-		var label = Wu.DomUtil.create('label', 'invite-permissions-label', w);
+		var label = M.DomUtil.create('label', 'invite-permissions-label', w);
 		label.htmlFor = 'regression';
 		label.appendChild(document.createTextNode('Regression'));
 	},
@@ -999,7 +999,7 @@ Wu.Control.Chart = Wu.Control.extend({
 
 		if ( on == 'false' || !on ) {
 
-			Wu.DomUtil.addClass(elem, 'switch-on');
+			M.DomUtil.addClass(elem, 'switch-on');
 			elem.setAttribute('on', 'true');
 
 			// get regression 
@@ -1016,7 +1016,7 @@ Wu.Control.Chart = Wu.Control.extend({
 
 		} else {
 
-			Wu.DomUtil.removeClass(elem, 'switch-on');
+			M.DomUtil.removeClass(elem, 'switch-on');
 			elem.setAttribute('on', 'false');
 
 			this._chart.unload({
@@ -1034,7 +1034,7 @@ Wu.Control.Chart = Wu.Control.extend({
 		this._throttledChartMousemove = _.throttle(this._onChartMousemove, 50);
 
 		// mousewheel zoom on chart
-		Wu.DomEvent.on(div, 'mousewheel', this._throttleChartMousemove, this); // prob leaking
+		M.DomEvent.on(div, 'mousewheel', this._throttleChartMousemove, this); // prob leaking
 	},
 
 	_throttleChartMousemove : function (e) {
@@ -1155,7 +1155,7 @@ Wu.Control.Chart = Wu.Control.extend({
 		}
 		     
 
-		var isDate = Wu.Tools.validateDateFormat(_key);
+		var isDate = M.Tools.validateDateFormat(_key);
 
 		// CREATE DATE SERIES
 		// CREATE DATE SERIES

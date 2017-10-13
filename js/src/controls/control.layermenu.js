@@ -1,5 +1,5 @@
 // app.MapPane.layerMenu
-L.Control.Layermenu = Wu.Control.extend({
+L.Control.Layermenu = M.Control.extend({
 
 	type : 'layermenu',
 
@@ -11,11 +11,11 @@ L.Control.Layermenu = Wu.Control.extend({
 	onAdd : function (map) {
 
 		// add html
-		this._innerContainer = Wu.DomUtil.create('div', 'leaflet-control-layermenu');
-		this._layermenuOuter = Wu.DomUtil.create('div', 'scroller-frame');
-		this._innerScroller = Wu.DomUtil.create('div', 'inner-scroller', this._layermenuOuter);
-		this._content = Wu.DomUtil.createId('div', 'layer-menu-inner-content', this._innerScroller);
-		this._bottomContainer = Wu.DomUtil.create('div', 'layers-bottom-container', this._layermenuOuter);
+		this._innerContainer = M.DomUtil.create('div', 'leaflet-control-layermenu');
+		this._layermenuOuter = M.DomUtil.create('div', 'scroller-frame');
+		this._innerScroller = M.DomUtil.create('div', 'inner-scroller', this._layermenuOuter);
+		this._content = M.DomUtil.createId('div', 'layer-menu-inner-content', this._innerScroller);
+		this._bottomContainer = M.DomUtil.create('div', 'layers-bottom-container', this._layermenuOuter);
 		this._innerContainer.appendChild(this._layermenuOuter);
 
 		// mark open
@@ -26,7 +26,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		this.initLayout();
 
 		// stops
-		Wu.DomEvent.on(this._innerContainer, 'mouseup', Wu.DomEvent.stop, this);
+		M.DomEvent.on(this._innerContainer, 'mouseup', M.DomEvent.stop, this);
 
 		// nb! content is not ready yet, cause not added to map! 
 		return this._innerContainer;
@@ -57,11 +57,11 @@ L.Control.Layermenu = Wu.Control.extend({
 	open : function  () {
 
 		// fire event
-		Wu.Mixin.Events.fire('_openLayerMenu'); 		
+		M.Mixin.Events.fire('_openLayerMenu'); 		
 
 		// set classes
-		Wu.DomUtil.removeClass(this._innerContainer, 'displayNone');
-		Wu.DomUtil.removeClass(this._layerButton, 'rounded-layer-button');
+		M.DomUtil.removeClass(this._innerContainer, 'displayNone');
+		M.DomUtil.removeClass(this._layerButton, 'rounded-layer-button');
 
 		// mark open
 		this._isOpen = true;
@@ -79,8 +79,8 @@ L.Control.Layermenu = Wu.Control.extend({
 		this._isOpen = false;
 
 		// set classes
-		Wu.DomUtil.addClass(this._innerContainer, 'displayNone');
-		Wu.DomUtil.addClass(this._layerButton, 'rounded-layer-button');
+		M.DomUtil.addClass(this._innerContainer, 'displayNone');
+		M.DomUtil.addClass(this._layerButton, 'rounded-layer-button');
 
 		// calc height
 		this.calculateHeight();
@@ -135,7 +135,7 @@ L.Control.Layermenu = Wu.Control.extend({
 	},
 
 	_forceOpen : function () {
-		Wu.DomUtil.removeClass(this._parentWrapper, 'displayNone');
+		M.DomUtil.removeClass(this._parentWrapper, 'displayNone');
 	},
 
 	_enableDefaultLayers : function () {
@@ -181,12 +181,12 @@ L.Control.Layermenu = Wu.Control.extend({
 	initLayout : function () {	
 
 		// Create the header    
-		this._layerMenuHeader = Wu.DomUtil.createId('div', 'layer-menu-header');
+		this._layerMenuHeader = M.DomUtil.createId('div', 'layer-menu-header');
 		
 		// Create the 'uncollapse' button ... will put in DOM l8r
-		this._openLayers = Wu.DomUtil.createId('div', 'open-layers');
+		this._openLayers = M.DomUtil.createId('div', 'open-layers');
 		this._openLayers.innerHTML = 'Layers';
-		Wu.DomUtil.addClass(this._openLayers, 'leaflet-control ol-collapsed');
+		M.DomUtil.addClass(this._openLayers, 'leaflet-control ol-collapsed');
 
 		// Append to DOM
 		app._map._controlCorners.bottomright.appendChild(this._openLayers);
@@ -197,16 +197,16 @@ L.Control.Layermenu = Wu.Control.extend({
 	},
 
 	_addHooks : function () {
-		Wu.DomEvent.on(this._container, 'mouseenter', function () {
+		M.DomEvent.on(this._container, 'mouseenter', function () {
 			app._map.scrollWheelZoom.disable();
 		}, this);
 
-		Wu.DomEvent.on(this._container, 'mouseleave', function () {
+		M.DomEvent.on(this._container, 'mouseleave', function () {
 			app._map.scrollWheelZoom.enable();
 		}, this);
 
 
-		Wu.Mixin.Events.on('toggleLeftChrome', this._toggleLeftChrome, this);
+		M.Mixin.Events.on('toggleLeftChrome', this._toggleLeftChrome, this);
 
 
 	},
@@ -224,13 +224,13 @@ L.Control.Layermenu = Wu.Control.extend({
 		if (!this._project.store.layermenu || this._project.store.layermenu.length == 0 ) {
 
 			// Hide parent wrapper if empty
-			Wu.DomUtil.addClass(this._parentWrapper, 'displayNone');			
+			M.DomUtil.addClass(this._parentWrapper, 'displayNone');			
 
 			return;
 		}		
 
 		// Show parent wrapper if not empty
-		Wu.DomUtil.removeClass(this._parentWrapper, 'displayNone');
+		M.DomUtil.removeClass(this._parentWrapper, 'displayNone');
 
 		// iterate layermenu array and fill in to layermenu
 		this._project.store.layermenu.forEach(function (item) {
@@ -323,29 +323,29 @@ L.Control.Layermenu = Wu.Control.extend({
 
 	closeLayerPane : function () {
 		this._open = false;
-		Wu.DomUtil.addClass(this._innerContainer, 'closed');
+		M.DomUtil.addClass(this._innerContainer, 'closed');
 	},
 
 	openLayerPane : function () {
 		this._open = true;
-		Wu.DomUtil.removeClass(this._innerContainer, 'closed');
+		M.DomUtil.removeClass(this._innerContainer, 'closed');
 	},
 
 	enableEditSwitch : function () {
 
 		// Make container visible
-		Wu.DomUtil.removeClass(this._parentWrapper, 'displayNone');		
+		M.DomUtil.removeClass(this._parentWrapper, 'displayNone');		
 
 		// open all items in layermenu
 		this.openAll();	
 
 		if ( !this._editSwitchContainer ) {
 			
-			this._editSwitchContainer = Wu.DomUtil.create('div', 'enable-edit-switch-container-outer', this._innerContainer);
-			var editSwitchContainerInner = Wu.DomUtil.create('div', 'enable-edit-switch-container-inner', this._editSwitchContainer);
-			var editSwitchTitle = Wu.DomUtil.create('div', 'enable-edit-switch-title', editSwitchContainerInner, 'Edit layer menu');
+			this._editSwitchContainer = M.DomUtil.create('div', 'enable-edit-switch-container-outer', this._innerContainer);
+			var editSwitchContainerInner = M.DomUtil.create('div', 'enable-edit-switch-container-inner', this._editSwitchContainer);
+			var editSwitchTitle = M.DomUtil.create('div', 'enable-edit-switch-title', editSwitchContainerInner, 'Edit layer menu');
 
-			this.editSwitch = new Wu.button({
+			this.editSwitch = new M.button({
 				id 	  : 'editSwitch',
 				type 	  : 'switch',
 				isOn 	  : false,
@@ -357,11 +357,11 @@ L.Control.Layermenu = Wu.Control.extend({
 
 		} else {
 
-			Wu.DomUtil.removeClass(this._editSwitchContainer, 'displayNone');
+			M.DomUtil.removeClass(this._editSwitchContainer, 'displayNone');
 
 		}
 
-		Wu.DomUtil.addClass(this._innerContainer, 'enable-edit-mode');
+		M.DomUtil.addClass(this._innerContainer, 'enable-edit-mode');
 
 
 	},
@@ -370,17 +370,17 @@ L.Control.Layermenu = Wu.Control.extend({
 		if (!this._editSwitchContainer) return;
 
 		this._editSwitchContainer.innerHTML = '';
-		Wu.DomUtil.remove(this._editSwitchContainer);
+		M.DomUtil.remove(this._editSwitchContainer);
 		this._editSwitchContainer = null;
 
-		Wu.DomUtil.removeClass(this._innerContainer, 'enable-edit-mode');
+		M.DomUtil.removeClass(this._innerContainer, 'enable-edit-mode');
 		
 		this.disableEdit();
 
 		if (this._isEmpty()) {
 			
 			// Hide parent wrapper if empty
-			Wu.DomUtil.addClass(this._parentWrapper, 'displayNone');
+			M.DomUtil.addClass(this._parentWrapper, 'displayNone');
 		}
 	},
 
@@ -394,7 +394,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		if (this.editMode) return;
 
 		// Make container visible
-		Wu.DomUtil.removeClass(this._parentWrapper, 'displayNone');
+		M.DomUtil.removeClass(this._parentWrapper, 'displayNone');
 
 		// set editMode
 		this.editMode = true;
@@ -409,7 +409,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		this.enableSortable();
 
 		// add edit style
-		Wu.DomUtil.addClass(this._innerContainer, 'edit-mode');
+		M.DomUtil.addClass(this._innerContainer, 'edit-mode');
 
 		// add the drag'n drop new folder
 		this._insertMenuFolder();
@@ -433,7 +433,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		if (this._isEmpty()) {
 			
 			// Hide parent wrapper if empty
-			Wu.DomUtil.addClass(this._parentWrapper, 'displayNone');
+			M.DomUtil.addClass(this._parentWrapper, 'displayNone');
 		}		
 
 		// set editMode
@@ -449,7 +449,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		this.disableSortable();
 
 		// remove edit style
-		Wu.DomUtil.removeClass(this._innerContainer, 'edit-mode');
+		M.DomUtil.removeClass(this._innerContainer, 'edit-mode');
 
 		// remove new drag'n drop folder
 		this._removeMenuFolder();
@@ -465,15 +465,15 @@ L.Control.Layermenu = Wu.Control.extend({
 		if (!this._menuFolder) {
 
 			// create if not exists
-			this._menuFolder = Wu.DomUtil.create('div', 'smap-button-white middle-item', this._bottomContainer, 'Add folder');
+			this._menuFolder = M.DomUtil.create('div', 'smap-button-white middle-item', this._bottomContainer, 'Add folder');
 			
 			// add action
-			Wu.DomEvent.on(this._menuFolder, 'click', this.addMenuFolder, this);
+			M.DomEvent.on(this._menuFolder, 'click', this.addMenuFolder, this);
 
 		} else {
 			// show
-			Wu.DomUtil.removeClass(this._menuFolder, 'displayNone');
-			Wu.DomUtil.removeClass(this._editSwitchContainer, 'displayNone')
+			M.DomUtil.removeClass(this._menuFolder, 'displayNone');
+			M.DomUtil.removeClass(this._editSwitchContainer, 'displayNone')
 		}
 
 		app.log('created_folder:layermenu');
@@ -482,7 +482,7 @@ L.Control.Layermenu = Wu.Control.extend({
 
 	_removeMenuFolder : function () {
 		if (!this._menuFolder) return;
-		Wu.DomUtil.addClass(this._menuFolder, 'displayNone');
+		M.DomUtil.addClass(this._menuFolder, 'displayNone');
 	},
 
 	enableSortable : function () {
@@ -509,15 +509,15 @@ L.Control.Layermenu = Wu.Control.extend({
 			var el = items[i];
 
 			// set dragstart event
-			Wu.DomEvent.on(el, 'dragstart', this.drag.start, this);
+			M.DomEvent.on(el, 'dragstart', this.drag.start, this);
 		}
 
 		// set hooks
 		var bin = this._content;
 		if (!bin) return;
-		Wu.DomEvent.on(bin, 'dragover',  this.drag.over,  this);
-		Wu.DomEvent.on(bin, 'dragleave', this.drag.leave, this);
-		Wu.DomEvent.on(bin, 'drop', 	 this.drag.drop,  this);
+		M.DomEvent.on(bin, 'dragover',  this.drag.over,  this);
+		M.DomEvent.on(bin, 'dragleave', this.drag.leave, this);
+		M.DomEvent.on(bin, 'drop', 	 this.drag.drop,  this);
 
 	},
 
@@ -527,9 +527,9 @@ L.Control.Layermenu = Wu.Control.extend({
 		// remove hooks
 		var bin = this._content;
 		if (!bin) return;
-		Wu.DomEvent.off(bin, 'dragover',  this.drag.over,  this);
-		Wu.DomEvent.off(bin, 'dragleave', this.drag.leave, this);
-		Wu.DomEvent.off(bin, 'drop', 	  this.drag.drop,  this);
+		M.DomEvent.off(bin, 'dragover',  this.drag.over,  this);
+		M.DomEvent.off(bin, 'dragleave', this.drag.leave, this);
+		M.DomEvent.off(bin, 'drop', 	  this.drag.drop,  this);
 	},
 
 	enableDraggable : function () {
@@ -563,7 +563,7 @@ L.Control.Layermenu = Wu.Control.extend({
 			var el = e.target;
 
 			// add visual feedback on dragged element
-			Wu.DomUtil.addClass(el, 'dragged-ghost');
+			M.DomUtil.addClass(el, 'dragged-ghost');
 
 			var uuid = el.id;
 			this.drag.currentDragElement = el;
@@ -581,7 +581,7 @@ L.Control.Layermenu = Wu.Control.extend({
 			var el = document.getElementById(uuid);
 
 			// remove visual feedback on dragged element
-			Wu.DomUtil.removeClass(el, 'dragged-ghost');
+			M.DomUtil.removeClass(el, 'dragged-ghost');
 
 			// get new position in layermenu array
 			var nodeList = Array.prototype.slice.call(this._content.childNodes);
@@ -670,7 +670,7 @@ L.Control.Layermenu = Wu.Control.extend({
 
 			// get div
 			var div = this.layers[invalid.uuid].el;
-			Wu.DomUtil.addClass(div, 'invalidLayermenuitem');
+			M.DomUtil.addClass(div, 'invalidLayermenuitem');
 
 		}, this)
 	},
@@ -678,7 +678,7 @@ L.Control.Layermenu = Wu.Control.extend({
 	clearInvalid : function () {
 		for (var l in this.layers) {
 			var layer = this.layers[l];
-			Wu.DomUtil.removeClass(layer.el, 'invalidLayermenuitem');
+			M.DomUtil.removeClass(layer.el, 'invalidLayermenuitem');
 		}
 	},
 
@@ -820,8 +820,8 @@ L.Control.Layermenu = Wu.Control.extend({
 
 			// add classes
 			panes.forEach(function (pane) {
-				Wu.DomUtil.addClass(pane, 'layeritem-closed')
-				Wu.DomUtil.removeClass(pane, 'layeritem-open');
+				M.DomUtil.addClass(pane, 'layeritem-closed')
+				M.DomUtil.removeClass(pane, 'layeritem-open');
 
 				// mark closed folder as closed
 				var id = pane.id;
@@ -838,8 +838,8 @@ L.Control.Layermenu = Wu.Control.extend({
 
 			// add classes
 			panes.forEach(function (pane) {
-				Wu.DomUtil.removeClass(pane, 'layeritem-closed');
-				Wu.DomUtil.addClass(pane, 'layeritem-open');
+				M.DomUtil.removeClass(pane, 'layeritem-closed');
+				M.DomUtil.addClass(pane, 'layeritem-open');
 			}, this);
 
 			// mark open
@@ -903,7 +903,7 @@ L.Control.Layermenu = Wu.Control.extend({
 			// todo: refactor this, 
 			// only thing this is necessary for, is to show correct layer in editor
 			// in chrome/settings/chrome.settings.js
-			Wu.Mixin.Events.fire('layerSelected', { detail : {
+			M.Mixin.Events.fire('layerSelected', { detail : {
 				layer : layer
 			}}); 
 		}
@@ -922,7 +922,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		if (!layerItem) return console.error('no layer');
 		
 		// mark active
-		Wu.DomUtil.addClass(layerItem.el, 'layer-active');
+		M.DomUtil.addClass(layerItem.el, 'layer-active');
 		layerItem.on = true;
 	},
 	
@@ -949,7 +949,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		layerItem.on = true;
 
 		// add active class
-		Wu.DomUtil.addClass(layerItem.el, 'layer-active');
+		M.DomUtil.addClass(layerItem.el, 'layer-active');
 
 		// mark editing
 		app.Chrome.Right.options.editingLayer = layer.getUuid();
@@ -978,7 +978,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		layermenuItem.on = false;
 
 		// remove active class
-		Wu.DomUtil.removeClass(layermenuItem.el, 'layer-active');
+		M.DomUtil.removeClass(layermenuItem.el, 'layer-active');
 	},
 
 
@@ -1057,7 +1057,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		
 		// create db item
 		var item = {
-			uuid 	: 'layerMenuItem-' + Wu.Util.guid(), // layermenu item uuid
+			uuid 	: 'layerMenuItem-' + M.Util.guid(), // layermenu item uuid
 			layer   : layer.store.uuid, // layer uuid or _id
 			caption : layer.store.title, // caption/title in layermenu
 			pos     : 0, // position in menu
@@ -1103,7 +1103,7 @@ L.Control.Layermenu = Wu.Control.extend({
 
 		// add wrap
 		var uuid = item.uuid;
-		var wrap = Wu.DomUtil.create('div', className, this._content);
+		var wrap = M.DomUtil.create('div', className, this._content);
 		wrap.id = uuid;
 
 		// mark as draggable if we're in editing mode
@@ -1114,60 +1114,60 @@ L.Control.Layermenu = Wu.Control.extend({
 		}		    
 
 
-		// var layerItemMoversWrap = Wu.DomUtil.create('div', 'layer-item-movers-wrap', wrap);
-		var up = Wu.DomUtil.create('div', 'layer-item-up', wrap);
-		var down = Wu.DomUtil.create('div', 'layer-item-down', wrap);
+		// var layerItemMoversWrap = M.DomUtil.create('div', 'layer-item-movers-wrap', wrap);
+		var up = M.DomUtil.create('div', 'layer-item-up', wrap);
+		var down = M.DomUtil.create('div', 'layer-item-down', wrap);
 		
 		if (!layer) {
 			// create delete button only on folder
-			var del = Wu.DomUtil.create('div', 'layer-item-delete', wrap);
+			var del = M.DomUtil.create('div', 'layer-item-delete', wrap);
 		}
 
 		if (layer) {
-			var layerItemFlyTo = Wu.DomUtil.createId('div', 'layer-flyto-' + layer.getUuid(), wrap);
+			var layerItemFlyTo = M.DomUtil.createId('div', 'layer-flyto-' + layer.getUuid(), wrap);
 		    	layerItemFlyTo.className = 'layer-menu-flyto';
 		    	layerItemFlyTo.innerHTML = '<i class="fa fa-search fly-to"></i>';
 		}
 
-		var inner = Wu.DomUtil.create('div', 'layer-menu-item', wrap);
+		var inner = M.DomUtil.create('div', 'layer-menu-item', wrap);
 		inner.setAttribute('type', 'layerItem');
 		inner.innerHTML = caption;
 
 
 		// add hooks
-		Wu.DomEvent.on(up,   'click', function (e) { this.upFolder(uuid); 	  }, this);
-		Wu.DomEvent.on(down, 'click', function (e) { this.downFolder(uuid); 	  }, this);
+		M.DomEvent.on(up,   'click', function (e) { this.upFolder(uuid); 	  }, this);
+		M.DomEvent.on(down, 'click', function (e) { this.downFolder(uuid); 	  }, this);
 		
 		if (!layer) { // folder
-			Wu.DomEvent.on(inner, 'dblclick', function (e) { this._editFolderTitle(uuid); },this);
-			Wu.DomEvent.on(del,  'click', function (e) { this.deleteMenuFolder(uuid); }, this);
-			Wu.DomEvent.on(del,  'mousedown', Wu.DomEvent.stop, this);
+			M.DomEvent.on(inner, 'dblclick', function (e) { this._editFolderTitle(uuid); },this);
+			M.DomEvent.on(del,  'click', function (e) { this.deleteMenuFolder(uuid); }, this);
+			M.DomEvent.on(del,  'mousedown', M.DomEvent.stop, this);
 		}
 
 		// prevent layer activation
-		Wu.DomEvent.on(up,   'mousedown', Wu.DomEvent.stop, this);
-		Wu.DomEvent.on(down, 'mousedown', Wu.DomEvent.stop, this);
+		M.DomEvent.on(up,   'mousedown', M.DomEvent.stop, this);
+		M.DomEvent.on(down, 'mousedown', M.DomEvent.stop, this);
 
 		// drag
 		// set dragstart event
-		Wu.DomEvent.on(wrap, 'dragstart', this.drag.start, this);
-		// Wu.DomEvent.on(wrap, 'mousedown', console.log, this);
+		M.DomEvent.on(wrap, 'dragstart', this.drag.start, this);
+		// M.DomEvent.on(wrap, 'mousedown', console.log, this);
 		
 		// Stop Propagation
-		Wu.DomEvent.on(this._container, 'touchstart mousedown click dblclick',  Wu.DomEvent.stopPropagation, this);
+		M.DomEvent.on(this._container, 'touchstart mousedown click dblclick',  M.DomEvent.stopPropagation, this);
 
 		// add elem to item object
 		layerItem.el = wrap;
 
 		// add hooks // pass item object to toggle
-		Wu.DomEvent.on(wrap, 'mousedown', function (e) { this.toggleLayer(layerItem); }, this);
-		Wu.DomEvent.on(this._innerContainer, 'dblclick', Wu.DomEvent.stop, this);
+		M.DomEvent.on(wrap, 'mousedown', function (e) { this.toggleLayer(layerItem); }, this);
+		M.DomEvent.on(this._innerContainer, 'dblclick', M.DomEvent.stop, this);
 
 		// trigger on flyto on layer
 		if (layer) {
-			var flyto = Wu.DomUtil.get('layer-flyto-' + layer.getUuid());
-			Wu.DomEvent.on(flyto, 'mousedown', function (e) {
-				Wu.DomEvent.stop(e);
+			var flyto = M.DomUtil.get('layer-flyto-' + layer.getUuid());
+			M.DomEvent.on(flyto, 'mousedown', function (e) {
+				M.DomEvent.stop(e);
 				app.log('flyto:layer', {info : {
 					layer_name : layer.getName()
 				}});
@@ -1196,7 +1196,7 @@ L.Control.Layermenu = Wu.Control.extend({
 	addFolder : function () {
 
 		var folder = {
-			uuid : 'layerMenuItem-' + Wu.Util.guid(), // unique id for layermenu item
+			uuid : 'layerMenuItem-' + M.Util.guid(), // unique id for layermenu item
 			caption : 'New folder',
 			pos : 0,
 			folder : true
@@ -1229,7 +1229,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		// inject <input>
 		var title = folder.innerHTML;
 		folder.innerHTML = '';
-		var input = Wu.DomUtil.create('input', 'layer-item-title-input');
+		var input = M.DomUtil.create('input', 'layer-item-title-input');
 		input.value = title;
 		folder.appendChild(input);
 
@@ -1237,11 +1237,11 @@ L.Control.Layermenu = Wu.Control.extend({
 		input.focus();
 
 		// add blur hook
-		Wu.DomEvent.on(input, 'blur', function () {
+		M.DomEvent.on(input, 'blur', function () {
 			
 			// remove
 			var newTitle = input.value;
-			Wu.DomUtil.remove(input);
+			M.DomUtil.remove(input);
 			folder.innerHTML = newTitle;
 			
 			// save
@@ -1266,7 +1266,7 @@ L.Control.Layermenu = Wu.Control.extend({
 		}, this);
 
 		// add keyp hooks
-		Wu.DomEvent.on(input, 'keydown', function (e) {
+		M.DomEvent.on(input, 'keydown', function (e) {
 			if (event.which == 13 || event.keyCode == 13) input.blur(); // enter
 			if (event.which == 27 || event.keyCode == 27) input.blur(); // esc
 		}, this);
@@ -1312,8 +1312,8 @@ L.Control.Layermenu = Wu.Control.extend({
 		this._project.store.layermenu[i].pos = newpos;
 
 		// add class
-		Wu.DomUtil.addClass(wrap, 'level-' + newpos);
-		Wu.DomUtil.removeClass(wrap, 'level-' + pos);
+		M.DomUtil.addClass(wrap, 'level-' + newpos);
+		M.DomUtil.removeClass(wrap, 'level-' + pos);
 
 		// save
 		this.save();
@@ -1337,8 +1337,8 @@ L.Control.Layermenu = Wu.Control.extend({
 		this._project.store.layermenu[i].pos = newpos;
 
 		// add class
-		Wu.DomUtil.addClass(wrap, 'level-' + newpos);
-		Wu.DomUtil.removeClass(wrap, 'level-' + pos);
+		M.DomUtil.addClass(wrap, 'level-' + newpos);
+		M.DomUtil.removeClass(wrap, 'level-' + pos);
 
 		// save
 		this.save();

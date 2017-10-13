@@ -1,5 +1,5 @@
-// Wu.Graph = Wu.Graph || {};
-// Wu.Graph.Year = Wu.Evented.extend({
+// M.Graph = M.Graph || {};
+// M.Graph.Year = M.Evented.extend({
 
 // 	_initialize : function (options) {
 
@@ -22,12 +22,12 @@
 
 // 	// Listen to events
 // 	addHooks : function () {
-// 		Wu.Mixin.Events.on('sliderUpdate', this.sliding, this);
-// 		Wu.Mixin.Events.on('sliderMoveBackward', this.moveBackward, this);
-// 		Wu.Mixin.Events.on('sliderMoveForward', this.moveForward, this);
-// 		Wu.Mixin.Events.on('setSliderTitle', this.setTitle, this);
-// 		Wu.Mixin.Events.on('stepBeforeBeginning', this.firstToLastDay, this);
-// 		Wu.Mixin.Events.on('stepAfterEnd', this.lastToFirstDay, this);
+// 		M.Mixin.Events.on('sliderUpdate', this.sliding, this);
+// 		M.Mixin.Events.on('sliderMoveBackward', this.moveBackward, this);
+// 		M.Mixin.Events.on('sliderMoveForward', this.moveForward, this);
+// 		M.Mixin.Events.on('setSliderTitle', this.setTitle, this);
+// 		M.Mixin.Events.on('stepBeforeBeginning', this.firstToLastDay, this);
+// 		M.Mixin.Events.on('stepAfterEnd', this.lastToFirstDay, this);
 // 	},
 
 // 	// When slider is sliding
@@ -51,7 +51,7 @@
 // 		var currentDay = this.years[this.currentYear][this.currentDay-1];
 // 		if ( !currentDay ) {
 // 			this._sliderValue = this.finalDay.Doy;
-// 			Wu.Mixin.Events.fire('setSlider', { detail : {value : this._sliderValue}});
+// 			M.Mixin.Events.fire('setSlider', { detail : {value : this._sliderValue}});
 // 		}
 
 // 		this.updateDayOfYear();
@@ -80,7 +80,7 @@
 
 // 		if ( !currentDay ) {
 // 			this._sliderValue = this.finalDay.Doy;
-// 			Wu.Mixin.Events.fire('setSlider', { detail : {value : this._sliderValue}});
+// 			M.Mixin.Events.fire('setSlider', { detail : {value : this._sliderValue}});
 // 		}
 	
 // 		this.updateDayOfYear();
@@ -139,7 +139,7 @@
 // 		}
 
 // 		// Fire event, so that slider can disable buttons
-// 		Wu.Mixin.Events.fire('updateSliderButtons', { detail : {
+// 		M.Mixin.Events.fire('updateSliderButtons', { detail : {
 // 			disableForward  : this.disableForward,
 // 			disableBackward : this.disableBackward
 
@@ -296,7 +296,7 @@
 
 
 // 		// Set slider to current day
-// 		Wu.Mixin.Events.fire('setSlider', { detail : {
+// 		M.Mixin.Events.fire('setSlider', { detail : {
 // 			value : this._sliderValue
 // 		}});
 
@@ -366,17 +366,17 @@
 // 			yThisDim : yThisDim
 // 		}
 
-// 		var graphOuterContainer = Wu.DomUtil.create('div', 'big-graph-outer-container', this.options.appendTo);
+// 		var graphOuterContainer = M.DomUtil.create('div', 'big-graph-outer-container', this.options.appendTo);
 
-// 		var graphInfoContainer = Wu.DomUtil.create('div', 'big-graph-info-container', graphOuterContainer);
+// 		var graphInfoContainer = M.DomUtil.create('div', 'big-graph-info-container', graphOuterContainer);
 
-// 		this._title = Wu.DomUtil.create('div', 'big-graph-title', graphInfoContainer);
+// 		this._title = M.DomUtil.create('div', 'big-graph-title', graphInfoContainer);
 
-// 		this.dayNameTitle = Wu.DomUtil.create('div', 'big-graph-current-day', graphInfoContainer);
+// 		this.dayNameTitle = M.DomUtil.create('div', 'big-graph-current-day', graphInfoContainer);
 
-// 		this.currentSCF = Wu.DomUtil.create('div', 'big-graph-current-scf inline', graphInfoContainer);
+// 		this.currentSCF = M.DomUtil.create('div', 'big-graph-current-scf inline', graphInfoContainer);
 
-// 		var graphInnerContainer = Wu.DomUtil.create('div', 'big-graph-inner-container', graphOuterContainer)
+// 		var graphInnerContainer = M.DomUtil.create('div', 'big-graph-inner-container', graphOuterContainer)
 
 // 		// Get HTML element, and define it as graph container
 // 		var hitslineChart = dc.compositeChart(graphInnerContainer)
@@ -648,7 +648,7 @@
 // 		if ( day > daysInYear || !day ) {
 // 			day = this.currentDay = daysInYear;
 // 			// Prevent slider from going into "non-data"
-// 			Wu.Mixin.Events.fire('setSlider', { detail : {value : day}});
+// 			M.Mixin.Events.fire('setSlider', { detail : {value : day}});
 // 		}
 	
 // 	  	var blankDate = new Date(year, 0);

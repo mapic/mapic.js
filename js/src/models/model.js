@@ -1,9 +1,9 @@
-Wu.Model = Wu.Evented.extend({
+M.Model = M.Evented.extend({
 
 	initialize : function (options) {
 
 		// set options
-		Wu.setOptions(this, options);
+		M.setOptions(this, options);
 
 		// local initialize
 		this._initialize(options);
@@ -13,28 +13,28 @@ Wu.Model = Wu.Evented.extend({
 	},      
 
 	_listen : function () {
-		Wu.Mixin.Events.on('projectSelected', this._projectSelected, this);
-		Wu.Mixin.Events.on('editEnabled',     this._editEnabled, this);
-		Wu.Mixin.Events.on('editDisabled',    this._editDisabled, this);
-		Wu.Mixin.Events.on('layerEnabled',    this._layerEnabled, this);
-		Wu.Mixin.Events.on('layerDisabled',   this._layerDisabled, this);
-		Wu.Mixin.Events.on('fileImported',    this._onFileImported, this);
-		Wu.Mixin.Events.on('fileDeleted',     this._onFileDeleted, this);
-		Wu.Mixin.Events.on('layerAdded',      this._onLayerAdded, this);
-		Wu.Mixin.Events.on('layerEdited',     this._onLayerEdited, this);
-		Wu.Mixin.Events.on('layerDeleted',    this._onLayerDeleted, this);
-		Wu.Mixin.Events.on('projectChanged',  this._onProjectChanged, this);
-		Wu.Mixin.Events.on('animationPlay',   this._onAnimationPlay, this);
-		Wu.Mixin.Events.on('animationStop',   this._onAnimationStop, this);
-		Wu.Mixin.Events.on('animationSlide',  this._onAnimationSlide, this);
-		Wu.Mixin.Events.on('setFPS',   		  this._onSetFPS, this);
-		Wu.Mixin.Events.on('mapClick',   	  this._onMapClick, this);
-		Wu.Mixin.Events.on('sliderSet',  	  this._onSliderSet, this);
-		Wu.Mixin.Events.on('sliderUpdate',    this._onSliderUpdate, this);
+		M.Mixin.Events.on('projectSelected', this._projectSelected, this);
+		M.Mixin.Events.on('editEnabled',     this._editEnabled, this);
+		M.Mixin.Events.on('editDisabled',    this._editDisabled, this);
+		M.Mixin.Events.on('layerEnabled',    this._layerEnabled, this);
+		M.Mixin.Events.on('layerDisabled',   this._layerDisabled, this);
+		M.Mixin.Events.on('fileImported',    this._onFileImported, this);
+		M.Mixin.Events.on('fileDeleted',     this._onFileDeleted, this);
+		M.Mixin.Events.on('layerAdded',      this._onLayerAdded, this);
+		M.Mixin.Events.on('layerEdited',     this._onLayerEdited, this);
+		M.Mixin.Events.on('layerDeleted',    this._onLayerDeleted, this);
+		M.Mixin.Events.on('projectChanged',  this._onProjectChanged, this);
+		M.Mixin.Events.on('animationPlay',   this._onAnimationPlay, this);
+		M.Mixin.Events.on('animationStop',   this._onAnimationStop, this);
+		M.Mixin.Events.on('animationSlide',  this._onAnimationSlide, this);
+		M.Mixin.Events.on('setFPS',   		  this._onSetFPS, this);
+		M.Mixin.Events.on('mapClick',   	  this._onMapClick, this);
+		M.Mixin.Events.on('sliderSet',  	  this._onSliderSet, this);
+		M.Mixin.Events.on('sliderUpdate',    this._onSliderUpdate, this);
 		
 		// file events
 		var event_id = 'downloadReady-' + this.getUuid();
-		Wu.Mixin.Events.on(event_id, this._onDownloadReady, this);
+		M.Mixin.Events.on(event_id, this._onDownloadReady, this);
 
 		this.on('showLabels', this._onShowLabels);
 		this.on('hideLabels', this._onHideLabels);

@@ -24,9 +24,9 @@
 // _____class.js___________________________________________________________________ 
 // Taken from Class.js in Leaflet.js by Vladimir Agafonkin, @LeafletJS
 
-Wu = {};
-Wu.Class = function () {};
-Wu.Class.extend = function (props) {
+M = {};
+M.Class = function () {};
+M.Class.extend = function (props) {
 
 	// extended class with the new prototype
 	var NewClass = function () {
@@ -45,7 +45,7 @@ Wu.Class.extend = function (props) {
 	// jshint camelcase: false
 	var parentProto = NewClass.__super__ = this.prototype;
 
-	var proto = Wu.Util.create(parentProto);
+	var proto = M.Util.create(parentProto);
 	proto.constructor = NewClass;
 
 	NewClass.prototype = proto;
@@ -59,23 +59,23 @@ Wu.Class.extend = function (props) {
 
 	// mix static properties into the class
 	if (props.statics) {
-		Wu.extend(NewClass, props.statics);
+		M.extend(NewClass, props.statics);
 		delete props.statics;
 	}
 
 	// mix includes into the prototype
 	if (props.includes) {
-		Wu.Util.extend.apply(null, [proto].concat(props.includes));
+		M.Util.extend.apply(null, [proto].concat(props.includes));
 		delete props.includes;
 	}
 
 	// merge options
 	if (proto.options) {
-		props.options = Wu.Util.extend(Wu.Util.create(proto.options), props.options);
+		props.options = M.Util.extend(M.Util.create(proto.options), props.options);
 	}
 
 	// mix given properties into the prototype
-	Wu.extend(proto, props);
+	M.extend(proto, props);
 
 	proto._initHooks = [];
 
@@ -99,17 +99,17 @@ Wu.Class.extend = function (props) {
 };
 
 // method for adding properties to prototype
-Wu.Class.include = function (props) {
-	Wu.extend(this.prototype, props);
+M.Class.include = function (props) {
+	M.extend(this.prototype, props);
 };
 
 // merge new default options to the Class
-Wu.Class.mergeOptions = function (options) {
-	Wu.extend(this.prototype.options, options);
+M.Class.mergeOptions = function (options) {
+	M.extend(this.prototype.options, options);
 };
 
 // add a constructor hook
-Wu.Class.addInitHook = function (fn) { // (Function) || (String, args...)
+M.Class.addInitHook = function (fn) { // (Function) || (String, args...)
 	var args = Array.prototype.slice.call(arguments, 1);
 
 	var init = typeof fn === 'function' ? fn : function () {
@@ -134,7 +134,7 @@ Wu.Class.addInitHook = function (fn) { // (Function) || (String, args...)
 ╚██████╔╝   ██║   ██║███████╗
  ╚═════╝    ╚═╝   ╚═╝╚══════╝
 */
-Wu.Util = {
+M.Util = {
 	// extend an object with properties of one or more other objects
 	extend: function (dest) {
 		var sources = Array.prototype.slice.call(arguments, 1),
@@ -176,7 +176,7 @@ Wu.Util = {
 	// return unique ID of an object
 	stamp: function (obj) {
 		// jshint camelcase: false
-		obj._leaflet_id = obj._leaflet_id || ++Wu.Util.lastId;
+		obj._leaflet_id = obj._leaflet_id || ++M.Util.lastId;
 		return obj._leaflet_id;
 	},
 
@@ -239,13 +239,13 @@ Wu.Util = {
 
 	// split a string into words
 	splitWords: function (str) {
-		return Wu.Util.trim(str).split(/\s+/);
+		return M.Util.trim(str).split(/\s+/);
 	},
 
 	// set options to an object, inheriting parent's options as well
 	setOptions: function (obj, options) {
 		if (!obj.hasOwnProperty('options')) {
-			obj.options = obj.options ? Wu.Util.create(obj.options) : {};
+			obj.options = obj.options ? M.Util.create(obj.options) : {};
 		}
 		for (var i in options) {
 			obj.options[i] = options[i];
@@ -264,7 +264,7 @@ Wu.Util = {
 
 	// super-simple templating facility, used for TileLayer URLs
 	template: function (str, data) {
-		return str.replace(Wu.Util.templateRe, function (str, key) {
+		return str.replace(M.Util.templateRe, function (str, key) {
 			var value = data[key];
 
 			if (value === undefined) {
@@ -320,7 +320,7 @@ Wu.Util = {
 	debugXML : function (json) {
 		console.log('==== debugXML ====');
 
-		var obj = Wu.parse(json);
+		var obj = M.parse(json);
 		obj ? console.log(obj) : console.log(json);
 
 		console.log('==================');
@@ -329,10 +329,10 @@ Wu.Util = {
 	verifyResponse : function (response) {
 		
 		// print response if debug
-		if (app.debug) Wu.Util.debugXML(response);
+		if (app.debug) M.Util.debugXML(response);
 
 		// check for disconnect (<html> response)
-		return Wu.Util.checkDisconnect(response);
+		return M.Util.checkDisconnect(response);
 		
 	},
 
@@ -340,7 +340,7 @@ Wu.Util = {
 	post : function (path, json, done) {
 		// var that = this,
 		//     http = new XMLHttpRequest(),
-		//     url = Wu.Util._getServerUrl(); 
+		//     url = M.Util._getServerUrl(); 
 		// url += path;
 		
 		// http.open("POST", url, true);
@@ -353,12 +353,12 @@ Wu.Util = {
 
 		// http.onreadystatechange = function() {
 		// 	if(http.readyState == 4 && http.status == 200) {
-		// 		var valid = Wu.verify(http.responseText);
+		// 		var valid = M.verify(http.responseText);
 		// 	}
 		// }
 		// http.send(json);
 		var http = new XMLHttpRequest();
-		var url = Wu.Util._getServerUrl();
+		var url = M.Util._getServerUrl();
 		url += path;
 
 		// open
@@ -375,7 +375,7 @@ Wu.Util = {
 				} else {
 					console.log('http.status: ', http.status);
 					console.log('httP', http);
-					Wu.Util.checkDisconnect(http.responseText);
+					M.Util.checkDisconnect(http.responseText);
 					done && done(http.status, http.responseText);
 				}
 			}
@@ -384,9 +384,9 @@ Wu.Util = {
 
 		// add access_token to request
 		var access_token = app.tokens ? app.tokens.access_token : null;
-		var options = _.isString(json) ? Wu.parse(json) : json;
+		var options = _.isString(json) ? M.parse(json) : json;
 		options.access_token = access_token;
-		var send_json = Wu.stringify(options);
+		var send_json = M.stringify(options);
 
 		// send
 		http.send(send_json);
@@ -397,7 +397,7 @@ Wu.Util = {
 	// post with callback
 	postcb : function (path, json, done, context, baseurl) {
 		var http = new XMLHttpRequest();
-		var url = baseurl || Wu.Util._getServerUrl();
+		var url = baseurl || M.Util._getServerUrl();
 		url += path;
 
 		// open
@@ -414,7 +414,7 @@ Wu.Util = {
 				} else {
 					console.log('http.status: ', http.status);
 					console.log('httP', http);
-					Wu.Util.checkDisconnect(http.responseText);
+					M.Util.checkDisconnect(http.responseText);
 					done && done(http.status, http.responseText);
 				}
 			}
@@ -423,9 +423,9 @@ Wu.Util = {
 
 		// add access_token to request
 		var access_token = app.tokens ? app.tokens.access_token : null;
-		var options = _.isString(json) ? Wu.parse(json) : json;
+		var options = _.isString(json) ? M.parse(json) : json;
 		options.access_token = access_token;
-		var send_json = Wu.stringify(options);
+		var send_json = M.stringify(options);
 
 		// send
 		http.send(send_json);
@@ -434,7 +434,7 @@ Wu.Util = {
 
 		// var that = context,
 		//     http = new XMLHttpRequest(),
-		//     url = baseurl || Wu.Util._getServerUrl();
+		//     url = baseurl || M.Util._getServerUrl();
 		
 		// url += path;
 
@@ -450,7 +450,7 @@ Wu.Util = {
 		// 	if(http.readyState == 4 && http.status == 200) {
 
 		// 		// verify response
-		// 		var valid = Wu.verify(http.responseText);
+		// 		var valid = M.verify(http.responseText);
 
 		// 		// callback
 		// 		if (cb && valid) cb(context, http.responseText); 
@@ -458,7 +458,7 @@ Wu.Util = {
 		// }
 
 		// // stringify objects
-		// if (Wu.Util.isObject(json)) json = JSON.stringify(json);
+		// if (M.Util.isObject(json)) json = JSON.stringify(json);
 
 		// http.send(json);
 	},
@@ -469,7 +469,7 @@ Wu.Util = {
 	send : function (path, json, done) {
 		// var that = this;
 		// var http = new XMLHttpRequest();
-		// var url = Wu.Util._getServerUrl();
+		// var url = M.Util._getServerUrl();
 		// url += path;
 
 		// http.open("POST", url, true);
@@ -481,7 +481,7 @@ Wu.Util = {
 		// http.onreadystatechange = function() {
 		// 	if (http.readyState == 4) {
 		    		
-		// 		var valid = Wu.verify(http.responseText);
+		// 		var valid = M.verify(http.responseText);
 
 		// 		if (http.status == 200 && valid) { // ok
 		// 			if (callback) callback(null, http.responseText); 
@@ -492,12 +492,12 @@ Wu.Util = {
 		// }
 		
 		// // stringify objects
-		// if (Wu.Util.isObject(json)) json = JSON.stringify(json);
+		// if (M.Util.isObject(json)) json = JSON.stringify(json);
 		
 		// // send string
 		// http.send(json);
 		var http = new XMLHttpRequest();
-		var url = Wu.Util._getServerUrl();
+		var url = M.Util._getServerUrl();
 		url += path;
 
 		// open
@@ -514,7 +514,7 @@ Wu.Util = {
 				} else {
 					console.log('http.status: ', http.status);
 					console.log('httP', http);
-					Wu.Util.checkDisconnect(http.responseText);
+					M.Util.checkDisconnect(http.responseText);
 					done && done(http.status, http.responseText);
 				}
 			}
@@ -523,9 +523,9 @@ Wu.Util = {
 
 		// add access_token to request
 		var access_token = app.tokens ? app.tokens.access_token : null;
-		var options = _.isString(json) ? Wu.parse(json) : json;
+		var options = _.isString(json) ? M.parse(json) : json;
 		options.access_token = access_token;
-		var send_json = Wu.stringify(options);
+		var send_json = M.stringify(options);
 
 		// send
 		http.send(send_json);
@@ -552,7 +552,7 @@ Wu.Util = {
 
 		http.onreadystatechange = function() {
 		    if(http.readyState == 4 && http.status == 200) {
-			var valid = Wu.verify(http.responseText);
+			var valid = M.verify(http.responseText);
 			
 			if (valid) callback(http.responseText); 
 		    }
@@ -584,13 +584,13 @@ Wu.Util = {
 
 	_getParentClientID : function (pid) {
 		var cid = '';
-		for (c in Wu.app.Clients) {
-			var client = Wu.app.Clients[c];
+		for (c in M.app.Clients) {
+			var client = M.app.Clients[c];
 			client.projects.forEach(function(elem, i, arr) {
 				if (elem == pid) { cid = client.uuid; }
 			});
 		}
-		if (!cid) { cid = Wu.app._activeClient.uuid; }
+		if (!cid) { cid = M.app._activeClient.uuid; }
 		return cid;
 	},
 
@@ -1124,15 +1124,15 @@ Wu.Util = {
 		       getPrefixed('CancelRequestAnimationFrame') || function (id) { window.clearTimeout(id); };
 
 
-	Wu.Util.requestAnimFrame = function (fn, context, immediate, element) {
+	M.Util.requestAnimFrame = function (fn, context, immediate, element) {
 		if (immediate && requestFn === timeoutDefer) {
 			fn.call(context);
 		} else {
-			return requestFn.call(window, Wu.bind(fn, context), element);
+			return requestFn.call(window, M.bind(fn, context), element);
 		}
 	};
 
-	Wu.Util.cancelAnimFrame = function (id) {
+	M.Util.cancelAnimFrame = function (id) {
 		if (id) {
 			cancelFn.call(window, id);
 		}
@@ -1140,26 +1140,26 @@ Wu.Util = {
 })();
 
 // shortcuts for most used utility functions
-Wu.extend = Wu.Util.extend;
-Wu.bind = Wu.Util.bind;
-Wu.stamp = Wu.Util.stamp;
-Wu.setOptions = Wu.Util.setOptions;
-Wu.save = Wu.Util.post;
-Wu.post = Wu.Util.postcb;
-Wu.send = Wu.Util.send;
-Wu.parse = Wu.Util._parse;
-Wu.stringify = Wu.Util._stringify;
-Wu.zip = Wu.Util.generateZip;
-Wu.zave = Wu.Util.zipSave;
-Wu.can = Wu.Util.can;
-Wu.setStyle = Wu.Util.setStyle;
-Wu.getStyle = Wu.Util.getStyle;
-Wu.verify = Wu.Util.verifyResponse;
-Wu.getJSON = Wu.Util._getJSON;
-Wu.confirm = Wu.Util.confirm;
+M.extend = M.Util.extend;
+M.bind = M.Util.bind;
+M.stamp = M.Util.stamp;
+M.setOptions = M.Util.setOptions;
+M.save = M.Util.post;
+M.post = M.Util.postcb;
+M.send = M.Util.send;
+M.parse = M.Util._parse;
+M.stringify = M.Util._stringify;
+M.zip = M.Util.generateZip;
+M.zave = M.Util.zipSave;
+M.can = M.Util.can;
+M.setStyle = M.Util.setStyle;
+M.getStyle = M.Util.getStyle;
+M.verify = M.Util.verifyResponse;
+M.getJSON = M.Util._getJSON;
+M.confirm = M.Util.confirm;
 
 
-Wu.Events = Wu.Class.extend({
+M.Events = M.Class.extend({
 
 	on: function (types, fn, context) {
 
@@ -1173,7 +1173,7 @@ Wu.Events = Wu.Class.extend({
 
 		} else {
 			// types can be a string of space-separated words
-			types = Wu.Util.splitWords(types);
+			types = M.Util.splitWords(types);
 
 			for (var i = 0, len = types.length; i < len; i++) {
 				
@@ -1196,7 +1196,7 @@ Wu.Events = Wu.Class.extend({
 			}
 
 		} else {
-			types = Wu.Util.splitWords(types);
+			types = M.Util.splitWords(types);
 
 			for (var i = 0, len = types.length; i < len; i++) {
 				this._off(types[i], fn, context);
@@ -1210,7 +1210,7 @@ Wu.Events = Wu.Class.extend({
 	_on: function (type, fn, context) {
 
 		var events = this._events = this._events || {},
-		    contextId = context && context !== this && Wu.stamp(context);
+		    contextId = context && context !== this && M.stamp(context);
 
 		if (contextId) {
 			// store listeners with custom context in a separate hash (if it has an id);
@@ -1219,7 +1219,7 @@ Wu.Events = Wu.Class.extend({
 			var indexKey = type + '_idx',
 			    indexLenKey = type + '_len',
 			    typeIndex = events[indexKey] = events[indexKey] || {},
-			    id = Wu.stamp(fn) + '_' + contextId;
+			    id = M.stamp(fn) + '_' + contextId;
 
 			if (!typeIndex[id]) {
 				typeIndex[id] = {fn: fn, ctx: context};
@@ -1252,11 +1252,11 @@ Wu.Events = Wu.Class.extend({
 			return;
 		}
 
-		var contextId = context && context !== this && Wu.stamp(context),
+		var contextId = context && context !== this && M.stamp(context),
 		    listeners, i, len, listener, id;
 
 		if (contextId) {
-			id = Wu.stamp(fn) + '_' + contextId;
+			id = M.stamp(fn) + '_' + contextId;
 			listeners = events[indexKey];
 
 			if (listeners && listeners[id]) {
@@ -1281,14 +1281,14 @@ Wu.Events = Wu.Class.extend({
 
 		// set the removed listener to noop so that's not called if remove happens in fire
 		if (listener) {
-			listener.fn = Wu.Util.falseFn;
+			listener.fn = M.Util.falseFn;
 		}
 	},
 
 	fire: function (type, data, propagate) {
 		if (!this.listens(type, propagate)) { return this; }
 
-		var event = Wu.Util.extend({}, data, {type: type, target: this}),
+		var event = M.Util.extend({}, data, {type: type, target: this}),
 		    events = this._events;
 
 		if (events) {
@@ -1341,7 +1341,7 @@ Wu.Events = Wu.Class.extend({
 			return this;
 		}
 
-		var handler = Wu.bind(function () {
+		var handler = M.bind(function () {
 			this
 			    .off(types, fn, context)
 			    .off(types, handler, context);
@@ -1356,20 +1356,20 @@ Wu.Events = Wu.Class.extend({
 	// adds a parent to propagate events to (when you fire with true as a 3rd argument)
 	addEventParent: function (obj) {
 		this._eventParents = this._eventParents || {};
-		this._eventParents[Wu.stamp(obj)] = obj;
+		this._eventParents[M.stamp(obj)] = obj;
 		return this;
 	},
 
 	removeEventParent: function (obj) {
 		if (this._eventParents) {
-			delete this._eventParents[Wu.stamp(obj)];
+			delete this._eventParents[M.stamp(obj)];
 		}
 		return this;
 	},
 
 	_propagateEvent: function (e) {
 		for (var id in this._eventParents) {
-			this._eventParents[id].fire(e.type, Wu.extend({layer: e.target}, e), true);
+			this._eventParents[id].fire(e.type, M.extend({layer: e.target}, e), true);
 		}
 	},
 
@@ -1384,7 +1384,7 @@ Wu.Events = Wu.Class.extend({
 
 });
 
-var proto = Wu.Events.prototype;
+var proto = M.Events.prototype;
 
 // aliases; we should ditch those eventually
 proto.addEventListener = proto.on;
@@ -1394,15 +1394,15 @@ proto.fireEvent = proto.fire;
 proto.hasEventListeners = proto.listens;
 
 
-Wu.Mixin = {Events: proto};
+M.Mixin = {Events: proto};
 
-Wu._on = proto.on;
-Wu._off = proto.off;
-Wu._fire = proto.fire;
+M._on = proto.on;
+M._off = proto.off;
+M._fire = proto.fire;
 
 
 // DOM Utilities
-Wu.DomUtil = {
+M.DomUtil = {
 
 	get: function (id) {
 	       return typeof id === 'string' ? document.getElementById(id) : id;
@@ -1493,20 +1493,20 @@ Wu.DomUtil = {
 		if (el.classList !== undefined) {
 		    return el.classList.contains(name);
 		}
-		var className = Wu.DomUtil.getClass(el);
+		var className = M.DomUtil.getClass(el);
 		return className.length > 0 && new RegExp('(^|\\s)' + name + '(\\s|$)').test(className);
 	},
 
 	addClass: function (el, name) {
 		if (!el) return console.error('addClass: div undefined. fix!');
 		if (el.classList !== undefined) {
-		    var classes = Wu.Util.splitWords(name);
+		    var classes = M.Util.splitWords(name);
 		    for (var i = 0, len = classes.length; i < len; i++) {
 			el.classList.add(classes[i]);
 		    }
-		} else if (!Wu.DomUtil.hasClass(el, name)) {
-		    var className = Wu.DomUtil.getClass(el);
-		    Wu.DomUtil.setClass(el, (className ? className + ' ' : '') + name);
+		} else if (!M.DomUtil.hasClass(el, name)) {
+		    var className = M.DomUtil.getClass(el);
+		    M.DomUtil.setClass(el, (className ? className + ' ' : '') + name);
 		}
 	},
 
@@ -1515,7 +1515,7 @@ Wu.DomUtil = {
 		if (el.classList !== undefined) {
 		    el.classList.remove(name);
 		} else {
-		    Wu.DomUtil.setClass(el, Wu.Util.trim((' ' + Wu.DomUtil.getClass(el) + ' ').replace(' ' + name + ' ', ' ')));
+		    M.DomUtil.setClass(el, M.Util.trim((' ' + M.DomUtil.getClass(el) + ' ').replace(' ' + name + ' ', ' ')));
 		}
 	},
 
@@ -1531,7 +1531,7 @@ Wu.DomUtil = {
 	clearChildClasses : function (parent, divclass) {
 		for (var i=0; i < parent.children.length; i++) {
 			var child = parent.children[i];
-			Wu.DomUtil.removeClass(child, divclass);
+			M.DomUtil.removeClass(child, divclass);
 		}
 	},
 
@@ -1550,7 +1550,7 @@ Wu.DomUtil = {
 
 	appendTemplate : function (container, template) {
 		if (typeof template === 'string') {
-			var holder = Wu.DomUtil.create('div');
+			var holder = M.DomUtil.create('div');
 			holder.innerHTML = template;
 			for (i=0; i < holder.childNodes.length; i++) {
 				container.appendChild(holder.childNodes[i]);
@@ -1561,7 +1561,7 @@ Wu.DomUtil = {
 
 	prependTemplate : function (container, template, firstsibling) {
 		if (typeof template === 'string') {
-			var holder = Wu.DomUtil.create('div');
+			var holder = M.DomUtil.create('div');
 			holder.innerHTML = template;
 			if (firstsibling) {
 			    var firstChild = container.firstChild;
@@ -1612,7 +1612,7 @@ Wu.DomUtil = {
 
 var eventsKey = '_leaflet_events';
 
-Wu.DomEvent = {
+M.DomEvent = {
 
     on: function (obj, types, fn, context) {
 
@@ -1623,7 +1623,7 @@ Wu.DomEvent = {
 		this._on(obj, type, types[type], fn);
 	    }
 	} else {
-	    types = Wu.Util.splitWords(types);
+	    types = M.Util.splitWords(types);
 
 	    for (var i = 0, len = types.length; i < len; i++) {
 
@@ -1673,7 +1673,7 @@ Wu.DomEvent = {
 		this._off(obj, type, types[type], fn);
 	    }
 	} else {
-	    types = Wu.Util.splitWords(types);
+	    types = M.Util.splitWords(types);
 
 	    for (var i = 0, len = types.length; i < len; i++) {
 		this._off(obj, types[i], fn, context);
@@ -1685,7 +1685,7 @@ Wu.DomEvent = {
 
     _on: function (obj, type, fn, context) {
 
-	var id = type + Wu.stamp(fn) + (context ? '_' + Wu.stamp(context) : '');
+	var id = type + M.stamp(fn) + (context ? '_' + M.stamp(context) : '');
 
 	if (obj[eventsKey] && obj[eventsKey][id]) { return this; }
 
@@ -1695,10 +1695,10 @@ Wu.DomEvent = {
 
 	var originalHandler = handler;
 
-	if (Wu.Browser.pointer && type.indexOf('touch') === 0) {
+	if (M.Browser.pointer && type.indexOf('touch') === 0) {
 	    return this.addPointerListener(obj, type, handler, id);
 	}
-	if (Wu.Browser.touch && (type === 'dblclick') && this.addDoubleTapListener) {
+	if (M.Browser.touch && (type === 'dblclick') && this.addDoubleTapListener) {
 	    this.addDoubleTapListener(obj, handler, id);
 	}
 
@@ -1711,15 +1711,15 @@ Wu.DomEvent = {
 	    } else if ((type === 'mouseenter') || (type === 'mouseleave')) {
 		handler = function (e) {
 		    e = e || window.event;
-		    if (!Wu.DomEvent._checkMouse(obj, e)) { return; }
+		    if (!M.DomEvent._checkMouse(obj, e)) { return; }
 		    return originalHandler(e);
 		};
 		obj.addEventListener(type === 'mouseenter' ? 'mouseover' : 'mouseout', handler, false);
 
 	    } else {
-		if (type === 'click' && Wu.Browser.android) {
+		if (type === 'click' && M.Browser.android) {
 		    handler = function (e) {
-			return Wu.DomEvent._filterClick(e, originalHandler);
+			return M.DomEvent._filterClick(e, originalHandler);
 		    };
 		}
 		obj.addEventListener(type, handler, false);
@@ -1737,15 +1737,15 @@ Wu.DomEvent = {
 
     _off: function (obj, type, fn, context) {
 
-	var id = type + Wu.stamp(fn) + (context ? '_' + Wu.stamp(context) : ''),
+	var id = type + M.stamp(fn) + (context ? '_' + M.stamp(context) : ''),
 	    handler = obj[eventsKey] && obj[eventsKey][id];
 
 	if (!handler) { return this; }
 
-	if (Wu.Browser.pointer && type.indexOf('touch') === 0) {
+	if (M.Browser.pointer && type.indexOf('touch') === 0) {
 	    this.removePointerListener(obj, type, id);
 
-	} else if (Wu.Browser.touch && (type === 'dblclick') && this.removeDoubleTapListener) {
+	} else if (M.Browser.touch && (type === 'dblclick') && this.removeDoubleTapListener) {
 	    this.removeDoubleTapListener(obj, id);
 
 	} else if ('removeEventListener' in obj) {
@@ -1776,13 +1776,13 @@ Wu.DomEvent = {
 	} else {
 	    e.cancelBubble = true;
 	}
-	Wu.DomEvent._skipped(e);
+	M.DomEvent._skipped(e);
 
 	return this;
     },
 
     disableScrollPropagation: function (el) {
-	return Wu.DomEvent.on(el, 'mousewheel MozMousePixelScroll', Wu.DomEvent.stopPropagation);
+	return M.DomEvent.on(el, 'mousewheel MozMousePixelScroll', M.DomEvent.stopPropagation);
     },
 
     preventDefault: function (e) {
@@ -1796,7 +1796,7 @@ Wu.DomEvent = {
     },
 
     stop: function (e) {
-	return Wu.DomEvent
+	return M.DomEvent
 	    .preventDefault(e)
 	    .stopPropagation(e);
     },
@@ -1818,7 +1818,7 @@ Wu.DomEvent = {
 
     _fakeStop: function (e) {
 	// fakes stopPropagation by setting a special event flag, checked/reset with L.DomEvent._skipped(e)
-	Wu.DomEvent._skipEvents[e.type] = true;
+	M.DomEvent._skipEvents[e.type] = true;
     },
 
     _skipped: function (e) {
@@ -1848,7 +1848,7 @@ Wu.DomEvent = {
     // this is a horrible workaround for a bug in Android where a single touch triggers two click events
     _filterClick: function (e, handler) {
 	var timeStamp = (e.timeStamp || e.originalEvent.timeStamp),
-	    elapsed = Wu.DomEvent._lastClick && (timeStamp - Wu.DomEvent._lastClick);
+	    elapsed = M.DomEvent._lastClick && (timeStamp - M.DomEvent._lastClick);
 
 	// are they closer together than 500ms yet more than 100ms?
 	// Android typically triggers them ~300ms apart while multiple listeners
@@ -1856,17 +1856,17 @@ Wu.DomEvent = {
 	// or check if click is simulated on the element, and if it is, reject any non-simulated events
 
 	if ((elapsed && elapsed > 100 && elapsed < 500) || (e.target._simulatedClick && !e._simulated)) {
-	    Wu.DomEvent.stop(e);
+	    M.DomEvent.stop(e);
 	    return;
 	}
-	Wu.DomEvent._lastClick = timeStamp;
+	M.DomEvent._lastClick = timeStamp;
 
 	return handler(e);
     }
 };
 
 
-// Wu.Browser
+// M.Browser
 (function () {
 
     var ua = navigator.userAgent.toLowerCase(),
@@ -1899,7 +1899,7 @@ Wu.DomEvent = {
     var touch = !window.L_NO_TOUCH && !phantomjs && (pointer || 'ontouchstart' in window ||
 	    (window.DocumentTouch && document instanceof window.DocumentTouch));
 
-    Wu.Browser = {
+    M.Browser = {
 	ie: ie,
 	ielt9: ie && !document.addEventListener,
 	webkit: webkit,
@@ -1929,13 +1929,13 @@ Wu.DomEvent = {
 
 }());
 
-Wu.extend(Wu.DomEvent, {
+M.extend(M.DomEvent, {
 
 	//static
-	POINTER_DOWN: Wu.Browser.msPointer ? 'MSPointerDown' : 'pointerdown',
-	POINTER_MOVE: Wu.Browser.msPointer ? 'MSPointerMove' : 'pointermove',
-	POINTER_UP: Wu.Browser.msPointer ? 'MSPointerUp' : 'pointerup',
-	POINTER_CANCEL: Wu.Browser.msPointer ? 'MSPointerCancel' : 'pointercancel',
+	POINTER_DOWN: M.Browser.msPointer ? 'MSPointerDown' : 'pointerdown',
+	POINTER_MOVE: M.Browser.msPointer ? 'MSPointerMove' : 'pointermove',
+	POINTER_UP: M.Browser.msPointer ? 'MSPointerUp' : 'pointerup',
+	POINTER_CANCEL: M.Browser.msPointer ? 'MSPointerCancel' : 'pointercancel',
 
 	_pointers: [],
 	_pointerDocumentListener: false,
@@ -1964,7 +1964,7 @@ Wu.extend(Wu.DomEvent, {
 
 		var cb = function (e) {
 
-			Wu.DomEvent.preventDefault(e);
+			M.DomEvent.preventDefault(e);
 
 			var alreadyInArray = false;
 			for (var i = 0; i < pointers.length; i++) {
@@ -2082,8 +2082,8 @@ Wu.extend(Wu.DomEvent, {
 });
 
 
-Wu.DomEvent.addListener = Wu.DomEvent.on;
-Wu.DomEvent.removeListener = Wu.DomEvent.off;
+M.DomEvent.addListener = M.DomEvent.on;
+M.DomEvent.removeListener = M.DomEvent.off;
 
 Array.prototype.diff = function(a) {
     return this.filter(function(i) {return a.indexOf(i) < 0;});
@@ -2139,7 +2139,7 @@ Function.prototype.bind = Function.prototype.bind || function (thisp) {
 
 
 
-Wu.Tools = {
+M.Tools = {
 
 
 	validateDateFormat : function (_key) {

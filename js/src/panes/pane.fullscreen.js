@@ -1,4 +1,4 @@
-Wu.Fullscreen = Wu.Evented.extend({
+M.Fullscreen = M.Evented.extend({
 
 	_inputs : [],
 
@@ -14,27 +14,27 @@ Wu.Fullscreen = Wu.Evented.extend({
 	_initContent : function () {
 
 		// create fullscreen
-		this._container = Wu.DomUtil.create('div', 'smooth-fullscreen', app._appPane);
+		this._container = M.DomUtil.create('div', 'smooth-fullscreen', app._appPane);
 
 		var innerClassName = this.options.innerClassName || 'smooth-fullscreen-inner';
 
 		var titleClassName = this.options.titleClassName ? 'smooth-fullscreen-title ' + this.options.titleClassName : 'smooth-fullscreen-title';
 
 		// wrappers
-		this._inner = Wu.DomUtil.create('div', innerClassName, this._container);
-		this._header = Wu.DomUtil.create('div', titleClassName, this._inner, this.options.title);
-		this._content = Wu.DomUtil.create('div', 'smooth-fullscreen-content', this._inner);
-		this._closer = Wu.DomUtil.create('div', 'close-smooth-fullscreen', this._container, 'x');
+		this._inner = M.DomUtil.create('div', innerClassName, this._container);
+		this._header = M.DomUtil.create('div', titleClassName, this._inner, this.options.title);
+		this._content = M.DomUtil.create('div', 'smooth-fullscreen-content', this._inner);
+		this._closer = M.DomUtil.create('div', 'close-smooth-fullscreen', this._container, 'x');
 	},
 
 	addInput : function (options) {
 
 		// create input
-		var label = Wu.DomUtil.create('div', 'smooth-fullscreen-name-label', this._content, options.label);
-		var input = Wu.DomUtil.create('input', 'smooth-input', this._content);
+		var label = M.DomUtil.create('div', 'smooth-fullscreen-name-label', this._content, options.label);
+		var input = M.DomUtil.create('input', 'smooth-input', this._content);
 		input.setAttribute('placeholder', options.placeholder);
 		input.value = options.value;
-		var error = Wu.DomUtil.create('div', 'smooth-fullscreen-error-label', this._content);
+		var error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', this._content);
 
 		// remember
 		this._inputs.push({
@@ -47,8 +47,8 @@ Wu.Fullscreen = Wu.Evented.extend({
 	addEvents : function () {
 
 		// close trigger		
-		Wu.DomEvent.on(this._closer, 'click', this.destroy, this);
-		Wu.DomEvent.on(window, 'popstate', this.destroy, this);
+		M.DomEvent.on(this._closer, 'click', this.destroy, this);
+		M.DomEvent.on(window, 'popstate', this.destroy, this);
 
 		// add esc key trigger for close fullscreen
 		this._addEscapeKey();
@@ -57,8 +57,8 @@ Wu.Fullscreen = Wu.Evented.extend({
 	removeEvents : function () {
 
 		// close trigger		
-		Wu.DomEvent.off(this._closer, 'click', this.destroy, this);
-		Wu.DomEvent.off(window, 'popstate', this.destroy, this);
+		M.DomEvent.off(this._closer, 'click', this.destroy, this);
+		M.DomEvent.off(window, 'popstate', this.destroy, this);
 
 		// add esc key trigger for close fullscreen
 		this._removeEscapeKey();
@@ -74,11 +74,11 @@ Wu.Fullscreen = Wu.Evented.extend({
 
 		// remove container
 		this._container.innerHTML = '';
-		Wu.DomUtil.remove(this._container);
+		M.DomUtil.remove(this._container);
 
 		var closeCallback = this.options.closeCallback;
 		closeCallback && closeCallback();
-		Wu.Mixin.Events.fire('closeFullscreen');
+		M.Mixin.Events.fire('closeFullscreen');
 
 		return false;
 	},

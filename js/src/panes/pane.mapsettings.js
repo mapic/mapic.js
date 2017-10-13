@@ -1,4 +1,4 @@
-Wu.MapSettingsPane = Wu.Pane.extend({
+M.MapSettingsPane = M.Pane.extend({
 	
 	type : 'mapsettingspane',
 	title : 'Map settings pane',
@@ -46,11 +46,11 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 
 		if (this._project.isEditable()) {
 			// this._settingsButton.style.display = '';
-			Wu.DomUtil.removeClass(this._settingsButton, 'disabledBtn');
+			M.DomUtil.removeClass(this._settingsButton, 'disabledBtn');
 			return true;
 		} else {
 			// this._settingsButton.style.display = 'none';
-			Wu.DomUtil.addClass(this._settingsButton, 'disabledBtn');
+			M.DomUtil.addClass(this._settingsButton, 'disabledBtn');
 			return false;
 		}
 	},
@@ -76,7 +76,7 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 	_initLayout : function () {
 
 		// create dropdown
-		this._settingsDropdown = Wu.DomUtil.create('div', 'settings-dropdown displayNone', app._appPane);
+		this._settingsDropdown = M.DomUtil.create('div', 'settings-dropdown displayNone', app._appPane);
 
 	},
 
@@ -89,9 +89,9 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 	_open : function () {
 
 		// close other tabs
-		Wu.Mixin.Events.fire('closeMenuTabs');
+		M.Mixin.Events.fire('closeMenuTabs');
 
-		Wu.DomUtil.removeClass(this._settingsDropdown, 'displayNone');
+		M.DomUtil.removeClass(this._settingsDropdown, 'displayNone');
 
 		this._isOpen = true;
 
@@ -99,13 +99,13 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 		// this._addGhost();
 
 		// mark button active
-		Wu.DomUtil.addClass(this._settingsButton, 'active');
+		M.DomUtil.addClass(this._settingsButton, 'active');
 
 	},
 
 	_close : function () {
 
-		Wu.DomUtil.addClass(this._settingsDropdown, 'displayNone');
+		M.DomUtil.addClass(this._settingsDropdown, 'displayNone');
 
 		this._isOpen = false;
 
@@ -113,7 +113,7 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 		// this._removeGhost();
 
 		// mark button inactive
-		Wu.DomUtil.removeClass(this._settingsButton, 'active');
+		M.DomUtil.removeClass(this._settingsButton, 'active');
 	},
 
 	_onCloseMenuTabs : function () {
@@ -123,14 +123,14 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 	},
 
 	_addGhost : function () {
-		this._ghost = Wu.DomUtil.create('div', 'share-ghost', app._appPane);
-		Wu.DomEvent.on(this._ghost, 'click', this._close, this);
+		this._ghost = M.DomUtil.create('div', 'share-ghost', app._appPane);
+		M.DomEvent.on(this._ghost, 'click', this._close, this);
 	},
 
 	_removeGhost : function () {
 		if (!this._ghost) return;
-		Wu.DomEvent.off(this._ghost, 'click', this._close, this);
-		Wu.DomUtil.remove(this._ghost);
+		M.DomEvent.off(this._ghost, 'click', this._close, this);
+		M.DomUtil.remove(this._ghost);
 	},
 
 	
@@ -141,8 +141,8 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 	initSettings : function (title) {
 
 
-		var sectionWrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper', this._settingsDropdown);
-		var header = Wu.DomUtil.create('div', 'chrome-content title', sectionWrapper, title);
+		var sectionWrapper = M.DomUtil.create('div', 'chrome-content-section-wrapper', this._settingsDropdown);
+		var header = M.DomUtil.create('div', 'chrome-content title', sectionWrapper, title);
 		var options = {
 
 			zoom : {
@@ -204,14 +204,14 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 
 				var title = options[key].name;
 
-				var line = new Wu.fieldLine({
+				var line = new M.fieldLine({
 					id       : key,
 					appendTo : sectionWrapper,
 					title    : title,
 					input    : false
 				});		
 
-				var _switch = new Wu.button({ 
+				var _switch = new M.button({ 
 					id 	 : key,					
 					type 	 : 'switch',
 					isOn 	 : project.store.controls[key],
@@ -225,12 +225,12 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 
 	initBoundPos : function (title) {
 
-		var sectionWrapper = Wu.DomUtil.create('div', 'chrome-content-section-wrapper', this._settingsDropdown);
-		var header = Wu.DomUtil.create('div', 'chrome-content title', sectionWrapper, title);
+		var sectionWrapper = M.DomUtil.create('div', 'chrome-content-section-wrapper', this._settingsDropdown);
+		var header = M.DomUtil.create('div', 'chrome-content title', sectionWrapper, title);
 		var isBoundsSet = this.isBoundsSet();
 
 		// Line
-		var boundsLine = new Wu.fieldLine({
+		var boundsLine = new M.fieldLine({
 			id        : 'bounds',
 			appendTo  : sectionWrapper,
 			title     : 'Bounds',
@@ -239,7 +239,7 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 		});
 
 		// Switch
-		var setClearBounds = new Wu.button({ 
+		var setClearBounds = new M.button({ 
 			id 	 : 'bounds',
 			type 	 : 'setclear',
 			isOn 	 : isBoundsSet,
@@ -249,7 +249,7 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 		});
 
 		// Line
-		var positionLine = new Wu.fieldLine({
+		var positionLine = new M.fieldLine({
 			id        : 'position',
 			appendTo  : sectionWrapper,
 			title     : 'Position',
@@ -258,7 +258,7 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 		});
 
 		// Switch
-		var setPosition = new Wu.button({ 
+		var setPosition = new M.button({ 
 			id 	 : 'position',
 			type 	 : 'set',
 			isOn 	 : false,
@@ -339,8 +339,8 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 		if (!project) return; 
 
 		// get center and zoom
-		var center = Wu.app._map.getCenter();
-		var zoom   = Wu.app._map.getZoom();
+		var center = M.app._map.getCenter();
+		var zoom   = M.app._map.getZoom();
 
 		// set position 
 		var position = {
@@ -365,8 +365,8 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 		if (!project) return; 
 
 		// get map bounds and zoom
-		var bounds = Wu.app._map.getBounds();
-		var zoom   = Wu.app._map.getZoom();
+		var bounds = M.app._map.getBounds();
+		var zoom   = M.app._map.getZoom();
 
 		// write directly to Project
 		project.setBounds({
@@ -393,8 +393,8 @@ Wu.MapSettingsPane = Wu.Pane.extend({
 	clearBounds : function () {
 		
 		// get actual Project object
-		var project = Wu.app.activeProject;
-		var map = Wu.app._map;
+		var project = M.app.activeProject;
+		var map = M.app._map;
 		var nullBounds = {
 			northEast : {
 				lat : '90',

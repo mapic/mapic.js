@@ -1,4 +1,4 @@
-L.Control.Legends = Wu.Control.extend({
+L.Control.Legends = M.Control.extend({
 
 	type : 'legends',
 	
@@ -18,26 +18,26 @@ L.Control.Legends = Wu.Control.extend({
 		container.style.display = 'none';
 
 		// #legends-opener
-		this._legendsOpener = Wu.DomUtil.create('div', 'legends-opener', container, 'Open Legends');
+		this._legendsOpener = M.DomUtil.create('div', 'legends-opener', container, 'Open Legends');
 		this._legendsOpener.style.display = 'none';
 
 		// #legends-control-inner-content
-		this._legendsContainer = Wu.DomUtil.create('div', 'legends-control-inner-content', container);
+		this._legendsContainer = M.DomUtil.create('div', 'legends-control-inner-content', container);
 
 		// #legends-inner
-		this._legendsInner = Wu.DomUtil.create('div', 'leaflet-drag-target legends-inner', this._legendsContainer);
+		this._legendsInner = M.DomUtil.create('div', 'leaflet-drag-target legends-inner', this._legendsContainer);
 
 		// #legends-collapser
-		this._legendsCollapser = Wu.DomUtil.create('div', 'legends-collapser dropdown-button legends-collapser-trans', this._legendsInner);
+		this._legendsCollapser = M.DomUtil.create('div', 'legends-collapser dropdown-button legends-collapser-trans', this._legendsInner);
 
 		// #legends-scroll-left
-		this._legendsScrollLeft = Wu.DomUtil.create('div', 'legends-scroll-left', this._legendsInner);
+		this._legendsScrollLeft = M.DomUtil.create('div', 'legends-scroll-left', this._legendsInner);
 		 
 		// #legends-scroll-right		 
-		this._legendsScrollRight = Wu.DomUtil.create('div', 'legends-scroll-right', this._legendsInner);
+		this._legendsScrollRight = M.DomUtil.create('div', 'legends-scroll-right', this._legendsInner);
 
 		// #legends-inner-slider
-		this._legendsInnerSlider = Wu.DomUtil.create('div', 'legends-inner-slider', this._legendsInner);
+		this._legendsInnerSlider = M.DomUtil.create('div', 'legends-inner-slider', this._legendsInner);
 
 		// add tooltip
 		app.Tooltip.add(this._legendsInner, 'Shows legends of active layers', { extends : 'systyle', tipJoint : 'top right'});
@@ -48,22 +48,22 @@ L.Control.Legends = Wu.Control.extend({
 
 	addHooks : function () {
 
-		Wu.DomEvent.on(this._legendsCollapser, 'click', this.closeLegends, this);
-		Wu.DomEvent.on(this._legendsOpener, 'click', this.toggleOpen, this);
+		M.DomEvent.on(this._legendsCollapser, 'click', this.closeLegends, this);
+		M.DomEvent.on(this._legendsOpener, 'click', this.toggleOpen, this);
 
 		// prevent map scrollzoom (OOOBS! BLOCKS ALL SCROLLING)
-		Wu.DomEvent.on(this._container, 'mousewheel', Wu.DomEvent.stop, this);
+		M.DomEvent.on(this._container, 'mousewheel', M.DomEvent.stop, this);
 
 		// Scrollers By (j) 
-		Wu.DomEvent.on(this._legendsScrollLeft, 'click', this.legendsScrollLeft, this);
-		Wu.DomEvent.on(this._legendsScrollRight, 'click', this.legendsScrollRight, this);
+		M.DomEvent.on(this._legendsScrollLeft, 'click', this.legendsScrollLeft, this);
+		M.DomEvent.on(this._legendsScrollRight, 'click', this.legendsScrollRight, this);
 
 		// prevent doubleclick
-		Wu.DomEvent.on(this._container, 'dblclick', Wu.DomEvent.stop, this);
+		M.DomEvent.on(this._container, 'dblclick', M.DomEvent.stop, this);
 
 		// Stop Propagation
-		Wu.DomEvent.on(this._container, 'mousedown click dblclick',  Wu.DomEvent.stopPropagation, this);
-		Wu.DomEvent.on(this._legendsCollapser, 'mousedown click dblclick',  Wu.DomEvent.stopPropagation, this);
+		M.DomEvent.on(this._container, 'mousedown click dblclick',  M.DomEvent.stopPropagation, this);
+		M.DomEvent.on(this._legendsCollapser, 'mousedown click dblclick',  M.DomEvent.stopPropagation, this);
 	
 	},
 
@@ -122,11 +122,11 @@ L.Control.Legends = Wu.Control.extend({
 
 		// If mobile: start with closed legends pane
 		if (app.mobile) {
-			this._content.style.left = Wu.app.nativeResolution[1] + 'px';
+			this._content.style.left = M.app.nativeResolution[1] + 'px';
 			this._setClosed();
 
 			// Mobile arrow	
-		    	Wu.DomUtil.create('div', 'legends-mobile-arrow', this._content);
+		    	M.DomUtil.create('div', 'legends-mobile-arrow', this._content);
 		}
 
 	},
@@ -225,8 +225,8 @@ L.Control.Legends = Wu.Control.extend({
 	},
 
 	mobileCloseLegends : function(e) {
-		Wu.DomUtil.removeClass(this._legendsOpener, 'legends-open');
-		this._content.style.left = Wu.app.nativeResolution[1] + 'px';
+		M.DomUtil.removeClass(this._legendsOpener, 'legends-open');
+		this._content.style.left = M.app.nativeResolution[1] + 'px';
 		this._setClosed();
 	},
 
@@ -238,7 +238,7 @@ L.Control.Legends = Wu.Control.extend({
 		if (layermenuControl._open) layermenuControl.closeLayerPane();
 		if (!descriptionControl._isClosed) descriptionControl.mobileClosePane();
 
-		Wu.DomUtil.addClass(this._legendsOpener, 'legends-open');
+		M.DomUtil.addClass(this._legendsOpener, 'legends-open');
 		this._content.style.left = '0px';
 		this._setOpen();
 	},
@@ -395,7 +395,7 @@ L.Control.Legends = Wu.Control.extend({
 		
 
 		// create legends box
-	    	var div = Wu.DomUtil.create('div', 'legends-item', this._legendsInnerSlider);
+	    	var div = M.DomUtil.create('div', 'legends-item', this._legendsInnerSlider);
 
 	    	// Set the width of the legends container
 		var containerWidth = Math.round(legends.length/4) * 220;
@@ -429,8 +429,8 @@ L.Control.Legends = Wu.Control.extend({
 	    	var headerTitle = this._getLegendHeader(layer);
 
 		// create legends divs
-		var b = Wu.DomUtil.create('div', 'legend-header', div, headerTitle); // header
-		var legendsList = Wu.DomUtil.create('div', 'legend-list', div);
+		var b = M.DomUtil.create('div', 'legend-header', div, headerTitle); // header
+		var legendsList = M.DomUtil.create('div', 'legend-list', div);
 
 		// create legends
 		legends.forEach(function (legend) {
@@ -439,10 +439,10 @@ L.Control.Legends = Wu.Control.extend({
 			if (!legend.on) return;
 
 			// create legend divs
-			var d = Wu.DomUtil.create('div', 'legend-each', legendsList);
-			var e = Wu.DomUtil.create('div', 'legend-feature', d);
-			var f = Wu.DomUtil.create('img', 'legend-image1', e);
-			var g = Wu.DomUtil.create('img', 'legend-image2', e);
+			var d = M.DomUtil.create('div', 'legend-each', legendsList);
+			var e = M.DomUtil.create('div', 'legend-feature', d);
+			var f = M.DomUtil.create('img', 'legend-image1', e);
+			var g = M.DomUtil.create('img', 'legend-image2', e);
 			
 			var title = '';
 			
@@ -454,7 +454,7 @@ L.Control.Legends = Wu.Control.extend({
 				}
 			}
 
-			var h = Wu.DomUtil.create('div', 'legend-feature-name', d, title);
+			var h = M.DomUtil.create('div', 'legend-feature-name', d, title);
 
 			f.src = legend.base64;
 			g.src = legend.base64;
@@ -509,7 +509,7 @@ L.Control.Legends = Wu.Control.extend({
 		if (legendBounds.left < 0) {
 
 			// remove the CSS animation of the slider
-			Wu.DomUtil.removeClass(this._legendsInnerSlider, "legends-inner-slider-sliding");
+			M.DomUtil.removeClass(this._legendsInnerSlider, "legends-inner-slider-sliding");
 			 
 			// add the width of the legend to slider left
 			this._legendsInnerSlider.style.left = this._legendsInnerSlider.offsetLeft + legend.width + 'px';
@@ -521,7 +521,7 @@ L.Control.Legends = Wu.Control.extend({
  		// Hacky packy: add CSS animation to slider again
  		var that = this;
 		setTimeout(function() {
-			Wu.DomUtil.addClass(that._legendsInnerSlider, "legends-inner-slider-sliding");
+			M.DomUtil.addClass(that._legendsInnerSlider, "legends-inner-slider-sliding");
 		}, 500);
 		
 		// adjust slide width

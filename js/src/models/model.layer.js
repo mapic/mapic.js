@@ -1,4 +1,4 @@
-Wu.Model.Layer = Wu.Model.extend({
+M.Model.Layer = M.Model.extend({
 
     type : 'layer',
 
@@ -27,8 +27,8 @@ Wu.Model.Layer = Wu.Model.extend({
     _setHooks : function (on) {
 
         // all visible tiles loaded event (for phantomJS)
-        Wu.DomEvent[on](this.layer, 'load', this._onLayerLoaded, this);
-        Wu.DomEvent[on](this.layer, 'loading', this._onLayerLoading, this);
+        M.DomEvent[on](this.layer, 'load', this._onLayerLoaded, this);
+        M.DomEvent[on](this.layer, 'loading', this._onLayerLoading, this);
     },
 
     // dummy
@@ -98,7 +98,7 @@ Wu.Model.Layer = Wu.Model.extend({
         this._added = true;
 
         // // fire event
-        // Wu.Mixin.Events.fire('layerEnabled', { detail : {
+        // M.Mixin.Events.fire('layerEnabled', { detail : {
         //     layer : this
         // }}); 
 
@@ -307,7 +307,7 @@ Wu.Model.Layer = Wu.Model.extend({
         this.setLegendsTitle(title);
 
         // // fire layer edited
-        // Wu.Mixin.Events.fire('layerEdited', {detail : {
+        // M.Mixin.Events.fire('layerEdited', {detail : {
         //         layer: this
         // }});
 
@@ -371,7 +371,7 @@ Wu.Model.Layer = Wu.Model.extend({
 
     // todo: create options object which can allow any option switch (ie. JSON)
     setAverageDataOption : function (bool) {
-        var options = Wu.parse(this.store.options);
+        var options = M.parse(this.store.options);
         if (!options) {
             options = {
                 average_data : bool
@@ -379,12 +379,12 @@ Wu.Model.Layer = Wu.Model.extend({
         } else {
             options.average_data = bool;
         }
-        this.store.options = Wu.stringify(options);
+        this.store.options = M.stringify(options);
         this.save('options');
     },
 
     getAverageDataOption : function () {
-        var options = Wu.parse(this.store.options);
+        var options = M.parse(this.store.options);
         if (!options) return false;
         return options.average_data;
     },
@@ -482,7 +482,7 @@ Wu.Model.Layer = Wu.Model.extend({
         var metajson = this.store.metadata;
         if (!metajson) return false;
 
-        var meta = Wu.parse(metajson);
+        var meta = M.parse(metajson);
         return meta;
     },
 
@@ -511,7 +511,7 @@ Wu.Model.Layer = Wu.Model.extend({
     getTooltip : function () {
         var json = this.store.tooltip;
         if (!json) return false;
-        var meta = Wu.parse(json);
+        var meta = M.parse(json);
         return meta;
     },
 
@@ -536,7 +536,7 @@ Wu.Model.Layer = Wu.Model.extend({
     // todo: remove
     getStyling : function () {
         var json = this.store.style;
-        return Wu.parse(json);
+        return M.parse(json);
     },
     // todo: remove
     setStyling : function (styleJSON) {
@@ -550,7 +550,7 @@ Wu.Model.Layer = Wu.Model.extend({
 
     getLegends : function () {
         var meta = this.store.legends;
-        if (meta) return Wu.parse(meta);
+        if (meta) return M.parse(meta);
         return false;
     },
 
@@ -569,7 +569,7 @@ Wu.Model.Layer = Wu.Model.extend({
     },
 
     setLegendsTitle : function (title) {
-        var legends = Wu.parse(this.store.legends);
+        var legends = M.parse(this.store.legends);
         if (!legends[0]) return;
         legends[0].value = title;
         this.setLegends(legends);
@@ -635,7 +635,7 @@ Wu.Model.Layer = Wu.Model.extend({
                 });
             }
 
-            var result = Wu.parse(result);
+            var result = M.parse(result);
 
             if (!result || result.error) {
                 return app.feedback.setError({
@@ -744,45 +744,45 @@ Wu.Model.Layer = Wu.Model.extend({
 
 
 
-Wu.ErrorLayer = Wu.Model.Layer.extend({
+M.ErrorLayer = M.Model.Layer.extend({
     initialize : function () {
         console.log('Errorlayer');
     }
 });
 
 // shorthand for creating all types of layers
-Wu.createLayer = function (layer) {
+M.createLayer = function (layer) {
 
     // error layer
-    if (!layer.data) return new Wu.ErrorLayer();
+    if (!layer.data) return new M.ErrorLayer();
 
     // check if vector/raster
     var isVector = (layer.data.postgis && layer.data.postgis.geom_type == 'geometry');
     var isRaster = (layer.data.postgis && layer.data.postgis.geom_type == 'raster');
 
     // postgis vector
-    if (isVector) return new Wu.VectorLayer(layer);
+    if (isVector) return new M.VectorLayer(layer);
 
     // postgis raster
-    if (isRaster) return new Wu.RasterLayer(layer);
+    if (isRaster) return new M.RasterLayer(layer);
 
     // cubes
-    if (layer.data.cube) return new Wu.Model.Layer.CubeLayer(layer);
+    if (layer.data.cube) return new M.Model.Layer.CubeLayer(layer);
 
     // mapbox
-    if (layer.data.mapbox) return new Wu.MapboxLayer(layer);
+    if (layer.data.mapbox) return new M.MapboxLayer(layer);
 
     // norkart
-    if (layer.data.norkart) return new Wu.NorkartLayer(layer);
+    if (layer.data.norkart) return new M.NorkartLayer(layer);
 
     // google
-    if (layer.data.google) return new Wu.GoogleLayer(layer);
+    if (layer.data.google) return new M.GoogleLayer(layer);
 
     // wms
-    if (layer.data.wms) return new Wu.WMSLayer(layer);
+    if (layer.data.wms) return new M.WMSLayer(layer);
 
     // catch-all error layer
-    return new Wu.ErrorLayer();
+    return new M.ErrorLayer();
 };
 
 // update options and redraw

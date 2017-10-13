@@ -1,4 +1,4 @@
-L.Control.Draw = Wu.Control.extend({
+L.Control.Draw = M.Control.extend({
 
 	options: {
 		position: 'topleft',
@@ -61,7 +61,7 @@ L.Control.Draw = Wu.Control.extend({
 
 		// button events
 		var removeButton = this._toolbars.edit._modes.remove.button;
-		Wu.DomEvent.on(removeButton, 'click', this._clearAll, this);
+		M.DomEvent.on(removeButton, 'click', this._clearAll, this);
 		
 	},
 
@@ -115,7 +115,7 @@ L.Control.Draw = Wu.Control.extend({
 			geojson : geojson,
 			layer : layer
 		}, function (err, results) {
-			var resultObject = Wu.parse(results);
+			var resultObject = M.parse(results);
 
 			console.log('_fetchData resultObject', resultObject);
 

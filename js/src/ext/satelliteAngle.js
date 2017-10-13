@@ -1,4 +1,4 @@
-Wu.satelliteAngle = Wu.Class.extend({
+M.satelliteAngle = M.Class.extend({
 
 	initialize : function (options) {
 
@@ -13,7 +13,7 @@ Wu.satelliteAngle = Wu.Class.extend({
 	initContent : function () {
 
 		this.color = '#019688';
-		this._innerContainer = Wu.DomUtil.create('div', 'd3-satellite-wrapper displayNone', this.container);
+		this._innerContainer = M.DomUtil.create('div', 'd3-satellite-wrapper displayNone', this.container);
 
 	},
 
@@ -24,10 +24,10 @@ Wu.satelliteAngle = Wu.Class.extend({
 
 		if ( !angle && !path ) {
 			this.closed = true;
-			Wu.DomUtil.addClass(this._innerContainer, 'displayNone');
+			M.DomUtil.addClass(this._innerContainer, 'displayNone');
 		} else {
 			this.closed = false;
-			Wu.DomUtil.removeClass(this._innerContainer, 'displayNone');
+			M.DomUtil.removeClass(this._innerContainer, 'displayNone');
 		}
 
 		this.initAngle(parseInt(angle));
@@ -42,8 +42,8 @@ Wu.satelliteAngle = Wu.Class.extend({
 		}
 		if ( !angle && angle != 0 ) return;
 
-		this.angleContainer = Wu.DomUtil.createId('div', 'd3-satellite-angle-container', this._innerContainer);
-		this.angleTitle = Wu.DomUtil.create('div', 'd3-satellite-title', this.angleContainer, 'Measurement angle');
+		this.angleContainer = M.DomUtil.createId('div', 'd3-satellite-angle-container', this._innerContainer);
+		this.angleTitle = M.DomUtil.create('div', 'd3-satellite-title', this.angleContainer, 'Measurement angle');
 
 		var size = 0.55,
 		    padding = 10,
@@ -180,8 +180,8 @@ Wu.satelliteAngle = Wu.Class.extend({
 
 		if ( !path && path != 0 ) return;
 
-		this.compassContainer = Wu.DomUtil.createId('div', 'd3-satellite-compass-container', this._innerContainer);		
-		this.compassTitle = Wu.DomUtil.create('div', 'd3-satellite-title', this.compassContainer, 'Line of sight');
+		this.compassContainer = M.DomUtil.createId('div', 'd3-satellite-compass-container', this._innerContainer);		
+		this.compassTitle = M.DomUtil.create('div', 'd3-satellite-title', this.compassContainer, 'Line of sight');
 
 
 		var size = 0.75,

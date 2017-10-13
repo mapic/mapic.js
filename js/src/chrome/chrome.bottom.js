@@ -1,4 +1,4 @@
-Wu.Chrome.Bottom = Wu.Chrome.extend({
+M.Chrome.Bottom = M.Chrome.extend({
 
 	_ : 'bottomchrome', 
 
@@ -12,7 +12,7 @@ Wu.Chrome.Bottom = Wu.Chrome.extend({
 	},
 
 	initContainer : function () {
-		this._container = Wu.DomUtil.create('div', 'chrome chrome-container chrome-bottom', app._appPane);
+		this._container = M.DomUtil.create('div', 'chrome chrome-container chrome-bottom', app._appPane);
 	},
 
 	addHooks : function () {

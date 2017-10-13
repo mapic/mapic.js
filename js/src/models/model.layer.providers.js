@@ -1,4 +1,4 @@
-Wu.MapboxLayer = Wu.Model.Layer.extend({
+M.MapboxLayer = M.Model.Layer.extend({
 
     type : 'mapboxLayer',
     
@@ -34,13 +34,13 @@ Wu.MapboxLayer = Wu.Model.Layer.extend({
     },
 
     _addEvents : function () {
-        Wu.DomEvent.on(this.layer, 'loading', this.setAttribution, this);
+        M.DomEvent.on(this.layer, 'loading', this.setAttribution, this);
     }
 });
 
 
 
-Wu.GoogleLayer = Wu.Model.Layer.extend({
+M.GoogleLayer = M.Model.Layer.extend({
 
     type : 'googleLayer',
 
@@ -60,7 +60,7 @@ Wu.GoogleLayer = Wu.Model.Layer.extend({
     },
 
     _addEvents : function () {
-        Wu.DomEvent.on(this.layer, 'loading', this.setAttribution, this);
+        M.DomEvent.on(this.layer, 'loading', this.setAttribution, this);
     },
 
     getAttribution : function () {
@@ -116,7 +116,7 @@ Wu.GoogleLayer = Wu.Model.Layer.extend({
 });
 
 
-Wu.NorkartLayer = Wu.Model.Layer.extend({
+M.NorkartLayer = M.Model.Layer.extend({
 
     type : 'norkartLayer',
 
@@ -190,7 +190,7 @@ Wu.NorkartLayer = Wu.Model.Layer.extend({
         app._map.on('zoomend', this._clearBackgroundCache.bind(this));
         app._map.on('moveend', _.throttle(this.logMapRequest.bind(this), 350));
         app._map.on('moveend', _.throttle(this.setAttribution.bind(this), 350));
-        Wu.DomEvent.on(this.layer, 'loading', this.setAttribution, this);
+        M.DomEvent.on(this.layer, 'loading', this.setAttribution, this);
         this._eventsAdded = true;
     },
 
@@ -301,4 +301,4 @@ Wu.NorkartLayer = Wu.Model.Layer.extend({
 });
 
 // todo
-Wu.CartodbLayer = Wu.Model.Layer.extend({});
+M.CartodbLayer = M.Model.Layer.extend({});

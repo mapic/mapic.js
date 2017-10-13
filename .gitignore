@@ -1,16 +1,18 @@
+
 dist/*
 style.min.css
 local/*
-images/portal-logo.png
 css/style.css
 css/style.min.css
 *.css.map
 
 # portal specific images
 css/mapic_logo_inverted_blank.png
+flash-logo.png
+images/portal-logo.png
 
 # Dependency directory
 node_modules
 
+# test data
 test/open-data
-css/flash-logo.png

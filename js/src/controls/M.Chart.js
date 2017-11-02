@@ -1,4 +1,3 @@
-console.log('M.Chart');
 M.Chart = M.Control.extend({
 
     initialize : function(options) {
@@ -710,6 +709,8 @@ M.Chart = M.Control.extend({
             layerName = this.popupSettings.title
         }
 
+        this._chartTitle = layerName;
+
         // Container
         var container = M.DomUtil.createId('div', 'c3-header-metacontainer');
 
@@ -795,6 +796,8 @@ M.Chart = M.Control.extend({
         
 
         var data = c3Obj.d3array;
+
+        this._currentChartData = data;
 
         // Ticks
         var t = data.ticks;
@@ -967,12 +970,55 @@ M.Chart = M.Control.extend({
         // add regression button
         this._addRegressionButton();
 
+        // add CSV button
+        this._addCSVButton();
+
         return _C3Container;
     },
 
+    _addCSVButton : function () {
+        var button = M.DomUtil.create('div', 'csv-button-wrapper', this._footerContainer, 'Export as CSV');
+        button.setAttribute('title', 'Export as CSV');
+        M.DomEvent.on(button, 'click', this._exportCSV, this);
+    },
+
+    _exportCSV : function () {
+
+        // get data
+        var csv_data = this._currentChartData.meta;
+
+        // create csv
+        var csv = [];
+        _.each(csv_data, function (c) {
+            var value = c[1];
+            var key = moment(c[0], "YYYYMMDD");
+
+            // format dates
+            var k = key.isValid() ? key.format('YYYY-MM-DD') : c[0];
+            var item = [k, value].join(', ')
+
+            // push
+            csv.push(item);
+        });
+
+        // parse
+        csv = csv.join('\n');
+        
+        // create csv blob
+        var a = window.document.createElement('a');
+        a.href = window.URL.createObjectURL(new Blob([csv], {type: 'text/csv'}));
+        a.download = this._chartTitle + '.csv'; // remove spaces
+
+        // Append anchor to body.
+        document.body.appendChild(a);
+        a.click();
+
+        // Remove anchor from body
+        document.body.removeChild(a);
+
+    },
 
     _addRegressionButton : function () {
-
 
         var w = M.DomUtil.create('div', 'regression-button-wrapper', this._footerContainer);
 
@@ -1021,12 +1067,11 @@ M.Chart = M.Control.extend({
 
             this._chart.unload({
                 ids : 'regression'
-            })
+            });
 
         }
         
     },
-
 
     _addChartEvents : function (div) {
 
@@ -1086,12 +1131,6 @@ M.Chart = M.Control.extend({
 
     },
 
-
-
-    // DATA BUILDERS
-    // DATA BUILDERS
-    // DATA BUILDERS        
-
     // Create data object
     createC3dataObj : function (c3Obj) {
 
@@ -1138,7 +1177,6 @@ M.Chart = M.Control.extend({
             }
         }
 
-
         this._c3object = c3Obj;
 
         return c3Obj;
@@ -1153,7 +1191,6 @@ M.Chart = M.Control.extend({
         if ( this.popupSettings.timeSeries && this.popupSettings.timeSeries[_key] ) {
             if ( !this.popupSettings.timeSeries[_key].on ) return;
         }
-             
 
         var isDate = M.Tools.validateDateFormat(_key);
 
@@ -1195,18 +1232,13 @@ M.Chart = M.Control.extend({
         // CREATE META FIELDS
         } 
 
-
-
         // Exclude the generated fields
         if ( _key.substring(0,7) == 'the_geo') return;
         d3array.meta.push([_key, _val])
 
-
     },
 
-
     _getWuLayerFromPostGISLayer : function (postgis_layer_id) {
-
         var layers = app.activeProject.getLayers();
         var layerUuid = _.find(layers, function(layer) {
             if (!layer || !layer.store || !layer.store.data || !layer.store.data.postgis) return false;
@@ -1215,10 +1247,8 @@ M.Chart = M.Control.extend({
         return layerUuid;       
     }
 
-
 });
 
 M.chart = function (options) {
-    console.log('M.chart options:', options);
     return new M.Chart(options);
 }

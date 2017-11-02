@@ -3008,7 +3008,28 @@ span.mask-item-value {
 
 
 
-
+.csv-button-wrapper {
+    position: absolute;
+    height: 25px;
+    right: 20px;
+    top: 31px;
+    background: rgba(61, 72, 90, 0.91);
+    color: #fcfcfc;
+    border-radius: 3px;
+    padding: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 600;
+}
+.csv-button-wrapper:hover {
+   background: rgba(61, 72, 90, 0.74);
+}
+.csv-button-wrapper:active {
+    background: #fcfcfc;
+    color: #3d485a;
+    border: 1px solid #3d485a;
+    padding: 4px;
+}
 
 
 

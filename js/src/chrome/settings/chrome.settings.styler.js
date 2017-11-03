@@ -86,6 +86,9 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 		}, function (err, results) {
 			console.log('err, results', err, results);
 		});
+
+		// add logs
+		app.log('prerendered:', this._layer.getTitle());
 		
 	},
 

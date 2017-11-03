@@ -2,6 +2,8 @@ M.Chart = M.Control.extend({
 
     initialize : function(options) {
 
+        app.log('opened:chart');
+
         // set options
         M.setOptions(this, options);
         var multiPopUp = options.multiPopUp;
@@ -1015,6 +1017,9 @@ M.Chart = M.Control.extend({
 
         // Remove anchor from body
         document.body.removeChild(a);
+
+        // log
+        app.log('exported:csv');
 
     },
 

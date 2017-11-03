@@ -263,6 +263,7 @@ M.Chrome.Top = M.Chrome.extend({
 	_toggleLeftPane : function (e) {
 		this._leftPaneisOpen ? this.closeLeftPane() : this.openLeftPane();
 		M.Mixin.Events.fire('toggleLeftChrome', {detail : {leftPaneisOpen : this._leftPaneisOpen }}); 
+		app.log('clicked:home');
 	},
 
 	openLeftPane : function () {

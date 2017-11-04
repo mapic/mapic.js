@@ -2940,6 +2940,7 @@ M.Chrome.Data = M.Chrome.extend({
 
             // Get each provider (mapbox, google, etc)
             provider.layers.forEach(function(layer) {
+                console.log('layer:', layer);
                 sortedLayers.push({
                     title: layer.getTitle(),
                     value: layer.getUuid(),
@@ -2959,12 +2960,12 @@ M.Chrome.Data = M.Chrome.extend({
         //     value: "Solid background color"
         // });
 
-        // this._backgroundLayerDropdown = new M.Dropdown({
-        //     fn: this._selectedActiveLayer.bind(this),
-        //     appendTo: container,
-        //     content: sortedLayers,
-        //     project: this._project
-        // });
+        this._backgroundLayerDropdown = new M.Dropdown({
+            fn: this._selectedActiveLayer.bind(this),
+            appendTo: container,
+            content: sortedLayers,
+            project: this._project
+        });
 
         // if ( this._project.store.baseLayers.length == 0 ) {
         //     this._backgroundLayerDropdown.setValue({

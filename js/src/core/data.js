@@ -47,6 +47,9 @@ M.Data = M.Class.extend({
 
         // create cube item
         var createCube = M.DomUtil.create('div', 'upload-button-create-cube', optionsDropdownDiv, 'Create cube...');
+        
+        // create water-level
+        var createGraphLayer = M.DomUtil.create('div', 'upload-button-create-cube', optionsDropdownDiv, 'Create Graph layer...');
              
         // return all divs
 		var returnObject = {
@@ -55,6 +58,7 @@ M.Data = M.Class.extend({
 			parent : this._buttonContainer,
 			dropdown : optionsDropdownDiv,
 			createCube : createCube,
+			createGraphLayer : createGraphLayer,
 		}
 
 		// return button

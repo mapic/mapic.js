@@ -391,7 +391,7 @@ M.Model.Project = M.Model.extend({
 			access		: this.store.access
 		};
 
-		console.log('crate project', options);
+		// console.log('crate project', options);
 
 		// send request to API		
  		app.api.createProject(options, callback.bind(opts.context));
@@ -1139,7 +1139,6 @@ M.Model.Project = M.Model.extend({
 
 	isPublic : function () {
 		var access = this.getAccess();
-		console.log('access: ', access);
 		var isPublic = access.options.isPublic;
 		return !!isPublic
 	},

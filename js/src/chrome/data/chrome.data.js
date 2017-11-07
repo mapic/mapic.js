@@ -173,18 +173,12 @@ M.Chrome.Data = M.Chrome.extend({
                 // style : JSON.stringify(this.get_default_cube_cartocss()) // save default json style
             }
 
-            console.log('creating layer', wmsLayer);
-
             // create Wu layer
             app.api.createLayer(wmsLayer, function (err, wmsLayerJSON) {
-
-                console.log('createLayer', wmsLayer, wmsLayerJSON);
 
                 var wmsLayer = M.parse(wmsLayerJSON);
 
                 var layer = project.addLayer(wmsLayer);
-
-                console.log('added to layer', layer);
 
                 // select project
                 M.Mixin.Events.fire('layerAdded', { detail : {
@@ -429,6 +423,56 @@ M.Chrome.Data = M.Chrome.extend({
 
         // set event for create-cube item
         M.DomEvent.on(this._uploadButton.createCube, 'mousedown', this._createCubeClick, this);
+
+         // set event for create-water-level item
+        M.DomEvent.on(this._uploadButton.createGraphLayer, 'mousedown', this._createGraphLayerClick, this);
+
+    },
+
+    _createGraphLayerClick : function () {
+
+        console.log('create-graph-layer');
+
+        // create fullscreen
+        var fullscreen = this._fullscreen = new M.Fullscreen({
+            title : '<i class="fa fa-bars file-option"></i>Graph Layer',
+            titleClassName : 'slim-font'
+        });
+
+        // shortcuts
+        // this._fullscreen._layer = layer;
+        var content = this._fullscreen._content;
+       
+        console.log('fullscreen:', fullscreen);
+
+        // create cubeset list
+        this._createGraphLayerNameBox({
+            container : content,
+        });
+
+    },
+
+    _createGraphLayerNameBox : function (options) {
+        var container = options.container;
+
+        // name
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Layer name');
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', 'Enter name here');
+
+        // textarea
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Y Axis Label');
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', 'Enter name here');
+        // var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Layer name');
+        var name_input2 = M.DomUtil.create('textarea', 'smooth-input smaller-input margin-top-20', toggles_wrapper);
+        name_input2.setAttribute('placeholder', 'Click to add .csv graph data');
+
+
+
+
 
     },
 
@@ -2940,7 +2984,6 @@ M.Chrome.Data = M.Chrome.extend({
 
             // Get each provider (mapbox, google, etc)
             provider.layers.forEach(function(layer) {
-                console.log('layer:', layer);
                 sortedLayers.push({
                     title: layer.getTitle(),
                     value: layer.getUuid(),

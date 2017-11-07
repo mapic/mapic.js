@@ -6,8 +6,8 @@ describe("core.app", function () {
   var projectModel;
 
   before(function() {
-    app = new Wu.App(systemapicConfigOptions);
-    //projectModel = new Wu.Model.Project();
+    app = new M.App(systemapicConfigOptions);
+    //projectModel = new M.Model.Project();
     //app.Chrome = {};
     //app.api = mockApi;
   });
@@ -15,7 +15,7 @@ describe("core.app", function () {
   
   // version
   it("should check Mapic.js version", function () {
-    expect(Wu.version).to.exist;
+    expect(M.version).to.exist;
   });
 
   // app object

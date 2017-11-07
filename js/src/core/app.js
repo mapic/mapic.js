@@ -1,4 +1,4 @@
-M.version = '17.10.24';
+M.version = '17.11.06';
 M.App = M.Class.extend({
 	_ : 'app',
 

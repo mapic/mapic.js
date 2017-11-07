@@ -6,8 +6,8 @@ describe("core.project", function () {
   var projectModel;
 
   before(function() {
-    app = new Wu.App(systemapicConfigOptions);
-    projectModel = new Wu.Model.Project();
+    app = new M.App(systemapicConfigOptions);
+    projectModel = new M.Model.Project();
     app.feedback = mockFeedback;
     app.Chrome = {};
     app.Projects = {};
@@ -19,13 +19,13 @@ describe("core.project", function () {
     expect(projectModel).to.exist;
   });
 
-  it("should have Wu.Chrome.Project instance" , function () {
-    var chromeProject = new Wu.Chrome.Projects();
+  it("should have M.Chrome.Project instance" , function () {
+    var chromeProject = new M.Chrome.Projects();
     expect(chromeProject).to.exist;
   });
 
   it("should create fullscreen window" , function () {
-    var fullscreen = new Wu.Fullscreen({
+    var fullscreen = new M.Fullscreen({
       title : '<span style="font-weight:200;">Create New Project</span>'
     });
     var content = fullscreen._content;
@@ -45,7 +45,7 @@ describe("core.project", function () {
       name_error : name_error
     };
 
-    var chromeProject = new Wu.Chrome.Projects();
+    var chromeProject = new M.Chrome.Projects();
     chromeProject._createProject(options , function (isFired) {
       expect(isFired).to.be.true;
     });
@@ -55,7 +55,7 @@ describe("core.project", function () {
   it("should create a new project and validate data", function () {
     var options = {"store":{"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}}};    
     var store = {"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
-    var project = new Wu.Model.Project(store);
+    var project = new M.Model.Project(store);
     project.create(options, function (err, json) {
       expect(json.project.name).to.equal(store.name);
       expect(json.project.description).to.equal(store.description);
@@ -67,7 +67,7 @@ describe("core.project", function () {
   it("should fire the clicked event on project edition" , function () {
 
     var store = {"name":"Test Project Name","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
-    var project = new Wu.Model.Project(store);
+    var project = new M.Model.Project(store);
 
     var name_input = {
       value : "My Test Project 1"
@@ -80,7 +80,7 @@ describe("core.project", function () {
       project : project
     };
 
-    var chromeProject = new Wu.Chrome.Projects();
+    var chromeProject = new M.Chrome.Projects();
     var isFired = chromeProject._updateProject(options);
     expect(isFired).to.be.true;
   });
@@ -89,7 +89,7 @@ describe("core.project", function () {
         
     var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
     
-    var project = new Wu.Model.Project(store);
+    var project = new M.Model.Project(store);
 
     var newProjectName = "Test Project Name 2";
 
@@ -103,7 +103,7 @@ describe("core.project", function () {
         
     var store = {"name":"Test Project Name","uuid" : "project-0e386d2a-2966-419b-8604-96d112d4abb2","description":"Test Project description","createdByName":"Shahjada Talukdar","access":{"edit":[],"read":[],"options":{"share":true,"download":false,"isPublic":false}}};
 
-    var project = new Wu.Model.Project(store);
+    var project = new M.Model.Project(store);
 
     app.Projects['project-0e386d2a-2966-419b-8604-96d112d4abb2'] = project;
 
@@ -116,9 +116,9 @@ describe("core.project", function () {
 
   it("should invite user to a project", function () {
 
-    var users = new Wu.Chrome.Users();
+    var users = new M.Chrome.Users();
 
-    users._fullscreen = new Wu.Fullscreen({
+    users._fullscreen = new M.Fullscreen({
 			title : '<span style="font-weight:200;">Invite people to Mapic</span>',
 			innerClassName : 'smooth-fullscreen-inner invite'
 		});

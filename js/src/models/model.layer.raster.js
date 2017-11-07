@@ -12,7 +12,7 @@ M.RasterLayer = M.Model.Layer.extend({
         this.loaded = false;
 
         // debug
-        console.log('M.RasterLayer', this);
+        // console.log('M.RasterLayer', this);
 
     },
 

@@ -3036,3 +3036,29 @@ span.mask-item-value {
 .margin-top-20 {
     margin-top: 20px;
 }
+
+
+.toggles-wrapper-remove-button.close-smooth-fullscreen {
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    font-size: 21px;
+    font-weight: 400;
+    border: 1px solid #ccc;
+    border-radius: 0px 10px 0px 10px;
+    text-align: center;
+    line-height: 1.1;
+    right: -1px;
+    top: -1px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+textarea.smooth-input.smaller-input.margin-top-20.graph-item {
+    font-family: monospace;
+    font-size: 12px;
+}
+
+input#geojson-upload {
+    position: relative;
+}

@@ -92,7 +92,6 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
 
     // Event run when layer selected 
     _selectedActiveLayer : function (value, uuid) {
-        console.error('selecting!');
 
         var layerUuid = uuid || value;
 
@@ -457,7 +456,7 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
 
     
     open : function () {
-        console.log('open!', this);
+        // console.log('open!', this);
     },
 
 
@@ -471,7 +470,6 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
     // TODO: Events?
 
     _buildTooltipMeta : function (layerMeta) {
-        console.log('_buildTooltipMeta layerMeta', layerMeta);
         return this.createTooltipMeta(layerMeta);
     },
 

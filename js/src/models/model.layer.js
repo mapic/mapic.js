@@ -406,30 +406,9 @@ M.Model.Layer = M.Model.extend({
         return app.activeProject.store.uuid;
     },
 
-    // setCartoid : function (cartoid) {
-    //     console.error('deprecated??');
-    //     this.store.data.cartoid = cartoid;
-    //     this.save('data');
-    // },
-
-    // getCartoid : function () {
-    //     console.error('deprecated??');
-    //     if (this.store.data) return this.store.data.cartoid;
-    // },
-
     getName : function () {
         return this.getTitle();
     },
-
-    // // set postgis styling 
-    // setLayerStyle : function (options, callback) {
-    //     console.error('deprecated??');
-    // },
-
-    // // set json representation of style in editor (for easy conversion)
-    // setEditorStyle : function (options, callback) {
-    //     console.error('deprecated??');
-    // },
 
     getEditorStyle : function () {
         return this.getDefaultEditorStyle();
@@ -456,27 +435,6 @@ M.Model.Layer = M.Model.extend({
 
         return style;
     },
-
-    // setCartoCSS : function (json, callback) {
-    //     console.error('deprecated??');
-
-    //     // send to server
-    //     app.api.setCartocss(json, callback.bind(this));
-    
-    //     // set locally on layer
-    //     this.setCartoid(json.cartoid);
-    // },
-
-    // getCartoCSS : function (cartoid, callback) {
-    //     console.error('deprecated??');
-
-    //     var json = {
-    //         cartoid : cartoid
-    //     };
-
-    //     // get cartocss from server
-    //     app.api.getCartocss(json, callback);
-    // },
 
     getMeta : function () {
         var metajson = this.store.metadata;
@@ -781,6 +739,9 @@ M.createLayer = function (layer) {
     // wms
     if (layer.data.wms) return new M.WMSLayer(layer);
 
+    // graph
+    if (layer.data.graph) return new M.Layer.Graph(layer);
+
     // catch-all error layer
     return new M.ErrorLayer();
 };
@@ -818,22 +779,3 @@ L.TopoJSON = L.GeoJSON.extend({
         return topojson.merge(this._topology, this._topology.objects.collection.geometries);
     },
 });
-
-/* 
- * Workaround for 1px lines appearing in some browsers due to fractional transforms
- * and resulting anti-aliasing.
- * https://github.com/Leaflet/Leaflet/issues/3575
- */
-// (function(){
-//     var originalInitTile = L.GridLayer.prototype._initTile
-//     L.GridLayer.include({
-//         _initTile: function (tile) {
-//             originalInitTile.call(this, tile);
-
-//             var tileSize = this.getTileSize();
-
-//             tile.style.width = tileSize.x + 1 + 'px';
-//             tile.style.height = tileSize.y + 1 + 'px';
-//         }
-//     });
-// })();

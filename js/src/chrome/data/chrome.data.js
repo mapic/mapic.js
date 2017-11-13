@@ -38,8 +38,8 @@ M.Chrome.Data = M.Chrome.extend({
 
         // Get layer object
         var layer = this._project.getLayer(uuid);
-
-        if (!layer.store.metadata) {
+        
+        if (!layer.store || !layer.store.metadata) {
             app.feedback.setError({
                 title : 'Missing metadata',
                 description : 'layer ' + uuid + ' has no associated metadata'
@@ -125,12 +125,9 @@ M.Chrome.Data = M.Chrome.extend({
 
         var wms_debug = false;
         if (wms_debug) {
-
             // create wms
             this._createWMSLayers();
-
         }
-
 
         // separator line
         this._fileListSeparator = M.DomUtil.create('div', 'file-list-separator', this._layerListWrapper);
@@ -431,49 +428,122 @@ M.Chrome.Data = M.Chrome.extend({
 
     _createGraphLayerClick : function () {
 
-        console.log('create-graph-layer');
-
         // create fullscreen
         var fullscreen = this._fullscreen = new M.Fullscreen({
             title : '<i class="fa fa-bars file-option"></i>Graph Layer',
             titleClassName : 'slim-font'
         });
 
+        this._fullscreen.data = {};
+
         // shortcuts
-        // this._fullscreen._layer = layer;
         var content = this._fullscreen._content;
        
-        console.log('fullscreen:', fullscreen);
-
-        // create cubeset list
-        this._createGraphLayerNameBox({
+        // create graph layer item
+        this._createGraphLayerDataBox({
             container : content,
         });
 
+        var project = app.activeProject;
+
+        // save button
+        var save_button = M.DomUtil.create('div', 'smooth-fullscreen-save', content, 'Create Layer');
+        M.DomEvent.on(save_button, 'click', function () {
+
+            var options = {
+                projectUuid : project.getUuid(), // pass to automatically attach to project
+                data : {
+                    graph : M.stringify({
+                        geojson : this._fullscreen.data.geojson,
+                        csv : []
+                    })
+                },
+                // metadata : layer.options.metadata,  // TODO
+                title : 'test-geojson-title',
+                description : 'test-geojson-description',
+                file : null
+            };
+
+            app.api.createLayer(options, function (err, body) {
+                if (err) return done(err);
+                
+                var layerModel = M.parse(body);
+
+
+                // create layer on project
+                var layer = project.addLayer(layerModel);
+
+                // select project
+                M.Mixin.Events.fire('layerAdded', { detail : {
+                    projectUuid : project.getUuid(),
+                    layerUuid : layerModel.uuid
+                }});
+
+            });
+
+
+        }, this);
+
     },
 
-    _createGraphLayerNameBox : function (options) {
+    _createGraphLayerDataBox : function (options) {
         var container = options.container;
 
-        // name
+        // wrapper
         var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+
+        // layer 
         var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Layer name');
         var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
-        name_input.setAttribute('placeholder', 'Enter name here');
+        name_input.setAttribute('placeholder', 'Enter layer name');
 
-        // textarea
-        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Y Axis Label');
-        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
-        name_input.setAttribute('placeholder', 'Enter name here');
-        // var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Layer name');
-        var name_input2 = M.DomUtil.create('textarea', 'smooth-input smaller-input margin-top-20', toggles_wrapper);
-        name_input2.setAttribute('placeholder', 'Click to add .csv graph data');
+        // upload geojson button
+        var upload_button = M.DomUtil.create('input', 'smooth-fullscreen-save', toggles_wrapper);
+        upload_button.setAttribute('id', 'geojson-upload');
+        upload_button.setAttribute('type', 'file');
 
 
+        var data = this._fullscreen.data;
 
+        M.DomEvent.on(upload_button, 'change', function () {
+                    
+            var ctx = this;
+            
+            var file = ctx.files[0];
 
+            var reader = new FileReader();
 
+            reader.onload = function (e) {
+
+                var geojson = M.parse(e.currentTarget.result);
+
+                data.geojson = geojson;
+
+            }
+
+            reader.readAsText(file);
+
+        });
+
+        // graph item
+        var graph_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var remove_button = M.DomUtil.create('div', 'toggles-wrapper-remove-button close-smooth-fullscreen', graph_wrapper, 'x');
+
+        M.DomEvent.on(remove_button, 'click', function () {
+            console.log('remove_button')
+        }, this);
+
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', graph_wrapper, 'Title');
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input ', graph_wrapper);
+        name_input.setAttribute('placeholder', 'Y Axis label');
+        var csv_input = M.DomUtil.create('textarea', 'smooth-input smaller-input margin-top-20', graph_wrapper);
+        csv_input.setAttribute('placeholder', 'Paste .csv graph data');
+
+        M.DomEvent.on(csv_input, 'change keyup keydown', function () {
+            M.DomUtil.addClass(csv_input, 'graph-item');
+        }, this);
+
+        return toggles_wrapper;
     },
 
     _createCubeClick : function () {
@@ -2864,7 +2934,7 @@ M.Chrome.Data = M.Chrome.extend({
 
             // only do our layers
             // if (provider == 'postgis' || provider == 'cube' || provider == 'wms') {
-            if (provider == 'postgis' || provider == 'cube') {
+            if (provider == 'postgis' || provider == 'cube' || provider == 'graph') {
 
                 var layers = layerBundle.layers;
 
@@ -2918,7 +2988,7 @@ M.Chrome.Data = M.Chrome.extend({
     sortLayers : function (layers) {
 
         // var keys = ['postgis', 'google', 'norkart', 'geojson', 'mapbox', 'cube', 'wms'];
-        var keys = ['postgis', 'google', 'norkart', 'geojson', 'mapbox', 'cube'];
+        var keys = ['postgis', 'google', 'norkart', 'geojson', 'mapbox', 'cube', 'graph'];
         var results = [];
 
         keys.forEach(function (key) {
@@ -3402,7 +3472,7 @@ M.Chrome.Data = M.Chrome.extend({
                     return d.getTitle();
                 }.bind(this))
                 .on('dblclick', function (d) {
-                    var editable = (library == 'postgis' || library == 'raster' || library == 'wms');
+                    var editable = (library == 'postgis' || library == 'raster' || library == 'graph' || library == 'wms');
                     editable && this.activateLayerInput(d, library);
                 }.bind(this));
 

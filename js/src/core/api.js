@@ -6,12 +6,8 @@ M.Api = M.Class.extend({
 	},
 
 	// PORTAL
-
-
 	getPortal : function (done) {
-		// var path = '/api/portal';	// TODO: GET request
 		var path = '/v2/portal';
-		// this.post(path, {}, done);
 		this.get(path, {}, done);
 	},
 
@@ -32,44 +28,37 @@ M.Api = M.Class.extend({
 
 	// PROJECTS
 	createProject : function (options, done) {
-		// var path = '/api/project/create';
 		var path = '/v2/projects/create';
 		this.post(path, options, done);
 	},
 
 	updateProject : function (options, done) {
-		// var path = '/api/project/update';
 		var path = '/v2/projects/update';
 		this.post(path, options, done);
 	},
 
 	deleteProject : function (options, done) {
-		// var path = '/api/project/delete';
 		var path = '/v2/projects/delete';
 		this.post(path, options, done);
 	},
 
 	getProject : function (options, done) {
-  		// var path = '/api/project/get/public';
   		var path = '/v2/projects/public';		
 		this.get(path, options, done)
   	},
 
   	getPrivateProject : function (options, done) {
-  		// var path = '/api/project/get/private';
   		var path = '/v2/projects/private';
 		this.get(path, options, done)
   	},
 
   	addFileToTheProject : function (options, done) {
-		// var path = '/api/file/addtoproject';
 		var path = '/v2/projects/data';
 		this.post(path, options, done);
 	},
 
 	projectSetAccess  : function (options, done) {
-		// var path = '/api/project/setAccess';
-		var path = '/v2/projects/access';		// todo: refactor to update
+		var path = '/v2/projects/access';		
 		this.post(path, options, done);
 	},
 
@@ -86,80 +75,62 @@ M.Api = M.Class.extend({
 
 
   	// USERS
-
-
 	auth : function (done) {
-		// var path = '/api/user/session';		
 		var path = '/v2/users/session';
 		this.get(path, {}, done);
 	},
 
 	getTokenFromPassword : function (options, done) {
-		// var path = '/api/token';
 		var path = '/v2/users/token';
 		this.get(path, options, done);
 	},
 
 	deleteUser : function (options, done) {
-		// var path = '/api/user/delete';
 		var path = '/v2/users/delete';
 		this.post(path, options, done);
 	},
 
 	updateUser: function (options, done) {
-		// var path = '/api/user/update';
 		var path = '/v2/users/update';
 		this.post(path, options, done);
 	},
 
 	createUser: function (options, done) {
-		// var path = '/api/user/update';
 		var path = '/v2/users/create';
 		this.post(path, options, done);
 	},
 
 	uniqueEmail: function (options, done) {
-		// var path = '/api/user/uniqueEmail';
 		var path = '/v2/users/email/unique';
 		this.post(path, options, done);
 	},
 
 	uniqueUsername: function (options, done) {
-		// var path = '/api/user/uniqueUsername';
 		var path = '/v2/users/username/unique';
 		this.post(path, options, done);
 	},
 
 	requestContact : function (options, done) {
-		// var path = '/api/user/requestContact';
-		// var path = '/v2/contacts/request';			
 		var path = '/v2/users/contacts/request';
 		this.post(path, options, done);
 	},
 	
 	resetPassword : function (options, done) {
-   		// var path = '/reset';
    		var path = '/v2/users/password/reset';
 		this.post(path, options, done) 		
   	},
 
 	userInvite : function (options, done) {
-		// var path = '/api/user/invite';
-		// var path = '/v2/invites/user';	// todo: refactor invite endpoints
 		var path = '/v2/users/invite';
 		this.post(path, options, done);
 	},
 
 	addInvites: function (options, done) {
-		// var path = '/api/project/addInvites';
-		// var path = '/v2/invites/project';
-		var path = '/v2/users/invite/project';	// todo: refactor, see /v2/users/invite/projects (with s) below
+		var path = '/v2/users/invite/project';	
 		this.post(path, options, done);
 	},
 
 	inviteLink : function (options, done) {
-		// var path = '/api/invite/link';
-		// var path = '/v2/invites/link';
 		var path = '/v2/users/invite/link';
 		this.get(path, options, done);
 	},
@@ -170,9 +141,7 @@ M.Api = M.Class.extend({
 	},
 
 	inviteToProjects : function (options, done) {
-		// var path = '/api/user/inviteToProjects';
-		// var path = '/v2/invites/user/project';		//todo: refactor
-		var path = '/v2/users/invite/projects';		//todo: refactor
+		var path = '/v2/users/invite/projects';		
 		this.post(path, options, done);
 	},
 
@@ -194,25 +163,21 @@ M.Api = M.Class.extend({
 
 
 	shareDataset : function (options, done) {
-		// var path = '/api/dataset/share'; 
 		var path = '/v2/data/share';
 		this.post(path, options, done);
 	},
 
 	deleteDataset : function (options, done) {
-		// var path = '/api/file/delete';
 		var path = '/v2/data/delete';
 		this.post(path, options, done);
 	},
 
 	updateFile : function (options, done) {
-		// var path = '/api/file/update';
 		var path = '/v2/data/update';
 		this.post(path, options, done);
   	},
 
   	fileGetLayers : function (options, done) {
-		// var path = '/api/file/getLayers';
 		var path = '/v2/data/layers';
 		this.post(path, options, done);
 	},
@@ -223,7 +188,6 @@ M.Api = M.Class.extend({
 	},
 
 	downloadDataset : function (options, done) {
-		// var path = '/api/file/downloadDataset';
 		var path = '/v2/data/download';
 		this.post(path, options, done);
 	},
@@ -251,26 +215,21 @@ M.Api = M.Class.extend({
 
 
 	deleteLayer : function (options, done) {
-		// var path = '/api/layers/delete';
 		var path = '/v2/layers/delete';
 		this.post(path, options, done);
 	},
 
 	updateLayer : function (options, done) {
-		// var path = '/api/layer/update';
 		var path = '/v2/layers/update';
 		this.post(path, options, done);
 	},
 
 	setCartocss : function (options, done) {
-		// var path = '/api/layers/cartocss/set';
 		var path = '/v2/layers/carto';
 		this.post(path, options, done);
 	},
 
 	getCartocss : function (options, done) {
-		// var path = '/api/layers/cartocss/get';
-		// var path = '/v2/layers/carto/get';	
 		var path = '/v2/layers/carto';		
 		this.get(path, options, done);
 	},
@@ -286,25 +245,21 @@ M.Api = M.Class.extend({
 	},
 
 	downloadLayerDataset : function (options, done) {
-		// var path = '/api/layer/downloadDataset';
 		var path = '/v2/layers/download';
 		this.post(path, options, done);
 	},
 
 	createLayer : function (options, done) {
-		// var path = '/api/layers/new';
 		var path = '/v2/layers/create';
 		this.post(path, options, done);
 	},
 
 	createDefaultLayer : function (options, done) {
-		// var path = '/api/layers/default';			// todo: refactor
 		var path = '/v2/layers/create/default';
 		this.post(path, options, done);
 	},
 
 	reloadMeta : function (options, done) {
-		// var path = '/api/layer/reloadmeta';
 		var path = '/v2/layers/meta';
 		this.post(path, options, done);
 	},

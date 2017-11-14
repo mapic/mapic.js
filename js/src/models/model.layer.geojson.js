@@ -1,6 +1,3 @@
-
-
-// todo: move to separate file
 M.Model.Layer.GeoJSONMaskLayer = M.Model.Layer.extend({
 
     options : {

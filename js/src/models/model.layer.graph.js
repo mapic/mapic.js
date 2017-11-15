@@ -86,6 +86,7 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
     },
 
     _removeGraphs : function () {
+        if (!this._graphContainer) return;
         M.DomUtil.remove(this._graphContainer);
     },
 
@@ -163,18 +164,20 @@ M.Graph.CSV = M.Evented.extend({
                     xAxes: [{
                         type: 'time',
                         time : {
-                            format: 'D. MMM YYYY',
-                            tooltipFormat: 'D. MMM YYYY'
+                            // format: 'D. MMM YYYY',
+                            // tooltipFormat: 'D. MMM YYYY',
+                            unit : 'month'
                         },
                         // distribution: 'series', // even spread
                         distribution: 'linear',
                         ticks: {
-                            callback: function(value, i, values) {
-                                // format x-axis dates
-                                var v = values[i].value;
-                                return moment(v).format('D. MMM YY')
-                            },
-                            source: 'labels'
+                            // callback: function(value, i, values) {
+                            //     console.log('value, i, vlaues', value, i, values);
+                            //     // format x-axis dates
+                            //     var v = values[i].value;
+                            //     return moment(v).format('D. MMM YY')
+                            // },
+                            source: 'auto'
                         },
                         scaleLabel: {
                             display: false, // don't show title label for y-axis
@@ -201,7 +204,14 @@ M.Graph.CSV = M.Evented.extend({
         var csv_data = this.data.csv.data;
 
         // get labels
-        var labels = _.first(csv_data);
+        // var labels = _.first(csv_data);
+        // var labels = [];
+        // _.times(365, function (i) {
+        //     labels.push(i);
+        // })
+
+        // console.log('albels', labels);
+
 
         var zipped = _.zip(csv_data);
 
@@ -219,6 +229,10 @@ M.Graph.CSV = M.Evented.extend({
         _.each(_.drop(sorted[0]), function (d) {
             dl.push(moment(d));
         });
+        // _.times(12, function (i) {
+        //     console.log('i;', i);
+        //     dl.push(moment(i+1, 'MM'));
+        // })
 
         // set chart data
         var chart_data = {
@@ -248,6 +262,8 @@ M.Graph.CSV = M.Evented.extend({
             chart_data.datasets.push(d);
         
         }.bind(this));
+
+        console.log('chart_data', chart_data);
 
         return chart_data;
     },

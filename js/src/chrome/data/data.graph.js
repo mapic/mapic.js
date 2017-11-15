@@ -34,7 +34,7 @@ M.Data.Graph = M.Evented.extend({
         this._createCSVInput();
 
         // save button
-        var save_button = M.DomUtil.create('div', 'smooth-fullscreen-save', content, 'Create Layer');
+        var save_button = M.DomUtil.create('div', 'smooth-fullscreen-save', this.DOM.fullscreen_content, 'Create Layer');
         M.DomEvent.on(save_button, 'click', this._onSave, this);
 
     },
@@ -48,6 +48,8 @@ M.Data.Graph = M.Evented.extend({
 
         console.log('_onSAve data', data);
 
+        var title = this.DOM.title.value;
+
         // create layer @ api
         app.api.createLayer({
             projectUuid : project.getUuid(), // pass to automatically attach to project
@@ -57,7 +59,7 @@ M.Data.Graph = M.Evented.extend({
                     csv : data.csv
                 })
             },
-            title : 'test-geojson-title',
+            title : title,
             description : 'test-geojson-description',
             file : null,
             // metadata : layer.options.metadata,  // TODO
@@ -99,6 +101,8 @@ M.Data.Graph = M.Evented.extend({
         var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Layer name');
         var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
         name_input.setAttribute('placeholder', 'Enter layer name');
+
+        this.DOM.title = name_input;
 
         // upload geojson button
         var upload_button = M.DomUtil.create('input', 'smooth-fullscreen-save', toggles_wrapper);

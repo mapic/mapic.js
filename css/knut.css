@@ -3062,3 +3062,20 @@ textarea.smooth-input.smaller-input.margin-top-20.graph-item {
 input#geojson-upload {
     position: relative;
 }
+
+
+
+/* water level graph */
+.data-graph-container {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    height: auto;
+    width: auto;
+    background: white;
+    z-index: 2001;
+    margin: 10px;
+    padding: 10px;
+    min-height: 300px;
+    min-width: 50%;
+}

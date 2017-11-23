@@ -39,6 +39,24 @@ M.Data.Graph = M.Evented.extend({
 
     },
 
+    _checkValidCSV : function (data) {
+        console.log('_checkValidCSV', data);
+
+        return false;
+    },
+
+    _checkValidGeoJSON : function (data) {
+        console.log('_checkValidGeoJSON', data);
+
+        // var geojson = _.isString(data.geojson) ? data.geojson : M.strigify(data.geojson);
+        var geojson = data.geojson;
+
+        console.log('typeof geojson', typeof geojson);
+        console.log('geojson', geojson);            
+
+        return false;
+    },
+
     _onSave : function () {
 
         // get project
@@ -50,6 +68,21 @@ M.Data.Graph = M.Evented.extend({
 
         var title = this.DOM.title.value;
 
+        // check valid geojson
+        var valid_geojson = this._checkValidGeoJSON(data);
+
+        if (!valid_geojson) {
+            return console.error('not valid geojson!');
+        }
+
+        // check valid csv
+        var valid_csv = this._checkValidCSV(data);
+
+        if (!valid_csv) {
+            return console.error('not valid csv!');
+
+        }
+
         // create layer @ api
         app.api.createLayer({
             projectUuid : project.getUuid(), // pass to automatically attach to project
@@ -60,7 +93,7 @@ M.Data.Graph = M.Evented.extend({
                 })
             },
             title : title,
-            description : 'test-geojson-description',
+            description : '',
             file : null,
             // metadata : layer.options.metadata,  // TODO
         }, 

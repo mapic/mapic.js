@@ -22,8 +22,6 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
     initialize : function (options) {
 
-        console.log('M.Layer.Graph', options, this);
-        
         // set options
         M.setOptions(this, options);
 
@@ -65,12 +63,10 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
         this.layer.setStyle(this.options.style);
     },
     _onLayerClick : function () {
-        console.log('click');
+        // console.log('click');
     },
 
     _addGraphs : function () {
-        console.log('_addGraphs');
-        console.log('csv:', this.data.csv);
 
         // create wrapper
         this._graphContainer = M.DomUtil.create('div', 'data-graph-container', app._appPane);
@@ -117,17 +113,16 @@ M.Graph.CSV = M.Evented.extend({
     options : {
         colors : {
             red: 'rgb(255, 99, 132)',
-            orange: 'rgb(255, 159, 64)',
-            yellow: 'rgb(255, 205, 86)',
             green: 'rgb(75, 192, 192)',
             blue: 'rgb(54, 162, 235)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
             purple: 'rgb(153, 102, 255)',
             grey: 'rgb(201, 203, 207)'
         }
     },
 
     initialize : function (data, container) {
-        console.log('M.Graph.CSV', data, container);
 
         // set data
         this.data = data;
@@ -149,40 +144,31 @@ M.Graph.CSV = M.Evented.extend({
         this._canvas = M.DomUtil.create('canvas', this._canvasID, this._container).getContext('2d');
 
         // create chart data
-        var chart_data = this._createChartData();
+        var chart = this._createChartData();
+
+        var y_axis_label =  this.data.y_axis_label;
 
         // chart config
         var config = {
             type: 'line',
-            data : chart_data,
+            data : chart.data,
  
             options: {
                 title:{
-                    text: "Chart.js Time Scale"
+                    text: chart.title,
+                    display : true
                 },
                 scales: {
                     xAxes: [{
                         type: 'time',
-                        time : {
-                            // format: 'D. MMM YYYY',
-                            // tooltipFormat: 'D. MMM YYYY',
-                            unit : 'month'
-                        },
-                        // distribution: 'series', // even spread
-                        distribution: 'linear',
                         ticks: {
-                            // callback: function(value, i, values) {
-                            //     console.log('value, i, vlaues', value, i, values);
-                            //     // format x-axis dates
-                            //     var v = values[i].value;
-                            //     return moment(v).format('D. MMM YY')
-                            // },
-                            source: 'auto'
+                            callback: function(value, i, values) {
+                                var date = moment(i, 'DDD');
+                                var date_of_month = date.date();
+                                if (date_of_month == 1) return date.format('MMMM');
+                            },
+                            source: 'data'
                         },
-                        scaleLabel: {
-                            display: false, // don't show title label for y-axis
-                            // labelString: 'Date'
-                        }
                     }],
                     yAxes: [{
                         scaleLabel: {
@@ -191,6 +177,21 @@ M.Graph.CSV = M.Evented.extend({
                         }
                     }]
                 },
+                tooltips : {
+                    callbacks : {
+                        title : function (tooltipItem, data) {
+                            var item = tooltipItem[0];
+                            var index = item.datasetIndex;
+                            var date = moment(item.xLabel, 'DDD').format('D. MMM');
+                            var dataset_title = data.datasets[index].label;
+                            var title = chart.title + ': ' + date + ', ' + dataset_title
+                            return title;
+                        },
+                        label : function (tooltipItem, data) {
+                            return _.capitalize(y_axis_label) + ': ' + tooltipItem.yLabel;
+                        },
+                    }
+                }
             }
         };
 
@@ -201,72 +202,68 @@ M.Graph.CSV = M.Evented.extend({
 
     _createChartData : function () {
 
-        var csv_data = this.data.csv.data;
+        // clone
+        var csv = _.cloneDeep(this.data.csv.data);
 
-        // get labels
-        // var labels = _.first(csv_data);
-        // var labels = [];
-        // _.times(365, function (i) {
-        //     labels.push(i);
-        // })
+        // get title
+        var column_title = csv[0][1];
 
-        // console.log('albels', labels);
+        // remove title from csv
+        var csv = _.drop(csv);
 
+        // format each date into proper moment date
+        var grouped_datasets = {};
+        _.each(csv, function (c) {
+            var datestring = c[0];
+            var value = c[1];
+            var year = moment(datestring).format('YYYY');
+            grouped_datasets[year] = grouped_datasets[year] || {};
+            grouped_datasets[year][moment(datestring).format('DDD')] = value;
+        });
 
-        var zipped = _.zip(csv_data);
-
-        // sort into colums
-        var sorted = {};
-        _.each(csv_data, function (c) {
-            _.each(c, function (o, i) {
-                sorted[i] = sorted[i] || [];
-                sorted[i].push(o);
+        // fill in the blanks in days-of-year
+        var filled_datasets = _.cloneDeep(grouped_datasets);
+        _.each(filled_datasets, function (y) {
+            _.times(365, function (i) {
+                var n = i+1;
+                y[n] = y[n] || 'NaN';
             });
         });
 
-        // format dates
-        var dl = [];
-        _.each(_.drop(sorted[0]), function (d) {
-            dl.push(moment(d));
+        // create labels
+        var x_axis_labels = [];
+        _.times(365, function (i) {
+            x_axis_labels.push(i+1);
         });
-        // _.times(12, function (i) {
-        //     console.log('i;', i);
-        //     dl.push(moment(i+1, 'MM'));
-        // })
-
+        
         // set chart data
-        var chart_data = {
-            labels : dl,
-            datasets : []
-        };
+        var chart = {
+            data : {
+                labels : x_axis_labels,
+                datasets : []
+            },
+            title : column_title
+        }
 
-        // clone remaining values
-        var sorted_values = _.cloneDeep(sorted);
-
-        // remove first date key
-        _.unset(sorted_values, '0');
-
-        // parse rest of data
-        _.each(sorted_values, function (s) {
-            var label = s[0];
-            var color = _.sample(this.options.colors);
+        // create datasets
+        var i = 0;
+        _.each(filled_datasets, function (f, key_year) {
+            var color = _.values(this.options.colors)[i++];
             var d = {
-                label : s[0],
-                backgroundColor :color,
+                label : key_year,
+                backgroundColor : color,
                 borderColor : color,
                 fill : false,
-                data : _.drop(s)
-            }
-
-            // push to stack
-            chart_data.datasets.push(d);
-        
+                data : _.values(f),
+                spanGaps : true
+            };
+            chart.data.datasets.push(d);
         }.bind(this));
 
-        console.log('chart_data', chart_data);
-
-        return chart_data;
+        return chart;
     },
+
+
 });
 M.graphCSV = function (o, c) {
     return new M.Graph.CSV(o, c);

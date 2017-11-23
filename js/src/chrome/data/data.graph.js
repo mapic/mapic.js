@@ -84,6 +84,10 @@ M.Data.Graph = M.Evented.extend({
             }});
 
         });
+
+        console.log('this._fullscreen', this._fullscreen);
+
+        this._fullscreen.close();
     },
 
     _createGeoJSONInput : function (options) {

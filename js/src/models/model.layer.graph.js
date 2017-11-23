@@ -148,6 +148,8 @@ M.Graph.CSV = M.Evented.extend({
 
         var y_axis_label =  this.data.y_axis_label;
 
+        var gridLinesColor = 'rgba(255, 255, 255, 0.4)';
+
         // chart config
         var config = {
             type: 'line',
@@ -160,6 +162,9 @@ M.Graph.CSV = M.Evented.extend({
                 },
                 scales: {
                     xAxes: [{
+                        gridLines : {
+                            color : gridLinesColor
+                        },
                         type: 'time',
                         ticks: {
                             callback: function(value, i, values) {
@@ -171,6 +176,9 @@ M.Graph.CSV = M.Evented.extend({
                         },
                     }],
                     yAxes: [{
+                        gridLines : {
+                            color : gridLinesColor
+                        },
                         scaleLabel: {
                             display: true,
                             labelString: this.data.y_axis_label // user-defined label
@@ -194,6 +202,10 @@ M.Graph.CSV = M.Evented.extend({
                 }
             }
         };
+
+        // globals options
+        Chart.defaults.global.defaultFontColor = 'white';
+
 
         // create chart
         this.chart = new Chart(this._canvas, config);
@@ -262,7 +274,6 @@ M.Graph.CSV = M.Evented.extend({
 
         return chart;
     },
-
 
 });
 M.graphCSV = function (o, c) {

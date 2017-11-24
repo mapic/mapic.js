@@ -3067,17 +3067,16 @@ input#geojson-upload {
 
 /* water level graph */
 .data-graph-container {
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
+    position: relative;
     height: auto;
-    width: auto;
+    width: 100%;
     background: rgba(252, 252, 252, 0.9);
     z-index: 2001;
     margin: 10px;
     padding: 10px;
-    min-height: 300px;
-    min-width: 50%;
+    float: right;
+    bottom: 0px;
+    z-index: 1000;
 }
 
 .feedback-pane-inner-wrapper {
@@ -3085,4 +3084,12 @@ input#geojson-upload {
     position: absolute;
     margin: 0 auto;
     text-align: left;
+}
+
+.data-graph-wrapper {
+    position: absolute;
+    width: 50%;
+    height: auto;
+    right: 0;
+    bottom: 0;
 }

@@ -68,8 +68,11 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
     _addGraphs : function () {
 
+        // wrapper for all graphs
+        app._graphWrapper = app._graphWrapper || M.DomUtil.create('div', 'data-graph-wrapper', app._appPane);
+
         // create wrapper
-        this._graphContainer = M.DomUtil.create('div', 'data-graph-container', app._appPane);
+        this._graphContainer = M.DomUtil.create('div', 'data-graph-container', app._graphWrapper);
 
         // create chart per csv
         _.each(this.data.csv, function (o) {
@@ -156,7 +159,6 @@ M.Graph.CSV = M.Evented.extend({
         var config = {
             type: 'line',
             data : chart.data,
- 
             options: {
                 title:{
                     text: chart.title,
@@ -204,7 +206,6 @@ M.Graph.CSV = M.Evented.extend({
                             var index = item.datasetIndex;
                             var date = moment(item.xLabel, 'DDD').format('D. MMM');
                             var dataset_title = data.datasets[index].label;
-                            // var title = chart.title + ': ' + date + ', ' + dataset_title
                             var title = date + ', ' + dataset_title
                             return title;
                         },
@@ -217,9 +218,7 @@ M.Graph.CSV = M.Evented.extend({
         };
 
         // globals options
-        // Chart.defaults.global.defaultFontColor = 'white';
         Chart.defaults.global.defaultFontColor = 'black';
-
 
         // create chart
         this.chart = new Chart(this._canvas, config);

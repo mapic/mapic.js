@@ -39,22 +39,24 @@ M.Data.Graph = M.Evented.extend({
 
     },
 
-    _checkValidCSV : function (data) {
-        console.log('_checkValidCSV', data);
-
-        return false;
+    _isValidGeoJSON : function (data) {
+        var geojson = data.geojson;
+        if (!_.has(geojson, 'type')) return false;
+        if (!_.has(geojson, 'features')) return false;
+        return true;
     },
 
-    _checkValidGeoJSON : function (data) {
-        console.log('_checkValidGeoJSON', data);
-
-        // var geojson = _.isString(data.geojson) ? data.geojson : M.strigify(data.geojson);
-        var geojson = data.geojson;
-
-        console.log('typeof geojson', typeof geojson);
-        console.log('geojson', geojson);            
-
-        return false;
+    _invalidGeojson : function () {
+        app.FeedbackPane.setError({
+            title : 'Invalid GeoJSON', 
+            description : 'Please try adding another GeoJSON file...'
+        });
+    },
+    _invalidCSV : function () {
+        app.FeedbackPane.setError({
+            title : 'Invalid CSV', 
+            description : 'Please try adding another CSV file...'
+        });
     },
 
     _onSave : function () {
@@ -66,22 +68,10 @@ M.Data.Graph = M.Evented.extend({
 
         console.log('_onSAve data', data);
 
-        var title = this.DOM.title.value;
+        var title = this.DOM.title.value || 'New CSV Graph layer';
 
         // check valid geojson
-        var valid_geojson = this._checkValidGeoJSON(data);
-
-        if (!valid_geojson) {
-            return console.error('not valid geojson!');
-        }
-
-        // check valid csv
-        var valid_csv = this._checkValidCSV(data);
-
-        if (!valid_csv) {
-            return console.error('not valid csv!');
-
-        }
+        if (!this._isValidGeoJSON(data)) return this._invalidGeojson();
 
         // create layer @ api
         app.api.createLayer({
@@ -146,6 +136,8 @@ M.Data.Graph = M.Evented.extend({
         upload_button.setAttribute('id', 'geojson-upload');
         upload_button.setAttribute('type', 'file');
 
+        var that = this;
+
         // on upload
         M.DomEvent.on(upload_button, 'change', function () {
             var ctx = this;
@@ -156,6 +148,10 @@ M.Data.Graph = M.Evented.extend({
 
                 // set geojson to data
                 data.geojson = geojson;
+
+                // check valid geojson
+                if (!that._isValidGeoJSON(data)) that._invalidGeojson();
+
             }
             reader.readAsText(file);
         });
@@ -188,16 +184,26 @@ M.Data.Graph = M.Evented.extend({
         var data = this.data;
         data.csv = data.csv || [];
 
+        var that = this;
+
         // on upload 
         M.DomEvent.on(upload_button, 'change', function () {
             var ctx = this;
             var file = ctx.files[0];
+            console.log('file:', file);
+            
+            if (file.type != 'text/csv') return that._invalidCSV();
+
             var reader = new FileReader();
             reader.onload = function (e) {
                 var parsed_csv = Papa.parse(e.currentTarget.result);
+                
+                console.log('parsed_csv', parsed_csv);
+                console.log('e', e);
 
                 if (_.size(parsed_csv.error)) {
                     console.error('error parsing csv', parsed_csv); // todo
+                    that._invalidCSV();
                 }
 
                 // push to stack

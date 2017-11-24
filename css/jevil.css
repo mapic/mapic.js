@@ -698,12 +698,15 @@ input.chrome-field-input {
     }
 
 .feedback-pane {
-    z-index: 999999999999999999;
+    z-index: 999999999999;
     top: 0px;
-    left: 40px;
-    min-width: 250px;
+    width: 100%;
     text-align: left;
-    }
+    position: fixed;
+    left: calc(50% - 100px);
+    max-height: 200px;
+    pointer-events: none;
+}
 
 
 .chrome.chrome-content.styler-content.active-layer.wrapper {

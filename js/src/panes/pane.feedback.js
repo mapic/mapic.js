@@ -17,18 +17,13 @@ M.FeedbackPane = M.Class.extend({
 
 	initContainer : function () {
 
-		var appendHere = app.MapPane._map._controlCorners.topleft;
+		// var appendHere = app.MapPane._map._controlCorners.topleft;
+		var appendHere = app._appPane;
 
 		this._container = M.DomUtil.create('div', 'feedback-pane', appendHere);
 		this._innerWrapper = M.DomUtil.create('div', 'feedback-pane-inner-wrapper', this._container);
 
 		M.DomEvent.on(this._container, 'click', M.DomEvent.stopPropagation);
-            
-		// .on(link, 'dblclick', L.DomEvent.stopPropagation)
-		// .on(link, 'click', L.DomEvent.preventDefault)
-		// .on(link, 'click', fn, this);
-		// return link;
-
 	},
 
 	set : function (options) {
@@ -60,9 +55,9 @@ M.FeedbackPane = M.Class.extend({
 		if (message.id) id = message.id;
 
 		var options = {
-			container 	: this._container,
+			container 		: this._container,
 			innerWrapper 	: this._innerWrapper,   // Used to see if inner wrapper overflow container
-			id : id,
+			id 				: id,
 			severity : severity || 3 // error default
 		};
 
@@ -165,12 +160,12 @@ M.FeedbackPane.Message = M.Class.extend({
 		// this._content = M.DomUtil.create('div', 'feedback-pane-content', this.options.container);
 		this._content 		= M.DomUtil.create('div', 'feedback-pane-content', 	this.options.innerWrapper);
 		this._title 		= M.DomUtil.create('div', 'feedback-pane-title', 	this._content);
-		this._icon 		= M.DomUtil.create('div', 'feedback-pane-icon', 	this._content);
+		this._icon 			= M.DomUtil.create('div', 'feedback-pane-icon', 	this._content);
 		this._iconImg 		= M.DomUtil.create('img', 'feedback-pane-icon-img', 	this._icon);
 		this._description 	= M.DomUtil.create('div', 'feedback-pane-description', this._content);
 		
 		// set transition
-		this._content.style.opacity = 0;
+		this._content.style.opacity 		 = 0;
 		this._content.style.webkitTransition = 'opacity ' + this.options.transitionDelay + 's';
 		this._content.style.transition 	     = 'opacity ' + this.options.transitionDelay + 's';
 
@@ -242,7 +237,6 @@ M.FeedbackPane.Message = M.Class.extend({
 	setSeverity : function (s) {
 		var s = this.options.severity;
 		if (s) this.setStyle(this.options.severityStyle[s]);
-		
 	},
 
 	setStyle : function (style) {

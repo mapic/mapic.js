@@ -158,7 +158,8 @@ M.Graph.CSV = M.Evented.extend({
             options: {
                 title:{
                     text: chart.title,
-                    display : true
+                    display : true,
+                    fontSize : 16,
                 },
                 scales: {
                     xAxes: [{
@@ -170,7 +171,7 @@ M.Graph.CSV = M.Evented.extend({
                             callback: function(value, i, values) {
                                 var date = moment(i, 'DDD');
                                 var date_of_month = date.date();
-                                if (date_of_month == 1) return date.format('MMMM');
+                                if (date_of_month == 1) return date.format('MMM');
                             },
                             source: 'data'
                         },

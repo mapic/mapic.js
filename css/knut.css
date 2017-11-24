@@ -3079,3 +3079,10 @@ input#geojson-upload {
     min-height: 300px;
     min-width: 50%;
 }
+
+.feedback-pane-inner-wrapper {
+    width: 200px;
+    position: absolute;
+    margin: 0 auto;
+    text-align: left;
+}

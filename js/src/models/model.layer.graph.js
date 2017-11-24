@@ -190,6 +190,14 @@ M.Graph.CSV = M.Evented.extend({
                     }]
                 },
                 tooltips : {
+                    bodySpacing : 4,
+                    xPadding : 16,
+                    yPadding : 16,
+                    titleFontSize : 15,
+                    bodyFontSize : 15,
+                    bodySpacing : 10,
+                    titleMarginBottom : 12,
+                    backgroundColor : 'rgba(0,0,0,0.7)',
                     callbacks : {
                         title : function (tooltipItem, data) {
                             var item = tooltipItem[0];

@@ -9,7 +9,6 @@ M.Data.Graph = M.Evented.extend({
     },
 
     initialize : function () {
-        console.log('M.Data.Graph');
 
         // create page
         this._initContent();
@@ -59,6 +58,27 @@ M.Data.Graph = M.Evented.extend({
         });
     },
 
+    _createMetadata : function (geojson) {
+
+        var geojsonLayer = L.geoJson(geojson);
+        var bounds = geojsonLayer.getBounds();
+        var extent_string = _.split(bounds.toBBoxString(), ',')
+        var extent = []
+        _.each(extent_string, function (e) {
+            extent.push(parseFloat(e))
+        });
+
+        var extent_geojson = turf.bboxPolygon(extent).geometry;
+
+        // set metadata
+        var metadata = M.stringify({
+            extent : extent, 
+            extent_geojson : extent_geojson
+        });
+
+        return metadata;
+    },
+
     _onSave : function () {
 
         // get project
@@ -66,12 +86,12 @@ M.Data.Graph = M.Evented.extend({
 
         var data = this.data;
 
-        console.log('_onSAve data', data);
-
         var title = this.DOM.title.value || 'New CSV Graph layer';
 
         // check valid geojson
         if (!this._isValidGeoJSON(data)) return this._invalidGeojson();
+
+        var metadata = this._createMetadata(data.geojson);
 
         // create layer @ api
         app.api.createLayer({
@@ -85,7 +105,7 @@ M.Data.Graph = M.Evented.extend({
             title : title,
             description : '',
             file : null,
-            // metadata : layer.options.metadata,  // TODO
+            metadata : metadata,  // TODO
         }, 
 
         // callback
@@ -94,8 +114,6 @@ M.Data.Graph = M.Evented.extend({
             
             // parse
             var layerModel = M.parse(body);
-
-            console.log('callback layerModel', layerModel);
 
             // create layer on project
             var layer = project.addLayer(layerModel);
@@ -107,8 +125,6 @@ M.Data.Graph = M.Evented.extend({
             }});
 
         });
-
-        console.log('this._fullscreen', this._fullscreen);
 
         this._fullscreen.close();
     },
@@ -165,11 +181,7 @@ M.Data.Graph = M.Evented.extend({
 
         // graph item
         var graph_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var remove_button = M.DomUtil.create('div', 'toggles-wrapper-remove-button close-smooth-fullscreen', graph_wrapper, 'x');
-
-        M.DomEvent.on(remove_button, 'click', function () {
-            console.log('remove_button')
-        }, this);
+        // var remove_button = M.DomUtil.create('div', 'toggles-wrapper-remove-button close-smooth-fullscreen', graph_wrapper, 'x');
 
         var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', graph_wrapper, 'Title');
         var name_input = M.DomUtil.create('input', 'smooth-input smaller-input ', graph_wrapper);
@@ -190,7 +202,6 @@ M.Data.Graph = M.Evented.extend({
         M.DomEvent.on(upload_button, 'change', function () {
             var ctx = this;
             var file = ctx.files[0];
-            console.log('file:', file);
             
             if (file.type != 'text/csv') return that._invalidCSV();
 
@@ -198,11 +209,7 @@ M.Data.Graph = M.Evented.extend({
             reader.onload = function (e) {
                 var parsed_csv = Papa.parse(e.currentTarget.result);
                 
-                console.log('parsed_csv', parsed_csv);
-                console.log('e', e);
-
                 if (_.size(parsed_csv.error)) {
-                    console.error('error parsing csv', parsed_csv); // todo
                     that._invalidCSV();
                 }
 

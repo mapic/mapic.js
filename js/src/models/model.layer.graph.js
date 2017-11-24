@@ -3,8 +3,8 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
     options : {
         style : {
-            fillColor : 'red',
-            color: 'red',
+            fillColor : 'white',
+            color: 'white',
             weight : 2.5,
             opacity: 0.8,
             fillOpacity : 0.01,
@@ -132,6 +132,7 @@ M.Graph.CSV = M.Evented.extend({
 
         // create graph content
         this._initContent();
+
     },
 
 
@@ -148,7 +149,8 @@ M.Graph.CSV = M.Evented.extend({
 
         var y_axis_label =  this.data.y_axis_label;
 
-        var gridLinesColor = 'rgba(255, 255, 255, 0.4)';
+        // var gridLinesColor = 'rgba(255, 255, 255, 0.4)';
+        var gridLinesColor = 'rgba(0, 0, 0, 0.4)';
 
         // chart config
         var config = {
@@ -178,7 +180,8 @@ M.Graph.CSV = M.Evented.extend({
                     }],
                     yAxes: [{
                         gridLines : {
-                            color : gridLinesColor
+                            color : gridLinesColor,
+
                         },
                         scaleLabel: {
                             display: true,
@@ -193,7 +196,8 @@ M.Graph.CSV = M.Evented.extend({
                             var index = item.datasetIndex;
                             var date = moment(item.xLabel, 'DDD').format('D. MMM');
                             var dataset_title = data.datasets[index].label;
-                            var title = chart.title + ': ' + date + ', ' + dataset_title
+                            // var title = chart.title + ': ' + date + ', ' + dataset_title
+                            var title = date + ', ' + dataset_title
                             return title;
                         },
                         label : function (tooltipItem, data) {
@@ -205,7 +209,8 @@ M.Graph.CSV = M.Evented.extend({
         };
 
         // globals options
-        Chart.defaults.global.defaultFontColor = 'white';
+        // Chart.defaults.global.defaultFontColor = 'white';
+        Chart.defaults.global.defaultFontColor = 'black';
 
 
         // create chart
@@ -268,7 +273,8 @@ M.Graph.CSV = M.Evented.extend({
                 borderColor : color,
                 fill : false,
                 data : _.values(f),
-                spanGaps : true
+                spanGaps : true,
+                borderWidth : 1
             };
             chart.data.datasets.push(d);
         }.bind(this));

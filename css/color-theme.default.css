@@ -1,0 +1,16 @@
+.chrome-button, .chrome-menu-button, .chrome-upload-button, .upload-button-options, .upload-button-dropdown {
+    background: #068a81;
+}
+
+.active-project, .active-project:hover {
+    background: #068a81;
+}
+
+.chrome-content.settings-button.active-tab, .chrome-content.settings-button.active-tab:hover, .chrome-content.settings-button.active-tab:active {
+    background: #068a81;
+    border: 1px solid #068a81;
+}
+
+.chrome-set, .setClear.setClear-on {
+    background: #068a81;
+}

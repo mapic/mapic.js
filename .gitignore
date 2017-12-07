@@ -16,3 +16,7 @@ node_modules
 
 # test data
 test/open-data
+
+css/color-theme.css
+css/color-theme.*.css
+!css/color-theme.default.css

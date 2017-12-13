@@ -138,7 +138,6 @@ M.Graph.CSV = M.Evented.extend({
 
     },
 
-
     _initContent : function () {
 
         // create unique canvas id
@@ -173,6 +172,7 @@ M.Graph.CSV = M.Evented.extend({
                         type: 'time',
                         ticks: {
                             callback: function(value, i, values) {
+                                console.log('i:', i);
                                 var date = moment(i, 'DDD');
                                 var date_of_month = date.date();
                                 if (date_of_month == 1) return date.format('MMM');
@@ -183,7 +183,6 @@ M.Graph.CSV = M.Evented.extend({
                     yAxes: [{
                         gridLines : {
                             color : gridLinesColor,
-
                         },
                         scaleLabel: {
                             display: true,
@@ -233,17 +232,21 @@ M.Graph.CSV = M.Evented.extend({
         // get title
         var column_title = csv[0][1];
 
+        console.log('csv:', csv);
+
         // remove title from csv
         var csv = _.drop(csv);
+
 
         // format each date into proper moment date
         var grouped_datasets = {};
         _.each(csv, function (c) {
             var datestring = c[0];
             var value = c[1];
-            var year = moment(datestring).format('YYYY');
+            var moment_date = moment(datestring, 'DD/MM/YYYY');
+            var year = moment_date.format('YYYY');
             grouped_datasets[year] = grouped_datasets[year] || {};
-            grouped_datasets[year][moment(datestring).format('DDD')] = value;
+            grouped_datasets[year][moment_date.format('DDD')] = value;
         });
 
         // fill in the blanks in days-of-year
@@ -281,7 +284,8 @@ M.Graph.CSV = M.Evented.extend({
                 fill : false,
                 data : _.values(f),
                 spanGaps : true,
-                borderWidth : 1
+                borderWidth : 1,
+                cubicInterpolationMode: 'monotone'
             };
             chart.data.datasets.push(d);
         }.bind(this));

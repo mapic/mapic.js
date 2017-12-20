@@ -1,6 +1,6 @@
 M.Pane.Login = M.Pane.extend({
 
-	_description : 'Sign in to Mapic',
+	_description : 'Please sign in',
 	
 	setDescription : function (text) {
 		this._description = text;

@@ -172,7 +172,6 @@ M.Graph.CSV = M.Evented.extend({
                         type: 'time',
                         ticks: {
                             callback: function(value, i, values) {
-                                console.log('i:', i);
                                 var date = moment(i, 'DDD');
                                 var date_of_month = date.date();
                                 if (date_of_month == 1) return date.format('MMM');

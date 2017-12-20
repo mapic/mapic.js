@@ -6,7 +6,7 @@ M.App = M.Class.extend({
 	options : window.systemapicConfigOptions, // global var from config.js... perhaps refactor.
 	language : language,
 	_ready : false,
-	force_login : true,
+	force_login : false,
 
 	initialize : function (options) {
 		
@@ -153,7 +153,7 @@ M.App = M.Class.extend({
 		app._logEntry();
 
 		// force login
-		app._forceLogin();
+		// app._forceLogin();
 
 	},
 

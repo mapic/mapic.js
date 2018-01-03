@@ -107,6 +107,22 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
         this._removeGraphs();
     },
 
+    deleteLayer : function () {
+
+        // confirm
+        var message = 'Are you sure you want to delete this layer? \n - ' + this.getTitle();
+        if (!confirm(message)) return console.log('No layer deleted.');
+
+        // get project
+        var layerUuid = this.getUuid();
+        var project = _.find(app.Projects, function (p) {
+            return p.layers[layerUuid];
+        });
+
+        // delete layer
+        project.deleteLayer(this);
+    },
+
 });
 
 

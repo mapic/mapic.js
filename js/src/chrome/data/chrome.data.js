@@ -3454,7 +3454,7 @@ M.Chrome.Data = M.Chrome.extend({
 
     createLayerPopUpTrigger : function (parent, type) {
 
-        if ( type != 'postgis' && type != 'cube' && type != 'wms') return;
+        if ( type != 'postgis' && type != 'cube' && type != 'wms' && type != 'graph') return;
 
         // Bind
         var popupTrigger = parent
@@ -3571,6 +3571,19 @@ M.Chrome.Data = M.Chrome.extend({
             action.editCube = {
                 name : 'Edit layer',
                 disabled : !canEdit
+            }
+        }
+
+        if (library == 'graph') {
+            var action = {
+                changeName : {
+                    name : 'Rename...',
+                    disabled : !canEdit
+                },
+                delete : {
+                    name : 'Delete',
+                    disabled : !canEdit
+                }
             }
         }
 

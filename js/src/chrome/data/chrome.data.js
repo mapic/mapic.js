@@ -1338,6 +1338,38 @@ M.Chrome.Data = M.Chrome.extend({
 
     },
 
+    _openGraphLayerEditFullscreen : function (layer) {
+
+        // create fullscreen
+        var fullscreen = this._fullscreen = new M.Fullscreen({
+            title : '<i class="fa fa-bars file-option"></i>Graph: ' + layer.getTitle(),
+            titleClassName : 'slim-font'
+        });
+
+        // shortcuts
+        this._fullscreen._layer = layer;
+        var content = this._fullscreen._content;
+        
+        // // create cubeset list
+        // this._createCubeNameBox({
+        //     container : content,
+        //     layer : layer
+        // });
+
+        // // create cubeset list
+        // this._createMaskBox({
+        //     container : content,
+        //     layer : layer
+        // });
+
+        // // create cubeset list
+        // this._createCubesetBox({
+        //     container : content,
+        //     layer : layer
+        // });
+
+    },
+
     _createMaskBox : function (options) {
 
         var container = options.container;
@@ -3576,6 +3608,10 @@ M.Chrome.Data = M.Chrome.extend({
 
         if (library == 'graph') {
             var action = {
+                editGraph : {
+                    name : 'Edit layer',
+                    disabled : !canEdit
+                },
                 changeName : {
                     name : 'Rename...',
                     disabled : !canEdit
@@ -3643,11 +3679,14 @@ M.Chrome.Data = M.Chrome.extend({
         // delete
         if (trigger == 'delete') layer.deleteLayer();
 
-        // delete
+        // style
         if (trigger == 'style') this.styleLayer(layer);
 
-        // delete
+        // edit
         if (trigger == 'editCube') this._editCube(layer);
+
+        // edit
+        if (trigger == 'editGraph') this._editGraph(layer);
 
         // refresh
         this.showLayerActionFor = false;
@@ -3658,6 +3697,11 @@ M.Chrome.Data = M.Chrome.extend({
     _editCube : function (layer) {
 
         this._openCubeLayerEditFullscreen(layer);
+    },
+
+    _editGraph : function (layer) {
+
+        this._openGraphLayerEditFullscreen(layer);
     },
 
     styleLayer : function (layer) {

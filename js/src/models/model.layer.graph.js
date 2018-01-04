@@ -66,10 +66,50 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
         // console.log('click');
     },
 
+    _onResizerStart : function (e) {
+        if (this._resizerActive) return;
+        this._resizerActive = true;
+
+        console.log('mousedown');
+        
+        M.DomEvent.on(app._appPane, 'mousemove', this._onResizerMove, this);
+        M.DomEvent.on(app._appPane, 'mouseup', this._onResizerStop, this);
+
+
+    },
+    _onResizerStop : function () {
+        console.log('resizer release')
+        this._resizerActive = false;
+        this._resizerStartPosition = false;
+
+        M.DomEvent.off(app._appPane, 'mouseup', this._onResizerStop, this);
+        M.DomEvent.off(app._appPane, 'mousemove', this._onResizerMove, this);
+    },
+    _onResizerMove : function (e) {
+        var pos = e.screenX;
+
+        if (this._resizerStartPosition === false) {
+            this._resizerStartPosition = pos;
+            this._resizerStartWidth = 50;
+        }
+
+        var movement = this._resizerStartPosition - pos;
+        var zoom = parseInt(movement / 10) + this._resizerStartWidth;
+        app._graphWrapper.style.width = zoom + '%';
+
+    },
+    _resizerStartPosition : false,
+
     _addGraphs : function () {
 
         // wrapper for all graphs
-        app._graphWrapper = app._graphWrapper || M.DomUtil.create('div', 'data-graph-wrapper', app._appPane);
+        if (!app._graphWrapper) { 
+            app._graphWrapper = M.DomUtil.create('div', 'data-graph-wrapper', app._appPane);
+            app._resizer =  M.DomUtil.create('div', 'data-graph-wrapper-resizer', app._graphWrapper);
+        
+            M.DomEvent.on(app._resizer, 'mousedown', this._onResizerStart, this);
+
+        }
 
         // create wrapper
         this._graphContainer = M.DomUtil.create('div', 'data-graph-container', app._graphWrapper);

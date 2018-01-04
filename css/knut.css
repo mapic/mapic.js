@@ -3071,7 +3071,7 @@ input#geojson-upload {
     height: auto;
     width: 100%;
     background: rgba(252, 252, 252, 0.9);
-    margin: 2px;
+    margin: 0 2px 2px 0;
     padding: 0px 10px 0px 10px;
     float: right;
     bottom: 0px;
@@ -3091,4 +3091,30 @@ input#geojson-upload {
     height: auto;
     right: 0;
     bottom: 0;
+    overflow: hidden;
+    -webkit-transition: width 0.1s linear;
+    -moz-transition: width 0.1s linear;
+    -o-transition: width 0.1s linear;
+    transition: width 0.1s linear;
 }
+
+.data-graph-wrapper:hover .data-graph-wrapper-resizer {
+    display: block;
+}
+
+.data-graph-wrapper-resizer {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #a0a0a0;
+    z-index: 10000;
+    top: -15px;
+    left: -18px;
+    cursor: nwse-resize;
+    overflow: hidden;
+    transform: rotate(45deg);
+    display: none;
+}
+
+
+

@@ -306,11 +306,6 @@ M.Model.Layer = M.Model.extend({
         // set on legend
         this.setLegendsTitle(title);
 
-        // // fire layer edited
-        // M.Mixin.Events.fire('layerEdited', {detail : {
-        //         layer: this
-        // }});
-
         return this;
     },
 
@@ -586,6 +581,7 @@ M.Model.Layer = M.Model.extend({
 
     _save : function (json) {
         app.api.updateLayer(json, function (err, result) {
+
             if (err) {
                 return app.feedback.setError({
                     title : 'Something went wrong',

@@ -1350,25 +1350,128 @@ M.Chrome.Data = M.Chrome.extend({
         this._fullscreen._layer = layer;
         var content = this._fullscreen._content;
         
-        // // create cubeset list
-        // this._createCubeNameBox({
-        //     container : content,
-        //     layer : layer
-        // });
+        // create graph name box
+        this._createGraphLayerNameBox({
+            container : content,
+            layer : layer
+        });
 
-        // // create cubeset list
-        // this._createMaskBox({
-        //     container : content,
-        //     layer : layer
-        // });
+        // create graph name box
+        this._createGraphTitleBox({
+            container : content,
+            layer : layer
+        });
 
-        // // create cubeset list
-        // this._createCubesetBox({
-        //     container : content,
-        //     layer : layer
-        // });
+        // create graph name box
+        this._createGraphYAxisBox({
+            container : content,
+            layer : layer
+        });
 
     },
+    _createGraphLayerNameBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+        var title = 'Layer name';
+
+
+        // create divs
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, title);
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', 'Enter name here');
+        name_input.value = layer.getName();
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        var debounced = _.debounce(function (layer, updatedName) {
+            var updatedLayer = layer.setTitle(updatedName);
+            app.FeedbackPane.setMessage({title : title + ' updated', description : 'to ' + updatedName});
+            
+            // fire layer edited
+            M.Mixin.Events.fire('layerEdited', {detail : {
+                layer: updatedLayer
+            }});
+        }, 1500);
+
+        // event
+        M.DomEvent.on(name_input, 'keyup', _.throttle(function () {
+            var updatedName = name_input.value;
+            debounced(layer, updatedName);
+        }.bind(this), 1000), this);
+
+        // return wrapper
+        return toggles_wrapper;
+    },
+
+    _createGraphTitleBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+        var title = 'Graph title';
+        
+        // create divs
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, title);
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', 'Enter name here');
+        name_input.value = layer.getGraphTitle();
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // debounced function
+        var debounced = _.debounce(function (layer, updatedName) {
+            var updatedLayer = layer.setGraphTitle(updatedName);
+            if (updatedLayer) {
+                app.FeedbackPane.setMessage({title : title + ' updated', description : 'to ' + updatedName});
+                M.Mixin.Events.fire('layerEdited', {detail : {
+                    layer: updatedLayer
+                }});
+            }
+        }, 1500);
+
+        // event
+        M.DomEvent.on(name_input, 'keyup', _.throttle(function () {
+            var updatedName = name_input.value;
+            debounced(layer, updatedName);
+        }.bind(this), 1000), this);
+
+        // return wrapper
+        return toggles_wrapper;
+    },
+
+    _createGraphYAxisBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+        var title = 'Y axis title';
+        
+        // create divs
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, title);
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', 'Enter name here');
+        name_input.value = layer.getGraphYAxisTitle();
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // debounced function
+        var debounced = _.debounce(function (layer, updatedName) {
+            var updatedLayer = layer.setGraphYAxisTitle(updatedName);
+            if (updatedLayer) {
+                app.FeedbackPane.setMessage({title : title + ' updated', description : 'to ' + updatedName});
+                M.Mixin.Events.fire('layerEdited', {detail : {
+                    layer: updatedLayer
+                }});
+            }
+        }, 1500);
+
+        // event
+        M.DomEvent.on(name_input, 'keyup', _.throttle(function () {
+            var updatedName = name_input.value;
+            debounced(layer, updatedName);
+        }.bind(this), 1000), this);
+
+        // return wrapper
+        return toggles_wrapper;
+    },
+
+
 
     _createMaskBox : function (options) {
 

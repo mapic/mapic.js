@@ -37,6 +37,7 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
         // init layer
         this._initLayer();
 
+
     },
 
     _initLayer : function () {
@@ -63,25 +64,17 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
         this.layer.setStyle(this.options.style);
     },
     _onLayerClick : function () {
-        // console.log('click');
     },
 
     _onResizerStart : function (e) {
         if (this._resizerActive) return;
         this._resizerActive = true;
-
-        console.log('mousedown');
-        
         M.DomEvent.on(app._appPane, 'mousemove', this._onResizerMove, this);
         M.DomEvent.on(app._appPane, 'mouseup', this._onResizerStop, this);
-
-
     },
     _onResizerStop : function () {
-        console.log('resizer release')
         this._resizerActive = false;
         this._resizerStartPosition = false;
-
         M.DomEvent.off(app._appPane, 'mouseup', this._onResizerStop, this);
         M.DomEvent.off(app._appPane, 'mousemove', this._onResizerMove, this);
     },
@@ -99,6 +92,47 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
     },
     _resizerStartPosition : false,
+
+    setGraphTitle : function (title) {
+       
+        // save csv
+        try {
+            this.data.csv[0].csv.data[0][1] = title;
+            this.store.data.graph = M.stringify(this.data);
+            this.save('data');
+            return this;
+        } catch (e) {
+            console.error('Could not save!', e);
+            return false;
+        }
+    },
+
+    getGraphTitle : function () {
+        var csv = this.data.csv[0];
+        var y_axis_label = csv.y_axis_label;
+        var graph_title = csv.csv.data[0][1];
+
+        return graph_title;
+    },
+
+    getGraphYAxisTitle : function () {
+        var csv = this.data.csv[0];
+        var y_axis_label = csv.y_axis_label;
+        return y_axis_label;
+    },
+
+    setGraphYAxisTitle : function (title) {
+        // save csv
+        try {
+            this.data.csv[0].y_axis_label = title;
+            this.store.data.graph = M.stringify(this.data);
+            this.save('data');
+            return this;
+        } catch (e) {
+            console.error('Could not save!', e);
+            return false;
+        }
+    },
 
     _addGraphs : function () {
 
@@ -122,6 +156,7 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
             
         }.bind(this));
 
+
     },
 
     _removeGraphs : function () {
@@ -136,6 +171,7 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
         // add graphs
         this._addGraphs();
+
     },
 
     remove : function () {
@@ -287,11 +323,8 @@ M.Graph.CSV = M.Evented.extend({
         // get title
         var column_title = csv[0][1];
 
-        console.log('csv:', csv);
-
         // remove title from csv
         var csv = _.drop(csv);
-
 
         // format each date into proper moment date
         var grouped_datasets = {};

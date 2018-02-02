@@ -226,6 +226,7 @@ M.Model.Layer = M.Model.extend({
     },
 
     remove : function (map) {
+        console.error('Model.Layer remove()');
         var map = map || app._map;
 
         // leaflet fn

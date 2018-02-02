@@ -338,11 +338,9 @@ M.Model.Project = M.Model.extend({
 		app.api.updateProject(options);
 	},
 
-
 	save : function (field) {
 		console.error('deprecated');
 	},
-
 
 	_save : function (options) {
 		
@@ -367,17 +365,6 @@ M.Model.Project = M.Model.extend({
 		}});
 	},
 
-	// _onProjectChanged : function (e) {
-	// 	console.log("Never gets Fired");
-	// 	if (!e.detail.name) {
-	// 		return
-	// 	}
-	// 	// store on server
-	// 	this.store.name = e.detail.name;
-	// 	// update slug name
-	// 	this.setSlug(e.detail.name);
-	// },
-
 	// create project on server
 	create : function (opts, callback) {
 
@@ -397,13 +384,11 @@ M.Model.Project = M.Model.extend({
  		app.api.createProject(options, callback.bind(opts.context));
 	},
 
-
 	_unload : function () {
 		// load random project
 		app.MapPane._flush();
 		this.selected = false;
 	},
-
 
 	_delete : function (callback) {
 		// var project = this;
@@ -461,6 +446,7 @@ M.Model.Project = M.Model.extend({
 
 		}
 
+		// clear
 		project = null;
 		delete project;
 
@@ -603,23 +589,9 @@ M.Model.Project = M.Model.extend({
 		return this.store.lastUpdated;
 	},
 
-	// getClient : function () {
-	// 	console.log('TODO: remove this!');
-	// 	// return app.Clients[this.store.client];
-	// },
-
-	// getClientUuid : function () {
-	// 	console.log('TODO: remove this!');
-	// 	// return this.store.client;
-	// },
-
 	getBaselayers : function () {
 		return this.store.baseLayers;
 	},
-
-	// getColorTheme : function () {
-	// 	return JSON.parse(this.store.colorTheme);
-	// },
 
 	getBackgroundColor : function () {
 		return this.store.colorTheme;
@@ -838,7 +810,6 @@ M.Model.Project = M.Model.extend({
 		return html;
 	},
 
-
 	getHeaderLogo : function () {
 		if(M.app.Style.getCurrentTheme() === 'darkTheme'){
 			var defaultProjectLogo = '/css/images/defaultProjectLogoLight.png';
@@ -970,7 +941,6 @@ M.Model.Project = M.Model.extend({
 		// set new url
 		this._setUrl();
 	},
-
 
 	clearBounds : function () {
 

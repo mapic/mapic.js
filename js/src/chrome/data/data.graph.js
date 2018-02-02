@@ -19,12 +19,15 @@ M.Data.Graph = M.Evented.extend({
 
         // create fullscreen
         var fullscreen = this._fullscreen = new M.Fullscreen({
-            title : '<i class="fa fa-bars file-option"></i>Graph Layer',
+            title : '<i class="fa fa-bars file-option"></i>Water Info Layer',
             titleClassName : 'slim-font'
         });
 
         // store
         this.DOM.fullscreen_content = this._fullscreen._content
+
+        // create header
+        this._createHeader();
 
         // create geojson input
         this._createGeoJSONInput();
@@ -129,6 +132,13 @@ M.Data.Graph = M.Evented.extend({
         this._fullscreen.close();
     },
 
+    _createHeader : function () {
+        // get container
+        var container = this.DOM.fullscreen_content;
+        var info_text = M.DomUtil.create('div', 'info-text', container);
+        info_text.innerHTML = 'Please see <a href="https://github.com/mapic/mapic/wiki/Water-Info-Layer" target="_blank">Water Info Layer</a> in the wiki for more information on how to use this layer.'
+    },
+
     _createGeoJSONInput : function (options) {
 
         // get container
@@ -148,6 +158,7 @@ M.Data.Graph = M.Evented.extend({
         this.DOM.title = name_input;
 
         // upload geojson button
+        var upload_btn_text = M.DomUtil.create('div', 'upload-btn-label', toggles_wrapper, 'Upload GeoJSON mask:');
         var upload_button = M.DomUtil.create('input', 'smooth-fullscreen-save', toggles_wrapper);
         upload_button.setAttribute('id', 'geojson-upload');
         upload_button.setAttribute('type', 'file');
@@ -188,6 +199,7 @@ M.Data.Graph = M.Evented.extend({
         name_input.setAttribute('placeholder', 'Y Axis label');
        
         // upload csv button
+        var upload_btn_text = M.DomUtil.create('div', 'upload-btn-label', graph_wrapper, 'Upload CSV data:');
         var upload_button = M.DomUtil.create('input', 'smooth-fullscreen-save', graph_wrapper);
         upload_button.setAttribute('id', 'geojson-upload');
         upload_button.setAttribute('type', 'file');

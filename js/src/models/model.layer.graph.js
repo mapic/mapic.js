@@ -37,7 +37,6 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
         // init layer
         this._initLayer();
 
-
     },
 
     _initLayer : function () {
@@ -142,7 +141,6 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
             app._resizer =  M.DomUtil.create('div', 'data-graph-wrapper-resizer', app._graphWrapper);
         
             M.DomEvent.on(app._resizer, 'mousedown', this._onResizerStart, this);
-
         }
 
         // create wrapper
@@ -156,7 +154,6 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
             
         }.bind(this));
 
-
     },
 
     _removeGraphs : function () {
@@ -166,15 +163,32 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
     add : function () {
 
+        console.error('add');
+
         // add layer to map
         app._map.addLayer(this.layer);
 
         // add graphs
         this._addGraphs();
 
+        // add to active layers
+        app.MapPane.addActiveLayer(this);   // includes baselayers, todo: evented
+
+    },
+
+    _flush : function () {
+        console.log('Layer Graph FLUSH');
+        this.remove();
+        // app.MapPane._clearPopup();
+        // this._removeGridEvents();
+        // this.layer = null;
+        // this.gridLayer = null;
+        // this._inited = false;
     },
 
     remove : function () {
+
+        console.log('remove!', this);
 
         // remove layer from map
         app._map.removeLayer(this.layer);

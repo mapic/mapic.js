@@ -105,6 +105,7 @@ M.MapPane = M.Pane.extend({
         var map = app._map;
         
         var activeLayers = _.clone(this._activeLayers);
+        console.log('flushLayers: activeLayers', activeLayers);
         activeLayers.forEach(function (layer) {
             if (layer.layer) map.removeLayer(layer.layer);
             layer._flush();

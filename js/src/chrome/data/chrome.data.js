@@ -432,6 +432,9 @@ M.Chrome.Data = M.Chrome.extend({
         this._graphData = M.graphData({
             dataObject : this
         });
+
+        // toggle dropdown
+        this._optionsBtnClick();
     },
 
     _createCubeClick : function () {

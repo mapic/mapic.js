@@ -1876,7 +1876,7 @@ a.login-forgot-link {
     top: 30px;
     position: absolute;
     z-index: 1000;
-    border-top: 1px solid gainsboro;
+    /*border-top: 1px solid gainsboro;*/
     border-radius: 0 0 4px 4px;
     cursor: pointer;
     font-size: 13px;
@@ -1888,13 +1888,14 @@ a.login-forgot-link {
     padding-top: 5px;
     font-weight: 600;
     padding-bottom: 5px;
+    border: 1px solid #dcdcdc00;
 }
 
 .upload-button-create-cube:hover {
     background: #F9F9F9;
     color: #3F4652;
     border: 1px solid gainsboro;
-    border-top: 0;
+    /*border-top: 0;*/
     border-radius: 0 0 4px 4px;
 }
 
@@ -3061,6 +3062,8 @@ textarea.smooth-input.smaller-input.margin-top-20.graph-item {
 
 input#geojson-upload {
     position: relative;
+    font-size: 16px;
+    line-height: 0px;
 }
 
 
@@ -3117,4 +3120,6 @@ input#geojson-upload {
 }
 
 
-
+.upload-btn-label {
+    padding-top: 20px;
+}

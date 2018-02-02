@@ -46,10 +46,10 @@ M.Data = M.Class.extend({
         var optionsDropdownDiv = M.DomUtil.create('div', 'upload-button-dropdown displayNone', this._buttonContainer);
 
         // create cube item
-        var createCube = M.DomUtil.create('div', 'upload-button-create-cube', optionsDropdownDiv, 'Create cube...');
+        var createCube = M.DomUtil.create('div', 'upload-button-create-cube', optionsDropdownDiv, 'Create SCF layer');
         
         // create water-level
-        var createGraphLayer = M.DomUtil.create('div', 'upload-button-create-cube', optionsDropdownDiv, 'Create Graph layer...');
+        var createGraphLayer = M.DomUtil.create('div', 'upload-button-create-cube', optionsDropdownDiv, 'Create Water Info layer');
              
         // return all divs
 		var returnObject = {

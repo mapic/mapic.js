@@ -266,13 +266,15 @@ M.Graph.CSV = M.Evented.extend({
                             color : gridLinesColor
                         },
                         type: 'time',
+                        display : true,
                         ticks: {
                             callback: function(value, i, values) {
+                                // console.log('valuye', value);
                                 var date = moment(i, 'DDD');
                                 var date_of_month = date.date();
                                 if (date_of_month == 1) return date.format('MMM');
                             },
-                            source: 'data'
+                            source: 'data',
                         },
                     }],
                     yAxes: [{
@@ -339,6 +341,7 @@ M.Graph.CSV = M.Evented.extend({
             var year = moment_date.format('YYYY');
             grouped_datasets[year] = grouped_datasets[year] || {};
             grouped_datasets[year][moment_date.format('DDD')] = value;
+            // grouped_datasets[year][moment_date] = value;
         });
 
         // fill in the blanks in days-of-year
@@ -350,11 +353,25 @@ M.Graph.CSV = M.Evented.extend({
             });
         });
 
+        console.log('filled_datasets', filled_datasets);
+
+        // // remove dates which are empty for all years
+        // var fd_size = _.size(filled_datasets);
+        // _.each(filled_datasets, function (fd) {
+        //     console.log('fd', fd);
+        //     _.times(365, function (i) {
+        //         if (fd[i] == 'NaN') {
+        //             console.log('isNaN');
+        //         }
+        //     });
+        // });
+
         // create labels
         var x_axis_labels = [];
         _.times(365, function (i) {
             x_axis_labels.push(i+1);
         });
+        console.log('x_axis_labels,', x_axis_labels)
         
         // set chart data
         var chart = {
@@ -366,6 +383,7 @@ M.Graph.CSV = M.Evented.extend({
         }
 
         // create datasets
+        // https://canvasjs.com/docs/charts/basics-of-creating-html5-chart/date-time-axis/
         var i = 0;
         _.each(filled_datasets, function (f, key_year) {
             var color = _.values(this.options.colors)[i++];

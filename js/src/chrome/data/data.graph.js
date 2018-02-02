@@ -36,7 +36,7 @@ M.Data.Graph = M.Evented.extend({
         this._createCSVInput();
 
         // save button
-        var save_button = M.DomUtil.create('div', 'smooth-fullscreen-save', this.DOM.fullscreen_content, 'Create Layer');
+        var save_button = M.DomUtil.create('div', 'smooth-fullscreen-save right-20', this.DOM.fullscreen_content, 'Create Layer');
         M.DomEvent.on(save_button, 'click', this._onSave, this);
 
     },
@@ -126,6 +126,9 @@ M.Data.Graph = M.Evented.extend({
                 projectUuid : project.getUuid(),
                 layerUuid : layerModel.uuid
             }});
+
+            // feedback
+            app.FeedbackPane.setMessage({title : 'Success!', description : 'Water Info Layer created'})
 
         });
 

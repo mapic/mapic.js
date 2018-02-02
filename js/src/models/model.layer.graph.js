@@ -37,7 +37,6 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
         // init layer
         this._initLayer();
 
-        console.log('Model.Layer.Graph', this);
 
     },
 
@@ -173,6 +172,8 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
         // add to active layers
         app.MapPane.addActiveLayer(this);   // includes baselayers, todo: evented
+
+        console.log('Model.Layer.Graph', this);
 
     },
 

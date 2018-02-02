@@ -658,7 +658,7 @@ M.Model.Layer = M.Model.extend({
         console.log('share layer', this);
     },
     deleteLayer : function () {
-        console.log('delete layer', this);
+        console.log('M.Model.Layer delete layer', this);
     },
 
     isVector : function () {

@@ -675,8 +675,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this._clickedMasklayer = false;
     },  
 
-
-
     // async, waiting, to get graph object
     _getGraph : function (done) {
 
@@ -731,60 +729,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
 
-
-    // _calculateWeightedAverage : function (options) {
-
-    //     // should be added to values from other polygons, 
-    //     // but weighted based on area of polygon
-    //     //
-    //     // (scf_1 * area_a) + (scf_2 * area_b)
-    //     // ----------------------------------- = weighted scf 
-    //     //           area_a + area_b 
-
-    //     var polygons = options.polygons;
-    //     var areas = options.areas;
-
-    //     // sum all areas
-    //     var total_area = _.sum(areas);
-    //     var sums = []; // 365 days
-    //     var days = [];
-
-    //     // each day
-    //     _.times(365, function (i) {
-
-    //         // daily avg
-    //         var avg = [];
-
-    //         // get results from all polygons
-    //         polygons.forEach(function (p, n) {
-    //             if (!p[i]) return; // leap years
-
-    //             // current day
-    //             var daily_polygon_scf = p[i].SCF;
-
-    //             // over the line parts
-    //             var daily_mean = daily_polygon_scf * areas[n];
-
-    //             // remember
-    //             avg.push(daily_mean);
-
-    //         });
-
-    //         // calc it out
-    //         var over_line = _.sum(avg);
-    //         var under_line = total_area;
-    //         var weighted_scf = over_line / under_line;
-
-    //         // create array for line graph
-    //         var today = polygons[0][i];
-    //         if (today) days.push({
-    //             SCF : weighted_scf,
-    //             date : today.date
-    //         });
-    //     });
-
-    //     return days;
-    // },
 
     _queryCube : function (options, done) {
 
@@ -1265,6 +1209,22 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // set legend
         this._legendContainer.innerHTML = '<div class="info-legend-frame snow-raster"><div class="info-legend-val info-legend-min-val">1%</div><div class="info-legend-header scf">Snow</div><div class="info-legend-val info-legend-max-val">100%</div><div class="info-legend-gradient-container" style="background: -webkit-linear-gradient(0deg, #8C8C8C, white);background: -o-linear-gradient(0deg, #8C8C8C, white);background: -moz-linear-gradient(0deg, #8C8C8C, white);"></div></div>'
         
+    },
+
+    deleteLayer : function () {
+        // confirm
+        var message = 'Are you sure you want to delete this layer? \n - ' + this.getTitle();
+        if (!confirm(message)) return console.log('No layer deleted.');
+
+        // get project
+        var layerUuid = this.getUuid();
+        var project = _.find(app.Projects, function (p) {
+            return p.layers[layerUuid];
+        });
+
+        // delete layer
+        project.deleteLayer(this);
+    
     },
 
 

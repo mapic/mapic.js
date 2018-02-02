@@ -262,7 +262,9 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         var map = map || app._map;
 
         // remove leaflet layer group from map
-        this._group.removeFrom(map);
+        console.log('this._group', this._group);
+        // this._group.removeFrom(map);
+        this._group && this._group.remove();
 
         // remove mask
         if (this.hasMask()) {

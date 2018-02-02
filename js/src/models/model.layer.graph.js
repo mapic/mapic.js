@@ -37,6 +37,8 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
         // init layer
         this._initLayer();
 
+        console.log('Model.Layer.Graph', this);
+
     },
 
     _initLayer : function () {
@@ -353,25 +355,11 @@ M.Graph.CSV = M.Evented.extend({
             });
         });
 
-        console.log('filled_datasets', filled_datasets);
-
-        // // remove dates which are empty for all years
-        // var fd_size = _.size(filled_datasets);
-        // _.each(filled_datasets, function (fd) {
-        //     console.log('fd', fd);
-        //     _.times(365, function (i) {
-        //         if (fd[i] == 'NaN') {
-        //             console.log('isNaN');
-        //         }
-        //     });
-        // });
-
         // create labels
         var x_axis_labels = [];
         _.times(365, function (i) {
             x_axis_labels.push(i+1);
         });
-        console.log('x_axis_labels,', x_axis_labels)
         
         // set chart data
         var chart = {

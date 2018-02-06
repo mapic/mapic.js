@@ -194,7 +194,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     add : function (type) {
         this.addTo();
-        // console.log('CUBE Add', this);
+        console.log('CUBE Add', this);
     },
 
     addTo : function () {

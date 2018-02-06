@@ -1,6 +1,6 @@
-// --------------------------------------------
-// THIS IS A CUSTOM PLUGIN CREATED FOR GLOBESAR 
-// --------------------------------------------
+// -----------------------------------------------
+// THIS IS A CUSTOM PLUGIN CREATED FOR SNOW RASTER 
+// -----------------------------------------------
 //
 // - it communicates with new API endpoints which must be present on the server-side
 // - all interaction with layer (adding masks, filter) should happen through this plugin

@@ -3126,3 +3126,15 @@ input#geojson-upload {
 .upload-btn-label {
     padding-top: 20px;
 }
+
+
+.snow-graph-container {
+    position: absolute;
+    width: auto;
+    height: auto;
+    top: 0;
+    background: red;
+    z-index: 100000;
+    right: 0;
+    bottom: 0px;
+}

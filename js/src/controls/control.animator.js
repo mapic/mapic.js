@@ -79,7 +79,6 @@ M.Graph.Animator = M.Evented.extend({
         this._layer.on('disabled', this._layerDisabled.bind(this));
     },
 
-
     getContainer : function () {
         return this.sliderOuterContainer;
     },
@@ -100,7 +99,7 @@ M.Graph.Animator = M.Evented.extend({
 
         // create divs
         this.sliderOuterContainer       = M.DomUtil.create('div', 'big-slider-outer-container', app._appPane);
-        this.sliderInnerContainer        = M.DomUtil.create('div', 'big-slider-inner-container', this.sliderOuterContainer);
+        this.sliderInnerContainer       = M.DomUtil.create('div', 'big-slider-inner-container', this.sliderOuterContainer);
         var slider                      = M.DomUtil.create('div', 'big-slider', this.sliderInnerContainer);
         this.sliderButtonsContainer     = M.DomUtil.create('div', 'big-slider-button-container', this.sliderInnerContainer);
         this.tickContainer              = M.DomUtil.create('div', 'big-slider-tick-container', this.sliderInnerContainer);

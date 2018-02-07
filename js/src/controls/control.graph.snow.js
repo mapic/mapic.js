@@ -333,14 +333,14 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _plugAnimator : function () {
 
-        // set animator
-        this._animator = this.options.animator;
+        // // set animator
+        // this._animator = this.options.animator;
 
-        // connect graph
-        this._animator.plugGraph(this); // todo: create event for this
+        // // connect graph
+        // this._animator.plugGraph(this); // todo: create event for this
 
-        // listen for animator events
-        this._animator.on('update', this.onUpdateTimeframe.bind(this));
+        // // listen for animator events
+        // this._animator.on('update', this.onUpdateTimeframe.bind(this));
     },
 
     _listen : function () {
@@ -356,7 +356,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
 
         // todo: refactor the DOM, incl. animator
-        this._container              = M.DomUtil.create('div', 'big-graph-outer-container',            this.options.appendTo);
+        this._mainContainer          = M.DomUtil.create('div', 'snow-graph-container', app._appPane);
+        this._container              = M.DomUtil.create('div', 'big-graph-outer-container',            this._mainContainer);
         this._infoContainer          = M.DomUtil.create('div', 'big-graph-info-container',             this._container);
 
         // resizer
@@ -383,7 +384,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._graphContainer         = M.DomUtil.create('div', 'big-graph-inner-container',            this._container);
         
         // add editor items
-        if (this.isEditor()) this._addEditorPane();
+        // if (this.isEditor()) this._addEditorPane();
 
         // add resize event
         M.DomEvent.on(this._resizer, 'mousedown', this._initResize, this);
@@ -414,10 +415,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 w : container.clientWidth,
                 ch : this._composite.height(),
                 cw : this._composite.width(),
-                ah : this._animator.sliderInnerContainer.clientHeight,
-                aw : this._animator.sliderInnerContainer.clientWidth,
-                sw : this._animator.slider.target.clientWidth,
-                sbw : this._animator.sliderButtonsContainer.clientWidth,
+                // ah : this._animator.sliderInnerContainer.clientHeight,
+                // aw : this._animator.sliderInnerContainer.clientWidth,
+                // sw : this._animator.slider.target.clientWidth,
+                // sbw : this._animator.sliderButtonsContainer.clientWidth,
                 dl : this._dateTitle.offsetLeft,
                 pt : this._pluginMainContainer.offsetTop,
                 et : this._editorPane.offsetTop
@@ -448,22 +449,22 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         dc.renderAll();
 
         // set size of bottom container
-        var bottom_container = this._animator.sliderInnerContainer;
-        var width = this._resizeValues.aw - movement_x;
-        if (width < 600) width = 600;
-        bottom_container.style.width = width + 'px';
+        // var bottom_container = this._animator.sliderInnerContainer;
+        // var width = this._resizeValues.aw - movement_x;
+        // if (width < 600) width = 600;
+        // bottom_container.style.width = width + 'px';
 
         // set size of slider
-        var slider = this._animator.slider.target;
-        var width = this._resizeValues.sw - movement_x;
-        if (width < 420) width = 420;
-        slider.style.width = width + 'px';
+        // var slider = this._animator.slider.target;
+        // var width = this._resizeValues.sw - movement_x;
+        // if (width < 420) width = 420;
+        // slider.style.width = width + 'px';
 
         // set size of slider buttons
-        var slider_button = this._animator.sliderButtonsContainer;
-        var width = this._resizeValues.sbw - movement_x;
-        if (width < 530) width = 530;
-        slider_button.style.width = width + 'px';
+        // var slider_button = this._animator.sliderButtonsContainer;
+        // var width = this._resizeValues.sbw - movement_x;
+        // if (width < 530) width = 530;
+        // slider_button.style.width = width + 'px';
 
         // set text offsets
         var left = this._resizeValues.dl - movement_x;
@@ -801,14 +802,13 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // mark inited
         this._graphInited = true;
 
-
-        setTimeout(function () {
-            this._addVerticalLine();
-        }.bind(this), 1000);
+        // add vertical red line to graph
+        this._addVerticalLine();
     },
 
     _addVerticalLine : function () {
 
+        // define vertical line
         var vertical = d3.select(".dc-chart")
         .append("div")
         .attr("class", "remove")
@@ -818,31 +818,56 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .style("height", "180px")
         .style("top", "154px")
         .style("bottom", "30px")
-        .style("left", "0px")
+        .style("left", "60px") // starting position
         .style("background", "#db5758");
+
+
+        // remember state
+        app._vl_state = false;
 
 
         d3.select(".dc-chart")
         .on("mousemove", function(){  
+            if (!app._vl_state) return;
             console.log('mousemove');
+            
             mousex = d3.mouse(this)[0];
-            console.log('mousex', mousex);
+
+            // max/min
             if (mousex < 40) mousex = 40;
             if (mousex > 450) mousex = 450;
+
             mousex = mousex + 20;
             vertical.style("left", mousex + "px" )
         })
         .on("mouseover", function(){  
-            console.log('mousemove2');
+            if (!app._vl_state) return;
+            
             mousex = d3.mouse(this)[0];
+
+            // max/min
             if (mousex < 40) mousex = 40;
             if (mousex > 450) mousex = 450;
+
             mousex = mousex + 20;
-            console.log('mousex2', mousex);
             vertical.style("left", mousex + "px")
         })
         .on('click', function () {
             console.log('CLICK!');
+
+            if (app._vl_state) {
+                // turn OFF
+                vertical.style("width", "2px" )
+                app._vl_state = false;
+            } else {
+                // turn ON
+                vertical.style("width", "1px" )
+                app._vl_state = true;
+
+                // set to mousepointer on click
+                mousex = d3.mouse(this)[0] + 20;
+                vertical.style("left", mousex + "px")
+            }
         });
 
     },
@@ -1060,13 +1085,13 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._composite.x(d3.time.scale().domain([minDate,maxDate]));
 
         // set slider
-        this._animator.setSlider(day);
+        // this._animator.setSlider(day);
 
         // set cube cursor
         this.cube().setCursor(moment.utc().year(year).dayOfYear(day));
 
         // set slider
-        this._animator.setSlider(day);
+        // this._animator.setSlider(day);
 
         // update titles
         this._updateTitles();
@@ -1346,9 +1371,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._limit = limit;
 
         // set limits for slider
-        this._animator.setSliderLimit({
-            limit : limit
-        });
+        // this._animator.setSliderLimit({
+        //     limit : limit
+        // });
 
     },
 

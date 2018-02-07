@@ -365,10 +365,10 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     _initGraph : function (done) {
 
-        // create animator
-        this._animator = new M.Graph.Animator({ // refactor to project controls (or some editor control)
-            layer : this
-        });
+        // // create animator
+        // this._animator = new M.Graph.Animator({ // refactor to project controls (or some editor control)
+        //     layer : this
+        // });
 
         var masks = this.getMasks();
 
@@ -378,10 +378,10 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this._graph = new M.Graph.SnowCoverFraction({ 
             // data     : this._data.annual,
             data     : masks[0].data, // todo: create dummy data in graph
-            appendTo : this._animator.getContainer(),
+            // appendTo : this._animator.getContainer(),
             type     : 'annualCycles',
             cube     : this,
-            animator : this._animator
+            // animator : this._animator
         });
 
     },

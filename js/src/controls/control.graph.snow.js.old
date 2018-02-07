@@ -24,13 +24,6 @@
 // ------
 //  - since object survives changing projects, the events must be silenced.
 
-// update:
-// https://github.com/mapic/mapic/issues/57
-// 
-// 1. average - done
-// 2. animator
-// 3. 
-
 moment().utc();
 
 // created by cube layer
@@ -257,25 +250,17 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             });
             var avg = sum/today.length;
          
-
-            // sept - aug year
-            console.log('this._current.year', this._current.year);
-            var dummy_year = this._current.year ;
-            if (n > 243) dummy_year = this._current.year - 1;
-
             // add to array
             average.push({
                 doy   : doy,
                 max  : parseFloat(max),
                 min  : parseFloat(min),
                 avg  : avg, 
-                date : moment.utc().year(dummy_year).dayOfYear(doy), // year doesn't matter, as it's avg for all years
+                date : moment.utc().year(this._current.year).dayOfYear(doy), // year doesn't matter, as it's avg for all years
             });                                                              // however: need to add a YEAR/DATE when adding to graph, 
                                                                              // due to graph needing a date to know it should display data
             
         }.bind(this));
-
-        console.log('average', average);
 
         return average;
     },
@@ -681,10 +666,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // get max/min date 
         var minDate = average_dimension.bottom(1)[0].date;  // this is jan 1 2015.. shouldn't be a YEAR per say, since it messes with the line graph (which needs to be in same year to display)
         var maxDate = average_dimension.top(1)[0].date;     
-        
-        // debug
-        var minDate = moment("01-09-2016", "DD-MM-YYYY");
-        var maxDate = moment("31-08-2017", "DD-MM-YYYY");
 
         // create red line (this year's data) crossfilter
         this.ndx.line_crossfilter = crossfilter([]);
@@ -701,7 +682,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         });
 
         // create composite chart @ container
-        var composite = this._composite = dc.compositeChart(this._graphContainer);
+        var composite = this._composite = dc.compositeChart(this._graphContainer)
 
         // define compose charts
         var compose_charts = [
@@ -736,13 +717,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             .xyTipsOn(false),
 
         ]
-
-
-        // debug
-        console.log('minDate, maxDate', minDate, maxDate);
-        var minDate = moment("01-09-2016", "DD-MM-YYYY");
-        var maxDate = moment("31-08-2017", "DD-MM-YYYY");
-        console.log('minDate, maxDate', minDate, maxDate);
 
         // helper fn to filter out falsey values in line graph
         function remove_falseys(source_group) {
@@ -801,54 +775,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // mark inited
         this._graphInited = true;
 
-
-        setTimeout(function () {
-            this._addVerticalLine();
-        }.bind(this), 1000);
-    },
-
-    _addVerticalLine : function () {
-
-        var vertical = d3.select(".dc-chart")
-        .append("div")
-        .attr("class", "remove")
-        .style("position", "absolute")
-        .style("z-index", "19")
-        .style("width", "2px")
-        .style("height", "180px")
-        .style("top", "154px")
-        .style("bottom", "30px")
-        .style("left", "0px")
-        .style("background", "#db5758");
-
-
-        d3.select(".dc-chart")
-        .on("mousemove", function(){  
-            console.log('mousemove');
-            mousex = d3.mouse(this)[0];
-            console.log('mousex', mousex);
-            if (mousex < 40) mousex = 40;
-            if (mousex > 450) mousex = 450;
-            mousex = mousex + 20;
-            vertical.style("left", mousex + "px" )
-        })
-        .on("mouseover", function(){  
-            console.log('mousemove2');
-            mousex = d3.mouse(this)[0];
-            if (mousex < 40) mousex = 40;
-            if (mousex > 450) mousex = 450;
-            mousex = mousex + 20;
-            console.log('mousex2', mousex);
-            vertical.style("left", mousex + "px")
-        })
-        .on('click', function () {
-            console.log('CLICK!');
-        });
-
     },
 
     _onGridMousemove : function (e) {
-        // console.log('_onGridMousemove'); 
     },
 
     _onRenderlet : function (chart) {
@@ -1051,10 +980,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // set graph dates
         var minDate = moment.utc().year(this._current.year).dayOfYear(1);
         var maxDate = moment.utc().year(this._current.year + 1).dayOfYear(-1); // last day of year
-
-        // debug
-        var minDate = moment("01-09-2016", "DD-MM-YYYY");
-        var maxDate = moment("31-08-2017", "DD-MM-YYYY");
 
         // set date range to graph
         this._composite.x(d3.time.scale().domain([minDate,maxDate]));

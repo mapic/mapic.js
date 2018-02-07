@@ -155,7 +155,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
                 weight : 2,
             },
 
-
             // if you want click on separate features of mask
             separatedFeatures : false,
 
@@ -179,8 +178,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // set store
         this._setStore(store);
-
-        // console.log('CUBE LAAYER _>', this);
     },
 
     _setStore : function (store) {
@@ -201,7 +198,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
        
         // add to map
         this._addTo();
-
     },
 
     _addTo : function (type) {
@@ -233,9 +229,9 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
                 // add mask layer
                 this._maskLayers.forEach(function (maskLayer) {
+                    console.log('maskLayer', maskLayer);
                     maskLayer.add();
                 });
-
             }
 
             // show legend
@@ -376,6 +372,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         var masks = this.getMasks();
 
+        console.log('create graph with data:', masks[0].data);
+
         // create graph
         this._graph = new M.Graph.SnowCoverFraction({ 
             // data     : this._data.annual,
@@ -496,6 +494,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     _masks : [],
+    _maskLayers : [],
 
     _initRasterMask : function (mask, done) {
         console.error('todo: RASTER MASK');
@@ -505,11 +504,9 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         console.error('todo: topojson mask');
     },
 
-    _maskLayers : [],
-
-   
-
     _initGeoJSONMask : function (mask, done) {
+
+        console.log('mask: ', mask);
 
         // create mask (geojson) layer
         var maskLayer = new M.Model.Layer.GeoJSONMaskLayer({

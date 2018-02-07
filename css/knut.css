@@ -2624,6 +2624,9 @@ input[type="radio"] .styled:checked + label::after {
 .big-graph-inner-container {
     min-height: 220px;
     min-width: 500px;
+    bottom: 0px;
+    position: absolute;
+    /*width: 453px;*/
 }
 
 
@@ -2661,6 +2664,7 @@ input[type="radio"] .styled:checked + label::after {
     position: absolute;
     top: 55px;
     width: 110px;
+    z-index: 100000;
 }
 
 .average-data-pane-title {
@@ -2723,7 +2727,7 @@ button.btn.btn-default.dropdown-toggle:focus {
     right: 0;
     bottom: 35px;
     width: 600px;
-    min-height: 360px;
+    min-height: 300px;
 }
 .big-slider.noUi-target.noUi-ltr.noUi-horizontal.noUi-connect {
     width: 420px;
@@ -2805,6 +2809,7 @@ span.mask-item-value {
 .date-item-scf {
     font-size: 25px;
     font-weight: 900;
+    min-height: 35px;
 }
 .date-item-date {
     font-size: 16px;
@@ -2819,7 +2824,7 @@ span.mask-item-value {
     position: absolute;
    /* right: 132px;
     bottom: 236px;*/
-    top: 45px;
+    top: 0px;
     left: 330px;
     text-align: right;
 }
@@ -3137,4 +3142,10 @@ input#geojson-upload {
     z-index: 100000;
     right: 0;
     bottom: 0px;
+}
+
+.checkbox.filter-chart-checkbox {
+    position: absolute;
+    top: 40px;
+    left: 20px;
 }

@@ -259,6 +259,9 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // remove leaflet layer group from map
         console.log('this._group', this._group);
+        
+        console.error('remove!!');
+
         // this._group.removeFrom(map);
         this._group && this._group.remove();
 
@@ -751,7 +754,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // add cube id
         options.cube_id = this.getCubeId();
 
-        // console.log('cube query:', options);
+        console.log('cube query:', options);
 
         // query cube
         app.api.queryCube(options, done);

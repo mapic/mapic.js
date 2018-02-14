@@ -27,13 +27,10 @@
 // update:
 // https://github.com/mapic/mapic/issues/57
 // 
-// 1. average - done
-// 2. animator
-// 3. 
 
 moment().utc();
 
-// created by cube layer
+// created from cube layer
 // Annual Graph (cyclical)
 M.Graph.SnowCoverFraction = M.Graph.extend({
 
@@ -99,31 +96,26 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _initialize : function () {
 
-        console.error('SNOW _initialize options', this.options);
-
         // set project
         this._project = app.activeProject;
 
         // create DOM
         this._initContainer();
 
-        // plug animator
-        this._plugAnimator();
+        // set cache
+        this._initCache();
 
         // events
         this.on('sliderMovement', this._onSliderMovement);
-
         this.options.cube.on('enabled', this._onLayerEnabled.bind(this));
         this.options.cube.on('disabled', this._onLayerDisabled.bind(this));
 
     },
 
     _onLayerEnabled : function () {
-        console.log('LAYER ENABLED');
         if (this._container) this._container.style.display = 'block';
     },
     _onLayerDisabled : function () {
-        console.log('LAYER DISABLED');
         if (this._container) this._container.style.display = 'none';
     },
 
@@ -141,65 +133,105 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // check store
         if (this.parsed()) return done(null, this.parsed());
 
-        // query non-data year (ie. query from actual raster datasets)
-        this.query_yearly('2017', function (err, queried_data) {
-            if (err) return done(err);
+      
 
-            var parsed = {}
+        var parsed = {}
 
-            // min/max/avg 
-            parsed.mma = this.average(data);
+        console.log('A001 ===> data: ', data);
+        // [
+        //   {
+        //     "year": "2001",
+        //     "doy": "1",
+        //     "scf": "84.54",
+        //     "ccf": "100.00",
+        //     "age": "1.00"
+        //   },
+        //   {
+        //     "year": "2001",
+        //     "doy": "2",
+        //     "scf": "84.54",
+        //     "ccf": "98.19",
+        //     "age": "1.97"
+        //   }, ... // until last data in 2017
 
-            // resample to year/doy
-            queried_data.forEach(function (q) {
-                var item = {
-                    scf : q.scf,
-                    year : q.date.year(),
-                    doy : q.date.dayOfYear()
-                }
-                data.push(item);
-            });
+        // min/max/avg 
+        parsed.mma = this.average(data);
 
-            // yearly
-            parsed.years = this.yearly(data);
+        console.log('A002 ==> parsed.mma', parsed.mma);
+        // [
+        //   {
+        //     "doy": 1,
+        //     "max": 86.32,
+        //     "min": 67.35,
+        //     "avg": 77.41277777777776,
+        //     "date": "2018-01-01T19:37:59.497Z"
+        //   },
+        //   {
+        //     "doy": 2,
+        //     "max": 88.57,
+        //     "min": 66.63,
+        //     "avg": 77.43722222222225,
+        //     "date": "2018-01-02T19:37:59.499Z"
+        //   }, 
+        /// ... times 365
 
-            // store
-            this.parsed(parsed);
 
-            // return 
-            done && done(null, parsed);
+        // console.log('A003 ==> queried_data', queried_data);
+        // [
+        //   {
+        //     "date": "2017-09-01T00:00:00.000Z",
+        //     "scf": 2.48452938117525
+        //   },
+        //   {
+        //     "date": "2017-09-02T00:00:00.000Z",
+        //     "scf": 2.6203198127925162
+        //   },
+        // ... times the number of days left in the last year, eg. 122
 
-        }.bind(this));
+        // resample to year/doy
+        // queried_data.forEach(function (q) {
+        //     var item = {
+        //         scf : q.scf,
+        //         year : q.date.year(),
+        //         doy : q.date.dayOfYear()
+        //     }
+        //     data.push(item);
+        // });
 
-    },
+        // yearly
+        parsed.years = this.yearly(data);
 
-    query_yearly : function (year, done) {
+        console.log('A004 ==> parsed.years', parsed.years);
+        // [
+        //   {
+        //     "scf": {
+        //       "2001": 84.54,
+        //       "2002": 83.71,
+        //       "2003": 86.32,
+        //       "2004": 83.44,
+        //       "2005": 75.89,
+        //       "2006": 82.96,
+        //       "2007": 72.87,
+        //       "2008": 81.24,
+        //       "2009": 78.63,
+        //       "2010": 83.21,
+        //       "2011": 73.05,
+        //       "2012": 82.75,
+        //       "2013": 80.78,
+        //       "2014": 67.35,
+        //       "2015": 69.78,
+        //       "2016": 69.78,
+        //       "2017": 69.78,
+        //       "2018": false
+        //     },
+        //     "date": "2017-01-01T19:41:59.663Z"
+        //   }, ... times 365....! 
 
-        var query_options = {
-            query_type : 'scf-geojson',
-            mask_id : this._mask ? this._mask.id : false, //'mask-gkceetoa', // debug
-            year : year,  
-            day : this._current.day, // needed? 
-            options : {
-                currentYearOnly : true,
-                filter_query : false,
-                // force_query : true,
-            },
-        }
+        // store
+        this.parsed(parsed);
 
-        // query data from cube
-        this.cube().query(query_options, function (err, query_results) {
-            if (err) return done(err);
-
-            // parse
-            var fractions = M.parse(query_results);
-
-            // parse dates
-            var parsed_data = this._parseDates(fractions);
-
-            done && done(null, parsed_data);
-        
-        }.bind(this));
+        // return 
+        done && done(null, parsed);
 
     },
 
@@ -276,7 +308,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
          
 
             // sept - aug year
-            console.log('this._current.year', this._current.year);
             var dummy_year = this._current.year ;
             if (n > 243) dummy_year = this._current.year - 1;
 
@@ -286,13 +317,11 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 max  : parseFloat(max),
                 min  : parseFloat(min),
                 avg  : avg, 
-                date : moment.utc().year(dummy_year).dayOfYear(doy), // year doesn't matter, as it's avg for all years
-            });                                                              // however: need to add a YEAR/DATE when adding to graph, 
-                                                                             // due to graph needing a date to know it should display data
+                date : moment.utc().year(dummy_year).dayOfYear(doy),        // year doesn't matter, as it's avg for all years
+            });                                                             // however: need to add a YEAR/DATE when adding to graph, 
+                                                                            // due to graph needing a date to know it should display data
             
         }.bind(this));
-
-        console.log('average', average);
 
         return average;
     },
@@ -341,23 +370,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             // update line graph
             this._updateLineGraph();
 
-            // set initial date
-            this._setLastDate();
-
         }.bind(this));
 
-    },
-
-    _plugAnimator : function () {
-
-        // // set animator
-        // this._animator = this.options.animator;
-
-        // // connect graph
-        // this._animator.plugGraph(this); // todo: create event for this
-
-        // // listen for animator events
-        // this._animator.on('update', this.onUpdateTimeframe.bind(this));
     },
 
     _listen : function () {
@@ -432,22 +446,15 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 w : container.clientWidth,
                 ch : this._composite.height(),
                 cw : this._composite.width(),
-                // ah : this._animator.sliderInnerContainer.clientHeight,
-                // aw : this._animator.sliderInnerContainer.clientWidth,
-                // sw : this._animator.slider.target.clientWidth,
-                // sbw : this._animator.sliderButtonsContainer.clientWidth,
                 dl : this._dateTitle.offsetLeft,
                 pt : this._pluginMainContainer.offsetTop,
                 et : this._editorPane.offsetTop
             }
         }
 
-
         // calc movement
         var movement_x = e.clientX - this._resizeValues.x;
         var movement_y = e.clientY - this._resizeValues.y;
-        // console.log('movement_x', movement_x)
-        // console.log('movement_y', movement_y)
 
         // set size of container
         var height = this._resizeValues.h - movement_y;
@@ -465,24 +472,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._composite.width(chart_width).height(chart_height);
         dc.renderAll();
 
-        // set size of bottom container
-        // var bottom_container = this._animator.sliderInnerContainer;
-        // var width = this._resizeValues.aw - movement_x;
-        // if (width < 600) width = 600;
-        // bottom_container.style.width = width + 'px';
-
-        // set size of slider
-        // var slider = this._animator.slider.target;
-        // var width = this._resizeValues.sw - movement_x;
-        // if (width < 420) width = 420;
-        // slider.style.width = width + 'px';
-
-        // set size of slider buttons
-        // var slider_button = this._animator.sliderButtonsContainer;
-        // var width = this._resizeValues.sbw - movement_x;
-        // if (width < 530) width = 530;
-        // slider_button.style.width = width + 'px';
-
         // set text offsets
         var left = this._resizeValues.dl - movement_x;
         if (left < 330) left = 330;
@@ -496,28 +485,13 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     },
 
     _addEditorPane : function () {
-
-        // // container
-        // this._editorPane = M.DomUtil.create('div', 'big-graph-editor-pane');
-
-        // // insert above outer container
-        // this.options.appendTo.insertBefore(this._editorPane, this.options.appendTo.firstChild);
-
-        // // title
-        // this._editorPaneTitle = M.DomUtil.create('div', 'big-graph-editor-pane-title', this._editorPane, this.locale().layerOptions);
-
-        // // mask filter
-        // this._filterPane = M.DomUtil.create('div', 'big-graph-editor-filter-pane', this._editorPane);
-
         // mask filter
         if (this.options.editorOptions.mask) {        
             var checkbox = this._createFilterCheckbox({
                 appendTo : this._container
             });
         }
-
     },
-
 
     _createFilterCheckbox : function (options) {
 
@@ -624,8 +598,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // remember
         this._selectedYears[year] = checked;
 
-        console.log('this._selectedYears', this._selectedYears);
-
         // set line graph to selected years
         this._setLineGraph();
 
@@ -681,6 +653,21 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         return app.activeProject.isEditor();
     },
 
+    _getHydrologicalYear : function () {
+        var today = moment();
+        var year = today.year();
+        var isAfter = today.isSameOrAfter(moment().year(year).date(1).month(9));
+        this._current.hydrological_year = isAfter ? year : year - 1;
+        var hy = this._current.hydrological_year;
+
+        var h = {
+            year : hy,
+            minDate : moment('01-09-' + hy, "DD-MM-YYYY"),
+            maxDate : moment('01-09-' + (hy + 1), "DD-MM-YYYY")
+        }
+        return h;
+    },
+
     // should run only once! 
     _createGraph : function (data) {
 
@@ -703,8 +690,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var maxDate = average_dimension.top(1)[0].date;     
         
         // debug
-        var minDate = moment("01-09-2017", "DD-MM-YYYY");
-        var maxDate = moment("31-08-2018", "DD-MM-YYYY");
+        var minDate = this._getHydrologicalYear().minDate;
+        var maxDate = this._getHydrologicalYear().maxDate;
 
         // create red line (this year's data) crossfilter
         this.ndx.line_crossfilter = crossfilter([]);
@@ -759,10 +746,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
 
         // debug
-        console.log('minDate, maxDate', minDate, maxDate);
-        var minDate = moment("01-09-2017", "DD-MM-YYYY");
-        var maxDate = moment("31-08-2018", "DD-MM-YYYY");
-        console.log('minDate, maxDate', minDate, maxDate);
+        // console.log('minDate, maxDate', minDate, maxDate);
+        var minDate = this._getHydrologicalYear().minDate;
+        var maxDate = this._getHydrologicalYear().maxDate;
 
         // helper fn to filter out falsey values in line graph
         function remove_falseys(source_group) {
@@ -844,16 +830,13 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .style("left", "40px") // starting position
         .style("background", "#db5758");
 
-
         // remember state
         app._vl_state = false;
         var that = this;
 
-
         d3.select(".dc-chart")
         .on("mousemove", function(){  
             if (!app._vl_state) return;
-            console.log('mousemove');
             
             mousex = d3.mouse(this)[0];
 
@@ -886,8 +869,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             mousex = mousex + 0;
             vertical.style("left", mousex + "px")
 
-            console.log('mousex', mousex);
-
             // calc day-of-year
             // todo: check if works with all screen sizes, since we're dealing with pixels??
             var p = parseInt(((mousex - 40) / 410) * 364) + 1
@@ -899,7 +880,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         })
         .on('click', function () {
-            console.log('CLICK!');
 
             if (app._vl_state) {
                 // turn OFF
@@ -928,18 +908,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var v = document.getElementsByClassName('grid-line vertical')[0];
         h.parentNode.appendChild(h);
         v.parentNode.appendChild(v);
-
-        // todo: add labels on hover
-        // chart.selectAll('path.line')
-        // // chart.selectAll('g.stack_0')
-        //     .on('mouseover.foo', function(d) {
-        //         console.log('d', d, arguments);
-        //         // chart.select('.display-qux').text(dateFormat(d.data.key) + ': ' + d.data.value);
-        //     })
-        //     .on('mouseout.foo', function(d) {
-        //         console.log('d out', d);
-        //         // chart.select('.display-qux').text('');
-        //     });
     },
 
     // run each time linegraph changes at all
@@ -955,8 +923,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var parsed_cache = this._parsed[this._mask.id];
         var cache = this._filterSelectedYears(parsed_cache.years);
 
-        console.log('filtered cache', cache);
-
         // filter out current year's data @ current year's date
         // with filter @ composite
         var currentYear = this._current.year;
@@ -969,34 +935,20 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             }
         });
 
-        console.log('clone: ', clone);
-        console.log('this._currnet', this._current);
-
         // add data to line_crossfilter
         this.ndx.line_crossfilter.add(clone);
 
         // redraw
         dc.redrawAll();
 
-        // calculate limit of dataset
-        var limit = _.size(this.cache().mask()) + 1;
-
-        // set limit
-        this._setLimit(limit);
-
         // update titles
         this._updateTitles();
        
-        // check if end of dataset
-        this._checkEnds();
-
     },
 
     _filterSelectedYears : function (cache) {
         var selectedYears = this.getSelectedYears();
-        console.log('selectedYears', selectedYears);
         var filtered = [];
-        console.log('cache --->', cache);
         cache.forEach(function (c) {
             var item = {
                 date : c.date, 
@@ -1063,27 +1015,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             day : date.dayOfYear()
         }
 
-        // debug
-        // var current = {
-        //     year : 2017,
-        //     day : 300
-        // }
-
-        console.log('current --->', current);
         return current;
-    },
-
-    _setLastDate : function () {
-        if (this._dateSet) return;
-
-        // get end date
-        var date = this.getDatasetsEndDate();
-
-        // set date in graph
-        this._setDate(date.year, date.day);
-
-        // mark
-        this._dateSet = true;
     },
 
     _setTimeFrame : function () {
@@ -1146,113 +1078,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // set date range to graph
         this._composite.x(d3.time.scale().domain([minDate,maxDate]));
 
-        // set slider
-        // this._animator.setSlider(day);
-
         // set cube cursor
         this.cube().setCursor(moment.utc().year(year).dayOfYear(day));
-
-        // set slider
-        // this._animator.setSlider(day);
-
-        // update titles
-        this._updateTitles();
-    },
-
-    onUpdateTimeframe : function (options) {
-        var value = options.value;
-
-        // set day
-        this._current.day = value;
-
-        // update line graph
-        this._updateLineGraph({
-            evented : true
-        });
-
-        // update titles
-        this._updateTitles();
-    },
-
-    setTime : function (time) {
-
-        // ensure proper time
-        if (!time || !_.isObject(time)) return console.error('wrong time');
-
-        // set current time
-        this._current = this._current || {};
-        this._current.day = time.day || this._current.day;
-        this._current.year = time.year || this._current.year;
-
-        // update line graph
-        this._updateLineGraph({
-            evented : true
-        });
-
-        // update titles
-        this._updateTitles();
-    },
-
-    onUpdateTimeframe : function (options) {
-        this.setTime({
-            day : options.day, // value from animator
-            year : options.year
-        });
-    },
-
-    // for yearly movement, currently not in use
-    _onSliderMoveBackward : function (e) {
-
-        // set year
-        this._current.year = this._current.year - 1;
-
-        // update line graph
-        this._updateLineGraph();
-
-        // update titles
-        this._updateTitles();
-    },
-
-    // for yearly movement, currently not in use
-    _onSliderMoveForward : function (e) {
-
-        // set year
-        this._current.year = this._current.year + 1;
-
-        // update line graph
-        this._updateLineGraph();
-
-        // update titles
-        this._updateTitles();
-    },
-
-    _onAnimatorMovePreviousYear : function (e) {
-        var day = e.detail.day;
-
-        // set year
-        this._current.year = this._current.year - 1;
-
-        // set day
-        this._current.day = day;
-
-        // update line graph
-        this._updateLineGraph();
-
-        // update titles
-        this._updateTitles();
-    },
-
-    _onAnimatorMoveNextYear : function (e) {
-        var day = e.detail.day;
-
-        // set year
-        this._current.year = this._current.year + 1;
-
-        // set day
-        this._current.day = day;
-
-        // update line graph
-        this._updateLineGraph();
 
         // update titles
         this._updateTitles();
@@ -1260,20 +1087,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _getTitle : function () {
         return this.options.cube.getTitle();
-    },
-
-    _getDateTitle : function () {
-        // get titles
-        var date = moment.utc().year(this._current.year).dayOfYear(this._current.day);
-        var dateTitle = date.format('Do MMMM, YYYY');
-        var cache = this.cache().mask();
-        var scf = _.find(cache, function (c) {
-            return c.date.isSame(date, 'day');
-        });
-        var scfTitle = scf ? 'SCF: ' + (Math.round(scf.scf * 10) / 10) + '%' : '';
-        // return dateTitle + ' &nbsp;&nbsp;&nbsp;   <span style="font-weight:900">SCF: ' + scfTitle + '</span>';
-
-        return [dateTitle, scfTitle];
     },
 
     getMaskMeta : function () {
@@ -1299,60 +1112,53 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     // new slider event
     _onSliderMovement : function (options) {
-        console.log('_onSliderMovement', options);
-
         this._updateSCFTitle(options);
     },
 
     _updateSCFTitle : function (options) {
-         var title = this._getSCFTitle(options);
+        var title = this._getSCFTitle(options);
+        var datehtml =  '<div class="date-item-scf">' + title.scfTitle + '</div>';
+        datehtml += '<div class="date-item-date">' + title.dateTitle + '</div>';
+        this._dateTitle.innerHTML = datehtml;
     },
 
     _getSCFTitle : function (options) {
-        console.log('_getSCFTitle options', options);
 
-        // get titles
-        var date = moment.utc().year(this._current.year).dayOfYear(this._current.day);
+        // get day of hydrological year
+        var dohy = options.p;
+
+        // get hydrological year
+        var hy = this._getHydrologicalYear().year;
+
+        // get date
+        var date1 = moment.utc().year(hy).date(1).month(8);
+        var date = date1.add(dohy, 'days');
         var dateTitle = date.format('Do MMMM, YYYY');
-        var cache = this.cache().mask();
 
-        console.log('maseL', cache);
+        // get scf
+        var scf = this._getSCFValue(date);
+        var scfTitle = 'SCF ' + scf + ' %';
 
-        var scf = _.find(cache, function (c) {
-            return c.date.isSame(date, 'day');
-        });
+        // return date/scf
+        return {
+            scfTitle : scfTitle, 
+            dateTitle : dateTitle
+        }
+    },
 
-        var scfTitle = scf ? 'SCF: ' + (Math.round(scf.scf * 10) / 10) + '%' : '';
-
-        return [dateTitle, scfTitle];
+    _getSCFValue : function (date) {
+        var doy = date.dayOfYear();
+        var year = date.year();
+        var data = this._parsed[this._mask.id].years;
+        var data2 = data[doy];
+        if (!data2) return false;
+        var scf = data2.scf[year];
+        scf = _.isNumber(scf) ? scf.toFixed(2) : '-';
+        return scf;
     },
 
     _updateTitles : function (options) {
         
-        // clear old
-        // this._maskMeta.innerHTML = '';
-
-        // var meta = this.getMaskMeta();
-
-        // _.forEach(meta, function (value, key, m) {
-            
-        //     // skip title
-        //     if (key == 'title') return;
-
-        //     // skip debugs
-        //     if (key == value) return;
-
-        //     // skip empty entries
-        //     if (_.isEmpty(value)) return;
-
-        //     // create meta div
-        //     var div = M.DomUtil.create('div', 'big-graph-mask-meta-item', this._maskMeta);
-        //     var html = '<span class="mask-item-title">' + _.capitalize(key) + ': </span>';
-        //     html +=  '<span class="mask-item-value">' + _.capitalize(value) + '</span>';
-        //     div.innerHTML = html;
-
-        // }.bind(this))
-
         // layer title
         var layerhtml = '<span class="mask-item-title">' + this.locale().layerPrefix + ': </span>';
         layerhtml +=  '<span class="mask-item-value">' + _.capitalize(this._getTitle()) + '</span>';
@@ -1360,119 +1166,21 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // mask title
         this._maskTitle.innerHTML = this._getMaskTitle();   
-
-        // date        
-        var datetitle = this._getDateTitle();
-        var datehtml =  '<div class="date-item-scf">' + datetitle[1] + '</div>';
-        datehtml += '<div class="date-item-date">' + datetitle[0] + '</div>';
-        this._dateTitle.innerHTML = datehtml;
-
     },
 
     // todo: move query to separate fn (use one above)
     _updateLineGraph : function (options) {
+       
+        // set line graph
+        this._setLineGraph();
 
-        // if data is available, set graph
-        if (this.cache().mask()) return this._setLineGraph();
-
-        // return if already fetching data
-        if (this._fetching) return console.error('already fetching data...');
-
-        // mark fetching (to avoid parallel fetching)
-        this._fetching = true;
-
-        // data not available yet, need to fetch
-        var query_options = {
-            query_type : 'scf-geojson',
-            mask_id : this._mask ? this._mask.id : false, //'mask-gkceetoa', // debug
-            year : this._current.year,   
-            day : this._current.day,
-            options : {
-                currentYearOnly : true,
-                filter_query : false,
-                // force_query : true,
-            },
-        }
-
-        console.log('query_options', query_options);
-
-        // query data from cube
-        this.cube().query(query_options, function (err, query_results) {
-            if (err) return console.error(err, query_results);
-
-            // mark done fetching
-            this._fetching = false;
-
-            // parse
-            var fractions = M.parse(query_results);
-
-            console.log('fractions', fractions);
-
-            // parse dates
-            var cache = this._parseDates(fractions);
-
-            console.log('fractions --> cache', cache);
-
-            if (!cache || !_.isArray(cache) || !_.size(cache)) return;
-
-            // set cache
-            this.cache().mask(cache);
-
-            // set line graph
-            this._setLineGraph();
-
+    },
+  
+    _initCache : function () {
+        var masks = this.options.cube._cube.masks;
+        _.each(masks, function (m) {
+            this._cache.masks[m.id] = m;
         }.bind(this));
-
-    },
-
-    // // get/set cache
-    // cache : function (cache, year) {
-    //     var year = year || this._current.year;
-    //     if (cache) {
-    //         this._cache.masks[this._mask.id] = this._cache.masks[this._mask.id] || {};
-    //         this._cache.masks[this._mask.id][year] = cache;
-    //     } else {     
-    //         if (!this._cache || !this._cache.masks || !this._cache.masks[this._mask.id] || !this._cache.masks[this._mask.id][year]) return false;   
-    //         return this._cache.masks[this._mask.id][year];
-    //     }
-    // },
-
-    // todo: clean up this shiait
-    cache : function () {
-        return {
-            data : function (data) {
-                if (data) {
-                    this._cache.data[this._mask.id] = this._cache.data[this._mask.id] || {};
-                    this._cache.data[this._mask.id] = data;
-                } else {
-                    if (!this._cache || !this._cache.data || !this._cache.data[this._mask.id]) return false;   
-                    return this._cache.data[this._mask.id];
-                }
-            }.bind(this),
-           
-            mask : function (cache, year) {
-                var year = year || this._current.year;
-                if (cache) {
-                    this._cache.masks[this._mask.id] = this._cache.masks[this._mask.id] || {};
-                    this._cache.masks[this._mask.id][year] = cache;
-                } else {     
-                    if (!this._cache || !this._cache.masks || !this._cache.masks[this._mask.id] || !this._cache.masks[this._mask.id][year]) return false;   
-                    return this._cache.masks[this._mask.id][year];
-                }
-            }.bind(this),
-        }
-    },
-
-    _setLimit : function (limit) {
-
-        // set locally
-        this._limit = limit;
-
-        // set limits for slider
-        // this._animator.setSliderLimit({
-        //     limit : limit
-        // });
-
     },
 
     _parseDates : function (cache) {
@@ -1483,34 +1191,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         return cache;
     },
 
-    _checkEnds : function () {
-
-        // get cached line graph data
-        var cache = this.cache().mask();
-
-        // filter out period
-        var today = moment.utc().year(this._current.year).dayOfYear(this._current.day + 1);
-        var period = _.find(cache, function (d) {
-            return d.date.isSame(today, 'day');
-        });
-
-        // shade buttons if end of dataset
-        if (period) {
-
-            // unshade slider buttons
-            this._unshadeButtons();
-
-        } else {
-
-            // shade slider buttons
-            this._shadeButtons();
-        }
-
-        // update titles
-        this._updateTitles();
-
-    },
-
+  
     _shadeButtons : function () {
         M.Mixin.Events.fire('shadeButtons'); // refactor
     },

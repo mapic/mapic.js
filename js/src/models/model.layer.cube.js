@@ -380,7 +380,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // create graph
         this._graph = new M.Graph.SnowCoverFraction({ 
             // data     : this._data.annual,
-            data     : masks[0].data, // todo: create dummy data in graph
+            // data     : masks[0].data, // todo: create dummy data in graph
             // appendTo : this._animator.getContainer(),
             type     : 'annualCycles',
             cube     : this,
@@ -728,9 +728,9 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     },
 
-
-
     _queryCube : function (options, done) {
+
+        console.error('_queryCube', options);
 
         // query server for data
         app.api.queryCube(options, function (err, data) {

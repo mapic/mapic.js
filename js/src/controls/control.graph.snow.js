@@ -26,7 +26,6 @@
 
 // update:
 // https://github.com/mapic/mapic/issues/57
-// 
 
 moment().utc();
 
@@ -35,6 +34,9 @@ moment().utc();
 M.Graph.SnowCoverFraction = M.Graph.extend({
 
     // languages
+    locale : function () {
+        return this.localization[this.localization.lang];
+    }, 
     localization : {
         // lang : 'nor',
         lang : 'eng',
@@ -58,9 +60,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         },
     },
-    locale : function () {
-        return this.localization[this.localization.lang];
-    },
 
     options : {
         fetchLineGraph : false, // debug, until refactored fetching line graph to cube
@@ -69,7 +68,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             avg : true
         },
         colors : [
-
             '#e31a1c', // red
             '#ff7f00', // orange
             '#33a02c', // green
@@ -130,10 +128,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         }
     },  
 
-
     // todo: possible bug with parsing of average data
     // make sure that "parsed()" is adding to unique mask ids above...
-
     parse : function (data, done) {
 
         // check store
@@ -325,7 +321,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 date : moment.utc().year(dummy_year).dayOfYear(doy),        // year doesn't matter, as it's avg for all years
             });                                                             // however: need to add a YEAR/DATE when adding to graph, 
                                                                             // due to graph needing a date to know it should display data
-            
         }.bind(this));
 
         return average;
@@ -392,7 +387,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     _initContainer : function () {
         if (this._container) return;
 
-
         // todo: refactor the DOM, incl. animator
         this._mainContainer          = M.DomUtil.create('div', 'snow-graph-container', app._appPane);
         this._container              = M.DomUtil.create('div', 'big-graph-outer-container',            this._mainContainer);
@@ -412,9 +406,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._maskTitle              = M.DomUtil.create('div', 'big-graph-mask-title',                 this._infoContainer, '');
         this._layerTitle             = M.DomUtil.create('div', 'big-graph-title',                      this._infoContainer, '');
         
-        // mask meta
-        // this._maskMeta               = M.DomUtil.create('div', 'big-graph-mask-meta-container',        this._infoContainer);
-       
         // date text
         this._dateTitle              = M.DomUtil.create('div', 'big-graph-current-day',                this._container, '');
        
@@ -751,8 +742,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         ]
 
-
-        // debug
+        // get dates
         var minDate = this._getHydrologicalYear().minDate;
         var maxDate = this._getHydrologicalYear().maxDate;
 
@@ -831,7 +821,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .style("z-index", "19")
         .style("width", "2px")
         .style("height", "180px")
-        // .style("top", "154px")
         .style("bottom", "34px")
         .style("left", "40px") // starting position
         .style("background", "#db5758");
@@ -844,19 +833,21 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .on("mousemove", function(){  
             if (!app._vl_state) return;
             
+            // get mouse pos
             mousex = d3.mouse(this)[0];
 
             // max/min
             if (mousex < 40) mousex = 40;
             if (mousex > 450) mousex = 450;
 
-            mousex = mousex + 0;
+            // set position of line
             vertical.style("left", mousex + "px" )
 
             // calc day-of-year
             // todo: check if works with all screen sizes, since we're dealing with pixels??
             var p = parseInt(((mousex - 40) / 410) * 364) + 1
 
+            // fire event
             that.fire('sliderMovement', {
                 x : mousex,
                 p : p
@@ -866,19 +857,21 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .on("mouseover", function(){  
             if (!app._vl_state) return;
             
+            // get mouse pos
             mousex = d3.mouse(this)[0];
 
             // max/min
             if (mousex < 40) mousex = 40;
             if (mousex > 450) mousex = 450;
 
-            mousex = mousex + 0;
+            // set position of line
             vertical.style("left", mousex + "px")
 
             // calc day-of-year
             // todo: check if works with all screen sizes, since we're dealing with pixels??
             var p = parseInt(((mousex - 40) / 410) * 364) + 1
 
+            // fire
             that.fire('sliderMovement', {
                 x : mousex,
                 p : p
@@ -892,6 +885,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 vertical.style("width", "2px" )
                 app._vl_state = false;
 
+                // fire
                 that.fire('sliderClick');
 
             } else {
@@ -1085,10 +1079,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._current.day = day || this._current.day;
 
         // set graph dates
-        // var minDate = moment.utc().year(this._current.year).dayOfYear(1);
-        // var maxDate = moment.utc().year(this._current.year + 1).dayOfYear(-1); // last day of year
-
-        // debug
         var minDate = this._getHydrologicalYear().minDate;
         var maxDate = this._getHydrologicalYear().maxDate;
 
@@ -1197,12 +1187,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._maskTitle.innerHTML = this._getMaskTitle();   
     },
 
-    // todo: move query to separate fn (use one above)
     _updateLineGraph : function (options) {
-       
-        // set line graph
         this._setLineGraph();
-
     },
   
     _initCache : function () {
@@ -1219,7 +1205,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         });
         return cache;
     },
-
   
     _shadeButtons : function () {
         M.Mixin.Events.fire('shadeButtons'); // refactor
@@ -1250,6 +1235,4 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     },
 
 });
-
-
 

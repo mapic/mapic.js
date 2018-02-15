@@ -1,68 +1,3 @@
-// PROBLEMS
-// --------
-// queueing of tiles
-//  - a cube can contain hundreds of layers, even thousands
-//  - no way to add all at the same time, so they must be added as we go along
-//  - in terms of animation, this means a queue-ahead of say ten or twenty frames, which must be loaded in the
-//      background while others are showing
-//  - tiles must also be 100% unloaded after showing, so that there's no pile-up of mem-load
-//  - need a system with a cursor, which decides at all times which frames should be preloaded and which should be destroyed
-//  - event-driven (cause need to comm with other modules, like chart, animator-control)
-//  - at init, cursor is at a specific point, and preloading of x tiles begin.
-//  - when playing, cursor position updates, and another frame must be preloaded, and another frame destroyed
-//  - when sliding, or moving cursor position a lot, all frames more than x away from cursor must be destroyed, 
-//      and ten new frames preloaded
-//  - preloading means creating a Leaflet layer and adding it to the map (display:none)
-//  - destroying means removing Leaflet layer from map, and purging all refs, incl. images
-//  - moveCursor(), which controls all of this
-//  - how to id the cursor? how to get correct layer in cube based on id? simplest is order in array, first layer being 0. this 
-//      needs to play well with dates in chart, etc, however. chart can perhaps accept a date, and when slider is moved, it can
-//      emit a slider-moved event, which contains the date. cursor can then be updated by search&replace in cube array for correct date?
-//      just gonna assume this will work, and do the work on graph afterwards.
-//  - findDate(), find index of array corresponding to date.
-//  - dates must be moment.js compatible
-//  - problem of missing days in a raster set... could be solved with a simple check-and-skip i guess
-//  - if cacheSize=3, then this._cache[] will always just contain three frames: 0, 1, 2
-//  - when moving cursor, either when playing frames successively, or when jumping - the cache needs to refresh, taking into account
-//      where the cursor is, and how many more frames should be cached.
-//  - what should be the major count? simply frames/datasets from 0? 
-//  - this._cache could be either 0,1,2 and loop, or 0,1,2,3,4,5->infitiny, and scrapping old one's. loop is very tricky, long array
-//      could be costly? (perhaps not). so this._cache should be just a sequence of cached frames.
-//  - a frame => dataset + layer + dataset-index. this._cache stores frames. frames are ready to be displayed (ie. contains layer)
-//  - a dataset = dataset
-//  - a layer = Leaflet layer, already added to map
-//  
-//  - create all Leaflet layers in cache at init, then re-use the layers
-//
-// websocket loading of tiles
-//  - as an add-on later, in order to request tiles faster
-//  - until then, try to separate request logic as much as possible, so that M.CubeLayer.Websockets can easily override M.CubeLayer
-
-
-
-// todo: CubeLayer.SCF
-//       CubeLayer.Deformation
-
-
-// REFACTOR - todo
-// ========
-// 
-// Refactoring of Cube layer, Animator and Graph
-// 
-// - Should all be separated as much as possible, and work independently
-// - Cube layer should only contain datasets and layer logic
-// - In terms of showing layers in cube, the animator is needed (kinda always)
-// - Both there should be possible to have different plugins to control the content of the cube layer
-// - Thus Animator should be a separate plugin altogether
-// - Animator should control Cube layers, decide which layers are shown on map, etc.
-// - Animator should work without Graph plugin
-// - Graph plugin should be able to listen to Animator and know which datasets are active (for its cursor)
-// - Graph plugin should work without Animator .... 
-// - Events should control everything, obviously
-// - Cube layer should be oblivious to everything, except which dataset to display
-// - Masks belong to Cube layer
-
-
 // metalayer with several postgis raster layers 
 M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
@@ -682,8 +617,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         
         // add cube id
         options.cube_id = this.getCubeId();
-
-        console.log('cube query:', options);
 
         // query cube
         app.api.queryCube(options, done);

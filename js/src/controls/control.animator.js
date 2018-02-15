@@ -1,483 +1,483 @@
-// slider events
-// 
-// - `set` event is fired AFTER slide is done, 
-// - `update` event is fired for any change/action
-// - `slide` is fired while sliding
-//
-// - currently, CUBE layer is updated on `set`
-//   and GRAPH is updated on `update` 
+// // slider events
+// // 
+// // - `set` event is fired AFTER slide is done, 
+// // - `update` event is fired for any change/action
+// // - `slide` is fired while sliding
+// //
+// // - currently, CUBE layer is updated on `set`
+// //   and GRAPH is updated on `update` 
 
-M.Graph.Animator = M.Evented.extend({
+// M.Graph.Animator = M.Evented.extend({
 
-    options : {
+//     options : {
 
-        // Animation frames per second
-        fps : 2,
+//         // Animation frames per second
+//         fps : 2,
 
-        // Max value for steps on slider
-        maxLength : 365,
+//         // Max value for steps on slider
+//         maxLength : 365,
 
-        // Defines what kind of graph we want
-        graphType : 'annualCycles',
+//         // Defines what kind of graph we want
+//         graphType : 'annualCycles',
 
-        // how often to register updates when sliding
-        sliderThrottle : 500,
+//         // how often to register updates when sliding
+//         sliderThrottle : 500,
 
-        // active buttons
-        buttons : {
-            play : false,
-            yearly : false,
-            daily : true
-        }
-    },
+//         // active buttons
+//         buttons : {
+//             play : false,
+//             yearly : false,
+//             daily : true
+//         }
+//     },
 
-    _initialize : function (options) {
+//     _initialize : function (options) {
 
-        // set layer
-        this._layer = this.options.layer;
+//         // set layer
+//         this._layer = this.options.layer;
 
-        // create slider
-        this._createSlider();
+//         // create slider
+//         this._createSlider();
 
-        // add hooks
-        this.listen();       
+//         // add hooks
+//         this.listen();       
 
-        // mark inited
-        this._inited = true;
+//         // mark inited
+//         this._inited = true;
 
-    },
+//     },
 
 
-    listen : function (onoff) {
-        var onoff = onoff || 'on';
+//     listen : function (onoff) {
+//         var onoff = onoff || 'on';
 
-        // dom events
-        M.DomEvent[onoff](this._fastBackBtn,       'click', this._moveFastBack, this);
-        M.DomEvent[onoff](this._backBtn,           'click', this._moveBack, this);
-        M.DomEvent[onoff](this._fastForwardBtn,    'click', this._moveFastForward, this);
-        M.DomEvent[onoff](this._forwardBtn,        'click', this._moveForward, this);
-        M.DomEvent[onoff](this._playBtn,           'click', this.play, this);
+//         // dom events
+//         M.DomEvent[onoff](this._fastBackBtn,       'click', this._moveFastBack, this);
+//         M.DomEvent[onoff](this._backBtn,           'click', this._moveBack, this);
+//         M.DomEvent[onoff](this._fastForwardBtn,    'click', this._moveFastForward, this);
+//         M.DomEvent[onoff](this._forwardBtn,        'click', this._moveForward, this);
+//         M.DomEvent[onoff](this._playBtn,           'click', this.play, this);
 
-        // slider events
-        this.slider[onoff]('update', this._sliderUpdateEvent.bind(this));
-        this.slider[onoff]('set', this._sliderSetEvent.bind(this));
-        this.slider[onoff]('slide', this._onSlide.bind(this));
+//         // slider events
+//         this.slider[onoff]('update', this._sliderUpdateEvent.bind(this));
+//         this.slider[onoff]('set', this._sliderSetEvent.bind(this));
+//         this.slider[onoff]('slide', this._onSlide.bind(this));
 
-        // listen for events
-        M.Mixin.Events[onoff]('setSlider', this.setSlider, this);
-        M.Mixin.Events[onoff]('updateSliderButtons', this.updateButtons, this);
-        M.Mixin.Events[onoff]('setSliderRange', this._onSetSliderRange, this);
-        M.Mixin.Events[onoff]('unsetSliderRange', this._onUnsetSliderRange, this);
-        M.Mixin.Events[onoff]('shadeButtons', this._onShadeButtons, this);
-        M.Mixin.Events[onoff]('unshadeButtons', this._onUnshadeButtons, this);
-        M.Mixin.Events[onoff]('cubeCacheNoLayer', this._onCubeCacheNoLayer, this);
+//         // listen for events
+//         M.Mixin.Events[onoff]('setSlider', this.setSlider, this);
+//         M.Mixin.Events[onoff]('updateSliderButtons', this.updateButtons, this);
+//         M.Mixin.Events[onoff]('setSliderRange', this._onSetSliderRange, this);
+//         M.Mixin.Events[onoff]('unsetSliderRange', this._onUnsetSliderRange, this);
+//         M.Mixin.Events[onoff]('shadeButtons', this._onShadeButtons, this);
+//         M.Mixin.Events[onoff]('unshadeButtons', this._onUnshadeButtons, this);
+//         M.Mixin.Events[onoff]('cubeCacheNoLayer', this._onCubeCacheNoLayer, this);
         
-        // M.Mixin.Events[onoff]('hideAnimator', this._onHideAnimator, this);
-        // M.Mixin.Events[onoff]('showAnimator', this._onShowAnimator, this);
+//         // M.Mixin.Events[onoff]('hideAnimator', this._onHideAnimator, this);
+//         // M.Mixin.Events[onoff]('showAnimator', this._onShowAnimator, this);
 
-        this._layer.on('enabled', this._layerEnabled.bind(this));
-        this._layer.on('disabled', this._layerDisabled.bind(this));
-    },
+//         this._layer.on('enabled', this._layerEnabled.bind(this));
+//         this._layer.on('disabled', this._layerDisabled.bind(this));
+//     },
 
-    getContainer : function () {
-        return this.sliderOuterContainer;
-    },
+//     getContainer : function () {
+//         return this.sliderOuterContainer;
+//     },
 
-    // set fps
-    setFPS : function (fps) {
+//     // set fps
+//     setFPS : function (fps) {
 
-        // set locally
-        this.options.fps = fps;
+//         // set locally
+//         this.options.fps = fps;
 
-        // propagate
-        M.Mixin.Events.fire('setFPS', {detail : {
-            fps : fps
-        }});
-    },  
+//         // propagate
+//         M.Mixin.Events.fire('setFPS', {detail : {
+//             fps : fps
+//         }});
+//     },  
 
-    _createSlider : function () {
+//     _createSlider : function () {
 
-        // create divs
-        this.sliderOuterContainer       = M.DomUtil.create('div', 'big-slider-outer-container', app._appPane);
-        this.sliderInnerContainer       = M.DomUtil.create('div', 'big-slider-inner-container', this.sliderOuterContainer);
-        var slider                      = M.DomUtil.create('div', 'big-slider', this.sliderInnerContainer);
-        this.sliderButtonsContainer     = M.DomUtil.create('div', 'big-slider-button-container', this.sliderInnerContainer);
-        this.tickContainer              = M.DomUtil.create('div', 'big-slider-tick-container', this.sliderInnerContainer);
+//         // create divs
+//         this.sliderOuterContainer       = M.DomUtil.create('div', 'big-slider-outer-container', app._appPane);
+//         this.sliderInnerContainer       = M.DomUtil.create('div', 'big-slider-inner-container', this.sliderOuterContainer);
+//         var slider                      = M.DomUtil.create('div', 'big-slider', this.sliderInnerContainer);
+//         this.sliderButtonsContainer     = M.DomUtil.create('div', 'big-slider-button-container', this.sliderInnerContainer);
+//         this.tickContainer              = M.DomUtil.create('div', 'big-slider-tick-container', this.sliderInnerContainer);
 
-        // animator buttons
-        this._fastBackBtn               = M.DomUtil.create('div', 'big-slider-step-backward', this.sliderButtonsContainer, '<i class="fa fa-fast-backward"></i>');
-        this._backBtn                   = M.DomUtil.create('div', 'big-slider-tap-backward', this.sliderButtonsContainer, '<i class="fa fa-step-backward"></i>');
-        this._forwardBtn                = M.DomUtil.create('div', 'big-slider-tap-forward', this.sliderButtonsContainer, '<i class="fa fa-step-forward"></i>');
-        this._fastForwardBtn            = M.DomUtil.create('div', 'big-slider-step-forward', this.sliderButtonsContainer, '<i class="fa fa-fast-forward"></i>');
-        this._playBtn                   = M.DomUtil.create('div', 'big-slider-play-button', this.sliderButtonsContainer, '<i class="fa fa-play"></i>');        
+//         // animator buttons
+//         this._fastBackBtn               = M.DomUtil.create('div', 'big-slider-step-backward', this.sliderButtonsContainer, '<i class="fa fa-fast-backward"></i>');
+//         this._backBtn                   = M.DomUtil.create('div', 'big-slider-tap-backward', this.sliderButtonsContainer, '<i class="fa fa-step-backward"></i>');
+//         this._forwardBtn                = M.DomUtil.create('div', 'big-slider-tap-forward', this.sliderButtonsContainer, '<i class="fa fa-step-forward"></i>');
+//         this._fastForwardBtn            = M.DomUtil.create('div', 'big-slider-step-forward', this.sliderButtonsContainer, '<i class="fa fa-fast-forward"></i>');
+//         this._playBtn                   = M.DomUtil.create('div', 'big-slider-play-button', this.sliderButtonsContainer, '<i class="fa fa-play"></i>');        
 
-        // Set number of slider steps
-        // var dataLength = (_.size(this._data) > this.options.maxLength) ? this.options.maxLength : _.size(this._data);
+//         // Set number of slider steps
+//         // var dataLength = (_.size(this._data) > this.options.maxLength) ? this.options.maxLength : _.size(this._data);
 
-        // set slider options
-        this._defaultSliderOptions = {
-            start: [this._sliderValue],
-            range: {
-                'min': 1,
-                'max': this.options.maxLength
-            },
-            step : 1,
-            connect : 'lower' // different color on left side of slider
-        }
+//         // set slider options
+//         this._defaultSliderOptions = {
+//             start: [this._sliderValue],
+//             range: {
+//                 'min': 1,
+//                 'max': this.options.maxLength
+//             },
+//             step : 1,
+//             connect : 'lower' // different color on left side of slider
+//         }
 
-        // create slider
-        this.slider = noUiSlider.create(slider, this._defaultSliderOptions);
+//         // create slider
+//         this.slider = noUiSlider.create(slider, this._defaultSliderOptions);
 
-        // hide by default if option set
-        if (this.options.hide) this.hide();
+//         // hide by default if option set
+//         if (this.options.hide) this.hide();
 
-        // hide/show buttons according to options
-        this._displayButtons();
+//         // hide/show buttons according to options
+//         this._displayButtons();
 
-    },
+//     },
 
-    addExtraPane : function () {
-        M.DomUtil.addClass(this.sliderInnerContainer, 'bottom-right-border-radius-only');
-    },
-    removeExtraPane : function () {
-        M.DomUtil.removeClass(this.sliderInnerContainer, 'bottom-right-border-radius-only');
-    },
+//     addExtraPane : function () {
+//         M.DomUtil.addClass(this.sliderInnerContainer, 'bottom-right-border-radius-only');
+//     },
+//     removeExtraPane : function () {
+//         M.DomUtil.removeClass(this.sliderInnerContainer, 'bottom-right-border-radius-only');
+//     },
 
-    remove : function () {
-        // this._addHooks('off');
-        // M.DomUtil.remove(this.sliderOuterContainer);
-    },  
+//     remove : function () {
+//         // this._addHooks('off');
+//         // M.DomUtil.remove(this.sliderOuterContainer);
+//     },  
 
-    _onCubeCacheNoLayer : function (e) {
-        var cube = e.detail.cube;
+//     _onCubeCacheNoLayer : function (e) {
+//         var cube = e.detail.cube;
 
-        // debug: move one step forward
-        this._moveForward();
-    },
+//         // debug: move one step forward
+//         this._moveForward();
+//     },
 
-    _onSlide : function (values) {
-        console.error('_onSlide', values);
-        var value = parseInt(values[0]);
-        var limit = this.getSliderLimit();
+//     _onSlide : function (values) {
+//         console.error('_onSlide', values);
+//         var value = parseInt(values[0]);
+//         var limit = this.getSliderLimit();
 
-        // force limit
-        if (value > limit) {
+//         // force limit
+//         if (value > limit) {
 
-            // force limit on slider
-            this.slider.set(limit);
+//             // force limit on slider
+//             this.slider.set(limit);
 
-            // shade buttons
-            this._onShadeButtons();
-        }
-    },
+//             // shade buttons
+//             this._onShadeButtons();
+//         }
+//     },
 
-    setSliderLimit : function (limit) {
-        this._limit = limit.limit;
-    },
+//     setSliderLimit : function (limit) {
+//         this._limit = limit.limit;
+//     },
 
-    getSliderLimit : function () {
-        return this._limit;
-    },  
+//     getSliderLimit : function () {
+//         return this._limit;
+//     },  
 
-    _displayButtons : function () {
-        // display buttons based on options
-        this._playBtn.style.display   = this.options.buttons.play   ? 'inline-block' : 'none';
-        this._fastBackBtn.style.display = this.options.buttons.yearly ? 'inline-block' : 'none';
-        this._fastForwardBtn.style.display  = this.options.buttons.yearly ? 'inline-block' : 'none';
-        this._forwardBtn.style.display   = this.options.buttons.daily  ? 'inline-block' : 'none';
-        this._backBtn.style.display  = this.options.buttons.daily  ? 'inline-block' : 'none';
-    },
+//     _displayButtons : function () {
+//         // display buttons based on options
+//         this._playBtn.style.display   = this.options.buttons.play   ? 'inline-block' : 'none';
+//         this._fastBackBtn.style.display = this.options.buttons.yearly ? 'inline-block' : 'none';
+//         this._fastForwardBtn.style.display  = this.options.buttons.yearly ? 'inline-block' : 'none';
+//         this._forwardBtn.style.display   = this.options.buttons.daily  ? 'inline-block' : 'none';
+//         this._backBtn.style.display  = this.options.buttons.daily  ? 'inline-block' : 'none';
+//     },
 
-    _onShadeButtons : function () {
+//     _onShadeButtons : function () {
        
-        // shade forward button
-        this._forwardBtn.style.color = 'rgb(81, 92, 111)';
+//         // shade forward button
+//         this._forwardBtn.style.color = 'rgb(81, 92, 111)';
 
-        // remove event
-        M.DomEvent.off(this._forwardBtn,  'click', this._moveForward, this);
+//         // remove event
+//         M.DomEvent.off(this._forwardBtn,  'click', this._moveForward, this);
 
-        // shade slider handle
-        this._getSliderHandle().style.background = 'rgb(82, 93, 111)';
-        this._getSliderTail().style.background = 'rgb(82, 93, 111)';
-    },
+//         // shade slider handle
+//         this._getSliderHandle().style.background = 'rgb(82, 93, 111)';
+//         this._getSliderTail().style.background = 'rgb(82, 93, 111)';
+//     },
 
-    _onUnshadeButtons : function () {
+//     _onUnshadeButtons : function () {
        
-        // shade forward button
-        this._forwardBtn.style.color = '#FCFCFC';
+//         // shade forward button
+//         this._forwardBtn.style.color = '#FCFCFC';
 
-        // reactivate event
-        M.DomEvent.on(this._forwardBtn,  'click', this._moveForward, this);
+//         // reactivate event
+//         M.DomEvent.on(this._forwardBtn,  'click', this._moveForward, this);
 
-        // shade slider handle
-        this._getSliderHandle().style.background = '#ECEDEF';
-        this._getSliderTail().style.background = '#ECEDEF';
-    },
+//         // shade slider handle
+//         this._getSliderHandle().style.background = '#ECEDEF';
+//         this._getSliderTail().style.background = '#ECEDEF';
+//     },
 
-    _getSliderHandle : function () {
-        var handle = this.slider.target.childNodes[0].childNodes[0].childNodes[0];
-        return handle;
-    },
+//     _getSliderHandle : function () {
+//         var handle = this.slider.target.childNodes[0].childNodes[0].childNodes[0];
+//         return handle;
+//     },
 
-    _getSliderTail : function () {
-        var handle = this.slider.target.childNodes[0].childNodes[0];
-        return handle;
-    },
+//     _getSliderTail : function () {
+//         var handle = this.slider.target.childNodes[0].childNodes[0];
+//         return handle;
+//     },
 
-    _onSetSliderRange : function (e) {
-        var range = e.detail.range;
+//     _onSetSliderRange : function (e) {
+//         var range = e.detail.range;
 
-        // update range option
-        this.setSliderOptions({
-            range : range
-        }, true);
-    },
+//         // update range option
+//         this.setSliderOptions({
+//             range : range
+//         }, true);
+//     },
 
-    _onUnsetSliderRange : function () {
-        // set default slider options
-        this.setSliderOptions(this._defaultSliderOptions, true);
-    },
+//     _onUnsetSliderRange : function () {
+//         // set default slider options
+//         this.setSliderOptions(this._defaultSliderOptions, true);
+//     },
 
-    setSliderOptions : function (options, dontInvalidate) {
-        // set slider options
-        this.slider.updateOptions(options, dontInvalidate);
-    },
+//     setSliderOptions : function (options, dontInvalidate) {
+//         // set slider options
+//         this.slider.updateOptions(options, dontInvalidate);
+//     },
 
-    // @ only update graph
-    // event that runs when sliding (ie. a lot!)
-    // see http://refreshless.com/nouislider/events-callbacks/
-    _sliderUpdateEvent : function (value) {
-        if (!this._inited) return;
+//     // @ only update graph
+//     // event that runs when sliding (ie. a lot!)
+//     // see http://refreshless.com/nouislider/events-callbacks/
+//     _sliderUpdateEvent : function (value) {
+//         if (!this._inited) return;
 
-        // set slider value
-        this._sliderValue = value ? Math.round(value) : 0;
+//         // set slider value
+//         this._sliderValue = value ? Math.round(value) : 0;
 
-        // fire update
-        this.fire('update', {
-            day : this._sliderValue
-        });
-    },
+//         // fire update
+//         this.fire('update', {
+//             day : this._sliderValue
+//         });
+//     },
 
-    // @ event: update layers
-    // event that runs when new value is set (either after slide, or with .set())
-    _sliderSetEvent : function (value, handle, unencoded, tap) {
-        if (!this._inited) return;
+//     // @ event: update layers
+//     // event that runs when new value is set (either after slide, or with .set())
+//     _sliderSetEvent : function (value, handle, unencoded, tap) {
+//         if (!this._inited) return;
 
-        // set slider value
-        this._sliderValue = value ? Math.round(value) : 0;
+//         // set slider value
+//         this._sliderValue = value ? Math.round(value) : 0;
 
-        // get current date
-        var timestamp = this._getCurrentDate();
+//         // get current date
+//         var timestamp = this._getCurrentDate();
 
-        // add delay if tap (to )
-        setTimeout(function () {
+//         // add delay if tap (to )
+//         setTimeout(function () {
 
-            // fire slider set event
-            M.Mixin.Events.fire('sliderSet', { detail : {
-                value : this._sliderValue,
-                timestamp : timestamp
-            }});
+//             // fire slider set event
+//             M.Mixin.Events.fire('sliderSet', { detail : {
+//                 value : this._sliderValue,
+//                 timestamp : timestamp
+//             }});
 
-        }.bind(this), tap ? 300 : 0);
+//         }.bind(this), tap ? 300 : 0);
        
-    },
+//     },
 
-    // todo: slider should know which date it is without asking graph
-    _getCurrentDate : function () {
-        var date = this._graph.getCurrentDate(this._sliderValue);
-        return date;
-    },
+//     // todo: slider should know which date it is without asking graph
+//     _getCurrentDate : function () {
+//         var date = this._graph.getCurrentDate(this._sliderValue);
+//         return date;
+//     },
 
-    plugGraph : function (graph) {
-        this._graph = graph;
-    },
+//     plugGraph : function (graph) {
+//         this._graph = graph;
+//     },
 
-    // Enable layer
-    _layerEnabled : function (e) {
+//     // Enable layer
+//     _layerEnabled : function (e) {
 
-        // get layer
-        var layer = e.layer || e.detail.layer;
+//         // get layer
+//         var layer = e.layer || e.detail.layer;
 
-        // only support cube layer. todo: destroy animator (ie. so not listening to events) when not active
-        if (!layer.isCube()) return;
+//         // only support cube layer. todo: destroy animator (ie. so not listening to events) when not active
+//         if (!layer.isCube()) return;
 
-        // set current layer
-        this._currentLayer = layer;
+//         // set current layer
+//         this._currentLayer = layer;
 
-        // set title 
-        this.setTitle(layer.getTitle());
+//         // set title 
+//         this.setTitle(layer.getTitle());
 
-        // show
-        this.show();
-    },
+//         // show
+//         this.show();
+//     },
 
-    // Disable layer
-    _layerDisabled : function (e) {
-        this.hide();
-    },
+//     // Disable layer
+//     _layerDisabled : function (e) {
+//         this.hide();
+//     },
 
-    // Set slider value
-    setSlider : function (e) {
+//     // Set slider value
+//     setSlider : function (e) {
 
-        // get value
-        var value = (e && e.detail) ? e.detail.value : e;
+//         // get value
+//         var value = (e && e.detail) ? e.detail.value : e;
 
-        // set value
-        this._sliderValue = value;
+//         // set value
+//         this._sliderValue = value;
 
-        // set slider
-        this.slider.set(this._sliderValue);
-    },
+//         // set slider
+//         this.slider.set(this._sliderValue);
+//     },
 
-    updateButtons : function (e) {
+//     updateButtons : function (e) {
 
-        var disableForward  = e.detail.diableForward;
-        var disableBackward = e.detail.diableBackward
+//         var disableForward  = e.detail.diableForward;
+//         var disableBackward = e.detail.diableBackward
 
-        if (disableForward) { 
-            M.DomUtil.addClass(this._fastForwardBtn, 'disable-button');
-        } else { 
-            M.DomUtil.removeClass(this._fastForwardBtn, 'disable-button'); 
-        }
+//         if (disableForward) { 
+//             M.DomUtil.addClass(this._fastForwardBtn, 'disable-button');
+//         } else { 
+//             M.DomUtil.removeClass(this._fastForwardBtn, 'disable-button'); 
+//         }
 
-        if (disableBackward) { 
-            M.DomUtil.addClass(this._fastBackBtn, 'disable-button');
-        } else { 
-            M.DomUtil.removeClass(this._fastBackBtn, 'disable-button'); 
-        }
-    },
+//         if (disableBackward) { 
+//             M.DomUtil.addClass(this._fastBackBtn, 'disable-button');
+//         } else { 
+//             M.DomUtil.removeClass(this._fastBackBtn, 'disable-button'); 
+//         }
+//     },
 
-    // Set title
-    setTitle : function (title) {
+//     // Set title
+//     setTitle : function (title) {
 
-        // return if no layer
-        if (!this._currentLayer) return;
+//         // return if no layer
+//         if (!this._currentLayer) return;
 
-        // fire event
-        M.Mixin.Events.fire('setSliderTitle', {detail : {
-            title : title
-        }});
-    },
+//         // fire event
+//         M.Mixin.Events.fire('setSliderTitle', {detail : {
+//             title : title
+//         }});
+//     },
 
-    // These are the actions for the play, pause, step forward and backward buttons
-    play : function () {        
-        this.playing ? this.stopPlaying() : this.startPlaying();
-    },
+//     // These are the actions for the play, pause, step forward and backward buttons
+//     play : function () {        
+//         this.playing ? this.stopPlaying() : this.startPlaying();
+//     },
 
-    startPlaying : function () {
+//     startPlaying : function () {
 
-        // set pause icon
-        this._playBtn.innerHTML = '<i class="fa fa-pause"></i>';
+//         // set pause icon
+//         this._playBtn.innerHTML = '<i class="fa fa-pause"></i>';
 
-        // mark as playing
-        this.playing = true;
+//         // mark as playing
+//         this.playing = true;
 
-        // move frame @ fps
-        this.playInterval = setInterval(function() {
+//         // move frame @ fps
+//         this.playInterval = setInterval(function() {
 
-            // check if last day of year
-            if (this._sliderValue == 365) {     // todo: move to next year...?
+//             // check if last day of year
+//             if (this._sliderValue == 365) {     // todo: move to next year...?
 
-                // stop playing
-                return clearInterval(this.playInterval);
+//                 // stop playing
+//                 return clearInterval(this.playInterval);
 
-            } else {                
+//             } else {                
 
-                // move cursor forward
-                this._moveForward();
-            }           
+//                 // move cursor forward
+//                 this._moveForward();
+//             }           
 
-        }.bind(this), (1000/this.options.fps)) 
+//         }.bind(this), (1000/this.options.fps)) 
 
-        // fire animation play
-        M.Mixin.Events.fire('animationPlay');
-    },
+//         // fire animation play
+//         M.Mixin.Events.fire('animationPlay');
+//     },
 
-    stopPlaying : function () {
+//     stopPlaying : function () {
 
-        // set play icon
-        this._playBtn.innerHTML = '<i class="fa fa-play"></i>';
+//         // set play icon
+//         this._playBtn.innerHTML = '<i class="fa fa-play"></i>';
 
-        // stop playing
-        clearInterval(this.playInterval);
-        this.playing = false;
+//         // stop playing
+//         clearInterval(this.playInterval);
+//         this.playing = false;
 
-        // fire animation stop
-        M.Mixin.Events.fire('animationStop');
-    },
+//         // fire animation stop
+//         M.Mixin.Events.fire('animationStop');
+//     },
 
-    _moveForward : function () {      
-        var value = this._sliderValue + 1;
+//     _moveForward : function () {      
+//         var value = this._sliderValue + 1;
 
-        if ( value > this.options.maxLength ) {
-            // debug: just return
-            return;
+//         if ( value > this.options.maxLength ) {
+//             // debug: just return
+//             return;
             
-            value = 1;
-            this._moveNextYear(value)
-        }
+//             value = 1;
+//             this._moveNextYear(value)
+//         }
 
-        // set slider value
-        this.slider.set(value);
-    },
+//         // set slider value
+//         this.slider.set(value);
+//     },
 
-    _moveBack : function () {
-        var value = this._sliderValue - 1;
+//     _moveBack : function () {
+//         var value = this._sliderValue - 1;
         
-        if (value <= 0) {
+//         if (value <= 0) {
 
-            // debug: just return
-            return;
+//             // debug: just return
+//             return;
 
-            // set value
-            value = this.options.maxLength;
-            this._movePreviousYear(value);
-        }
+//             // set value
+//             value = this.options.maxLength;
+//             this._movePreviousYear(value);
+//         }
 
-        this.slider.set(value);
-    },
+//         this.slider.set(value);
+//     },
 
-    _movePreviousYear : function (day) {
-        M.Mixin.Events.fire('animatorMovePreviousYear', {detail : {
-            day : day
-        }});
-    },
+//     _movePreviousYear : function (day) {
+//         M.Mixin.Events.fire('animatorMovePreviousYear', {detail : {
+//             day : day
+//         }});
+//     },
 
-    _moveNextYear : function (day) {
-        M.Mixin.Events.fire('animatorMoveNextYear', {detail : {
-            day : day
-        }});
-    },    
+//     _moveNextYear : function (day) {
+//         M.Mixin.Events.fire('animatorMoveNextYear', {detail : {
+//             day : day
+//         }});
+//     },    
 
-    _moveFastBack : function () {
-        M.Mixin.Events.fire('sliderMoveBackward');
-    },
+//     _moveFastBack : function () {
+//         M.Mixin.Events.fire('sliderMoveBackward');
+//     },
 
-    _moveFastForward : function () {
-        M.Mixin.Events.fire('sliderMoveForward');
-    },  
+//     _moveFastForward : function () {
+//         M.Mixin.Events.fire('sliderMoveForward');
+//     },  
 
-    // Update message box, if it exists before
-    update : function (message, severity) {},
-
-
-    hide : function () {
-        this.sliderOuterContainer.style.display = 'none';
-    },
-
-    show : function () {
-        if (!this._inited) return;
-        this.sliderOuterContainer.style.display = 'block';
-    },  
-
-    _onHideAnimator : function () {
-        this.hide();
-    },
-
-    _onShowAnimator : function () {
-        this.show();
-    },
+//     // Update message box, if it exists before
+//     update : function (message, severity) {},
 
 
-});
+//     hide : function () {
+//         this.sliderOuterContainer.style.display = 'none';
+//     },
+
+//     show : function () {
+//         if (!this._inited) return;
+//         this.sliderOuterContainer.style.display = 'block';
+//     },  
+
+//     _onHideAnimator : function () {
+//         this.hide();
+//     },
+
+//     _onShowAnimator : function () {
+//         this.show();
+//     },
+
+
+// });
 

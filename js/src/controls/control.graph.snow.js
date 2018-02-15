@@ -107,6 +107,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // events
         this.on('sliderMovement', this._onSliderMovement);
+        this.on('sliderClick', this._onSliderClick);
         this.options.cube.on('enabled', this._onLayerEnabled.bind(this));
         this.options.cube.on('disabled', this._onLayerDisabled.bind(this));
 
@@ -121,12 +122,17 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     // get/set parsed based on mask.id
     parsed : function (parsed) {
+        console.error('parsed()', parsed, this._mask.id);
         if (parsed) {
             this._parsed[this._mask.id] = parsed;
         } else {
             return this._parsed[this._mask.id];
         }
     },  
+
+
+    // todo: possible bug with parsing of average data
+    // make sure that "parsed()" is adding to unique mask ids above...
 
     parse : function (data, done) {
 
@@ -306,7 +312,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             });
             var avg = sum/today.length;
          
-
             // sept - aug year
             var dummy_year = this._current.year ;
             if (n > 243) dummy_year = this._current.year - 1;
@@ -363,6 +368,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // set current mask
         this._mask = mask;
+
+        console.log('setMask ... mask', mask);
 
         // set data
         this.setData(mask.data, function (err) {
@@ -746,7 +753,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
 
         // debug
-        // console.log('minDate, maxDate', minDate, maxDate);
         var minDate = this._getHydrologicalYear().minDate;
         var maxDate = this._getHydrologicalYear().maxDate;
 
@@ -885,6 +891,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 // turn OFF
                 vertical.style("width", "2px" )
                 app._vl_state = false;
+
+                that.fire('sliderClick');
+
             } else {
                 // turn ON
                 vertical.style("width", "1px" )
@@ -893,6 +902,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 // set to mousepointer on click
                 mousex = d3.mouse(this)[0] + 0;
                 vertical.style("left", mousex + "px")
+
             }
         });
 
@@ -914,7 +924,14 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     // eg. when clicking on slider
     // this needs to happen, because we only want to show data
     _setLineGraph : function (options) {
+        console.error('##########  _setLineGraph');
+        console.log('this._parsed', this._parsed);
+        console.log('this._mask', this._mask);
+        console.log('this._mask.id', this._mask.id);
+        console.log('parsed_cache', this._parsed[this._mask.id]);
+        console.log('---')
         if (!this._graphInited) return;
+
 
         // Clear old data
         this.ndx.line_crossfilter.remove();
@@ -1068,12 +1085,12 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._current.day = day || this._current.day;
 
         // set graph dates
-        var minDate = moment.utc().year(this._current.year).dayOfYear(1);
-        var maxDate = moment.utc().year(this._current.year + 1).dayOfYear(-1); // last day of year
+        // var minDate = moment.utc().year(this._current.year).dayOfYear(1);
+        // var maxDate = moment.utc().year(this._current.year + 1).dayOfYear(-1); // last day of year
 
         // debug
-        var minDate = moment("01-09-2017", "DD-MM-YYYY");
-        var maxDate = moment("31-08-2018", "DD-MM-YYYY");
+        var minDate = this._getHydrologicalYear().minDate;
+        var maxDate = this._getHydrologicalYear().maxDate;
 
         // set date range to graph
         this._composite.x(d3.time.scale().domain([minDate,maxDate]));
@@ -1112,7 +1129,13 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     // new slider event
     _onSliderMovement : function (options) {
+        this._p = options.p;
         this._updateSCFTitle(options);
+    },
+
+    _onSliderClick : function (options) {
+        var date = this._getSliderDate(this._p);
+        this.cube().setCursor(date);
     },
 
     _updateSCFTitle : function (options) {
@@ -1122,10 +1145,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._dateTitle.innerHTML = datehtml;
     },
 
-    _getSCFTitle : function (options) {
-
+    _getSliderDate : function (p) {
         // get day of hydrological year
-        var dohy = options.p;
+        var dohy = p;
 
         // get hydrological year
         var hy = this._getHydrologicalYear().year;
@@ -1133,6 +1155,13 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // get date
         var date1 = moment.utc().year(hy).date(1).month(8);
         var date = date1.add(dohy, 'days');
+        return date;
+    },
+
+    _getSCFTitle : function (options) {
+
+        // get date on slider
+        var date = this._getSliderDate(options.p);
         var dateTitle = date.format('Do MMMM, YYYY');
 
         // get scf

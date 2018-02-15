@@ -91,38 +91,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // default mask style 
         mask : {
             
-            // defaultStyle : {
-            //     fillColor : '#d35658',
-            //     fillOpacity : 0,
-            //     color : '#d35658',
-            //     opacity : 0.4,
-            //     weight : 2,
-            // },
-
-            // hoverStyle : {
-            //     fillColor : '#d35658',
-            //     fillOpacity : 0.2,
-            //     color : '#d35658',
-            //     opacity : 0.9,
-            //     weight : 2,
-            // },
-
-            // selectedStyle : {
-            //     fillColor : 'black',
-            //     fillOpacity : 0,
-            //     color : 'red',
-            //     opacity : 0.9,
-            //     weight : 2,
-            // },
-
-            // selectedHoverStyle : {
-            //     fillColor : 'black',
-            //     fillOpacity : 0,
-            //     color : 'red',
-            //     opacity : 0.9,
-            //     weight : 2,
-            // },
-
             defaultStyle : {
                 fillColor : '#d35658',
                 fillOpacity : 0,
@@ -191,7 +159,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     add : function (type) {
         this.addTo();
-        console.log('CUBE Add', this);
     },
 
     addTo : function () {
@@ -229,7 +196,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
                 // add mask layer
                 this._maskLayers.forEach(function (maskLayer) {
-                    console.log('maskLayer', maskLayer);
                     maskLayer.add();
                 });
             }
@@ -256,11 +222,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     remove : function (map) {
         var map = map || app._map;
-
-        // remove leaflet layer group from map
-        console.log('this._group', this._group);
-        
-        console.error('remove!!');
 
         // this._group.removeFrom(map);
         this._group && this._group.remove();
@@ -311,25 +272,19 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     // fired when layer is added to map
     initLayer : function (done) {
 
-        // console.log('initLayer 1');
-
         if (this._inited) {
             done && done();
             return;
         }
-        // console.log('initLayer 2');
 
         // listen up
         this._listen();
-        // console.log('initLayer 3');
 
         // init cursor
         this._initCursor();
-        // console.log('initLayer 4');
 
         // init cache
         this._initCache();
-        // console.log('initLayer 5');
 
         // run async ops
         async.series([
@@ -341,8 +296,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             this._initGraph.bind(this)
 
         ], function (err) {
-
-        // console.log('initLayer 8', err);
 
             // mark inited
             this._inited = true;
@@ -368,23 +321,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     _initGraph : function (done) {
 
-        // // create animator
-        // this._animator = new M.Graph.Animator({ // refactor to project controls (or some editor control)
-        //     layer : this
-        // });
-
         var masks = this.getMasks();
-
-        console.log('create graph with data:', masks[0].data);
 
         // create graph
         this._graph = new M.Graph.SnowCoverFraction({ 
-            // data     : this._data.annual,
-            // data     : masks[0].data, // todo: create dummy data in graph
-            // appendTo : this._animator.getContainer(),
             type     : 'annualCycles',
             cube     : this,
-            // animator : this._animator
         });
 
     },
@@ -508,8 +450,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     _initGeoJSONMask : function (mask, done) {
-
-        console.log('mask: ', mask);
 
         // create mask (geojson) layer
         var maskLayer = new M.Model.Layer.GeoJSONMaskLayer({
@@ -695,16 +635,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             l.setStyle(this.options.mask.selectedStyle);
         }.bind(this));
 
-        // // fire mask selected event
-        // M.Mixin.Events.fire('maskSelected', { detail : { 
-        //     layer : layer 
-        // }}); 
-
-        // this._graph.fire('maskSelected', {
-        //     layer : layer
-        // })
-
-        this.fire('maskSeleceted', {
+        this.fire('maskSelected', {
             layer : layer
         });
     },
@@ -729,8 +660,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     _queryCube : function (options, done) {
-
-        console.error('_queryCube', options);
 
         // query server for data
         app.api.queryCube(options, function (err, data) {
@@ -965,15 +894,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
        
         if (!dataset) return;
 
-        // console.log('loaded:', dataset.idx);
-
         // mark cache loaded
         var cache = _.find(this._cache, {idx : dataset.idx});
         if (cache) {
             cache.loaded = true;
         }
     },
-
 
     _getAvailableCache : function () {
 

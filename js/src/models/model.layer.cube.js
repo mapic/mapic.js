@@ -258,8 +258,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     _initGraph : function (done) {
 
-        var masks = this.getMasks();
-
         // create graph
         this._graph = new M.Graph.SnowCoverFraction({ 
             type     : 'annualCycles',

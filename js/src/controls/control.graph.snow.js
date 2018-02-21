@@ -84,8 +84,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this.options.cube.on('enabled', this._onLayerEnabled.bind(this));
         this.options.cube.on('disabled', this._onLayerDisabled.bind(this));
 
-        console.log('THIS', this);
-
     },
 
     _onLayerEnabled : function () {
@@ -97,7 +95,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     // get/set parsed based on mask.id
     parsed : function (parsed) {
-        console.error('parsed()', parsed, this._mask.id);
         if (parsed) {
             this._parsed[this._mask.id] = parsed;
         } else {
@@ -116,7 +113,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         var parsed = {}
 
-        console.log('A001 ===> data: ', data);
+        // console.log('A001 ===> data: ', data);
         // [
         //   {
         //     "year": "2001",
@@ -136,7 +133,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // min/max/avg 
         parsed.mma = this.average(data);
 
-        console.log('A002 ==> parsed.mma', parsed.mma);
+        // console.log('A002 ==> parsed.mma', parsed.mma);
         // [
         //   {
         //     "doy": 1,
@@ -180,7 +177,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // yearly
         parsed.years = this.yearly(data);
 
-        console.log('A004 ==> parsed.years', parsed.years);
+        // console.log('A004 ==> parsed.years', parsed.years);
         // [
         //   {
         //     "scf": {
@@ -214,45 +211,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     },
 
-   
-    // yearly : function (data) {
-
-    //     var range = this.getRange();
-    //     var years = _.range(range[0], range[1]+1); 
-    //     var yearly_data = [];
-
-    //     // optimize data search, divide into years
-    //     var dataRange = this.dataRange();
-    //     var yearly_range = _.range(dataRange[0], dataRange[1] + 1);
-    //     var opti_data = {};
-    //     yearly_range.forEach(function (r) {
-    //         opti_data[r] = _.filter(data, function (d) {
-    //             return d.year == r;
-    //         });
-    //     });
-
-    //     _.times(365, function (i) {
-    //         var doy = i+1;
-
-    //         var item = {
-    //             scf : {}, 
-    //             date : moment.utc().year(2018).dayOfYear(doy) // fake year, correct doy
-    //         }
-
-    //         years.forEach(function (y) {
-    //             var scf = _.find(opti_data[y], function (d) {   // expensive op! todo: cut into years first
-    //                 return d.doy == doy;
-    //             });
-    //             item.scf[y] = scf ? parseFloat(scf.scf) : false;
-    //         }.bind(this))            
-
-    //         yearly_data.push(item);
-
-    //     }.bind(this));
-
-    //     return yearly_data;
-    // },
-
     yearly : function (data) {
 
         // yearly used to be a fn for chopping up data into years: 2017, 2018, etc. (jan-dec)
@@ -268,11 +226,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // optimize data search, divide into years
         var dataRange = this.dataRange(); // [2001, 2018]
         var yearly_range = _.range(dataRange[0], dataRange[1] + 1); // [2001, 2002, ... 2018]
-        console.log('dataRange', dataRange);
-        console.log('yearly_range', yearly_range);
 
         var hy = this._getHydrologicalYear();
-        console.log('-- hy', hy);
 
         var opti_data = {};
         yearly_range.forEach(function (r) {
@@ -305,8 +260,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             yearly_data.push(item);
 
         }.bind(this));
-
-        console.log('done product yearly_data', yearly_data);
 
         return yearly_data;
     },
@@ -389,6 +342,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     onMaskSelected : function (options) {
         this.setMask(options.mask);
+        // if (this._slider.left) {
+        //     this._slider.vertical.style("left", this._slider.left + 'px');
+        //     // vertical.style("left", mousex + "px")/
+        // }
     },
 
     onMaskUnselected : function (options) {
@@ -402,16 +359,21 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // set current mask
         this._mask = mask;
 
-        console.log('setMask ... mask', mask);
-
         // set data
         this.setData(mask.data, function (err) {
 
             // update line graph
             this._updateLineGraph();
 
+            // adjust slider
+            this._adjustSlider();
+
         }.bind(this));
 
+    },
+
+    _adjustSlider : function () {
+        if (this._slider.left) this._slider.vertical.style("left", this._slider.left + 'px');
     },
 
     _listen : function () {
@@ -631,8 +593,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _averageDataToggle : function (year, checked) {
 
-        console.log('_averageDataToggle', year, checked);
-
         // remember
         this._selectedYears[year] = checked;
 
@@ -714,8 +674,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // create average (background chart) crossfilter
         this.ndx.average_crossfilter = crossfilter(data.mma); // this._annualAverageData is avgs for 365 days
-
-        console.error('data.mma', data.mma);
 
         // set dimension
         var average_dimension = this.ndx.average_crossfilter.dimension(function(d) { return d.date; });
@@ -848,6 +806,11 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // add vertical red line to graph
         this._addVerticalLine();
     },
+    _slider : {
+        vertical : null,
+        left : 0,
+        state : false
+    },
 
     _addVerticalLine : function () {
 
@@ -868,12 +831,12 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .style("background", "#db5758");
 
         // remember state
-        app._vl_state = false;
         var that = this;
+        this._slider.vertical = vertical;
 
         d3.select(".dc-chart")
         .on("mousemove", function(){  
-            if (!app._vl_state) return;
+            if (!that._slider.state) return;
             
             // get mouse pos
             mousex = d3.mouse(this)[0];
@@ -897,7 +860,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         })
         .on("mouseover", function(){  
-            if (!app._vl_state) return;
+            if (!that._slider.state) return;
             
             // get mouse pos
             mousex = d3.mouse(this)[0];
@@ -922,22 +885,24 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         })
         .on('click', function () {
 
-            if (app._vl_state) {
+            if (that._slider.state) {
                 // turn OFF
                 vertical.style("width", "2px" )
-                app._vl_state = false;
+                that._slider.state = false;
 
                 // fire
                 that.fire('sliderClick');
+                that._slider.left = mousex;
 
             } else {
                 // turn ON
                 vertical.style("width", "1px" )
-                app._vl_state = true;
+                that._slider.state = true;
 
                 // set to mousepointer on click
                 mousex = d3.mouse(this)[0] + 0;
                 vertical.style("left", mousex + "px")
+                that._slider.left = mousex;
 
             }
         });
@@ -960,12 +925,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     // eg. when clicking on slider
     // this needs to happen, because we only want to show data
     _setLineGraph : function (options) {
-        console.error('##########  _setLineGraph');
-        console.log('this._parsed', this._parsed);
-        console.log('this._mask', this._mask);
-        console.log('this._mask.id', this._mask.id);
-        console.log('parsed_cache', this._parsed[this._mask.id]);
-        console.log('---')
         if (!this._graphInited) return;
 
 
@@ -974,25 +933,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // get cached line graph data
         var parsed_cache = this._parsed[this._mask.id];
-        console.log('parsed_cache 99282882828', parsed_cache);
         var cache = this._filterSelectedYears(parsed_cache.years);
 
-        // filter out current year's data @ current year's date
-        // with filter @ composite
-        // var currentYear = this._current.year;
-        // var currentDay = this._current.day;
-        // var today = moment().year(currentYear).dayOfYear(currentDay);
-        // var clone = cache.slice();
-        // clone.forEach(function (c) {
-        //     if (c.date.isAfter(today)) {
-        //        c.scf[currentYear] = false;
-        //     }
-        // });
-
-        console.log('cache', cache);
-
         // add data to line_crossfilter
-        // this.ndx.line_crossfilter.add(clone);
         this.ndx.line_crossfilter.add(cache);
 
         // redraw
@@ -1212,7 +1155,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     },
 
     _getSCFValue : function (date) {
-        console.log('_getSCFValue', date);
         var doy = date.dayOfYear();
         var year = date.year();
         var data = this._parsed[this._mask.id].years;

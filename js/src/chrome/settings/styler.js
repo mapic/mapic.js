@@ -13,6 +13,7 @@ M.Styler = M.Class.extend({
 		palettes : [ 
 			
 			['#e60000', '#fd8b01', '#f6f500', '#e1e1e1', '#73b2ff'],
+			// ['#e60000', '#fd8b01', '#f6f500', '#e1e1e1', '#e1e1e1', '#e1e1e1', '#73b2ff'],
 
 			['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff'],
 			['#0000ff', '#00ffff', '#00ff00', '#ffff00', '#ff0000'],

@@ -120,6 +120,8 @@ M.Chrome.SettingsContent.Filters = M.Chrome.SettingsContent.extend({
 		// get sql
 		var sql = this.getSQLValue();
 
+		console.log('sql: ', sql);
+
 		// get css
 		var css = this.getCartocssValue();
 	

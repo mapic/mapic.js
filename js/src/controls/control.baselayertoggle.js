@@ -133,7 +133,8 @@ L.Control.Baselayertoggle = M.Control.extend({
 	},
 
 	_filterBackgroundLayersByProvider : function (layers) {
-		var keys = ['google', 'norkart', 'mapbox'];
+		// var keys = ['google', 'norkart', 'mapbox'];
+		var keys = ['norkart', 'mapbox'];
 		var results = [];
 		keys.forEach(function (key) {
 			for (var l in layers) {

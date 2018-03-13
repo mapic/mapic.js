@@ -12,9 +12,80 @@ M.Styler = M.Class.extend({
 		},
 		palettes : [ 
 			
+			// insar: red - yellow - gray - blue
 			['#e60000', '#fd8b01', '#f6f500', '#e1e1e1', '#73b2ff'],
-			// ['#e60000', '#fd8b01', '#f6f500', '#e1e1e1', '#e1e1e1', '#e1e1e1', '#73b2ff'],
 
+			// wider gray
+			[ 
+			    '#e60000', 
+			    '#eb2200',
+			    '#f14500',
+			    '#f76800',
+			    '#fd8b01', 
+			    '#fba500',
+			    '#f9c000',
+			    '#f7da00',
+			    '#f6f500', 
+			    '#f0f038',
+			    '#ebeb70',
+			    '#e6e6a8',
+			    '#e1e1e1',
+			    '#e1e1e1', 
+			    '#c5d5e8',
+			    '#aac9f0',
+			    '#8ebdf7',
+			    '#73b2ff'  
+			],
+
+			// even wider gray
+			[ 
+			    '#e60000', 
+			    '#eb2200',
+			    '#f14500',
+			    '#f76800',
+			    '#fd8b01', 
+			    '#fba500',
+			    '#f9c000',
+			    '#f7da00',
+			    '#f6f500', 
+			    '#f0f038',
+			    '#ebeb70',
+			    '#e6e6a8',
+			    '#e1e1e1',
+			    '#e1e1e1', 
+			    '#e1e1e1',
+			    '#c5d5e8',
+			    '#aac9f0',
+			    '#8ebdf7',
+			    '#73b2ff'  
+			],
+
+			// even wider gray
+			[ 
+			    '#e60000', 
+			    '#eb2200',
+			    '#f14500',
+			    '#f76800',
+			    '#fd8b01', 
+			    '#fba500',
+			    '#f9c000',
+			    '#f7da00',
+			    '#f6f500', 
+			    '#f0f038',
+			    '#ebeb70',
+			    '#e6e6a8',
+			    '#e1e1e1',
+			    '#e1e1e1', 
+			    '#e1e1e1',
+			    '#e1e1e1',
+			    '#e1e1e1',
+			    '#c5d5e8',
+			    '#aac9f0',
+			    '#8ebdf7',
+			    '#73b2ff'  
+			],
+
+			// all kinds of colors
 			['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff'],
 			['#0000ff', '#00ffff', '#00ff00', '#ffff00', '#ff0000'],
 			
@@ -55,7 +126,6 @@ M.Styler = M.Class.extend({
 	carto : function () {
 		return this.options.carto[this.type];
 	},
-
 
 	setCarto : function (carto) {
 		this.options.carto[this.type] = carto;
@@ -160,7 +230,6 @@ M.Styler = M.Class.extend({
 		this._changed = false;
 	},
 
-
 	// create color box
 	_createColor : function () {
 
@@ -185,12 +254,12 @@ M.Styler = M.Class.extend({
 
 		// dropdown
 		var dropdown = new M.button({
-			id 	 : 'color',
+			id 	 	 : 'color',
 			type 	 : 'dropdown',
 			isOn 	 : isOn,
 			right 	 : true,
 			appendTo : line.container,
-			fn 	 : this._dropdownSelected.bind(this),
+			fn 	 	 : this._dropdownSelected.bind(this),
 			array 	 : this.options.meta, // columns in dropdown
 			selected : column // preselected item
 		});
@@ -247,18 +316,18 @@ M.Styler = M.Class.extend({
 
 		// Dropdown
 		var dropdown = new M.button({
-			id 	 : 'opacity',
+			id 	 	 : 'opacity',
 			type 	 : 'dropdown',
 			right 	 : true,
 			appendTo : line.container,
-			fn 	 : this._dropdownSelected.bind(this),
+			fn 	 	 : this._dropdownSelected.bind(this),
 			array 	 : this.options.meta,
 			selected : column
 		});
 
 		// Input
 		var input = new M.button({
-			id 	    : 'opacity',
+			id 	    	: 'opacity',
 			type 	    : 'miniInput',
 			right 	    : true,
 			isOn        : isOn,
@@ -266,7 +335,7 @@ M.Styler = M.Class.extend({
 			value       : value,
 			placeholder : 1,
 			tabindex    : this.tabindex++,
-			fn 	    : this._updateOpacity.bind(this) // blur event, not click
+			fn 	    	: this._updateOpacity.bind(this) // blur event, not click
 		});
 
 		// remember items
@@ -302,11 +371,11 @@ M.Styler = M.Class.extend({
 
 		// blend modes dropdown
 		var dropdown = new M.button({
-			id 	 : 'blendmode',
+			id 	 	 : 'blendmode',
 			type 	 : 'dropdown',
 			right 	 : true,
 			appendTo : line.container,
-			fn 	 : this._blendmodeSelected.bind(this),
+			fn 	 	 : this._blendmodeSelected.bind(this),
 			array 	 : this.options.blendModes,
 			selected : blendmode
 		});
@@ -321,7 +390,6 @@ M.Styler = M.Class.extend({
 		this.carto().blend = {
 			mode : blendmode
 		};
-
 
 	},
 
@@ -550,7 +618,6 @@ M.Styler = M.Class.extend({
 		this.markChanged();
 		
 	},
-
 
 	_addOpacityFields : function (column) {
 
@@ -907,7 +974,6 @@ M.Styler = M.Class.extend({
 
 	_dropdownSelected : function (e) {
 
-
 		var key = e.target.getAttribute('key'); // todo: remove DOM interaction
 		var field = e.target.value;
 		var wrapper = e.target.parentElement;
@@ -968,7 +1034,6 @@ M.Styler = M.Class.extend({
 			},
 			category : 'Styling'
 		});
-
 
 	},
 
@@ -1050,7 +1115,6 @@ M.Styler = M.Class.extend({
 		if (field == 'width') this._addWidthFields(column);
 	},
 
-
 	_getDefaultRange : function (column, field) {
 
 		// get default min/max
@@ -1066,7 +1130,6 @@ M.Styler = M.Class.extend({
 
 		return value;
 	},
-
 
 	savePointSizeDualBlur : function (max, min, absoluteMax, absoluteMin) {
 
@@ -1371,7 +1434,6 @@ M.Styler = M.Class.extend({
 		this.markChanged();
 	},
 
-
 	_removeTarget : function (e) {
 
 		// get target index
@@ -1437,7 +1499,6 @@ M.Styler = M.Class.extend({
 		this._changeAddButtonText();
 	},
 
-
 	// create column targets
 	_createTargets : function () {
 
@@ -1475,7 +1536,6 @@ M.Styler = M.Class.extend({
 		}
 
 	},
-
 
 	_createTargetColumn : function (e, options) {
 

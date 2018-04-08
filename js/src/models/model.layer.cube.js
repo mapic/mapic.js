@@ -93,6 +93,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     add : function (type) {
+        console.log('cube add!', this);
         this.addTo();
     },
 
@@ -101,7 +102,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // add to map
         this._addTo();
 
-        console.log('cube add!', this);
     },
 
     _addTo : function (type) {

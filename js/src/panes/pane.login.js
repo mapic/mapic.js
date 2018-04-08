@@ -21,7 +21,7 @@ M.Pane.Login = M.Pane.extend({
 		this._login_box.style.color = app.options.logos.loginLogo.color;
 
 		// logos
-		this._createLogo();
+		// this._createLogo();
 
 		// login content wrapper
 		this._loginInner = M.DomUtil.create('div', 'login-inner', this._login_box);

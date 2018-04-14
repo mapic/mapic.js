@@ -14,8 +14,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         return this.localization[this.localization.lang];
     }, 
     localization : {
-        // lang : 'nor',
-        lang : 'eng',
+        lang : 'nor',
+        // lang : 'eng',
         eng : {
             yearlyGraphs : 'Yearly graphs',
             selectYear : 'Select year(s)',
@@ -23,7 +23,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             average : 'Average',
             layerPrefix : 'Data',
             showData : 'Only show data within mask',
-            layerOptions : 'Layer options'
+            layerOptions : 'Layer options',
+            layerTooltip : 'Forklaring: <br><br>Dette laget viser Snow Cover Fraction (SCF) både som graf og som satellitt-bilder på kart. <br><br>Trykk på grafen for å forandre dato.<br><br>Trykk på årstall-boksen for å vise flere år samtidig.'
         },
         nor : {
             yearlyGraphs : 'Årlige verdier',
@@ -32,7 +33,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             average : 'Gjennomsnitt',
             layerPrefix : 'Data',
             showData : 'Vis kun data innenfor masken',
-            layerOptions : 'Alternativer for kartlag'
+            layerOptions : 'Alternativer for kartlag',
+            layerTooltip : 'Forklaring: <br><br>Dette laget viser Snow Cover Fraction (SCF) både som graf og som satellitt-bilder på kart. <br><br>Trykk på grafen for å forandre dato.<br><br>Trykk på årstall-boksen for å vise flere år samtidig.'
         },
     },
 
@@ -412,6 +414,11 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // container for graph
         this._graphContainer         = M.DomUtil.create('div', 'big-graph-inner-container',            this._container);
         
+        // help button
+        this._helpButton            = M.DomUtil.create('div', 'graph-help-button', this._container);
+        this._helpTooltip           = M.DomUtil.create('div', 'graph-help-tooltip', this._helpButton, '<i class="fa fa-info-circle" aria-hidden="true"></i>');
+        this._helpTooltipText       = M.DomUtil.create('div', 'graph-help-tooltiptext', this._helpTooltip, this.locale().layerTooltip);
+
         // add editor items
         if (this.isEditor()) this._addEditorPane();
 

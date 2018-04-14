@@ -3149,3 +3149,40 @@ input#geojson-upload {
     top: 40px;
     left: 20px;
 }
+
+.graph-help-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 10px;
+    font-size: 20px;
+}
+.graph-help-button:hover {
+    color: #dadada;
+}
+
+
+.graph-help-tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.graph-help-tooltip .graph-help-tooltiptext {
+    visibility: hidden;
+    min-width: 220px;
+    background-color: black;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    right: 0;
+    font-size: 15px;
+    z-index: 1000000;
+    bottom: 30px;
+}
+
+.graph-help-tooltip:hover .graph-help-tooltiptext {
+    visibility: visible;
+}

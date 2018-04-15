@@ -284,6 +284,11 @@ M.Api = M.Class.extend({
 		this.post(path, options, done);
 	},
 
+	getCube : function (options, done) {
+		var path = '/v2/cubes/get';
+		this.get(path, options, done);
+	},
+
 	
 	// TILES
 	// [mile]

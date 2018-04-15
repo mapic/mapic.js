@@ -81,6 +81,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // set store
         this._setStore(store);
+
     },
 
     _setStore : function (store) {
@@ -225,6 +226,9 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // run async ops
         async.series([
+
+            // verify latest cube
+            this._verifyCube.bind(this),
             
             // init mask async
             this._initMask.bind(this),
@@ -234,6 +238,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         ], function (err) {
 
+            console.log('async initLayer done', err);
+
             // mark inited
             this._inited = true;
 
@@ -242,6 +248,39 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
             // callback
             done && done();
+
+        }.bind(this));
+
+    },
+
+    _verifyCube : function (done) {
+
+        console.log('_verifyCube', done);
+
+        // get cube 
+        var cube_id = this.getCubeId();
+        console.log('cube_id', cube_id);
+
+        app.api.getCube({
+            cube_id : cube_id
+        }, function (err, cube) {
+            console.log('api.getCube', err, typeof cube, _.size(cube));
+        
+            if (this.store.data.cube == cube) {
+                console.log('same, no change!');
+            } else {
+                console.log('cube chagned!');
+                console.log('size 1', _.size(this.store.data.cube));
+                console.log('size 2', _.size(cube));
+
+                // parse cube json
+                // this._cube = M.parse(cube);
+
+                // save updated cube
+                this._saveCube(M.parse(cube));
+            }
+
+            done();
 
         }.bind(this));
 

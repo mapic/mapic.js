@@ -35,6 +35,7 @@ M.Model.Layer.GeoJSONMaskLayer = M.Model.Layer.extend({
     },
 
     ensureFlat : function (geojson) {
+        // return geojson;
         // combine features of feature collection
         // todo: may not work with multipolygons
         if (_.size(geojson.features) > 1 && geojson.type == 'FeatureCollection') {

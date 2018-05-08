@@ -344,10 +344,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     onMaskSelected : function (options) {
         this.setMask(options.mask);
-        // if (this._slider.left) {
-        //     this._slider.vertical.style("left", this._slider.left + 'px');
-        //     // vertical.style("left", mousex + "px")/
-        // }
     },
 
     onMaskUnselected : function (options) {
@@ -691,10 +687,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var average_avg_group = average_dimension.group().reduceSum(function(d) { return d.avg });
 
         // get max/min date 
-        // var minDate = average_dimension.bottom(1)[0].date;  // this is jan 1 2015.. shouldn't be a YEAR per say, since it messes with the line graph (which needs to be in same year to display)
-        // var maxDate = average_dimension.top(1)[0].date;     
-        
-        // debug
         var minDate = this._getHydrologicalYear().minDate;
         var maxDate = this._getHydrologicalYear().maxDate;
 
@@ -821,9 +813,17 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _addVerticalLine : function () {
 
+        console.error('_addVerticalLine');
+
         // remove vertical line if already existing
         var existing = M.DomUtil.get('chart-vertical-line');
-        if (existing) M.DomUtil.remove(existing);
+
+        console.log('existing?', existing);
+        if (existing) {
+            console.log('removing existing');
+            M.DomUtil.remove(existing);
+        }
+        console.log('existing-2?', existing);
 
         // define vertical line
         var vertical = d3.select(".dc-chart")
@@ -836,6 +836,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .style("bottom", "34px")
         .style("left", "40px") // starting position
         .style("background", "#db5758");
+
+        console.log('verticla', vertical);
 
         // remember state
         var that = this;
@@ -1000,11 +1002,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     cube : function () {
         return this.options.cube;
     },
-
-    // _cache : {
-    //     masks : {},
-    //     data : {}
-    // },
 
     getDatasetsEndDate : function () {
         // get datasets
@@ -1194,13 +1191,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._setLineGraph();
     },
   
-    // _initCache : function () {
-    //     var masks = this.options.cube._cube.masks;
-    //     _.each(masks, function (m) {
-    //         this._cache.masks[m.id] = m;
-    //     }.bind(this));
-    // },
-
     _parseDates : function (cache) {
         if (!_.isArray(cache)) return;
         cache.forEach(function (c) {

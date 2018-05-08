@@ -265,26 +265,31 @@ M.Api = M.Class.extend({
 	},
 
 	updateCube : function (options, done) {
+		console.log('updateCube', options);
 		var path = '/v2/cubes/update';
 		this.post(path, options, done);
 	},
 
 	removeFromCube : function (options, done) {
+		console.log('removeFromCube', options);
 		var path = '/v2/cubes/remove';
 		this.post(path, options, done);
 	},
 
 	addToCube : function (options, done) {
+		console.log('addToCube', options);
 		var path = '/v2/cubes/add';
 		this.post(path, options, done);
 	},
 
 	createCube : function (options, done) {
+		console.log('createCube', options);
 		var path = '/v2/cubes/create';
 		this.post(path, options, done);
 	},
 
 	getCube : function (options, done) {
+		console.log('getCube', options);
 		var path = '/v2/cubes/get';
 		this.get(path, options, done);
 	},
@@ -300,6 +305,7 @@ M.Api = M.Class.extend({
 
 	// [mile]
 	addMask : function (options, done) {
+		console.log('addMask', options);
 		var path = '/v2/cubes/mask';
 		this.post(path, options, done);
 	},
@@ -362,6 +368,7 @@ M.Api = M.Class.extend({
 	// QUERIES
 
 	queryCube : function (options, done) {
+		console.log('queryCube', options);
 		var path = '/v2/cubes/query';
 		this.post(path, options, done);
 	},

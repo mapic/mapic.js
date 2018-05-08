@@ -257,8 +257,10 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         app.api.getCube({
             cube_id : cube_id
         }, function (err, cube) {
+            if (err) console.log('err, cube', err, cube);
 
             if (this.store.data.cube == cube) {
+                console.log('same!');
             } else {
 
                 // parse cube json

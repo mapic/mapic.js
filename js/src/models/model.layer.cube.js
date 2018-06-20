@@ -106,6 +106,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     _addTo : function (type) {
 
+        console.log('_addTo', this);
+
         // ensure inited
         this.initLayer(function (err) {
 
@@ -253,6 +255,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // get cube 
         var cube_id = this.getCubeId();
+
+        console.log('cube_id', cube_id);
 
         app.api.getCube({
             cube_id : cube_id
@@ -699,6 +703,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         if (didx < 0) {
             console.error('no dataset corresponding to timestamp');
+            app.FeedbackPane.setError({title : 'No raster available', description : 'There is no satellite imagery available for this date.'})
 
             // hide
             this._hideLayer(this.layer);

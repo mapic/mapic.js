@@ -60,7 +60,7 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 		this._buttonWrapper = M.DomUtil.create('div', 'button-wrapper displayNone', this._container);
 		this._updateStyleButton = M.DomUtil.create('div', 'smooth-fullscreen-save update-style', this._buttonWrapper, 'Update Style');
 
-		this._preRenderButton = M.DomUtil.create('div', 'smooth-fullscreen-save pre-render', this._buttonWrapper, 'Render');
+		this._preRenderButton = M.DomUtil.create('div', 'smooth-fullscreen-save pre-render', this._buttonWrapper, 'Pre-render');
 
 		// Event for click button
 		M.DomEvent.on(this._updateStyleButton, 'click', this._updateStyle, this);		
@@ -77,15 +77,36 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 	_preRender : function () {
 		console.log('_preRender!', this);
 
-		// var confirmed = confirm('Are you sure you want to pre-render the layer?');
-		// if (!confirmed) return;
+		var confirmed = confirm('Are you sure you want to pre-render the layer?');
+		if (!confirmed) return;
 
-		// request pre-render
-		app.api.preRender({
-			layer_id : this._layer._getLayerUuid()
-		}, function (err, results) {
-			console.log('err, results', err, results);
-		});
+		var isCube = this._layer.isCube();
+
+		if (isCube) {
+
+			// need to get all depths for all datasets
+
+			console.log('datasets:', this._layer._datasets);
+
+			// request pre-render of cube
+			app.api.preRenderCube({
+				cube_id : this._layer.getCubeId(), 
+				// datasets : this._layer._datasets
+			}, function (err, results) {
+				console.log('err, results', err, results);
+			});
+
+		} else {
+
+			// request pre-render
+			app.api.preRender({
+				layer_id : this._layer._getLayerUuid()
+			}, function (err, results) {
+				console.log('err, results', err, results);
+			});
+
+		}	
+
 
 		// add logs
 		app.log('prerendered:', this._layer.getTitle());

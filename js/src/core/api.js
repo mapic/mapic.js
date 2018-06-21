@@ -25,6 +25,12 @@ M.Api = M.Class.extend({
 		this.post(path, options, done);
 	},
 
+	// pre-render
+	preRenderCube : function (options, done) {
+		var path = '/v2/tiles/renderCube';
+		this.post(path, options, done);
+	},
+
 
 	// PROJECTS
 	createProject : function (options, done) {

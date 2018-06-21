@@ -106,7 +106,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     _addTo : function (type) {
 
-        console.log('_addTo', this);
+        console.log('cube: ', this);
 
         // ensure inited
         this.initLayer(function (err) {
@@ -256,19 +256,14 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // get cube 
         var cube_id = this.getCubeId();
 
-        console.log('cube_id', cube_id);
-
         app.api.getCube({
             cube_id : cube_id
         }, function (err, cube) {
             if (err) console.log('err, cube', err, cube);
 
             if (this.store.data.cube == cube) {
-                console.log('same!');
+                console.log('Cube is same.');
             } else {
-
-                // parse cube json
-                // this._cube = M.parse(cube);
 
                 // save updated cube
                 this._saveCube(M.parse(cube));

@@ -813,17 +813,12 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _addVerticalLine : function () {
 
-        console.error('_addVerticalLine');
-
         // remove vertical line if already existing
         var existing = M.DomUtil.get('chart-vertical-line');
 
-        console.log('existing?', existing);
         if (existing) {
-            console.log('removing existing');
             M.DomUtil.remove(existing);
         }
-        console.log('existing-2?', existing);
 
         // define vertical line
         var vertical = d3.select(".dc-chart")
@@ -836,8 +831,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .style("bottom", "34px")
         .style("left", "40px") // starting position
         .style("background", "#db5758");
-
-        console.log('verticla', vertical);
 
         // remember state
         var that = this;
@@ -935,7 +928,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     // this needs to happen, because we only want to show data
     _setLineGraph : function (options) {
         if (!this._graphInited) return;
-
 
         // Clear old data
         this.ndx.line_crossfilter.remove();

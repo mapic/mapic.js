@@ -826,11 +826,11 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .attr("id", "chart-vertical-line")
         .style("position", "absolute")
         .style("z-index", "19")
-        .style("width", "2px")
+        .style("width", "4px")
         .style("height", "180px")
         .style("bottom", "34px")
         .style("left", "40px") // starting position
-        .style("background", "#db5758");
+        .style("background", "rgb(6, 137, 128)");
 
         // remember state
         var that = this;

@@ -192,7 +192,9 @@ M.MapPane = M.Pane.extend({
         map.addControl(this._attributionControl);
 
         // set content
-        this._attributionControl.addAttribution('<a href="http://mapic.io">Powered by Mapic</a>');
+        var portalClientName = 'ED Insights'
+        this._attributionControl.addAttribution('<a href="http://mapic.io">Powered by ' + portalClientName +'</a>');
+        console.log('att', this._attributionControl);
         
         // remove content
         this._attributionControl.removeAttribution('Leaflet');

@@ -30,6 +30,11 @@ M.MapboxLayer = M.Model.Layer.extend({
     getAttribution : function () {
         var att = app.options.attribution ? app.options.attribution + ' | ' : '';
         att += '<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox</a>';
+
+        // todo: put in config
+        if (app.options.servers.portal == "https://maps.edinsights.no/") {
+            att = "<a href='https://edinsights.no' target='_blank'>Powered by EDInsights</a> &copy;"
+        }
         return att;
     },
 

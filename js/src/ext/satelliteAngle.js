@@ -17,6 +17,14 @@ M.satelliteAngle = M.Class.extend({
 
 	},
 
+	show : function () {
+		M.DomUtil.removeClass(this._innerContainer, 'displayNone');
+	},
+
+	hide : function () {
+		M.DomUtil.addClass(this._innerContainer, 'displayNone');
+	},
+
 	update : function (options) {
 
 		var angle = options.angle ? options.angle : false;

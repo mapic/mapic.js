@@ -10,6 +10,8 @@ L.Control.Description = M.Control.extend({
 	
 	onAdd : function (map) {
 
+		console.log('L.Control.Description', this);
+
 		if ( app.options.customizations && app.options.customizations.satelliteView ) {
 			this.satelliteView = true;
 		}
@@ -471,9 +473,13 @@ L.Control.Description = M.Control.extend({
 
 		// Todo: write as plugin
 		var satellitePos = layer.getSatellitePosition();
-		if ( satellitePos ) {
+		if (satellitePos) {
 			satellitePos = JSON.parse(satellitePos);
 			this.satelliteAngle.update(satellitePos);
+			this.satelliteAngle.show();
+		} else {
+			this.satelliteAngle.hide();
+
 		}
 
 		// Title
@@ -508,9 +514,16 @@ L.Control.Description = M.Control.extend({
 		} else if ( legend.gradient ) {
 			var grad = legend.html + legend.gradient;
 			this.setLegendHTML(grad);
-		} else if ( !legend.gradient ) {
-			this.setLegendHTML('');
-		}
+		} else {
+
+			// see https://github.com/mapic/mapic/issues/58
+			if (layer.isRaster() && _.includes(window.location.href, 'edinsights')) {
+				this.setLegendHTML('<img src="https://image.ibb.co/nGM9kp/meanvelocity10mm.png" style="width:100%">');
+			} else {
+				this.setLegendHTML('');
+			}
+
+		} 
 	},
 
 

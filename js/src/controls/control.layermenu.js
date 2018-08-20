@@ -562,6 +562,8 @@ L.Control.Layermenu = M.Control.extend({
 		start : function (e) {
 			var el = e.target;
 
+			console.log('drag start', el);
+
 			// add visual feedback on dragged element
 			M.DomUtil.addClass(el, 'dragged-ghost');
 
@@ -576,6 +578,8 @@ L.Control.Layermenu = M.Control.extend({
 		},
 
 		drop : function (e) {
+
+			console.log('drag drop');
 			
 			var uuid = e.dataTransfer.getData('uuid');
 			var el = document.getElementById(uuid);
@@ -604,6 +608,9 @@ L.Control.Layermenu = M.Control.extend({
 		},
 
 		over : function (e) {
+
+			console.log('drag over');
+
 			if (e.preventDefault) e.preventDefault(); // allows us to drop
 
 			// set first offset
@@ -616,6 +623,8 @@ L.Control.Layermenu = M.Control.extend({
 		},
 
 		leave : function (e) {
+
+			console.log('drag leave');
 			
 			// get element over which we're hovering
 			var x = e.clientX;
@@ -684,6 +693,8 @@ L.Control.Layermenu = M.Control.extend({
 
 	// check logic
 	checkLogic : function () {
+
+		console.log('checkLogic');
 
 		// clear prev invalids
 		this.clearInvalid();
@@ -1038,11 +1049,9 @@ L.Control.Layermenu = M.Control.extend({
 	},
 
 	removeLayermenuItem : function () {
-
 	},
 
 	removeLayer : function (layerUuid) {
-
 	},
 
 	// remove initiated from sidepane

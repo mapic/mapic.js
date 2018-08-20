@@ -103,6 +103,8 @@ M.Legend = M.Class.extend({
 		// The top section hold the "Legend" title + on/off switch
 		// This part should always be there
 
+		console.log('createLegendStyler', this);
+
 		// If legend on/off option does not exist, see if we have it stored
 		if ( typeof this.legendObj.enable == 'undefined' ) {
 			if ( this.oldLegendObj ) {
@@ -228,6 +230,8 @@ M.Legend = M.Class.extend({
 		// this.polygonAndLinesHTML(polygons, lines);
 
 		var legendArray = M.Tools.Legend.getLegendArray(points, lines, polygons);
+
+		console.log('legendArray', legendArray);
 
 		// Create legend settings from array
 		this.createLegendSettingsFromArray(legendArray);
@@ -1633,7 +1637,7 @@ M.Tools.Legend = {
 		var satelliteView = stylerObject.satelliteView;
 		var layer = stylerObject.options.layer;
 
-		var gradientName = layer.getStyleJSON().legendScaleTitle || 'mean velocity per year';
+		var gradientName = layer.getStyleJSON().legendScaleTitle || 'mean velocity per year in mm';
 
 		// HTML PART
 		// HTML PART

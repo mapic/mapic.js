@@ -802,7 +802,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // mark inited
         this._graphInited = true;
 
-        // add vertical red line to graph
+        // add vertical line to graph
         this._addVerticalLine();
     },
     _slider : {
@@ -908,6 +908,25 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
             }
         });
+
+
+        // set to current date
+        var today = moment().dayOfYear();
+        var diff = today - 245;
+        if (diff < 0) {
+            var p = 365 + diff;
+        } else {
+            var p = diff;
+        }
+
+        // fire event
+        that.fire('sliderMovement', {
+            p : p
+        });
+        var todaymousex = (p * 82 / 73) + 40;
+        this._slider.vertical.style("left", todaymousex + "px");
+
+       
 
     },
 

@@ -45,7 +45,15 @@ M.App = M.Class.extend({
 		app._initErrorHandling();
 
 		// set page title
-		document.title = app.options.portalTitle;
+		if (window.location.host == 'maps.edinsights.no') {
+
+			document.title = 'EDInsights Maps'
+
+		} else {
+
+			document.title = app.options.portalTitle;
+
+		}
 
 		// get objects from server
 		app.initServer();

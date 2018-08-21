@@ -1526,7 +1526,8 @@ input.target-input.polygon {
 }
 
 a.login-forgot-link {
-    color: white;
+    color: black;
+    font-style: italic;
 }
 
 .chrome-button.active {

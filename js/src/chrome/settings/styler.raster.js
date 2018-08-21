@@ -49,21 +49,22 @@ M.RasterStyler = M.Class.extend({
 		this._rangeWrapper = M.DomUtil.create('div', 'raster-color-range-wrapper', this._wrapper);
 
 		// Description
-		this._descriptions = M.DomUtil.create('div', 'raster-styler-description', this._wrapper);
-		this._descriptions.innerHTML = 'Double click the colored line to create a new handle.<br>Double click the handle to remove it.'
+		// this._descriptions = M.DomUtil.create('div', 'raster-styler-description', this._wrapper);
+		// this._descriptions.innerHTML = 'Double click the colored line to create a new handle.<br>Double click the handle to remove it.'
 
 		// For list
 		this._stopListContainer = M.DomUtil.create('div', 'raster-stop-list-container', this._wrapper);	
-		this._stopListButtonContainer = M.DomUtil.create('div', 'raster-stops-button-container', this._wrapper);
-		this._stopListButton = M.DomUtil.create('div', 'raster-stops-view-as-list-button', this._stopListButtonContainer, 'View details');
+		// this._stopListButtonContainer = M.DomUtil.create('div', 'raster-stops-button-container', this._wrapper);
+		// this._stopListButton = M.DomUtil.create('div', 'raster-stops-view-as-list-button', this._stopListButtonContainer, 'View details');
 		
 		// Render slider
-		this._renderSlider();
+		// this._renderSlider();
+		this.enableStopList();
 
 	},
 
 	addHooks : function () {
-		M.DomEvent.on(this._stopListButton, 'click', this.toggleStoplist, this);
+		// M.DomEvent.on(this._stopListButton, 'click', this.toggleStoplist, this);
 	},	
 
 	predefinedRange : function (no) {
@@ -577,12 +578,12 @@ M.RasterStyler = M.Class.extend({
 
 	disableStopList : function () {
 		this._stopListContainer.innerHTML = '';
-		this._stopListButton.innerHTML = 'View details';
+		// this._stopListButton.innerHTML = 'View details';
 		this.viewStoplist = false;
 	}, 
 
 	enableStopList : function () {
-		this._stopListButton.innerHTML = 'Hide details';
+		// this._stopListButton.innerHTML = 'Hide details';
 		this.viewStoplist = true;
 		this._renderStopList();
 	},	

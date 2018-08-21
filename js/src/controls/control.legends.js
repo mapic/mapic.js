@@ -126,7 +126,7 @@ L.Control.Legends = M.Control.extend({
 			this._setClosed();
 
 			// Mobile arrow	
-		    	M.DomUtil.create('div', 'legends-mobile-arrow', this._content);
+		    M.DomUtil.create('div', 'legends-mobile-arrow', this._content);
 		}
 
 	},
@@ -384,7 +384,7 @@ L.Control.Legends = M.Control.extend({
 
 	_addLegend : function (layer) {
 		var uuid = layer.store.uuid;
-		var legends = layer.getActiveLegends();
+		var legends = layer.getActiveLegends(); // from store.legends
 		
 		// return if no legend
 		if (!legends) return;
@@ -395,9 +395,9 @@ L.Control.Legends = M.Control.extend({
 		
 
 		// create legends box
-	    	var div = M.DomUtil.create('div', 'legends-item', this._legendsInnerSlider);
+	    var div = M.DomUtil.create('div', 'legends-item', this._legendsInnerSlider);
 
-	    	// Set the width of the legends container
+	    // Set the width of the legends container
 		var containerWidth = Math.round(legends.length/4) * 220;
 		if (containerWidth < 220) containerWidth = 220;
 		div.style.width = containerWidth + 'px';
@@ -407,7 +407,7 @@ L.Control.Legends = M.Control.extend({
 		this._legendsInnerSlider.style.width = this.sliderWidth + 'px';
 
 
-	    	var legendWidth = div.offsetWidth;
+	    var legendWidth = div.offsetWidth;
 
 		// add to local store
 		this.legends[uuid] = {
@@ -416,17 +416,17 @@ L.Control.Legends = M.Control.extend({
 			width : legendWidth
 		};
 
-	    	// Added by Jølle		    	
-	    	var tempObj = {
+    	// Added by Jølle		    	
+    	var tempObj = {
 			id : uuid,
 			width : legendWidth
 		};
 
 		// Push in array for sliding control
-	    	this.legendsCounter.push(tempObj);
+    	this.legendsCounter.push(tempObj);
 
-	    	// get header title
-	    	var headerTitle = this._getLegendHeader(layer);
+    	// get header title
+    	var headerTitle = this._getLegendHeader(layer);
 
 		// create legends divs
 		var b = M.DomUtil.create('div', 'legend-header', div, headerTitle); // header

@@ -175,6 +175,8 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 
 		this._rasterStyler = new M.RasterStyler(options);
 
+		// console.log('RasterStyler', this._rasterStyler);
+
 		// Init legend options
 		// this._initLegendOptions();
 		this._initRasterLegendOptions();
@@ -211,7 +213,10 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 
 		this._legendStyler = new M.Legend.Raster(legendOptions);
 
-		M.DomUtil.removeClass(this._legendStyler._legensOuter, 'displayNone');		
+		// console.log('this._legendStyler', this._legendStyler)
+		// console.log('layer: ', this._layer);
+
+		// M.DomUtil.removeClass(this._legendStyler._legensOuter, 'displayNone');		
 	},
 
 

@@ -10,8 +10,6 @@ L.Control.Description = M.Control.extend({
 	
 	onAdd : function (map) {
 
-		console.log('L.Control.Description', this);
-
 		if ( app.options.customizations && app.options.customizations.satelliteView ) {
 			this.satelliteView = true;
 		}
@@ -516,14 +514,66 @@ L.Control.Description = M.Control.extend({
 			this.setLegendHTML(grad);
 		} else {
 
-			// see https://github.com/mapic/mapic/issues/58
-			if (layer.isRaster() && _.includes(window.location.href, 'edinsights')) {
-				this.setLegendHTML('<img src="https://image.ibb.co/nGM9kp/meanvelocity10mm.png" style="width:100%">');
-			} else {
-				this.setLegendHTML('');
-			}
+			// console.log('SETTING LENGEND -->');
+			// console.log('layer:', layer);
+
+			// // see https://github.com/mapic/mapic/issues/58
+			// if (layer.isRaster() && _.includes(window.location.href, 'edinsights')) {
+			// 	this.setLegendHTML('<img src="https://image.ibb.co/nGM9kp/meanvelocity10mm.png" style="width:100%">');
+			// } else {
+			// 	this.setLegendHTML('');
+			// };
+
+			// create raster html and set
+			var html = this._createRasterLegend(layer);
+			this.setLegendHTML(html);
 
 		} 
+	},
+
+	_createRasterLegend : function (layer) {
+
+		var style = M.parse(layer.store.style);
+		var min = style.scale.min;
+		var max = style.scale.max;
+		var title = style.legendScaleTitle;
+		var gradient = this._getGradientCSS(style);
+
+		var html = '';
+		html = '<div class="info-legend-container">';
+		html += '<div class="info-legend-frame">';
+		html += '<div class="info-legend-val info-legend-min-val">' + min + '</div>';
+		html += '<div class="info-legend-header">' + title + '</div>';
+		html += '<div class="info-legend-val info-legend-max-val">' + max + '</div>';
+		html += '<div class="info-legend-gradient-container" style="' + gradient + '"></div>';
+		html += '</div>';
+		html += '</div>';
+		return html;
+
+	},
+
+
+	_getGradientCSS : function (options) {
+
+		function rgb2hex(rgb){
+		 rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+		 return (rgb && rgb.length === 4) ? "#" +
+		  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+		  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+		  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+		}
+
+		var colorList = [];
+		_.each(options.stops, function (s) {
+			var rgbastr = 'rgba(' + s.col.r + ',' + s.col.g + ',' + s.col.b + ',' + s.col.a + ')';
+			var hex = rgb2hex(rgbastr);
+			colorList.push(hex);
+		});
+
+		// var colors = '#0000ff,#00ffff,#00ff00,#ffff00,#ff0000';
+		var colors = colorList.join(',');
+		var css = 'background: -webkit-linear-gradient(left, ' + colors + ');background: -o-linear-gradient(right, ' + colors + ');background: -moz-linear-gradient(right, ' + colors + ');background: linear-gradient(to right, ' + colors + ');';
+		return css;
 	},
 
 

@@ -103,7 +103,7 @@ M.Legend = M.Class.extend({
 		// The top section hold the "Legend" title + on/off switch
 		// This part should always be there
 
-		console.log('createLegendStyler', this);
+		// console.log('createLegendStyler', this);
 
 		// If legend on/off option does not exist, see if we have it stored
 		if ( typeof this.legendObj.enable == 'undefined' ) {
@@ -231,7 +231,7 @@ M.Legend = M.Class.extend({
 
 		var legendArray = M.Tools.Legend.getLegendArray(points, lines, polygons);
 
-		console.log('legendArray', legendArray);
+		// console.log('legendArray', legendArray);
 
 		// Create legend settings from array
 		this.createLegendSettingsFromArray(legendArray);
@@ -1774,7 +1774,16 @@ M.Tools.Legend = {
 
 M.Legend.Raster = M.Legend.extend({
 
-	
+			
+	initialize : function (options) {
+
+		// console.log('M.Legend.Raster', options);
+
+		// background: linear-gradient(to right, #0000ff,#00ffff,#00ff00,#ffff00,#ff0000);
+
+	},
+
+
 });
 
 

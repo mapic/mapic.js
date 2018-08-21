@@ -2583,7 +2583,7 @@ input.chrome-field-input {
 
 .raster-stop-list-container {
     position: relative;
-    margin-top: 60px;
+    /*margin-top: 60px;*/
     text-align: center;
     padding-bottom: 45px;
 }

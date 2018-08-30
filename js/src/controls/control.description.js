@@ -512,7 +512,7 @@ L.Control.Description = M.Control.extend({
 		} else if ( legend.gradient ) {
 			var grad = legend.html + legend.gradient;
 			this.setLegendHTML(grad);
-		} else {
+		} else if (layer.isRaster()) {
 
 			// console.log('SETTING LENGEND -->');
 			// console.log('layer:', layer);
@@ -528,7 +528,9 @@ L.Control.Description = M.Control.extend({
 			var html = this._createRasterLegend(layer);
 			this.setLegendHTML(html);
 
-		} 
+		} else {
+			
+		}
 	},
 
 	_createRasterLegend : function (layer) {

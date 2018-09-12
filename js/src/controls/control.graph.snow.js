@@ -569,7 +569,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 var checked = e.target.checked;
 
                 // toggle
-                this._averageDataToggle(y, checked);
+                var err = this._averageDataToggle(y, checked);
+                if (err) e.target.checked = false;
 
             }.bind(this))
 
@@ -596,6 +597,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _averageDataToggle : function (year, checked) {
 
+        // count and limit checked years
+        var cyc = _.size(_.filter(this._selectedYears))
+        if (cyc > 6 && checked) return true;
+
         // remember
         this._selectedYears[year] = checked;
 
@@ -604,6 +609,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // set legend
         this._setLegends();
+
     },
 
     getColor : function (i) {

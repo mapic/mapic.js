@@ -833,6 +833,17 @@ M.Chrome.Data = M.Chrome.extend({
     },
 
 
+    _filterOutTimeseriesDatasets : function (data) {
+
+        var filtered = _.filter(data, function (d) {
+            if (_.includes(d.store.originalName, 'SCF_MOD')) return false;
+            return true;
+        });
+
+        return filtered;
+
+    },
+
 
     // ┌─┐┌─┐┌─┐┬ ┬  ┌─┐┬┬  ┌─┐  ┬ ┬┬─┐┌─┐┌─┐┌─┐┌─┐┬─┐
     // ├┤ ├─┤│  ├─┤  ├┤ ││  ├┤   │││├┬┘├─┤├─┘├─┘├┤ ├┬┘
@@ -840,7 +851,11 @@ M.Chrome.Data = M.Chrome.extend({
     initFileList : function (D3container, data, library) {
 
         // debug: only get a few last datasets
-        var data = _.sortBy(data, 'lastUpdated').splice(0, 50);
+        console.log('data:', data);
+
+        var data = this._filterOutTimeseriesDatasets(data);
+        // var data = _.sortBy(data, 'lastUpdated').splice(0, 5);
+        var data = _.sortBy(data, 'lastUpdated');;
 
         // BIND
         var dataListLine = D3container
@@ -1959,13 +1974,16 @@ M.Chrome.Data = M.Chrome.extend({
 
         // get rasters
         var files = app.Account.getFiles();
+        // console.log('files:', files)
         var datasets = _.filter(files, function (f) {
             if (!f) return false;
             if (!f.store) return false;
             if (!f.store.data) return false;
             if (!f.store.data.postgis) return false;
             if (!f.store.data.postgis.data_type) return false;
-            return f.store.data.postgis.data_type == 'raster';
+            if (_.includes(f.store.originalName, 'SCF_MOD_')) return false;
+            // return f.store.data.postgis.data_type == 'raster';
+            return true;
         });
        
         var sorted_datasets = _.sortBy(datasets, function (d) {

@@ -109,86 +109,25 @@ M.Chrome.Data = M.Chrome.extend({
     // Layer list container
     _createLayerListContainer : function () {
 
-        // todo: - create preview icons for background layers
-        //       - clean up DOM, wrap categories
-
-        // data layers
+        // wrapper
         this._layerListWrapper = M.DomUtil.create('div', 'chrome-layer-list-wrapper', this._listContainer);
-        this._layerListTitle = M.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'Layers');
+
+        // title
+        this._layerListTitle = M.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'Project Layers');
+
+        // new layer button
+        this_newLayerButton = M.DomUtil.create('div', 'chrome-left-new-button right-align-new-layers-button', this._layerListWrapper, '+');
+
+        // layers container
         this._layersContainer = M.DomUtil.create('div', 'layers-container', this._layerListWrapper);
 
         // base layers
-        this._baseLayers = M.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'Background layer');
+        this._baseLayers = M.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'Background');
         this._baseLayerDropdownContainer = M.DomUtil.create('div', 'base-layer-dropdown-container', this._layerListWrapper);
         this._colorSelectorWrapper = M.DomUtil.create('div', 'base-layer-color-selector-wrapper displayNone', this._layerListWrapper);
 
-
-        var wms_debug = false;
-        if (wms_debug) {
-            // create wms
-            this._createWMSLayers();
-        }
-
         // separator line
         this._fileListSeparator = M.DomUtil.create('div', 'file-list-separator', this._layerListWrapper);
-
-    },
-
-    _createWMSLayers : function () {
-        
-        // wms layers
-        this._wmsLayers = M.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'WMS layers');
-
-        // get available wms layers from server
-        app.api.getWMSLayers({}, function (err, wms_layers) {
-            console.log('getWMSLayers', err, wms_layers);
-        });
-
-        // debug btn
-        var btn = M.DomUtil.create('div', 'wms-button', this._wmsLayers, 'Create layer');
-        M.DomEvent.on(btn, 'click', function () {
-
-            var project = app.activeProject;
-
-             // create M.CubeLayer
-            var wmsLayer = {
-                projectUuid : project.getUuid(), // pass to automatically attach to project
-                data : { 
-                    wms : {
-                        source : 'http://195.1.20.83/wms-follo/',
-                        layers : [
-                            // 'EIENDOMSKART'
-                            // 'RP3VN2'
-                            'KP3'
-                        ]
-                    }
-                },
-                metadata : null,
-                title : 'Kommuneplan',
-                description : 'WMS layer description',
-                // file : 'file-' + cube.cube_id,
-                // style : JSON.stringify(this.get_default_cube_cartocss()) // save default json style
-            }
-
-            // create Wu layer
-            app.api.createLayer(wmsLayer, function (err, wmsLayerJSON) {
-
-                var wmsLayer = M.parse(wmsLayerJSON);
-
-                var layer = project.addLayer(wmsLayer);
-
-                // select project
-                M.Mixin.Events.fire('layerAdded', { detail : {
-                    projectUuid : project.getUuid(),
-                    layerUuid : wmsLayer.uuid
-                }});
-
-                // open fullscreen for editing
-                // this._openCubeLayerEditFullscreen(layer);
-
-            }.bind(this));
-
-        });
 
     },
 
@@ -330,22 +269,19 @@ M.Chrome.Data = M.Chrome.extend({
     },
 
 
-    // need to rewrite this function.
+    // todo: need to rewrite this function.
     //
-    // it's too expensive to rewrite everything for every _refresh(), and _refresh() is being called a LOT.
-    // when changing project, the uploadButton needs to be aware of new project_id, but this can be solved with _onProjectSelected event instead
-    // so no need to recreate upload button
-    // also, no need to flush all files if only a small layer update (like rename)
-    // also, no need to flush all files if only an update on single file
+    // - it's too expensive to rewrite everything for every _refresh(), and _refresh() is being called a LOT.
+    // - when changing project, the uploadButton needs to be aware of new project_id, but this can be solved with _onProjectSelected event instead
+    //   so no need to recreate upload button
+    // - also, no need to flush all files if only a small layer update (like rename)
+    // - also, no need to flush all files if only an update on single file
     // 
-    // basically, the idea of recreating everythign on every change doesn't work when there's a lot of files, it's just too slow
-    // currently every action takes > 2000ms if filelist is >1000 files.
+    // - basically, the idea of recreating everythign on every change doesn't work when there's a lot of files, it's just too slow
+    //   currently every action takes > 2000ms if filelist is >1000 files.
     //
-    // perhaps better to remove d3 completely, and just create divs normally, then update store the divs in an object on file_id keys
+    // - perhaps better to remove d3 completely, and just create divs normally, then update store the divs in an object on file_id keys
     _refresh : function (options) {
-
-        // debug: don't refresh from projectSelected event
-        // if (options && options.event && options.event == 'projectSelected') return;
 
         // if no project, return
         if (!this._project) return;
@@ -388,8 +324,8 @@ M.Chrome.Data = M.Chrome.extend({
         }
 
         // layer title
-        var projectName = this._project.getTitle();
-        this._layerListTitle.innerHTML = 'Layers for ' + projectName;
+        // var projectName = this._project.getTitle();
+        // this._layerListTitle.innerHTML = 'Layers for ' + projectName;
 
         // hide layers if not editor
         if (!this._project.isEditable()) {
@@ -419,66 +355,72 @@ M.Chrome.Data = M.Chrome.extend({
         M.DomEvent.on(this._uploadButton.optionsDiv, 'mousedown', this._optionsBtnClick, this);
 
         // set event for create-cube item
-        M.DomEvent.on(this._uploadButton.createCube, 'mousedown', this._createCubeClick, this);
+        M.DomEvent.on(this._uploadButton.createCube, 'mousedown', this._onCreateCubeClick, this);
 
          // set event for create-water-level item
-        M.DomEvent.on(this._uploadButton.createGraphLayer, 'mousedown', this._createGraphLayerClick, this);
+        M.DomEvent.on(this._uploadButton.createGraphLayer, 'mousedown', this._onCreateGraphLayerClick, this);
 
     },
 
-    _createGraphLayerClick : function () {
+    _onCreateGraphLayerClick : function () {
 
         // create graph data fullscreen
         this._graphData = M.graphData({
             dataObject : this
         });
 
-        // toggle dropdown
+        // close dropdown
         this._optionsBtnClick();
     },
 
-    _createCubeClick : function () {
+    _onCreateCubeClick : function () {
 
         var project = app.activeProject;
 
-        // create cube
-        app.api.createCube({}, function (err, cubeJSON) {
-            if (err) return console.error('createCube err: ', err);
+        // open fullscreen for editing
+        this._openCubeLayerEditFullscreen();
 
-            var cube = M.parse(cubeJSON);
 
-            // create M.CubeLayer
-            var cubeLayer = {
-                projectUuid : project.getUuid(), // pass to automatically attach to project
-                data : { cube : cube },
-                metadata : null,
-                title : 'New cube layer',
-                description : 'Cube layer description',
-                file : 'file-' + cube.cube_id,
-                style : JSON.stringify(this.get_default_cube_cartocss()) // save default json style
-            }
+        // // create cube
+        // app.api.createCube({}, function (err, cubeJSON) {
+        //     if (err) return console.error('createCube err: ', err);
 
-            // create Wu layer
-            app.api.createLayer(cubeLayer, function (err, cubeLayerJSON) {
+        //     var cube = M.parse(cubeJSON);
 
-                var cubeLayer = M.parse(cubeLayerJSON);
+        //     // create M.CubeLayer
+        //     var cubeLayer = {
+        //         projectUuid : project.getUuid(), // pass to automatically attach to project
+        //         data : { cube : cube },
+        //         metadata : null,
+        //         title : 'New cube layer',
+        //         description : 'Cube layer description',
+        //         file : 'file-' + cube.cube_id,
+        //         style : JSON.stringify(this.get_default_cube_cartocss()) // save default json style
+        //     }
 
-                var layer = project.addLayer(cubeLayer);
+        //     // create Wu layer
+        //     app.api.createLayer(cubeLayer, function (err, cubeLayerJSON) {
 
-                // select project
-                M.Mixin.Events.fire('layerAdded', { detail : {
-                    projectUuid : project.getUuid(),
-                    layerUuid : cubeLayer.uuid
-                }});
+        //         var cubeLayer = M.parse(cubeLayerJSON);
 
-                // open fullscreen for editing
-                this._openCubeLayerEditFullscreen(layer);
+        //         var layer = project.addLayer(cubeLayer);
 
-            }.bind(this));
+        //         // select project
+        //         M.Mixin.Events.fire('layerAdded', { detail : {
+        //             projectUuid : project.getUuid(),
+        //             layerUuid : cubeLayer.uuid
+        //         }});
 
-        }.bind(this));
+        //         // open fullscreen for editing
+        //         console.log('layer:', layer);
+        //         console.log('layer:', M.stringify(layer));
+        //         this._openCubeLayerEditFullscreen(layer);
 
-        // toggle dropdown
+        //     }.bind(this));
+
+        // }.bind(this));
+
+        // close dropdown
         this._optionsBtnClick();
     },
 
@@ -545,7 +487,7 @@ M.Chrome.Data = M.Chrome.extend({
         var searchIcon = M.DomUtil.create('i', 'fa fa-search search-files', this.searchInputWraper);
 
         this.searchInput = M.DomUtil.create('input', 'files-search-input', this.searchInputWraper);
-        this.searchInput.placeholder = 'sort: date';
+        this.searchInput.placeholder = 'Filter...';
         this.currentSort = 'lastUpdated';
 
         M.DomEvent.on(this.searchInput, 'keyup', this._onKeyup, this);
@@ -1324,11 +1266,14 @@ M.Chrome.Data = M.Chrome.extend({
         this._openFileOptionsFullscreen(uuid);
     },
 
+
+    // used both by new and edit layer
     _openCubeLayerEditFullscreen : function (layer) {
 
         // create fullscreen
+        var layerTitle = layer ? layer.getTitle() : '';
         var fullscreen = this._fullscreen = new M.Fullscreen({
-            title : '<i class="fa fa-bars file-option"></i>Timeseries: ' + layer.getTitle(),
+            title : '<i class="fa fa-bars file-option"></i>Snow Cover Fraction Layer ' + layerTitle,
             titleClassName : 'slim-font'
         });
 
@@ -1674,17 +1619,20 @@ M.Chrome.Data = M.Chrome.extend({
         var container = options.container;
         var layer = options.layer;
 
+        var layerName = layer ? layer.getName() : '';
+        var layerId = layer ? layer.getCubeId() : '';
+
         // create divs
         var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Cube name');
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Layer name');
         var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
         name_input.setAttribute('placeholder', 'Enter name here');
-        name_input.value = layer.getName();
+        name_input.value = layerName;
         var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
 
-        var cube_id_name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Cube ID');
+        var cube_id_name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Layer ID');
         var cube_id_title = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
-        cube_id_title.value = layer.getCubeId();
+        cube_id_title.value = layerId;
         cube_id_title.readOnly = true;
         cube_id_title.style.background = '#F7F7F7';
 
@@ -1693,7 +1641,9 @@ M.Chrome.Data = M.Chrome.extend({
             var updatedName = name_input.value;
 
             // set title
-            var updatedLayer = layer.setTitle(updatedName);
+            if (layer) {
+                var updatedLayer = layer.setTitle(updatedName);
+            }
 
         }.bind(this), 1000), this);
 
@@ -1714,22 +1664,29 @@ M.Chrome.Data = M.Chrome.extend({
         var addBtn = M.DomUtil.create('div', 'cubesets-add-btn', toggles_wrapper, '<i class="fa fa-plus"></i>&nbsp;&nbsp;Add dataset ');
 
         M.DomEvent.on(addBtn, 'click', function () {
-            this._addCubesetDropdown(layer);
+            if (layer) {
+                this._addCubesetDropdown(layer);
+            }
         }, this);
 
         // create list of datasets
         this._cubesetContainer = M.DomUtil.create('div', 'cubesets-list-wrapper', toggles_wrapper);
 
         // create cubeset list
-        this._refreshCubeset(layer);
+        if (layer) {
+            this._refreshCubeset(layer);
+        }
         
         // bind update event
-        this._cubesetSort.bind('sortupdate', function(e, ui) {
+        if (this._cubesetSort) {
+            this._cubesetSort.bind('sortupdate', function(e, ui) {
+                // save new order of dataset array
+                if (layer) {
+                    this._updateCubesetOrder();
+                }
 
-            // save new order of dataset array
-            this._updateCubesetOrder();
-
-        }.bind(this));
+            }.bind(this));
+        }
 
         // return wrapper
         return toggles_wrapper;

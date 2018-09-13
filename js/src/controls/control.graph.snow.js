@@ -80,6 +80,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // set cache
         // this._initCache();
 
+        console.log('layer: ', this.options.cube);
+
         // events
         this.on('sliderMovement', this._onSliderMovement);
         this.on('sliderClick', this._onSliderClick);
@@ -323,6 +325,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // set timeframe & range
         this._setTimeFrame();
+
+        if (_.isString(data)) {
+            data = M.parse(data);
+        }
 
         // parse
         this.parse(data, function (err, parsed) {
@@ -1075,6 +1081,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     dataRange : function () {
         var data = this._mask.data;
+        if (_.isString(data)) {
+            data = M.parse(data);
+        }
         var first = _.first(data);
         var last = _.last(data);
         var firstYear = moment.utc().year(first.year).dayOfYear(first.doy);

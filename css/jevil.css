@@ -156,6 +156,7 @@
 
 .layers-container {
     margin-bottom: 15px;
+    margin-top: 20px;
     }
 
 .baselayer-dropdown-wrapper {
@@ -651,6 +652,7 @@ input.chrome-field-input {
 .leaflet-control-zoom.leaflet-bar.leaflet-control,
 .leaflet-draw-toolbar.leaflet-bar.leaflet-draw-toolbar-top {
     border-radius: 4px !important;
+    border: none;
     }
 
 .leaflet-control-zoom-in {
@@ -2804,4 +2806,10 @@ input.stop-color {
     -webkit-box-shadow: 15px 10px 74px -31px rgba(0,0,0,0.75);
     -moz-box-shadow: 15px 10px 74px -31px rgba(0,0,0,0.75);
     box-shadow: 15px 10px 74px -31px rgba(0,0,0,0.75);
+}
+
+
+.right-align-new-layers-button {
+    left: 386px;
+    top: 21px;
 }

@@ -2813,3 +2813,21 @@ input.stop-color {
     left: 386px;
     top: 21px;
 }
+
+
+
+
+
+
+
+
+
+.raster-color-range-wrapper {
+    display: none !important;
+}
+.raster-range-slider {
+    display: none !important;
+}
+.raster-range-marks { 
+    display: none !important;
+}

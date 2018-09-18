@@ -793,7 +793,7 @@ M.Chrome.Data = M.Chrome.extend({
     initFileList : function (D3container, data, library) {
 
         // debug: only get a few last datasets
-        console.log('data:', data);
+        // console.log('data:', data);
 
         var data = this._filterOutTimeseriesDatasets(data);
         // var data = _.sortBy(data, 'lastUpdated').splice(0, 5);

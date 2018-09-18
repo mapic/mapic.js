@@ -732,10 +732,13 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         }
 
         // find dataset
+        console.log('this._cursor', this._cursor);
         var dataset = this._datasets[this._cursor];
+        console.log('dataset:', dataset);
 
         // find cached frame
         var cache = _.find(this._cache, function (c) {
+            if (!dataset || !dataset.id) return false;
             return c.dataset_id == dataset.id;
         });
 

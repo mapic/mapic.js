@@ -225,7 +225,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         var range = this.getRange();
         var years = _.range(range[0], range[1]+1); 
-        var yearly_data = [];
 
         // optimize data search, divide into years
         var dataRange = this.dataRange(); // [2001, 2018]
@@ -240,32 +239,94 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             });
         });
 
+
+        // todo: fix that 2018 january values are being added to 2019-jan in graph
+
+
+        // // alt 1
+        // var yearly_data = [];
+        // _.times(365, function (i) {
+
+        //     var dohy = i+1;
+        //     var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
+        //     var hydrological_doy = hydrological_date.dayOfYear();
+
+        //     var item = {
+        //         scf : {}, 
+        //         date : hydrological_date,
+        //     }
+
+        //     years.forEach(function (y) {
+
+        //         // y = 2018, ie. 2018-2019
+        //         // y = 2017, ie. 2017-2018
+                
+        //         // get data for 1.sept-31.dec first
+        //         // then get 1.jan-31.aug
+
+        //         // 
+        //         var scf = _.find(opti_data[y], function (d) {   // expensive op! todo: cut into years first
+        //             return d.doy == hydrological_doy; // if [i] instead, you get january values in september.. :/ 
+        //         });
+        //         item.scf[y] = scf ? parseFloat(scf.scf) : false;
+
+        //     }.bind(this))            
+
+        //     yearly_data.push(item);
+
+        // }.bind(this));
+
+
+
+        // alt 2
+        var yearly_data_2 = [];
+        var hydrological_doy;
         _.times(365, function (i) {
-            var dohy = i+1;
+            var dohy = i;
+            var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
+            hydrological_doy = hydrological_date.dayOfYear();
 
-            // var date1 = moment.utc().year(hy.year).date(1).month(8);
-            var date1 = moment.utc().year(hy.year).date(1).month(8);
-            var date2 = date1.add(dohy, 'days');
-            var doy = date2.dayOfYear();
+            yearly_data_2[i] = {
+                scf : {},
+                date : hydrological_date
+            };
+        })
+        _.forEach(years, function (y) { // [2001, 2002...2017, 2018]
 
-            var item = {
-                scf : {}, 
-                // date : moment.utc().year(2018).dayOfYear(doy) // fake year, correct doy
-                date : date2,
-            }
 
-            years.forEach(function (y) {
-                var scf = _.find(opti_data[y], function (d) {   // expensive op! todo: cut into years first
-                    return d.doy == doy;
-                });
-                item.scf[y] = scf ? parseFloat(scf.scf) : false;
-            }.bind(this))            
 
-            yearly_data.push(item);
+            _.times(365, function (i) {
 
-        }.bind(this));
+              
+                // eg. year: 2018
+                // fill with sept2018-aug2019
+                var dohy = i; // 
+                var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
+                hydrological_doy = hydrological_date.dayOfYear();
 
-        return yearly_data;
+                // aug-dec
+                if (hydrological_doy >= 244 && hydrological_doy <= 365) {
+                    var scf = _.find(opti_data[y], function (d) {
+                        return d.doy == hydrological_doy;
+                    });
+                }
+
+                // jan-sept y+1
+                if (hydrological_doy > 0 && hydrological_doy <= 243 ) {
+                    var scf = _.find(opti_data[y+1], function (d) {
+                        return d.doy == hydrological_doy;
+                    });
+
+                }
+
+                yearly_data_2[i].scf[y] = scf ? parseFloat(scf.scf) : false;
+
+            });
+
+        });
+
+        // return yearly_data;
+        return yearly_data_2;
     },
 
 
@@ -286,10 +347,14 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 return d.doy == doy;
             });
 
+            console.log('today:', today);
+
             // get this day's max
             var max = _.maxBy(today, function (d) {
                 return parseFloat(d.scf);
-            }).scf;
+            // }).scf;
+            });
+            console.log('max:;', max, n);
 
             // get this day's min
             var min = _.minBy(today, function (d) {
@@ -559,15 +624,19 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // years
         years.forEach(function (y, i) {
+
+             var year_name = y + '-' + (parseInt(y)+1);
           
             var li = M.DomUtil.create('li', '', ul);
             var input = M.DomUtil.create('input', '', li);
-            var label = M.DomUtil.create('label', '', li, y);
+            var label = M.DomUtil.create('label', '', li, year_name);
+
+           
 
             input.id = 'years-dropdown-' + y;
             input.setAttribute('type', 'checkbox');
-            input.setAttribute('name', y);
-            input.setAttribute('value', y);
+            input.setAttribute('name', year_name);
+            input.setAttribute('value', year_name);
             label.setAttribute('for', input.id);
 
             // event
@@ -643,7 +712,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                     // create legend
                     var legend = M.DomUtil.create('div', 'graph-legend-module', this._legendContainer);
                     var legend_color = M.DomUtil.create('div', 'graph-legend-color', legend);
-                    var legend_text = M.DomUtil.create('div', 'graph-legend-text', legend, s);
+                    var legend_name = s.toString() + '-' + (parseInt(s) + 1);
+                    var legend_text = M.DomUtil.create('div', 'graph-legend-text', legend, legend_name);
 
                     // set color
                     legend_color.style.background = this.getColor(i);
@@ -669,14 +739,14 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     _getHydrologicalYear : function () {
         var today = moment();
         var year = today.year();
-        var isAfter = today.isSameOrAfter(moment().year(year).date(1).month(8)); // 0-11 months
-        this._current.hydrological_year = isAfter ? year : year - 1;
+        var isSameOrAfter = today.isSameOrAfter(moment().year(year).date(1).month(8)); // 0-11 months
+        this._current.hydrological_year = isSameOrAfter ? year : year - 1;
         var hy = this._current.hydrological_year;
 
         var h = {
             year : hy,
-            minDate : moment('31-08-' + hy, "DD-MM-YYYY"),
-            maxDate : moment('01-09-' + (hy + 1), "DD-MM-YYYY")
+            minDate : moment('01-09-' + hy, "DD-MM-YYYY"),
+            maxDate : moment('31-08-' + (hy + 1), "DD-MM-YYYY")
         }
         return h;
     },
@@ -1001,7 +1071,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // get data range
         var range = this.getRange();
-        var rangeText = [range[0], range[1]-1].join('-');
+        var rangeText = [range[0], range[1]+1].join('-');
         
         // create divs
         var year_container = M.DomUtil.create('div', 'graph-legend-header', this._pluginLegendsHeader, rangeText);
@@ -1034,12 +1104,15 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var last = _.last(datasets);
 
         // get date
-        var date = moment.utc(last.timestamp);
+        var year = last ? moment.utc(last.timestamp).year() : 2018;
+        var day = last ? moment.utc(last.timestamp).dayOfYear() : 244;
 
         // return day/year    
         var current = {
-            year : date.year(),
-            day : date.dayOfYear()
+            // year : date.year(),
+            year : year,
+            // day : date.dayOfYear()
+            day : day
         }
 
         return current;
@@ -1074,8 +1147,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var datasets = this.cube().getDatasets();
         var last = _.last(datasets);
         var first = _.first(datasets);
-        var firstYear = moment.utc(first.timestamp).year();
-        var lastYear = moment.utc(last.timetamp).year();
+        var firstYear = first ? moment.utc(first.timestamp).year() : 2018;
+        var lastYear = last ? moment.utc(last.timetamp).year() : 2018;
         return [firstYear, lastYear];
     },
 

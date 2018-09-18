@@ -3454,14 +3454,11 @@ M.Chrome.Data = M.Chrome.extend({
 
     createLayerNameContent : function (parent, library) {
 
-        console.log('parent:', parent);
-
         // Bind
         var nameContent =
             parent
             .selectAll('.layer-name-content')
             .data(function(d) { 
-                console.log('d:', d);
                 return [d]; 
             });
 
@@ -3481,16 +3478,15 @@ M.Chrome.Data = M.Chrome.extend({
                 var editable = (library == 'postgis' || library == 'raster' || library == 'graph' || library == 'wms');
                 editable && this.activateLayerInput(d, library);
             }.bind(this))
-            .on('mouseover', function (d) {
-                
-                // app.Tooltip.add(parent[0], 'Gives the coordinates of the mouse pointer', { extends : 'systyle', tipJoint : 'bottom middle'});
-            })
+
+            // add tooltip
             .attr('title', function (d) {
                 var file_id = d.store.file;
                 var file = app.Account.getFile(file_id);
                 console.log('file:', file);
                 if (!file) return;
-                var filename = 'File: ' + file.getName();
+                var filename = 'Layer created from file: ' + file.getName();
+                filename += '\nSize of dataset: ' + (parseInt(file.store.dataSize)/1000000).toFixed(2) + 'MB';
                 return filename;
             })
 

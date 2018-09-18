@@ -332,8 +332,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                                                                             // due to graph needing a date to know it should display data
         }.bind(this));
 
-
-
         return average;
     },
 
@@ -885,7 +883,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
             // calc day-of-year
             // todo: check if works with all screen sizes, since we're dealing with pixels??
-            var p = parseInt(((mousex - 40) / 410) * 364) + 1
+            var p = parseInt(((mousex - 40) / 410) * 364);
 
             // fire event
             that.fire('sliderMovement', {

@@ -498,6 +498,16 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         }
     },
 
+    flyTo : function () {
+        var maskLayer = this._maskLayers[0];
+        if (!maskLayer) return;
+
+        // fly
+        var bounds = maskLayer.layer.getBounds();
+        app._map.fitBounds(bounds);
+
+    },
+
     _flyToMask : function (maskLayer) {
         if (!this.options.mask.flyTo) return;
 

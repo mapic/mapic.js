@@ -3454,28 +3454,45 @@ M.Chrome.Data = M.Chrome.extend({
 
     createLayerNameContent : function (parent, library) {
 
+        console.log('parent:', parent);
+
         // Bind
         var nameContent =
-                parent
-                    .selectAll('.layer-name-content')
-                    .data(function(d) { return [d] });
+            parent
+            .selectAll('.layer-name-content')
+            .data(function(d) { 
+                console.log('d:', d);
+                return [d]; 
+            });
 
         // Enter
         nameContent
-                .enter()
-                .append('div')
-                .classed('layer-name-content', true);
+            .enter()
+            .append('div')
+            .classed('layer-name-content', true);
 
 
         // Update
         nameContent
-                .html(function (d) {
-                    return d.getTitle();
-                }.bind(this))
-                .on('dblclick', function (d) {
-                    var editable = (library == 'postgis' || library == 'raster' || library == 'graph' || library == 'wms');
-                    editable && this.activateLayerInput(d, library);
-                }.bind(this));
+            .html(function (d) {
+                return d.getTitle();
+            }.bind(this))
+            .on('dblclick', function (d) {
+                var editable = (library == 'postgis' || library == 'raster' || library == 'graph' || library == 'wms');
+                editable && this.activateLayerInput(d, library);
+            }.bind(this))
+            .on('mouseover', function (d) {
+                
+                // app.Tooltip.add(parent[0], 'Gives the coordinates of the mouse pointer', { extends : 'systyle', tipJoint : 'bottom middle'});
+            })
+            .attr('title', function (d) {
+                var file_id = d.store.file;
+                var file = app.Account.getFile(file_id);
+                console.log('file:', file);
+                if (!file) return;
+                var filename = 'File: ' + file.getName();
+                return filename;
+            })
 
 
         // Exit

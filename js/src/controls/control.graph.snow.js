@@ -77,9 +77,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // create DOM
         this._initContainer();
 
-        // set cache
-        // this._initCache();
-
         console.log('layer: ', this.options.cube);
 
         // events
@@ -217,12 +214,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     yearly : function (data) {
 
-        // yearly used to be a fn for chopping up data into years: 2017, 2018, etc. (jan-dec)
-        // ---
-        // this needs to change, and instead it must chop into hydrological years (sept 2017 - aug 2018)
-        // 
-        // todo: still messy, need to move all 365 arrays to 1st sept - 31st aug. [0, .. 365] = not doy but dohy...
-
+        // get range
         var range = this.getRange();
         var years = _.range(range[0], range[1]+1); 
 
@@ -230,6 +222,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var dataRange = this.dataRange(); // [2001, 2018]
         var yearly_range = _.range(dataRange[0], dataRange[1] + 1); // [2001, 2002, ... 2018]
 
+        // get hydrological year
         var hy = this._getHydrologicalYear();
 
         var opti_data = {};
@@ -239,46 +232,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             });
         });
 
-
-        // todo: fix that 2018 january values are being added to 2019-jan in graph
-
-
-        // // alt 1
-        // var yearly_data = [];
-        // _.times(365, function (i) {
-
-        //     var dohy = i+1;
-        //     var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
-        //     var hydrological_doy = hydrological_date.dayOfYear();
-
-        //     var item = {
-        //         scf : {}, 
-        //         date : hydrological_date,
-        //     }
-
-        //     years.forEach(function (y) {
-
-        //         // y = 2018, ie. 2018-2019
-        //         // y = 2017, ie. 2017-2018
-                
-        //         // get data for 1.sept-31.dec first
-        //         // then get 1.jan-31.aug
-
-        //         // 
-        //         var scf = _.find(opti_data[y], function (d) {   // expensive op! todo: cut into years first
-        //             return d.doy == hydrological_doy; // if [i] instead, you get january values in september.. :/ 
-        //         });
-        //         item.scf[y] = scf ? parseFloat(scf.scf) : false;
-
-        //     }.bind(this))            
-
-        //     yearly_data.push(item);
-
-        // }.bind(this));
-
-
-
-        // alt 2
         var yearly_data_2 = [];
         var hydrological_doy;
         _.times(365, function (i) {
@@ -291,16 +244,13 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 date : hydrological_date
             };
         })
+
         _.forEach(years, function (y) { // [2001, 2002...2017, 2018]
-
-
 
             _.times(365, function (i) {
 
-              
-                // eg. year: 2018
-                // fill with sept2018-aug2019
-                var dohy = i; // 
+                // get hydrological date
+                var dohy = i;  
                 var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
                 hydrological_doy = hydrological_date.dayOfYear();
 
@@ -316,9 +266,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                     var scf = _.find(opti_data[y+1], function (d) {
                         return d.doy == hydrological_doy;
                     });
-
                 }
 
+                // set 
                 yearly_data_2[i].scf[y] = scf ? parseFloat(scf.scf) : false;
 
             });
@@ -337,24 +287,23 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // clear
         var average = [];
 
+        var hy = this._getHydrologicalYear();
+
         // for each day
         _.times(365, function (n) {
 
-            var doy = n+1;
+            var doy = n+243;
+            if (doy > 365) doy -= 365;
 
             // get this day's values
             var today = _.filter(data, function (d) {
                 return d.doy == doy;
             });
 
-            console.log('today:', today);
-
             // get this day's max
             var max = _.maxBy(today, function (d) {
                 return parseFloat(d.scf);
-            // }).scf;
-            });
-            console.log('max:;', max, n);
+            }).scf;
 
             // get this day's min
             var min = _.minBy(today, function (d) {
@@ -368,9 +317,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             });
             var avg = sum/today.length;
          
-            // sept - aug year
-            var dummy_year = this._current.year ;
-            if (n > 243) dummy_year = this._current.year - 1;
+            // moment.utc().year(hy.year).date(1).month(8).add(i, 'days');
+            var hydro_date = moment.utc().year(hy.year).date(1).month(8).add(n, 'days');
 
             // add to array
             average.push({
@@ -378,10 +326,13 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 max  : parseFloat(max),
                 min  : parseFloat(min),
                 avg  : avg, 
-                date : moment.utc().year(dummy_year).dayOfYear(doy),        // year doesn't matter, as it's avg for all years
+                date : hydro_date,        // year doesn't matter, as it's avg for all years
+                // date : moment.utc().year(dummy_year).dayOfYear(doy),        // year doesn't matter, as it's avg for all years
             });                                                             // however: need to add a YEAR/DATE when adding to graph, 
                                                                             // due to graph needing a date to know it should display data
         }.bind(this));
+
+
 
         return average;
     },

@@ -632,6 +632,9 @@ M.Model.File = M.Model.extend({
         if (!this.store || !this.store.data || !this.store.data.postgis) return false;
         return this.store.data.postgis.original_format;
     },
+    getOriginalName : function () {
+        return this.store.originalName;        
+    },
 
     defaultCSVCarto : function (done) {
         

@@ -2831,3 +2831,7 @@ input.stop-color {
 .raster-range-marks { 
     display: none !important;
 }
+
+.leaflet-draw-toolbar.leaflet-bar {
+    border: none;
+}

@@ -76,6 +76,9 @@ M.Data = M.Class.extend({
 
 		// get file objects
 		app.Data._getFile(file_id, app.Data._gotFile.bind(app.Data));
+
+		// feedback
+		app.FeedbackPane.setMessage({title : 'Import successful!', description : 'The dataset was imported successfully'});
 	},
 
 	_onUploadDone : function () {

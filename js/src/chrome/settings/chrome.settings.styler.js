@@ -112,8 +112,13 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 				layer_id : this._layer._getLayerUuid()
 			}, function (err, results) {
 				console.log('err, results', err, results);
+				var res = M.parse(results);
 
-				// todo: feedback on InSAR pre-rendering
+				// give feedback
+				app.FeedbackPane.setMessage({ 
+					title : 'Pre-rendering started!', 
+					description : 'A total of ' + res.tiles + ' tiles are being rendered. <br><br>Estimated rendering time is a few minutes...'
+				});
 			});
 
 		}	

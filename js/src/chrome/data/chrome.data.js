@@ -380,46 +380,6 @@ M.Chrome.Data = M.Chrome.extend({
         // open fullscreen for editing
         this._openCubeLayerEditFullscreen();
 
-
-        // // create cube
-        // app.api.createCube({}, function (err, cubeJSON) {
-        //     if (err) return console.error('createCube err: ', err);
-
-        //     var cube = M.parse(cubeJSON);
-
-        //     // create M.CubeLayer
-        //     var cubeLayer = {
-        //         projectUuid : project.getUuid(), // pass to automatically attach to project
-        //         data : { cube : cube },
-        //         metadata : null,
-        //         title : 'New cube layer',
-        //         description : 'Cube layer description',
-        //         file : 'file-' + cube.cube_id,
-        //         style : JSON.stringify(this.get_default_cube_cartocss()) // save default json style
-        //     }
-
-        //     // create Wu layer
-        //     app.api.createLayer(cubeLayer, function (err, cubeLayerJSON) {
-
-        //         var cubeLayer = M.parse(cubeLayerJSON);
-
-        //         var layer = project.addLayer(cubeLayer);
-
-        //         // select project
-        //         M.Mixin.Events.fire('layerAdded', { detail : {
-        //             projectUuid : project.getUuid(),
-        //             layerUuid : cubeLayer.uuid
-        //         }});
-
-        //         // open fullscreen for editing
-        //         console.log('layer:', layer);
-        //         console.log('layer:', M.stringify(layer));
-        //         this._openCubeLayerEditFullscreen(layer);
-
-        //     }.bind(this));
-
-        // }.bind(this));
-
         // close dropdown
         this._optionsBtnClick();
     },
@@ -796,7 +756,6 @@ M.Chrome.Data = M.Chrome.extend({
         // console.log('data:', data);
 
         var data = this._filterOutTimeseriesDatasets(data);
-        // var data = _.sortBy(data, 'lastUpdated').splice(0, 5);
         var data = _.sortBy(data, 'lastUpdated');;
 
         // BIND
@@ -1931,7 +1890,6 @@ M.Chrome.Data = M.Chrome.extend({
 
         // get rasters
         var files = app.Account.getFiles();
-        // console.log('files:', files)
         var datasets = _.filter(files, function (f) {
             if (!f) return false;
             if (!f.store) return false;
@@ -3009,7 +2967,6 @@ M.Chrome.Data = M.Chrome.extend({
         }, this);
 
         this.numberOfProviders = results.length;
-        // console.log('results:', results);
         return results;
     },
 
@@ -3483,7 +3440,6 @@ M.Chrome.Data = M.Chrome.extend({
             .attr('title', function (d) {
                 var file_id = d.store.file;
                 var file = app.Account.getFile(file_id);
-                console.log('file:', file);
                 if (!file) return;
                 var filename = 'Layer created from file: ' + file.getName();
                 filename += '\nSize of dataset: ' + (parseInt(file.store.dataSize)/1000000).toFixed(2) + 'MB';

@@ -77,8 +77,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // create DOM
         this._initContainer();
 
-        console.log('layer: ', this.options.cube);
-
         // events
         this.on('sliderMovement', this._onSliderMovement);
         this.on('sliderClick', this._onSliderClick);
@@ -278,8 +276,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         });
         
-        console.log('yearly_data_2', yearly_data_2);
-
         // return yearly_data;
         return yearly_data_2;
     },

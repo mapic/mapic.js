@@ -106,7 +106,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     _addTo : function (type) {
 
-        console.log('cube: ', this);
+        console.log('M.Model.Layer.CubeLayer: ', this);
 
         // ensure inited
         this.initLayer(function (err) {
@@ -262,7 +262,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             if (err) console.log('err, cube', err, cube);
 
             if (this.store.data.cube == cube) {
-                console.log('Cube is same.');
+                // console.log('Cube is same.');
             } else {
 
                 // save updated cube
@@ -742,9 +742,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         }
 
         // find dataset
-        console.log('this._cursor', this._cursor);
         var dataset = this._datasets[this._cursor];
-        console.log('dataset:', dataset);
 
         // find cached frame
         var cache = _.find(this._cache, function (c) {

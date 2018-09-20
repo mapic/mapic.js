@@ -295,7 +295,6 @@ M.Api = M.Class.extend({
 	},
 
 	getCube : function (options, done) {
-		console.log('getCube', options);
 		var path = '/v2/cubes/get';
 		this.get(path, options, done);
 	},

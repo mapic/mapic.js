@@ -119,7 +119,12 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 		}	
 
 		// add logs
-		app.log('prerendered:', this._layer.getTitle());
+		app.log('prerendered:', { 
+			info : {
+	    		layer : this._layer.getTitle(),
+	    		project : app.activeProject.getName()
+	    	}
+	    });
 		
 	},
 

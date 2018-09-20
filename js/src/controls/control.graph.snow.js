@@ -255,25 +255,30 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 hydrological_doy = hydrological_date.dayOfYear();
 
                 // aug-dec
+                // doy 243 = 31. aug
+                // doy 244 = 1. sept
                 if (hydrological_doy >= 244 && hydrological_doy <= 365) {
                     var scf = _.find(opti_data[y], function (d) {
-                        return d.doy == hydrological_doy;
+                        return d.doy == hydrological_doy-1;
                     });
                 }
 
                 // jan-sept y+1
                 if (hydrological_doy > 0 && hydrological_doy <= 243 ) {
                     var scf = _.find(opti_data[y+1], function (d) {
-                        return d.doy == hydrological_doy;
+                        return d.doy == hydrological_doy-1;
                     });
                 }
 
                 // set 
                 yearly_data_2[i].scf[y] = scf ? parseFloat(scf.scf) : false;
 
+
             });
 
         });
+        
+        console.log('yearly_data_2', yearly_data_2);
 
         // return yearly_data;
         return yearly_data_2;

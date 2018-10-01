@@ -29,7 +29,8 @@ M.User = M.Class.extend({
 	},
 
 	isPublic : function () {
-		return this.store.uuid == 'mapic-public';	
+		return this.store.local.email = 'public@mapic.io';
+		// return this.store.uuid == 'mapic-public';	
 	},
 
 	isContact : function () {

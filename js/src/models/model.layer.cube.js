@@ -307,6 +307,15 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     _initDatasets : function () {
         var datasets = this.getDatasets();
         var f = this.options.timeFormat;
+        if (!_.size(datasets)) {
+            console.log('no datasets yet!');
+            app.FeedbackPane.setError({
+                title : 'Missing datasets',
+                description : 'There are no datasets in the layer. Please add datasets before continuing.'
+            })
+            this._datasets = [];
+            return;
+        }
         datasets.forEach(function (d, n) {
 
             // prepare format for quicker search 

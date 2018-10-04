@@ -288,7 +288,11 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // clear
         var average = [];
 
+        // get hydrological year
         var hy = this._getHydrologicalYear();
+
+        // error handling
+        var errorDays = [];
 
         // for each day
         _.times(365, function (n) {
@@ -300,6 +304,12 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             var today = _.filter(data, function (d) {
                 return d.doy == doy;
             });
+
+            // return if no today
+            if (_.isEmpty(today)) {
+                errorDays.push(doy);
+                return;
+            }
 
             // get this day's max
             var max = _.maxBy(today, function (d) {
@@ -332,6 +342,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             });                                                             // however: need to add a YEAR/DATE when adding to graph, 
                                                                             // due to graph needing a date to know it should display data
         }.bind(this));
+
+        if (!_.isEmpty(errorDays)) {
+            app.say('Error in JSON data', 'Failed to create averages due to missing days in the data.', 'error');
+        };
 
         return average;
     },

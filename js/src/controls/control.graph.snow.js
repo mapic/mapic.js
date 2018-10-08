@@ -109,10 +109,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     },
 
     _onLayerEnabled : function () {
-        if (this._container) this._container.style.display = 'block';
+        if (this._mainContainer) this._mainContainer.style.display = 'block';
     },
     _onLayerDisabled : function () {
-        if (this._container) this._container.style.display = 'none';
+        if (this._mainContainer) this._mainContainer.style.display = 'none';
     },
 
     // get/set parsed based on mask.id
@@ -444,7 +444,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         if (this._container) return;
 
         // todo: refactor the DOM, incl. animator
-        this._mainContainer          = M.DomUtil.create('div', 'snow-graph-container',                 app._appPane);
+        app._graphContainer = app._graphContainer || M.DomUtil.create('div', 'graph-container', app._appPane);
+        this._mainContainer          = M.DomUtil.create('div', 'snow-graph-container',                 app._graphContainer);
         this._container              = M.DomUtil.create('div', 'big-graph-outer-container',            this._mainContainer);
         this._infoContainer          = M.DomUtil.create('div', 'big-graph-info-container',             this._container);
 
@@ -508,7 +509,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 cw : this._composite.width(),
                 dl : this._dateTitle.offsetLeft,
                 pt : this._pluginMainContainer.offsetTop,
-                et : this._editorPane.offsetTop
+                // et : this._editorPane.offsetTop
             }
         }
 

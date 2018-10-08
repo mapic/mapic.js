@@ -38,6 +38,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         },
     },
 
+    // _legendsDOM : {},
+
     options : {
         fetchLineGraph : false, // debug, until refactored fetching line graph to cube
         editorOptions : {
@@ -74,8 +76,29 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // set project
         this._project = app.activeProject;
 
+        // set layer
+        this._layer = this.options.cube;
+
+        this._legendsDOM = {};
+        this._selectedYears = {};
+        this._parsed = {};
+        this._slider = {
+            vertical : null,
+            left : 0,
+            state : false
+        };
+        this._range = {
+            datasets : [],
+            data : {} // by mask
+        };
+
+
         // create DOM
         this._initContainer();
+
+        // create dc
+        this.dc = dc;
+
 
         // events
         this.on('sliderMovement', this._onSliderMovement);
@@ -375,7 +398,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         }.bind(this));
     },
 
-    _parsed : {},
+    // _parsed : {},
 
     onMaskSelected : function (options) {
         this.setMask(options.mask);
@@ -421,7 +444,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         if (this._container) return;
 
         // todo: refactor the DOM, incl. animator
-        this._mainContainer          = M.DomUtil.create('div', 'snow-graph-container', app._appPane);
+        this._mainContainer          = M.DomUtil.create('div', 'snow-graph-container',                 app._appPane);
         this._container              = M.DomUtil.create('div', 'big-graph-outer-container',            this._mainContainer);
         this._infoContainer          = M.DomUtil.create('div', 'big-graph-info-container',             this._container);
 
@@ -444,7 +467,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
        
         // container for graph
         this._graphContainer         = M.DomUtil.create('div', 'big-graph-inner-container',            this._container);
-        
+        this._graphContainer.setAttribute('id', 'graph-container-' + this.options.cube.getUuid().substring(6, 14));    
+
         // help button
         this._helpButton            = M.DomUtil.create('div', 'graph-help-button', this._container);
         this._helpTooltip           = M.DomUtil.create('div', 'graph-help-tooltip', this._helpButton, '<i class="fa fa-info-circle" aria-hidden="true"></i>');
@@ -506,7 +530,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         if (chart_width < 500) chart_width = 500;
         if (chart_height < 220) chart_height = 220;
         this._composite.width(chart_width).height(chart_height);
-        dc.renderAll();
+        this.dc.renderAll();
 
         // set text offsets
         var left = this._resizeValues.dl - movement_x;
@@ -565,7 +589,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     },
    
     _createAverageDataPane : function () {
-        if (this._average_pane) return;
+        if (this._average_pane) {
+            return;
+        }
 
         // range
         // var years = _.range(2000, 2017);
@@ -586,18 +612,18 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var span = M.DomUtil.create('span', 'caret', btn);
         var ul = M.DomUtil.create('ul', 'dropdown-menu bullet pull-left pull-top', btn_group);
 
+        var cube_id = this._layer.getUuid();
+
         // years
         years.forEach(function (y, i) {
 
-             var year_name = y + '-' + (parseInt(y)+1);
+            var year_name = y + '-' + (parseInt(y)+1);
           
             var li = M.DomUtil.create('li', '', ul);
             var input = M.DomUtil.create('input', '', li);
             var label = M.DomUtil.create('label', '', li, year_name);
 
-           
-
-            input.id = 'years-dropdown-' + y;
+            input.id = 'years-dropdown-' + y + '-' + cube_id;
             input.setAttribute('type', 'checkbox');
             input.setAttribute('name', year_name);
             input.setAttribute('value', year_name);
@@ -624,7 +650,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     },
 
-    _selectedYears : {},
+    // _selectedYears : {},
 
     getSelectedYears : function () {
          var s = [];
@@ -659,6 +685,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var selectedYears = this.getSelectedYears();
         var range = this.getRange();
         var allYears = _.range(range[0], range[1] + 1);
+        var that = this;
 
         // create legends
         allYears.reverse().forEach(function (s, i) {
@@ -666,35 +693,35 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             // if should be active
             if (_.indexOf(selectedYears, s) >= 0) {
 
-                var div = this._legendsDOM[s];
+                var div = that._legendsDOM[s];
 
                 if (div) {
                     // show if already created
                     M.DomUtil.removeClass(div, 'displayNone');
+
                 } else {
 
                     // create legend
-                    var legend = M.DomUtil.create('div', 'graph-legend-module', this._legendContainer);
+                    var legend = M.DomUtil.create('div', 'graph-legend-module', that._legendContainer);
                     var legend_color = M.DomUtil.create('div', 'graph-legend-color', legend);
                     var legend_name = s.toString() + '-' + (parseInt(s) + 1);
                     var legend_text = M.DomUtil.create('div', 'graph-legend-text', legend, legend_name);
 
                     // set color
-                    legend_color.style.background = this.getColor(i);
+                    legend_color.style.background = that.getColor(i);
 
                     // rememeber
-                    this._legendsDOM[s] = legend;
+                    that._legendsDOM[s] = legend;
                 }
             } else {
 
                 // hide
-                var div = this._legendsDOM[s];
+                var div = that._legendsDOM[s];
                 if (div) M.DomUtil.addClass(div, 'displayNone');
             }
         }.bind(this));
     },
  
-    _legendsDOM : {},
 
     isEditor : function () {
         return app.activeProject.isEditor();
@@ -751,15 +778,16 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         });
 
         // create composite chart @ container
-        var composite = this._composite = dc.compositeChart(this._graphContainer);
+        var composite = this._composite = this.dc.compositeChart(this._graphContainer);
 
         // define compose charts
         var compose_charts = [
 
             // max 
-            dc.lineChart(composite)
+            this.dc.lineChart(composite)
             .group(average_max_group)
             .colors('#DDDDDD')
+            // .colors('black')
             .renderArea(true)
             .renderHorizontalGridLines(true)
             .renderVerticalGridLines(true)   
@@ -767,17 +795,19 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             .xyTipsOn(false),
 
             // min 
-            dc.lineChart(composite)
+            this.dc.lineChart(composite)
             .group(average_min_group)
             .colors('#3C4759')
+            // .colors('red')
             .renderArea(true)       
             .renderDataPoints(false)
-            .renderHorizontalGridLines(true)
+            // .renderHorizontalGridLines(true)
+            .renderHorizontalGridLines(false)
             .renderVerticalGridLines(true)
             .xyTipsOn(false),
 
             // avg 
-            dc.lineChart(composite)
+            this.dc.lineChart(composite)
             .group(average_avg_group)
             .colors('white')
             .renderHorizontalGridLines(true)
@@ -803,8 +833,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         }
 
         // add yearly lines to composite array
+        var that = this;
         line_groups.forEach(function (lg, i) {
-            compose_charts.push(dc.lineChart(composite)
+            compose_charts.push(that.dc.lineChart(composite)
             .group(remove_falseys(lg))
             .colors(this.getColor(i))
             .renderHorizontalGridLines(true)
@@ -823,7 +854,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .clipPadding(10)    
         .elasticY(false)
         .elasticX(false)
-        .on('renderlet', this._onRenderlet)
+        .on('renderlet', this._onRenderlet.bind(this))
         .renderHorizontalGridLines(true)
         .renderVerticalGridLines(true)
         .brushOn(false)
@@ -837,7 +868,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .tickFormat(d3.time. format('%b'));
         
         // render
-        dc.renderAll(); 
+        this.dc.renderAll(); 
 
         // update titles
         this._updateTitles();
@@ -851,25 +882,28 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // add vertical line to graph
         this._addVerticalLine();
     },
-    _slider : {
-        vertical : null,
-        left : 0,
-        state : false
-    },
+    // _slider : {
+    //     vertical : null,
+    //     left : 0,
+    //     state : false
+    // },
 
     _addVerticalLine : function () {
 
         // remove vertical line if already existing
-        var existing = M.DomUtil.get('chart-vertical-line');
+        var vertical_line_id = 'chart-vertical-line-' + this.options.cube.getUuid().substring(6, 14);
+        var existing = M.DomUtil.get(vertical_line_id);
 
         if (existing) {
             M.DomUtil.remove(existing);
         }
 
         // define vertical line
-        var vertical = d3.select(".dc-chart")
+        var chart_id = 'graph-container-' + this.options.cube.getUuid().substring(6, 14);
+        var vertical = d3.select("#" + chart_id)
         .append("div")
-        .attr("id", "chart-vertical-line")
+        .attr("id", vertical_line_id)
+        // .attr("id", "chart-vertical-line")
         .style("position", "absolute")
         .style("z-index", "19")
         .style("width", "4px")
@@ -882,7 +916,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var that = this;
         this._slider.vertical = vertical;
 
-        d3.select(".dc-chart")
+        // d3.select(".dc-chart")
+        d3.select("#" + chart_id)
         .on("mousemove", function(){  
             if (!that._slider.state) return;
             
@@ -972,7 +1007,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var todaymousex = (p * 82 / 73) + 40;
         this._slider.vertical.style("left", todaymousex + "px");
 
-       
+        // set cursor and dataet to current date
+        var date = this._getSliderDate(this._p);
+        this.cube().setCursor(date);
 
     },
 
@@ -982,8 +1019,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _onRenderlet : function (chart) {
         // hack gridlines on top
-        var h = document.getElementsByClassName('grid-line horizontal')[0];
-        var v = document.getElementsByClassName('grid-line vertical')[0];
+        var chart_id = 'graph-container-' + this.options.cube.getUuid().substring(6, 14);
+        var p = M.DomUtil.get(chart_id);
+        var h = p.getElementsByClassName('grid-line horizontal')[0];
+        var v = p.getElementsByClassName('grid-line vertical')[0];
         h.parentNode.appendChild(h);
         v.parentNode.appendChild(v);
     },
@@ -1005,7 +1044,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this.ndx.line_crossfilter.add(cache);
 
         // redraw
-        dc.redrawAll();
+        this.dc.redrawAll();
 
         // update titles
         this._updateTitles();
@@ -1097,10 +1136,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._range.datasets = this.datasetRange();
     },
 
-    _range : {
-        datasets : [],
-        data : {} // by mask
-    },
+    // _range : {
+    //     datasets : [],
+    //     data : {} // by mask
+    // },
 
     getRange : function () {
         var range = [this._range.data[this._mask.id][0], this._range.datasets[1]];

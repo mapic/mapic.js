@@ -75,13 +75,19 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         emptyTile : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAB9JREFUaIHtwQENAAAAwqD3T20ON6AAAAAAAAAAAL4NIQAAAZpg4dUAAAAASUVORK5CYII=',
     },
 
-    _cache : [],
+    // _cache : [],
 
     _initialize : function (store) {
 
         // set store
         this._setStore(store);
 
+        this._cache = [];
+
+        this._data = {};
+
+        this. _masks = [];
+        this._maskLayers = [];
     },
 
     _setStore : function (store) {
@@ -282,7 +288,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     // for storing requested data
-    _data : {},
+    // _data : {},
 
     _initGraph : function (done) {
 
@@ -412,8 +418,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     },
 
-    _masks : [],
-    _maskLayers : [],
+    // _masks : [],
+    // _maskLayers : [],
 
     _initRasterMask : function (mask, done) {
         console.error('todo: RASTER MASK');

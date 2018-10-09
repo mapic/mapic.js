@@ -46,6 +46,27 @@ M.FeedbackPane = M.Class.extend({
 		this.add(options, 4); 	// action message
 	},
 
+	err : function (title, description) {
+		this.setError({
+			title : title, 
+			description : description
+		});
+	},
+
+	say : function (title, description) {
+		this.setMessage({
+			title : title, 
+			description : description
+		});
+	},
+
+	msg : function (title, description) {
+		this.setMessage({
+			title : title, 
+			description : description
+		});
+	},
+
 	add : function (message, severity) {
 
 		// Create random number

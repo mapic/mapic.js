@@ -367,7 +367,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         }.bind(this));
 
         if (!_.isEmpty(errorDays)) {
-            app.say('Error in JSON data', 'Failed to create averages due to missing days in the data.', 'error');
+            app.feedback.err('Error in JSON data', 'Failed to create averages due to missing days in the data.');
         };
 
         return average;

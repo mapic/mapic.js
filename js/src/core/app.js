@@ -508,18 +508,4 @@ M.App = M.Class.extend({
 		return "" + zoom + "/" + xtile + "/" + ytile;
 	},
 
-	say : function (title, description, type) {
-		if (type == 'error') {
-			app.feedback.setError({
-				title : title, 
-				description : description
-			});
-		} else {
-			app.feedback.setMessage({
-				title : title, 
-				description : description
-			})
-		}
-	}
-
 });

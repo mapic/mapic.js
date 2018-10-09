@@ -265,7 +265,19 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         app.api.getCube({
             cube_id : cube_id
         }, function (err, cube) {
-            if (err) console.log('err, cube', err, cube);
+            if (err) {
+                console.log('err, cube', err, cube);
+
+                // error msg
+                var errorMsg = 'Please check your cube layer for errors. ';
+                var cubeError = M.parse(cube);
+                if (cubeError) {
+                    errorMsg += '(' + cubeError.error + ')';
+                }
+
+                // set feedback
+                app.feedback.err('Error with cube.', errorMsg);
+            }
 
             if (this.store.data.cube == cube) {
                 // console.log('Cube is same.');

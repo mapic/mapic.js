@@ -478,6 +478,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // add editor items
         if (this.isEditor()) this._addEditorPane();
 
+        // set default resize width
+        this._resize_width = this._container.offsetWidth;
+
         // add resize event
         M.DomEvent.on(this._resizer, 'mousedown', this._initResize, this);
     },
@@ -497,7 +500,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     _doResize : function (e) {
 
         var container = this._container;
-     
+
         // remember inital values
         if (!this._resizeValues) {
             this._resizeValues = {
@@ -538,19 +541,14 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         if (left < 330) left = 330;
         this._dateTitle.style.left = left + 'px';
 
-        // set editor pane offset
-        // var top = this._resizeValues.et + movement_y;
-        // if (top > -365) top = -365;
-        // if (this._editorPane) this._editorPane.style.top = top + 'px';
-        // console.log('-< this', this);
-
         // set vertical line height
-        console.log('this._slider.vertical.style.height', this._slider.vertical)
         var s = this._slider.vertical[0][0];
-        console.log('s: ', s);
         s.style.height = (chart_height - 40) + 'px';
-        // this._slider.vertical.style.height = chart_height + 'px';
 
+        // set vertical line left
+        var rof = this._container.offsetWidth - 190;
+        var s_b = ((this._p * rof) / 364) + 40
+        this._slider.vertical.style("left", s_b + 'px');
     },
 
     _addEditorPane : function () {
@@ -891,12 +889,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // add vertical line to graph
         this._addVerticalLine();
     },
-    // _slider : {
-    //     vertical : null,
-    //     left : 0,
-    //     state : false
-    // },
-
+ 
     _addVerticalLine : function () {
 
         // remove vertical line if already existing
@@ -929,20 +922,23 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         d3.select("#" + chart_id)
         .on("mousemove", function(){  
             if (!that._slider.state) return;
-            
+
+            var cow = that._container.offsetWidth - 150;
+
             // get mouse pos
             mousex = d3.mouse(this)[0];
 
             // max/min
             if (mousex < 40) mousex = 40;
-            if (mousex > 450) mousex = 450;
+            if (mousex > cow) mousex = cow;
 
             // set position of line
             vertical.style("left", mousex + "px" )
 
             // calc day-of-year
             // todo: check if works with all screen sizes, since we're dealing with pixels??
-            var p = parseInt(((mousex - 40) / 410) * 364);
+            var rof = that._container.offsetWidth - 190;
+            var p = parseInt(((mousex - 40) / rof) * 364);
 
             // fire event
             that.fire('sliderMovement', {
@@ -953,20 +949,23 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         })
         .on("mouseover", function(){  
             if (!that._slider.state) return;
+
+            var cow = that._container.offsetWidth - 150;
             
             // get mouse pos
             mousex = d3.mouse(this)[0];
 
             // max/min
             if (mousex < 40) mousex = 40;
-            if (mousex > 450) mousex = 450;
+            if (mousex > cow) mousex = cow;
 
             // set position of line
             vertical.style("left", mousex + "px")
 
             // calc day-of-year
             // todo: check if works with all screen sizes, since we're dealing with pixels??
-            var p = parseInt(((mousex - 40) / 410) * 364) + 1
+            var rof = that._container.offsetWidth - 190;
+            var p = parseInt(((mousex - 40) / rof) * 364) + 1
 
             // fire
             that.fire('sliderMovement', {

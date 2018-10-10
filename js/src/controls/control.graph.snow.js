@@ -520,7 +520,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // set size of container
         var height = this._resizeValues.h - movement_y;
         var width = this._resizeValues.w - movement_x;
-        if (height < 360) height = 360;
+        if (height < 300) height = 300;
         if (width < 600) width = 600;
         this._container.style.height = height + 'px';
         this._container.style.width = width + 'px';
@@ -539,9 +539,17 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._dateTitle.style.left = left + 'px';
 
         // set editor pane offset
-        var top = this._resizeValues.et + movement_y;
-        if (top > -365) top = -365;
-        this._editorPane.style.top = top + 'px';
+        // var top = this._resizeValues.et + movement_y;
+        // if (top > -365) top = -365;
+        // if (this._editorPane) this._editorPane.style.top = top + 'px';
+        // console.log('-< this', this);
+
+        // set vertical line height
+        console.log('this._slider.vertical.style.height', this._slider.vertical)
+        var s = this._slider.vertical[0][0];
+        console.log('s: ', s);
+        s.style.height = (chart_height - 40) + 'px';
+        // this._slider.vertical.style.height = chart_height + 'px';
 
     },
 

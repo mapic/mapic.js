@@ -189,7 +189,7 @@ M.MapPane = M.Pane.extend({
         this._attributionControl = L.control.attribution({position : 'bottomleft', prefix : false});
 
         // add to map
-        map.addControl(this._attributionControl);
+        // map.addControl(this._attributionControl);
 
         // set content
         var portalClientName = 'ED Insights'

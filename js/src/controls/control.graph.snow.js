@@ -671,7 +671,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // count and limit checked years
         var cyc = _.size(_.filter(this._selectedYears))
-        if (cyc > 6 && checked) return true;
+        if (cyc > 4 && checked) return true;
 
         // remember
         this._selectedYears[year] = checked;

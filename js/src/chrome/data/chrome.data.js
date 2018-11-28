@@ -163,7 +163,7 @@ M.Chrome.Data = M.Chrome.extend({
             className : 'chrome-button datalib',
             trigger : this._togglePane,
             context : this,
-            project_dependent : true
+            project_dependent : true,
         });
 
         // css experiement

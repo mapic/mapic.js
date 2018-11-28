@@ -72,6 +72,7 @@ M.Chrome.Top = M.Chrome.extend({
 		var name = button.name;
 		var ctx = button.context;
 		var project_dependent = button.project_dependent;
+		var setLast = button.setLast;
 
 		if (project_dependent) className += ' displayNone';
 
@@ -81,10 +82,16 @@ M.Chrome.Top = M.Chrome.extend({
 		// create button
 		var buttonDiv = M.DomUtil.create('div', className);
 
-		// css exp // hacky! (depending if logo is shown or not)
-		var clientLogoConfig = app.options.logos.clientLogo;
-		var referenceNode = (clientLogoConfig && clientLogoConfig.active) ? this._buttonWrapper.lastChild.previousSibling : this._buttonWrapper.lastChild;
-		this._buttonWrapper.insertBefore(buttonDiv, referenceNode);
+		// determine where to put button
+		if (setLast == true) {
+			this._buttonWrapper.appendChild(buttonDiv);
+		} else {
+			// css exp // hacky! (depending if logo is shown or not)
+			var clientLogoConfig = app.options.logos.clientLogo;
+			var referenceNode = (clientLogoConfig && clientLogoConfig.active) ? this._buttonWrapper.lastChild.previousSibling : this._buttonWrapper.lastChild;
+			this._buttonWrapper.insertBefore(buttonDiv, referenceNode);
+	
+		}
 
 		// save
 		this._buttons[name] = {

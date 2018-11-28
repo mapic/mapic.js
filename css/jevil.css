@@ -701,7 +701,7 @@ input.chrome-field-input {
 
 .feedback-pane {
     z-index: 999999999999;
-    top: 0px;
+    top: 40px;
     width: 100%;
     text-align: left;
     position: fixed;

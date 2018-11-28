@@ -478,11 +478,26 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // add editor items
         if (this.isEditor()) this._addEditorPane();
 
+        // add standalone top header
+        // this._topHeader = M.DomUtil.create('div', 'graph-top-header-container', app._graphContainer);
+        this._topHeader = app.Chrome.Top._registerButton({
+            name : 'SCF',
+            className : 'chrome-button graph-scf-button',
+            trigger : this._onTopHeaderClick,
+            context : this,
+            project_dependent : false,
+            setLast : true
+        });
+
         // set default resize width
         this._resize_width = this._container.offsetWidth;
 
         // add resize event
         M.DomEvent.on(this._resizer, 'mousedown', this._initResize, this);
+    },
+
+    _onTopHeaderClick : function () {
+
     },
 
     _initResize : function () {
@@ -1236,6 +1251,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var datehtml =  '<div class="date-item-scf">' + title.scfTitle + '</div>';
         datehtml += '<div class="date-item-date">' + title.dateTitle + '</div>';
         this._dateTitle.innerHTML = datehtml;
+
+        this._topHeader.innerHTML = 'SCF @ ' + title.date.format('Do MMM YYYY');
     },
 
     _getSliderDate : function (p) {
@@ -1264,7 +1281,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // return date/scf
         return {
             scfTitle : scfTitle, 
-            dateTitle : dateTitle
+            dateTitle : dateTitle,
+            date : date
         }
     },
 

@@ -1258,6 +1258,52 @@ M.Chrome.Data = M.Chrome.extend({
             layer : layer
         });
 
+        // add toggle for showing graph
+        // save on layer
+        this._createCubeGraphSwitch({
+            container : content,
+            layer : layer
+        });
+
+    },
+
+    _createCubeGraphSwitch : function (options) {
+
+        var container = options.container;
+        var layer = options.layer;
+
+        // create divs
+        var toggles_wrapper = this._cubesetBoxWrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'SCF Graph Statistics');
+
+
+        var title = M.DomUtil.create('div', 'dropdown-mask-title padding-top-10 padding-bottom-10', toggles_wrapper, 'Toggle visibility of SCF Graph Statistics box.');
+
+        var toggleState = true;
+        var toggle = M.DomUtil.create('div', 'chrome-switch-container scf-graph-switch switch-on', toggles_wrapper);
+
+        M.DomEvent.on(toggle, 'click', function () {
+
+            console.log('toggle:');
+
+            if (toggleState) {
+                M.DomUtil.removeClass(toggle, 'switch-on');
+            } else {
+                M.DomUtil.addClass(toggle, 'switch-on');
+            }
+
+            toggleState = !toggleState;
+
+        });
+
+        var emptySpace = M.DomUtil.create('div', 'empty-space', toggles_wrapper);
+
+
+    },
+
+    _onCubeGraphSwitchToggle : function (options) {
+        console.log('_onCubeGraphSwitchToggle', options);
+
     },
 
     _openGraphLayerEditFullscreen : function (layer) {
@@ -1706,17 +1752,22 @@ M.Chrome.Data = M.Chrome.extend({
         // debug: only show first 100
         var datasets = _.sample(datasets, 100);
 
+        // ensure array 
+        if (!_.isArray(datasets)) datasets = [datasets];
+
         // create list
-        datasets.forEach(function (dataset, i) {
+        if (_.size(datasets)) {
+            datasets.forEach(function (dataset, i) {
 
-            // create list item
-            this._createCubesetItem({
-                dataset : dataset, 
-                appendTo : this._cubesetContainer,
-                index : i
-            });
+                // create list item
+                this._createCubesetItem({
+                    dataset : dataset, 
+                    appendTo : this._cubesetContainer,
+                    index : i
+                });
 
-        }, this);
+            }, this);
+        }
 
         // gc old sortable
         if (this._cubesetSort) {
@@ -3270,7 +3321,11 @@ M.Chrome.Data = M.Chrome.extend({
                     });
                     var enabledByDefault = layermenuItem && layermenuItem.enabled;
                     return enabledByDefault;
-                }.bind(this));
+                }.bind(this))
+
+                .attr('title', function (d) {
+                    return 'If enabled, layer is activated by default.'
+                })
 
         // Exit
         radioButton

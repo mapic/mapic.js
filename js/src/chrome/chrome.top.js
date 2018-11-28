@@ -116,16 +116,45 @@ M.Chrome.Top = M.Chrome.extend({
 			return b.options.project_dependent;
 		});
 
+		console.log('_updateButtonVisibility', buttons);
+
 		if (app.activeProject) {
 			buttons.forEach(function (button) {
 				M.DomUtil.removeClass(button.div, 'displayNone');
 			});
+
+			// limit tabs for Viewers
+			var isEditor = app.activeProject.isEditor();
+			if (!isEditor) {
+				buttons.forEach(function (button) {
+
+					if (button.options.name == 'data') {
+						M.DomUtil.addClass(button.div, 'displayNone');
+					}
+					if (button.options.name == 'settings') {
+						M.DomUtil.addClass(button.div, 'displayNone');
+					}
+					if (button.options.name == 'settingsSelector') {
+						M.DomUtil.addClass(button.div, 'displayNone');
+					}
+					if (button.options.name == 'share') {
+						M.DomUtil.addClass(button.div, 'displayNone');
+					}
+
+					// adjust account tab dropdown left
+					app.AccountPane.tabCount = 2;
+
+					// M.DomUtil.removeClass(button.div, 'displayNone');
+				});
+			}
 
 		} else {
 			buttons.forEach(function (button) {
 				M.DomUtil.addClass(button.div, 'displayNone');
 			});
 		}
+
+
 	},
 
 	initDefault : function () {

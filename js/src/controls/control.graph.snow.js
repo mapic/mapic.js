@@ -110,9 +110,11 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _onLayerEnabled : function () {
         if (this._mainContainer) this._mainContainer.style.display = 'block';
+        if (this._topHeader) this._topHeader.style.display = 'inline-block';
     },
     _onLayerDisabled : function () {
         if (this._mainContainer) this._mainContainer.style.display = 'none';
+        if (this._topHeader) this._topHeader.style.display = 'none';
     },
 
     // get/set parsed based on mask.id

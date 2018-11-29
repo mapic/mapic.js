@@ -11,7 +11,7 @@ sudo: required
 install:
   - cd /home/travis/build
   - mkdir get && cd get
-  - curl -sSL https://get.mapic.io | sh
+  - git clone https://github.com/mapic/mapic.git
   - sudo rm -rf /home/travis/build/get/mapic/mapic.js
   - sudo cp -r /home/travis/build/mapic/mapic.js /home/travis/build/get/mapic/mapic.js
   - cd /home/travis/build/get/mapic/cli

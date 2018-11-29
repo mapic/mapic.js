@@ -1177,7 +1177,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     setGraphEnabled : function (state) {
 
         var storeOptions = this.store.options;
-        console.log('storeOptions', storeOptions);
 
         // ensure exists
         if (_.isUndefined(storeOptions)) {

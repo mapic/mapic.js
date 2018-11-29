@@ -106,7 +106,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this.options.cube.on('enabled', this._onLayerEnabled.bind(this));
         this.options.cube.on('disabled', this._onLayerDisabled.bind(this));
 
-        console.log('listening');
         M.Mixin.Events.on('toggleGraphContainer', this._onToggleGraphContainer, this);
 
     },
@@ -439,8 +438,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _listen : function () {
 
-        console.log('litening...');
-
         // layer events 
         // (todo: rename options.cube to this._layer for more generic flow)
         this.options.cube.on('maskSelected', this.onMaskSelected.bind(this));
@@ -596,8 +593,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     },
 
     _onToggleGraphContainer : function (e) {
-        console.error('_onToggleGraphContainer', e);
-
         var state = e.detail.state;
         if (state) {
             this._showGraphContainer();

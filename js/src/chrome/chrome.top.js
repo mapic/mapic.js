@@ -116,8 +116,6 @@ M.Chrome.Top = M.Chrome.extend({
 			return b.options.project_dependent;
 		});
 
-		console.log('_updateButtonVisibility', buttons);
-
 		if (app.activeProject) {
 			buttons.forEach(function (button) {
 				M.DomUtil.removeClass(button.div, 'displayNone');

@@ -3294,3 +3294,51 @@ input#geojson-upload {
 .padding-bottom-10 {
     padding-bottom: 10px;
 }
+
+
+
+.hidden-scf-graph  .big-graph-outer-container {
+    height: 22px !important;
+    overflow: hidden;
+    padding: 0;
+    padding-top: 10px;
+    margin: 0;
+    line-height: 0px;
+    min-height: unset;
+    right: -130px;
+}
+
+.hidden-scf-graph  .big-graph-info-container {
+    display: none;
+}
+
+.hidden-scf-graph  .big-graph-resizer {
+    display: none;
+}
+
+.hidden-scf-graph  .big-graph-plugin-container {
+    display: none;
+}
+.hidden-scf-graph  .big-graph-current-day {
+    display: none;
+}
+.hidden-scf-graph  .graph-help-button {
+    display: none;
+}
+.hidden-scf-graph  .big-graph-inner-container {
+    bottom: -4px;
+}
+
+.hidden-scf-graph .vertical-scf-graph-line {
+    bottom: 0px !important;
+    background: rgba(74, 255, 242, 0.67) !important;
+    width: 9px !important;
+}
+
+
+
+
+
+
+
+

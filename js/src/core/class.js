@@ -1095,7 +1095,12 @@ M.Util = {
 
 		return isMobile;
 
-	}
+	},
+
+	ensureString : function (s) {
+		var string = _.isString(s) ? s : M.stringify(s);
+		return string;
+	},
 
 
 	

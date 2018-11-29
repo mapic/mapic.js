@@ -106,6 +106,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this.options.cube.on('enabled', this._onLayerEnabled.bind(this));
         this.options.cube.on('disabled', this._onLayerDisabled.bind(this));
 
+        console.log('listening');
+        M.Mixin.Events.on('toggleGraphContainer', this._onToggleGraphContainer, this);
+
     },
 
     _onLayerEnabled : function () {
@@ -436,10 +439,13 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _listen : function () {
 
+        console.log('litening...');
+
         // layer events 
         // (todo: rename options.cube to this._layer for more generic flow)
         this.options.cube.on('maskSelected', this.onMaskSelected.bind(this));
         this.options.cube.on('maskUnselected', this.onMaskUnselected.bind(this));
+        
     },
 
     _initContainer : function () {
@@ -496,6 +502,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // add resize event
         M.DomEvent.on(this._resizer, 'mousedown', this._initResize, this);
+
+        // show/hide by default
+        var state = this._layer.getGraphEnabled();
+        if (!state) this._hideGraphContainer(); 
     },
 
     _onTopHeaderClick : function () {
@@ -574,6 +584,25 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             var checkbox = this._createFilterCheckbox({
                 appendTo : this._container
             });
+        }
+    },
+
+    _hideGraphContainer : function () {
+        M.DomUtil.addClass(this._mainContainer, 'hidden-scf-graph');
+    },
+
+    _showGraphContainer : function () {
+        M.DomUtil.removeClass(this._mainContainer, 'hidden-scf-graph');
+    },
+
+    _onToggleGraphContainer : function (e) {
+        console.error('_onToggleGraphContainer', e);
+
+        var state = e.detail.state;
+        if (state) {
+            this._showGraphContainer();
+        } else {
+            this._hideGraphContainer();
         }
     },
 
@@ -923,6 +952,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .append("div")
         .attr("id", vertical_line_id)
         // .attr("id", "chart-vertical-line")
+        .attr("class", 'vertical-scf-graph-line')
         .style("position", "absolute")
         .style("z-index", "19")
         .style("width", "4px")

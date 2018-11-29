@@ -1276,33 +1276,48 @@ M.Chrome.Data = M.Chrome.extend({
         var toggles_wrapper = this._cubesetBoxWrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
         var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'SCF Graph Statistics');
 
-
+        // add title
         var title = M.DomUtil.create('div', 'dropdown-mask-title padding-top-10 padding-bottom-10', toggles_wrapper, 'Toggle visibility of SCF Graph Statistics box.');
 
-        var toggleState = true;
-        var toggle = M.DomUtil.create('div', 'chrome-switch-container scf-graph-switch switch-on', toggles_wrapper);
+        // add toggle
+        this._cubeGraphToggleDiv = M.DomUtil.create('div', 'chrome-switch-container scf-graph-switch', toggles_wrapper);
 
-        M.DomEvent.on(toggle, 'click', function () {
+        // on click
+        M.DomEvent.on(this._cubeGraphToggleDiv, 'click', this._onCubeGraphSwitchToggle, this);
 
-            console.log('toggle:');
-
-            if (toggleState) {
-                M.DomUtil.removeClass(toggle, 'switch-on');
-            } else {
-                M.DomUtil.addClass(toggle, 'switch-on');
-            }
-
-            toggleState = !toggleState;
-
-        });
-
+        // add space
         var emptySpace = M.DomUtil.create('div', 'empty-space', toggles_wrapper);
 
+        // set toggle
+        this._cubeGraphToggleState = layer.getGraphEnabled();
+        console.log('this._cubeGraphToggleState ',this._cubeGraphToggleState )
+        if (this._cubeGraphToggleState) M.DomUtil.addClass(this._cubeGraphToggleDiv, 'switch-on');
 
     },
 
     _onCubeGraphSwitchToggle : function (options) {
         console.log('_onCubeGraphSwitchToggle', options);
+
+        // toggle
+        this._cubeGraphToggleState = !this._cubeGraphToggleState;
+
+        if (!this._cubeGraphToggleState) {
+            M.DomUtil.removeClass(this._cubeGraphToggleDiv, 'switch-on');
+        } else {
+            M.DomUtil.addClass(this._cubeGraphToggleDiv, 'switch-on');
+        }
+
+        console.log('cube layer: ', this._fullscreen._layer);
+
+        // save state
+        var state = this._cubeGraphToggleState;
+        var layer = this._fullscreen._layer;
+        layer.setGraphEnabled(state);
+        console.log('setting state', state);
+
+        M.Mixin.Events.fire('toggleGraphContainer', {detail : {
+            state : state
+        }});
 
     },
 

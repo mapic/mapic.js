@@ -1155,5 +1155,50 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     
     },
 
+    getGraphEnabled : function () {
+
+        var storeOptions = this.store.options;
+
+        // on by default
+        if (_.isUndefined(storeOptions)) return true;
+
+        // ensure parsed
+        if (_.isString(storeOptions)) {
+            storeOptions = M.parse(storeOptions);
+        }
+
+        // on by default
+        if (_.isUndefined(storeOptions.graphEnabled)) return true;
+    
+        // return set state
+        return storeOptions.graphEnabled;
+    },
+
+    setGraphEnabled : function (state) {
+
+        var storeOptions = this.store.options;
+        console.log('storeOptions', storeOptions);
+
+        // ensure exists
+        if (_.isUndefined(storeOptions)) {
+            storeOptions = {};
+        }
+       
+        // ensure parsed
+        if (_.isString(storeOptions)) {
+            storeOptions = M.parse(storeOptions);
+        }
+
+        // set state
+        storeOptions.graphEnabled = state;
+
+        // stringify
+        this.store.options = M.stringify(storeOptions);
+
+        // save
+        this.save('options');
+
+    },
+
 
 });

@@ -1137,15 +1137,47 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this._legendContainer.style.display = 'none';
     },
 
-    // debug: create legend. todo: make dynamic
+    // create legend
     _createLegend : function () {
+        if (this._legendContainer) M.DomUtil.remove(this._legendContainer);
 
         // create legend container
         this._legendContainer = M.DomUtil.create('div', 'snow-raster-legend-container', app._map._controlContainer);
 
+        // get gradient
+        var gradient = this._getLegendGradient();
+
+        // set style
+        var gradientStyle = 'background: -webkit-linear-gradient(' + gradient + ');background: -o-linear-gradient(' + gradient + ');background: -moz-linear-gradient(' + gradient + ');'
+
         // set legend
-        this._legendContainer.innerHTML = '<div class="info-legend-frame snow-raster"><div class="info-legend-val info-legend-min-val">1%</div><div class="info-legend-header scf">Snow</div><div class="info-legend-val info-legend-max-val">100%</div><div class="info-legend-gradient-container" style="background: -webkit-linear-gradient(0deg, #8C8C8C, white);background: -o-linear-gradient(0deg, #8C8C8C, white);background: -moz-linear-gradient(0deg, #8C8C8C, white);"></div></div>'
-        
+        this._legendContainer.innerHTML = '<div class="info-legend-frame snow-raster"><div class="info-legend-val info-legend-min-val">1%</div><div class="info-legend-header scf">Snow</div><div class="info-legend-val info-legend-max-val">100%</div><div class="info-legend-gradient-container" style="' + gradientStyle + '"></div></div>'
+
+    },
+
+    _getLegendGradient : function () {
+
+        // val = 100 means 0 for SCF styling
+        var startValue = 100;
+
+        // default
+        var defaultGradient = '0deg, #8C8C8C, white';
+
+        var style = M.parse(this.store.style);
+
+        // return default gradient if no style set
+        if (!style || !style.stops) return defaultGradient;
+
+        // create gradient string
+        var gradient = '0deg';
+        _.forEach(style.stops, function (s) {
+            var val = s.val;
+            var color = 'rgba(' + s.col.r + ', ' + s.col.g + ', ' + s.col.b + ', ' + s.col.a + ')';
+            var percent = val - startValue;
+            gradient += ', ' + color + ' ' + percent + '%'
+        });
+
+        return gradient;
     },
 
     deleteLayer : function () {

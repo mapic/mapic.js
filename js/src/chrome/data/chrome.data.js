@@ -1351,6 +1351,9 @@ M.Chrome.Data = M.Chrome.extend({
         var layer = this._fullscreen._layer;
         layer.setMaskStyling(styling);
 
+        // give feedback
+        app.feedback.say('Saved!', 'Your settings have been saved.');
+
     },
 
     _createCubeGraphSwitch : function (options) {

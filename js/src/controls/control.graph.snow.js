@@ -423,7 +423,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this.setData(mask.data, function (err) {
 
             // update line graph
-            this._updateLineGraph();
+            this._setLineGraph();
 
             // adjust slider
             this._adjustSlider();
@@ -973,14 +973,21 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             // max/min
             if (mousex < 40) mousex = 40;
             if (mousex > cow) mousex = cow;
-
-            // set position of line
-            vertical.style("left", mousex + "px" )
-
+           
             // calc day-of-year
             // todo: check if works with all screen sizes, since we're dealing with pixels??
             var rof = that._container.offsetWidth - 190;
             var p = parseInt(((mousex - 40) / rof) * 364);
+
+            // ensure not past latest available dataset
+            var doy = parseInt(that.cube()._findLatestDOY()) - 244;
+            if (p > doy) {
+                p = doy;
+                mousex = (((p - 1) * rof) / 364) + 40;
+            }
+
+            // set position of line
+            vertical.style("left", mousex + "px" )
 
             // fire event
             that.fire('sliderMovement', {
@@ -1001,13 +1008,19 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             if (mousex < 40) mousex = 40;
             if (mousex > cow) mousex = cow;
 
-            // set position of line
-            vertical.style("left", mousex + "px")
-
             // calc day-of-year
-            // todo: check if works with all screen sizes, since we're dealing with pixels??
             var rof = that._container.offsetWidth - 190;
             var p = parseInt(((mousex - 40) / rof) * 364) + 1
+
+            // ensure not past latest available dataset
+            var doy = parseInt(that.cube()._findLatestDOY()) - 244;
+            if (p > doy) {
+                p = doy;
+                mousex = (((p - 1) * rof) / 364) + 40;
+            }
+
+            // set position of line
+            vertical.style("left", mousex + "px")
 
             // fire
             that.fire('sliderMovement', {
@@ -1040,27 +1053,63 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             }
         });
 
+        // set default slider position
+        // this._setSliderToToday();
 
+        // set default slider position
+        this._setSliderToLatestAvailableImage();
+
+    },
+
+    _setSliderToLatestAvailableImage : function () {
+
+        // get latest image
+        var latest = this.cube()._findLatestDataset();
+
+        if (_.isUndefined(latest)) {
+            // no datasets at all
+            return this._setSliderToToday();
+        }
+
+        // get doy
+        var doy = parseInt(latest.formattedTime.split('-')[1]);
+
+        // set to doy
+        var today = doy;
+        var diff = today - 244;
+        var p = (diff < 0) ? 365 + diff : diff;
+
+        // fire event
+        this.fire('sliderMovement', {
+            p : p
+        });
+
+        // calc and set
+        var todaymousex = (p * 82 / 73) + 40;
+        this._slider.vertical.style("left", todaymousex + "px");
+
+        // set cursor and date to current date
+        var date = this._getSliderDate(this._p);
+        this.cube().setCursor(date);
+
+    },
+
+    _setSliderToToday : function () {
         // set to current date
         var today = moment().dayOfYear();
         var diff = today - 245;
-        if (diff < 0) {
-            var p = 365 + diff;
-        } else {
-            var p = diff;
-        }
+        var p = (diff < 0) ? 365 + diff : diff;
 
         // fire event
-        that.fire('sliderMovement', {
+        this.fire('sliderMovement', {
             p : p
         });
         var todaymousex = (p * 82 / 73) + 40;
         this._slider.vertical.style("left", todaymousex + "px");
 
-        // set cursor and dataet to current date
+        // set cursor and date to current date
         var date = this._getSliderDate(this._p);
         this.cube().setCursor(date);
-
     },
 
     _onGridMousemove : function (e) {
@@ -1342,10 +1391,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._maskTitle.innerHTML = this._getMaskTitle();   
     },
 
-    _updateLineGraph : function (options) {
-        this._setLineGraph();
-    },
-  
     _parseDates : function (cache) {
         if (!_.isArray(cache)) return;
         cache.forEach(function (c) {

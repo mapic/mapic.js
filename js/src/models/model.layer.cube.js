@@ -980,13 +980,17 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         return didx;
     },
 
-    _findLastDataset : function () {
-        var f = this.options.timeFormat;
-        var didx = _.max(this._datasets, function (d) { 
+    _findLatestDataset : function () {
+        return _.maxBy(this._datasets, function (d) { 
             return d.idx;
         });
-        var d = didx ? didx.idx : -1;
-        return d;
+    },
+
+    _findLatestDOY : function () {
+        var latest = this._findLatestDataset();
+        if (_.isUndefined(latest)) return 245;
+        var doy = parseInt(latest.formattedTime.split('-')[1]);
+        return doy;
     },
 
     _showLayer : function (layer) {

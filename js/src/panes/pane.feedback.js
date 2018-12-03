@@ -151,7 +151,7 @@ M.FeedbackPane.Message = M.Class.extend({
 		clearTimer : true,
 		clearDelay : 5000,
 		// clearDelay : 2000000, // debug 
-		transitionDelay : 0.5, 
+		// transitionDelay : 0.5, 
 		severityStyle : {
 			1 : 'message',
 			2 : 'success',

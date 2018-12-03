@@ -2091,7 +2091,7 @@ g.axis.y {
     height: 60px;
     width: 200px;
     background: rgba(60, 71, 89, 0.61);
-    bottom: 30px;
+    bottom: 4px;
     left: 5px;
     z-index: 1000;
     color: white !important;
@@ -3346,4 +3346,28 @@ input#geojson-upload {
 .tg .tg-0pky1{border-color:inherit;text-align:left;vertical-align:top; background-color: white;}
 .tg .tg-0lax{text-align:left;vertical-align:top}
 .mask-style-input {border: none;}
+
+.feedback-pane-content {
+    border-radius: 6px;
+    border: 1px solid gainsboro;
+    -webkit-box-shadow: 0px 0px 8px -1px rgba(163,163,163,1);
+    -moz-box-shadow: 0px 0px 8px -1px rgba(163,163,163,1);
+    box-shadow: 0px 0px 8px -1px rgba(163,163,163,1);
+
+}
+
+.feedback-pane-content.error {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: none;
+}
+
+
+
+
+
+
+
+
 

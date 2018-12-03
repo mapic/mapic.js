@@ -1162,7 +1162,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     _getLegendGradient : function () {
 
         // val = 100 means 0 for SCF styling
-        var startValue = 100;
+        var startValue = 0;
 
         // default
         var defaultGradient = '0deg, #8C8C8C, white';

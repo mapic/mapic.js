@@ -1225,7 +1225,6 @@ M.Chrome.Data = M.Chrome.extend({
         this._openFileOptionsFullscreen(uuid);
     },
 
-
     // used both by new and edit layer
     _openCubeLayerEditFullscreen : function (layer) {
 
@@ -1246,11 +1245,23 @@ M.Chrome.Data = M.Chrome.extend({
             layer : layer
         });
 
-        // create cubeset list
-        this._createMaskBox({
+        // add toggle for showing graph
+        this._createCubeGraphSwitch({
             container : content,
             layer : layer
         });
+
+        // add mask geojson styling box
+        this._createCubeMaskStyling({
+            container : content, 
+            layer : layer
+        });
+
+        // // create cubeset list
+        // this._createMaskBox({
+        //     container : content,
+        //     layer : layer
+        // });
 
         // create cubeset list
         this._createCubesetBox({
@@ -1258,12 +1269,87 @@ M.Chrome.Data = M.Chrome.extend({
             layer : layer
         });
 
-        // add toggle for showing graph
-        // save on layer
-        this._createCubeGraphSwitch({
-            container : content,
-            layer : layer
-        });
+       
+
+    },
+
+    _createCubeMaskStyling : function (options) {
+
+        var container = options.container;
+        var layer = options.layer;
+
+        // create divs
+        var toggles_wrapper = this._cubesetBoxWrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Mask Styling');
+
+        // add title
+        var title = M.DomUtil.create('div', 'dropdown-mask-title padding-top-10 padding-bottom-10', toggles_wrapper, 'Set styling for the Mask GeoJSON layer');
+
+        // insert table
+        var tableHTML = '';
+        tableHTML += '<table class="tg">';
+        tableHTML += '  <tr>';
+        tableHTML += '    <td class="tg-0pky" >Border Color</th>';
+        tableHTML += '    <td class="tg-0pky1" ><input class="mask-style-input" id="input-mask-stroke" title="Color of border line"></input></th>';
+        tableHTML += '  </tr>';
+        tableHTML += '  <tr>';
+        tableHTML += '    <td class="tg-0pky">Border Width</td>';
+        tableHTML += '    <td class="tg-0pky1" ><input class="mask-style-input" id="input-mask-stroke-width" title="Width of border in pixels"></input></td>';
+        tableHTML += '  </tr>';
+        tableHTML += '  <tr>';
+        tableHTML += '    <td class="tg-0pky">Border Opacity</td>';
+        tableHTML += '    <td class="tg-0pky1" ><input class="mask-style-input" id="input-mask-stroke-opacity" title="Opacity of border, value between 0-1"></input></td>';
+        tableHTML += '  </tr>';
+        tableHTML += '  <tr>';
+        tableHTML += '    <td class="tg-0pky">Fill Color</td>';
+        tableHTML += '    <td class="tg-0pky1" ><input class="mask-style-input" id="input-mask-fill" title="Color of fill, in HEX or RGBA"></input></td>';
+        tableHTML += '  </tr>';
+        tableHTML += '  <tr>';
+        tableHTML += '    <td class="tg-0pky">Fill Opacity</td>';
+        tableHTML += '    <td class="tg-0pky1" ><input class="mask-style-input" id="input-mask-fill-opacity" title="Opacity of fill, value between 0-1"></input></td>';
+        tableHTML += '  </tr>';
+        tableHTML += '</table>';
+        var table_container = M.DomUtil.create('div', 'mask-styling-table-container', toggles_wrapper);
+        table_container.innerHTML = tableHTML;
+
+        // triggers
+        var stroke = M.DomUtil.get('input-mask-stroke');
+        var strokeWidth = M.DomUtil.get('input-mask-stroke-width');
+        var strokeOpacity = M.DomUtil.get('input-mask-stroke-opacity');
+        var fill = M.DomUtil.get('input-mask-fill');
+        var fillOpacity = M.DomUtil.get('input-mask-fill-opacity');
+
+        // set current styling values
+        var styling = layer.getMaskStyling();
+        stroke.value = styling.color;
+        strokeWidth.value = styling.weight;
+        strokeOpacity.value = styling.opacity;
+        fill.value = styling.fillColor;
+        fillOpacity.value = styling.fillOpacity;
+
+        // add key events
+        M.DomEvent.on(stroke, 'keyup', _.debounce(this._updateMaskStyling.bind(this), 1000));
+        M.DomEvent.on(strokeWidth, 'keyup', _.debounce(this._updateMaskStyling.bind(this), 1000));
+        M.DomEvent.on(strokeOpacity, 'keyup', _.debounce(this._updateMaskStyling.bind(this), 1000));
+        M.DomEvent.on(fill, 'keyup', _.debounce(this._updateMaskStyling.bind(this), 1000));
+        M.DomEvent.on(fillOpacity, 'keyup', _.debounce(this._updateMaskStyling.bind(this), 1000));
+
+    },
+
+    _updateMaskStyling : function () {
+
+        // leaflet name convention
+        var styling = {
+            color          : M.DomUtil.get('input-mask-stroke').value,
+            weight     : M.DomUtil.get('input-mask-stroke-width').value,
+            opacity   : M.DomUtil.get('input-mask-stroke-opacity').value,
+            fillColor            : M.DomUtil.get('input-mask-fill').value,
+            fillOpacity     : M.DomUtil.get('input-mask-fill-opacity').value
+        }
+
+        // save to layer
+        var layer = this._fullscreen._layer;
+        layer.setMaskStyling(styling);
 
     },
 
@@ -1290,13 +1376,11 @@ M.Chrome.Data = M.Chrome.extend({
 
         // set toggle
         this._cubeGraphToggleState = layer.getGraphEnabled();
-        console.log('this._cubeGraphToggleState ',this._cubeGraphToggleState )
         if (this._cubeGraphToggleState) M.DomUtil.addClass(this._cubeGraphToggleDiv, 'switch-on');
 
     },
 
     _onCubeGraphSwitchToggle : function (options) {
-        console.log('_onCubeGraphSwitchToggle', options);
 
         // toggle
         this._cubeGraphToggleState = !this._cubeGraphToggleState;
@@ -1307,13 +1391,10 @@ M.Chrome.Data = M.Chrome.extend({
             M.DomUtil.addClass(this._cubeGraphToggleDiv, 'switch-on');
         }
 
-        console.log('cube layer: ', this._fullscreen._layer);
-
         // save state
         var state = this._cubeGraphToggleState;
         var layer = this._fullscreen._layer;
         layer.setGraphEnabled(state);
-        console.log('setting state', state);
 
         M.Mixin.Events.fire('toggleGraphContainer', {detail : {
             state : state

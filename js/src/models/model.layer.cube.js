@@ -27,7 +27,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         mask : {
             
             defaultStyle : {
-                fillColor : '#d35658',
+                // fillColor : '#d35658',
+                fillColor : 'green',
                 fillOpacity : 0,
                 color : '#16d6f3',
                 opacity : 0.6,
@@ -35,7 +36,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             },
 
             hoverStyle : {
-                fillColor : '#d35658',
+                // fillColor : '#d35658',
+                fillColor : 'blue',
                 fillOpacity : 0.2,
                 color : '#d35658',
                 opacity : 0.9,
@@ -45,7 +47,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             selectedStyle : {
                 fillColor : 'black',
                 fillOpacity : 0,
-                color : 'red',
+                // color : 'red',
+                color : 'green',
                 opacity : 0.9,
                 weight : 2,
             },
@@ -53,7 +56,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             selectedHoverStyle : {
                 fillColor : 'black',
                 fillOpacity : 0,
-                color : 'red',
+                // color : 'red',
+                color : 'orange',
                 opacity : 0.9,
                 weight : 2,
             },
@@ -97,6 +101,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // parse cube json
         this._cube = M.parse(this.store.data.cube);
+
     },
 
     add : function (type) {
@@ -443,10 +448,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     _initGeoJSONMask : function (mask, done) {
 
+        // var maskStyling = this.getMaskStyling();
+
         // create mask (geojson) layer
         var maskLayer = new M.Model.Layer.GeoJSONMaskLayer({
             geojson : mask.geometry,
-            style : this.options.mask.defaultStyle,
+            style : this.getMaskStyling(),
             id : mask.id
         });
 
@@ -497,7 +504,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     _onMaskMouseout : function (maskLayer, e) {
-        var style = maskLayer.selected ? this.options.mask.selectedStyle : this.options.mask.defaultStyle;
+        // var style = maskLayer.selected ? this.options.mask.selectedStyle : this.getMaskStyling();
+        var style = maskLayer.selected ? this.getMaskStyling() : this.getMaskStyling();
         maskLayer.layer.setStyle(style);
     },
 
@@ -551,7 +559,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this.selectMask(maskLayer);
 
         // cause not hovering
-        maskLayer.layer.setStyle(this.options.mask.selectedStyle);
+        // maskLayer.layer.setStyle(this.options.mask.selectedStyle);
+        maskLayer.layer.setStyle(this.getMaskStyling());
         
     },
 
@@ -586,13 +595,13 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     unselectMask : function (maskLayer) {
-        maskLayer.layer.setStyle(this.options.mask.defaultStyle);
+        maskLayer.layer.setStyle(this.getMaskStyling());
     },
 
     unselectAllMasks : function () {
         // reset all selected first
         this._maskLayers.forEach(function (m) {
-            m.layer.setStyle(this.options.mask.defaultStyle);
+            m.layer.setStyle(this.getMaskStyling());
             m.selected = false;
         }.bind(this));
     },
@@ -634,7 +643,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // reset style for all layers
         this._maskLayer.layer.eachLayer(function (l) {
-            l.setStyle(this.options.mask.selectedStyle);
+            l.setStyle(this.getMaskStyling());
         }.bind(this));
 
         this.fire('maskSelected', {
@@ -646,7 +655,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // reset style for all layers
         this._maskLayer.layer.eachLayer(function (l) {
-            l.setStyle(this.options.mask.defaultStyle);
+            l.setStyle(this.getMaskStyling());
         }.bind(this));
 
         // // fire mask selected event
@@ -1197,6 +1206,47 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // save
         this.save('options');
 
+    },
+
+    setMaskStyling : function (styling) {
+        var storeOptions = this.store.options;
+
+        // ensure exists
+        if (_.isUndefined(storeOptions)) {
+            storeOptions = {};
+        }
+       
+        // ensure parsed
+        if (_.isString(storeOptions)) {
+            storeOptions = M.parse(storeOptions);
+        }
+
+        // set state
+        storeOptions.maskStyling = styling;
+
+        // stringify
+        this.store.options = M.stringify(storeOptions);
+
+        // save
+        this.save('options');
+    },
+
+    getMaskStyling : function () {
+        var storeOptions = this.store.options;
+
+        // on by default
+        if (_.isUndefined(storeOptions)) return this.options.mask.defaultStyle;
+
+        // ensure parsed
+        if (_.isString(storeOptions)) {
+            storeOptions = M.parse(storeOptions);
+        }
+
+        // return default
+        if (_.isUndefined(storeOptions.maskStyling)) return this.options.mask.defaultStyle;
+    
+        // return set state
+        return storeOptions.maskStyling;
     },
 
 

@@ -99,13 +99,11 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // create dc
         this.dc = dc;
 
-
         // events
         this.on('sliderMovement', this._onSliderMovement);
         this.on('sliderClick', this._onSliderClick);
         this.options.cube.on('enabled', this._onLayerEnabled.bind(this));
         this.options.cube.on('disabled', this._onLayerDisabled.bind(this));
-
         M.Mixin.Events.on('toggleGraphContainer', this._onToggleGraphContainer, this);
 
     },
@@ -131,6 +129,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     // todo: possible bug with parsing of average data
     // make sure that "parsed()" is adding to unique mask ids above...
     parse : function (data, done) {
+
+        console.error('parse');
 
         // check store
         if (this.parsed()) return done(null, this.parsed());
@@ -402,8 +402,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         }.bind(this));
     },
 
-    // _parsed : {},
-
     onMaskSelected : function (options) {
         this.setMask(options.mask);
     },
@@ -419,16 +417,40 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // set current mask
         this._mask = mask;
 
-        // set data
-        this.setData(mask.data, function (err) {
+        async.series({
 
-            // update line graph
-            this._setLineGraph();
+            backdrop : function (done) {
+                app.api.getMaskBackdropData({
+                    data_id : 'data-id'
+                }, done);
+            },
 
-            // adjust slider
-            this._adjustSlider();
+            yearly : function (done) {
+                app.api.getMaskYearlyData({
+                    data_id : 'data_id',
+                    year : '2018'
+                }, done);
+            }
+
+        }, 
+
+        // final callback
+        function (err, results) {
+            console.log('setMask async series done', err, results);
+
+            // set data
+            this.setData(mask.data, function (err) {
+
+                // update line graph
+                this._setLineGraph();
+
+                // adjust slider
+                this._adjustSlider();
+
+            }.bind(this));
 
         }.bind(this));
+
 
     },
 
@@ -439,7 +461,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     _listen : function () {
 
         // layer events 
-        // (todo: rename options.cube to this._layer for more generic flow)
         this.options.cube.on('maskSelected', this.onMaskSelected.bind(this));
         this.options.cube.on('maskUnselected', this.onMaskUnselected.bind(this));
         
@@ -506,7 +527,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     },
 
     _onTopHeaderClick : function () {
-
     },
 
     _initResize : function () {

@@ -79,8 +79,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         emptyTile : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAB9JREFUaIHtwQENAAAAwqD3T20ON6AAAAAAAAAAAL4NIQAAAZpg4dUAAAAASUVORK5CYII=',
     },
 
-    // _cache : [],
-
+    // inited on page load,
+    // all cube layers are inited across all projects
     _initialize : function (store) {
 
         // set store
@@ -90,7 +90,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         this._data = {};
 
-        this. _masks = [];
+        this._masks = [];
+
         this._maskLayers = [];
     },
 
@@ -104,18 +105,15 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     },
 
-    add : function (type) {
+    add : function () {
         this.addTo();
     },
 
     addTo : function () {
-       
-        // add to map
         this._addTo();
-
     },
 
-    _addTo : function (type) {
+    _addTo : function () {
 
         console.log('M.Model.Layer.CubeLayer: ', this);
 
@@ -449,6 +447,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     _initGeoJSONMask : function (mask, done) {
 
         // var maskStyling = this.getMaskStyling();
+        console.error('_initGeoJSONMask', mask);
 
         // create mask (geojson) layer
         var maskLayer = new M.Model.Layer.GeoJSONMaskLayer({

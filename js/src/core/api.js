@@ -315,9 +315,55 @@ M.Api = M.Class.extend({
 		this.post(path, options, done);
 	},
 
+	getMaskBackdropData : function (options, done) {
+		console.log('getMaskData', options);
+		// var path = 'https://gist.githubusercontent.com/knutole/f37803e645d966698b91f66ddb674b04/raw/8977bd7e73f26ffb7f10eef655b852841322326c/dummy-scf-backdrop-data.json'
+		// this.get(path, options, done);
+
+		var data_id = options.data_id;
+
+		var dummy_data = M.stringify([
+			{
+				"doy" : 1,
+				"min" : 1,
+				"max" : 20,
+				"average" : 10
+			},
+			{
+				"doy" : 2,
+				"min" : 3,
+				"max" : 30,
+				"average" : 20
+			}
+		]);
+		return done(null, dummy_data);
+	},
 
 
+	getMaskYearlyData : function (options, done) {
 
+		var data_id = options.data_id;
+		var year = options.year;
+
+		var dummy_data = M.stringify([
+			{
+				"year" : "2018",
+				"doy" : 1,
+				"min" : 1,
+				"max" : 20,
+				"average" : 10
+			},
+			{
+				"year" : "2018",
+				"doy" : 2,
+				"min" : 3,
+				"max" : 30,
+				"average" : 20
+			}
+		]);
+		return done(null, dummy_data);
+
+	},
 
 
 
@@ -524,7 +570,11 @@ M.Api = M.Class.extend({
 	_get : function (path, options, done, context, baseurl) {
 		var http = new XMLHttpRequest();
 		var url = baseurl || this.options.url || M.Util._getServerUrl();
-		url += path;
+		if (_.includes(path, 'http') && _.includes(path, '://')) {
+			url = path;
+		} else {
+			url += path;
+		}
 
 		// add options to query
 		url = this._addQueryOptions(url, options);

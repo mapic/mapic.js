@@ -652,6 +652,12 @@ L.Control.Description = M.Control.extend({
 
 		// events
 		this._slider.on('update', this._updateOpacity.bind(this));
+		this._slider.on('start', function () {
+			app._map.dragging._draggable._enabled = false;
+		});
+		this._slider.on('end', function () {
+			app._map.dragging._draggable._enabled = true;
+		});
 
 	},
 

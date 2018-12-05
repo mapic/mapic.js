@@ -4,6 +4,8 @@ M.Legend = M.Class.extend({
 
 	initialize : function (options) {
 
+		console.error('initialize', options);
+
 		this.options = options;
 
 		this.initLegends();
@@ -24,6 +26,8 @@ M.Legend = M.Class.extend({
 	},
 
 	updateLegend : function () {
+
+		console.error('this2', this);
 
 		// get style
 		var styleJSON = this.options.carto;
@@ -1775,13 +1779,13 @@ M.Tools.Legend = {
 M.Legend.Raster = M.Legend.extend({
 
 			
-	initialize : function (options) {
+	// initialize : function (options) {
 
-		// console.log('M.Legend.Raster', options);
+	// 	// console.log('M.Legend.Raster', options);
 
-		// background: linear-gradient(to right, #0000ff,#00ffff,#00ff00,#ffff00,#ff0000);
+	// 	// background: linear-gradient(to right, #0000ff,#00ffff,#00ff00,#ffff00,#ff0000);
 
-	},
+	// },
 
 
 });

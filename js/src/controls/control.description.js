@@ -536,7 +536,7 @@ L.Control.Description = M.Control.extend({
 	_createRasterLegend : function (layer) {
 
 		var style = M.parse(layer.store.style);
-		if (!style) return;
+		if (!style || !style.scale) return '';
 		var min = style.scale.min;
 		var max = style.scale.max;
 		var title = style.legendScaleTitle;

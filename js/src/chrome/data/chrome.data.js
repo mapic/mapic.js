@@ -736,7 +736,7 @@ M.Chrome.Data = M.Chrome.extend({
 
 
     _filterOutTimeseriesDatasets : function (data) {
-
+        return data; // debug
         var filtered = _.filter(data, function (d) {
             if (_.includes(d.store.originalName, 'SCF_MOD')) return false;
             return true;

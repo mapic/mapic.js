@@ -3365,6 +3365,90 @@ input#geojson-upload {
 
 
 
+.chrome-data-top {
+    display: none;
+}
+
+.chrome-left-new-button.right-align-new-layers-button {
+    position: inherit;
+    float: right;
+}
+
+.new-data-popup {
+    width: 160px;
+    text-align: left;
+    top: 40px;
+}
+
+.file-action:hover:after {
+    width: 159px !important;
+}
+
+
+.wms-legend img {
+    max-height: 100px;
+    max-width: 220px;
+}
+
+.wms-legend-title {
+    font-size: 18px;
+}
+
+
+.smooth-input.smaller-input.geojson-import-input {
+    position: relative;
+    float: left;
+    width: calc(100% - 100px);
+}
+
+.smooth-fullscreen-save.geojson-button {
+    position: relative;
+    float: right;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.smooth-input.smaller-input.geojson-textarea {
+    height: 520px;
+    font-size: 13px;
+    font-weight: 600;
+    resize: vertical;
+}
+
+.geojson-textarea.invalid-geojson {
+    border: 1px solid #ffa7a7;
+}
+
+
+.leaflet-popup.geojson-popup .leaflet-popup-content-wrapper {
+    /*background: red;*/
+    padding: 10px !important;
+}
+
+
+
+.leaflet-container a.leaflet-popup-close-button {
+    top: 3px;
+    right: 0px;
+}
+
+.geojson-popup .leaflet-popup-content-wrapper {
+    border: 1px solid gray;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

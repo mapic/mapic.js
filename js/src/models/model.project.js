@@ -70,7 +70,9 @@ M.Model.Project = M.Model.extend({
 	},
 
 	addLayer : function (layer) {
+		console.log('addLayer =>', layer);
 		var l = new M.createLayer(layer);
+		console.log('l', l);
 		if (l) this.layers[layer.uuid] = l;
 		return l || false;
 	},

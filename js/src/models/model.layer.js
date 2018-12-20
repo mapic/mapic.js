@@ -665,6 +665,10 @@ M.Model.Layer = M.Model.extend({
         return false;
     },
 
+    getLegendImage : function () {
+        return;
+    },
+
     isRaster : function () {
         return false;
     },
@@ -691,6 +695,29 @@ M.Model.Layer = M.Model.extend({
         return false;
     },
 
+    isWMS : function () {
+        return false;
+    },
+
+    getSourceURL : function () {
+    },
+
+    getWMSLayerString : function () {
+
+    },
+
+    getWMSExtraOptions : function () {
+
+    },
+
+    getWMSLegend : function () {
+
+    },
+
+    isGeoJSON : function () {
+        return false;
+    },
+
 });
 
 
@@ -699,8 +726,8 @@ M.Model.Layer = M.Model.extend({
 
 
 M.ErrorLayer = M.Model.Layer.extend({
-    initialize : function () {
-        console.log('Errorlayer');
+    initialize : function (layer) {
+        console.log('Errorlayer: ', layer);
     }
 });
 
@@ -720,6 +747,8 @@ M.createLayer = function (layer) {
     // postgis raster
     if (isRaster) return new M.RasterLayer(layer);
 
+    if (layer.data.geojson7946) return new M.Model.Layer.GeoJSONLayer(layer);
+
     // cubes
     if (layer.data.cube) return new M.Model.Layer.CubeLayer(layer);
 
@@ -732,14 +761,14 @@ M.createLayer = function (layer) {
     // google
     if (layer.data.google) return new M.GoogleLayer(layer);
 
-    // wms
-    if (layer.data.wms) return new M.WMSLayer(layer);
-
     // graph
     if (layer.data.graph) return new M.Layer.Graph(layer);
 
+    // wms
+    if (layer.data.wms) return new M.WMSLayer(layer);
+
     // catch-all error layer
-    return new M.ErrorLayer();
+    return new M.ErrorLayer(layer);
 };
 
 // update options and redraw

@@ -40,10 +40,10 @@ M.Chrome.Data = M.Chrome.extend({
         var layer = this._project.getLayer(uuid);
         
         if (!layer.store || !layer.store.metadata) {
-            app.feedback.setError({
-                title : 'Missing metadata',
-                description : 'layer ' + uuid + ' has no associated metadata'
-            });
+            // app.feedback.setError({
+            //     title : 'Missing metadata',
+            //     description : 'layer ' + uuid + ' has no associated metadata'
+            // });
             layer.store.metadata = '{}';
         }
 
@@ -116,7 +116,7 @@ M.Chrome.Data = M.Chrome.extend({
         this._layerListTitle = M.DomUtil.create('div', 'chrome-content-header layer-list-container-title', this._layerListWrapper, 'Project Layers');
 
         // new layer button
-        this_newLayerButton = M.DomUtil.create('div', 'chrome-left-new-button right-align-new-layers-button', this._layerListWrapper, '+');
+        this_newLayerButton = M.DomUtil.create('div', 'chrome-left-new-button right-align-new-layers-button', this._layerListTitle, '+');
 
         // layers container
         this._layersContainer = M.DomUtil.create('div', 'layers-container', this._layerListWrapper);
@@ -129,7 +129,80 @@ M.Chrome.Data = M.Chrome.extend({
         // separator line
         this._fileListSeparator = M.DomUtil.create('div', 'file-list-separator', this._layerListWrapper);
 
+        M.DomEvent.on(this_newLayerButton, 'click', this._openNewDataLayerPopup, this);
+
     },
+
+    _openNewDataLayerPopup : function () {
+
+        // create container
+        this._newDataLayerPopupContainer = M.DomUtil.create('div', 'file-popup new-data-popup', this_newLayerButton);
+
+        // list entries
+        var popup_list = [
+            {
+                title : 'WMS Layer',
+                onClick : this._onClickWMSLayer.bind(this),
+                tooltip : 'Create a WMS Layer and add it to the map'
+            },
+            {
+                title : 'GeoJSON Layer',
+                onClick : this._onClickGeoJSONLayer.bind(this),
+                tooltip : 'Create a GeoJSON layer'
+            }
+        ];
+
+        // create list entries
+        _.each(popup_list, function (p) {
+            var div = M.DomUtil.create('div', 'file-action', this._newDataLayerPopupContainer);
+            div.innerHTML = p.title;
+            div.setAttribute('title', p.tooltip);
+            M.DomEvent.on(div, 'click', p.onClick, this);
+        }.bind(this));
+
+        // close event
+        M.DomEvent.on(app._appPane, 'mousedown', this._closeNewDataLayerPopup, this);
+
+    },
+
+    _closeNewDataLayerPopup : function (e) {
+        if (!this._newDataLayerPopupContainer) return;
+
+        if (e.target.className == 'file-action') {
+            return;
+        }
+
+        // remove
+        this._removeNewDataLayerPopup();
+
+    },
+
+    _removeNewDataLayerPopup : function () {
+
+        // remove close event
+        M.DomEvent.off(app._appPane, 'mousedown', this._closeNewDataLayerPopup, this);
+
+        // remove div
+        M.DomUtil.remove(this._newDataLayerPopupContainer);
+    },
+
+    _onClickWMSLayer : function () {
+
+        this._removeNewDataLayerPopup();
+
+        // create fullscreen
+        this._openWMSFullscreen();
+
+    },
+
+    _onClickGeoJSONLayer : function () {
+        this._removeNewDataLayerPopup();
+
+        // create fullscreen
+         this._openGeoJSONFullscreen();
+    },
+
+    
 
   
     // File list container
@@ -1220,11 +1293,44 @@ M.Chrome.Data = M.Chrome.extend({
 
     // Enable popup on file (when clicking on "(...)" button)
     enableFilePopUp : function (uuid) {
-
         // open fullscreen file options
         this._openFileOptionsFullscreen(uuid);
     },
 
+    _openWMSFullscreen : function (layer) {
+
+        // create fullscreen
+        var layerTitle = layer ? layer.getTitle() : 'New WMS Layer';
+        var fullscreen = this._fullscreen = new M.Fullscreen({
+            title : '<i class="fa fa-bars file-option"></i>' + layerTitle,
+            titleClassName : 'slim-font'
+        });
+
+        // shortcuts
+        // this._fullscreen._layer = layer;
+        var content = this._fullscreen._content;
+
+        // create name box
+        this._createWMSNameBox({
+            container : content,
+            layer : layer
+        });
+
+        // create URL input
+        this._createWMSUrlBox({
+            container : content,
+            layer : layer
+        });
+
+        // create OK button
+        this._createWMSOKButton({
+            container : content,
+            layer : layer
+        });
+
+    },
+
+  
     // used both by new and edit layer
     _openCubeLayerEditFullscreen : function (layer) {
 
@@ -1718,6 +1824,663 @@ M.Chrome.Data = M.Chrome.extend({
 
     },
 
+
+
+
+
+
+
+
+
+
+
+    // GEOJSON FULLSCREEN
+    // GEOJSON FULLSCREEN
+    // GEOJSON FULLSCREEN
+
+    _openGeoJSONFullscreen : function (layer) {
+
+         // create fullscreen
+        var layerTitle = layer ? layer.getTitle() : 'New GeoJSON Layer';
+        var fullscreen = this._fullscreen = new M.Fullscreen({
+            title : '<i class="fa fa-bars file-option"></i>' + layerTitle,
+            titleClassName : 'slim-font'
+        });
+
+        // shortcuts
+        // this._fullscreen._layer = layer;
+        var content = this._fullscreen._content;
+
+        // create name box
+        this._createGeoJSONNameBox({
+            container : content,
+            layer : layer
+        });
+
+        // create URL input
+        this._createGeoJSONBox({
+            container : content,
+            layer : layer
+        });
+
+        // create OK button
+        this._createGeoJSONOKButton({
+            container : content,
+            layer : layer
+        });
+
+    },
+
+    _createGeoJSONNameBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+
+        // are we editing?
+        var isEditing = _.isObject(layer);
+
+        var name_text = 'Layer name';
+        var name_placeholder = 'Enter layer name here'
+        var name_value = layer ? layer.getTitle() : '';
+
+        // create divs
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Layer name');
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', name_placeholder);
+        name_input.value = name_value;
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // save
+        this._fullscreen.geojson_title = name_input;
+
+        // return wrapper
+        return toggles_wrapper;
+    },
+
+
+     _createGeoJSONBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+
+
+
+
+        // import geosjon
+        var url_text = 'Import GeoJSON from URL';
+        var url_placeholder = 'eg. https://demo.mapic.io/data/demo.geojson';
+        var url_value = '';
+
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text);
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', url_placeholder);
+        name_input.value = url_value;
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // import button
+        var createBtn = M.DomUtil.create('div', 'smooth-fullscreen-save geojson-button', toggles_wrapper, 'Import');
+
+        // remember
+        this._fullscreen.geojson_url_div = name_input;
+
+        // click event on import btn
+        M.DomEvent.on(createBtn, 'click', this._importGeoJSON, this);
+
+
+
+
+
+        // geojson textarea
+        var url_text2 = 'GeoJSON';
+        var url_placeholder2 = JSON.stringify({ "type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [23.4850463378073, 46.7440954850672] }, "properties": {"popup": "<a href=’http://edinsight.no/popup?id=12’>Info</a>" }}]}, 0, 2);
+        var url_value2 = layer ? layer.getGeoJSON() : '';
+
+        var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text2);
+        var name_input2 = M.DomUtil.create('textarea', 'smooth-input smaller-input geojson-textarea', toggles_wrapper);
+        name_input2.setAttribute('placeholder', url_placeholder2);
+        name_input2.value = url_value2;
+        var name_error2 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // save
+        this._fullscreen.geojson_div = name_input2;
+
+
+        // new area
+        var toggles_wrapper2 = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+
+
+        // import style
+        var url_text6 = 'Import Style from URL';
+        var url_placeholder6 = 'eg. https://demo.mapic.io/data/style.json';
+        var url_value6 = '';
+
+        var name6 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper2, url_text6);
+        var name_input6 = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper2);
+        name_input6.setAttribute('placeholder', url_placeholder6);
+        name_input6.value = url_value6;
+        var name_error6 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper2);
+
+        this._fullscreen.style_json_url_div = name_input6;
+
+        // import button
+        var createBtn2 = M.DomUtil.create('div', 'smooth-fullscreen-save geojson-button', toggles_wrapper2, 'Import');
+
+        M.DomEvent.on(createBtn2, 'click', this._importStyleJSON, this);
+
+
+
+        var url_text5 = 'GeoJSON style';
+        var url_placeholder5 = 'eg. https://demo.mapic.io/data/style.json';
+        var url_value5 = layer ? layer.getStyleString() : '';
+
+        var name5 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper2, url_text5);
+        var name_input5 = M.DomUtil.create('textarea', 'smooth-input smaller-input geojson-textarea', toggles_wrapper2);
+        name_input5.setAttribute('placeholder', url_placeholder5);
+        name_input5.value = url_value5;
+        var name_error5 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper2);
+
+        // remember
+        this._fullscreen.style_json_div = name_input5;
+
+     
+
+
+
+
+
+
+
+
+
+        var toggles_wrapper3 = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+
+
+        // extra options
+        var url_text3 = 'GeoJSON Popup';
+        var url_placeholder3 = 'eg. "<a href=’http://demo.mapic.io/popup?id=12’>Info</a>"';
+        var url_value3 = layer ? layer.getPopup() : '';
+
+        var name3 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper3, url_text3);
+        var name_input3 = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper3);
+        name_input3.setAttribute('placeholder', url_placeholder3);
+        name_input3.value = url_value3;
+        var name_error3 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper3);
+
+        // save
+        this._fullscreen.geojson_popup = name_input3;
+
+
+
+
+
+        // legend png
+        var url_text4 = 'Legend Endpoint';
+        var url_placeholder4 = 'URL to an image file, eg. https://demo.mapic.io/data/world-legend.png';
+        var url_value4 = layer ? layer.getLegend() : '';
+
+        var name4 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper3, url_text4);
+        var name_input4 = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper3);
+        name_input4.setAttribute('placeholder', url_placeholder4);
+        name_input4.value = url_value4;
+        var name_error4 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper3);
+
+        // save
+        this._fullscreen.geojson_legend = name_input4;
+
+
+
+
+
+        // return wrapper
+        return toggles_wrapper;
+    },
+
+
+    _createGeoJSONOKButton : function (options) {
+
+        var container = options.container;
+        var layer = options.layer;
+
+        var btnTitle = layer ? 'Save changes' : 'Create layer';
+
+        // download button
+        var btnWrapper = M.DomUtil.create('div', 'pos-rel height-42', container);
+        var createBtn = M.DomUtil.create('div', 'smooth-fullscreen-save', btnWrapper, btnTitle);
+      
+        // deleete button event
+        M.DomEvent.on(createBtn, 'click', function (e) {
+
+            var title =    this._fullscreen.geojson_title.value;
+            var geojson =       this._fullscreen.geojson_div.value;
+            var style =         this._fullscreen.style_json_div.value;
+            var popup =         this._fullscreen.geojson_popup.value;
+            var legend =    this._fullscreen.geojson_legend.value;
+
+            if (layer) {
+                // editing 
+
+                layer.store.data.geojson7946 = {
+                    geojson : geojson,
+                    style : style,
+                    popup : popup,
+                };
+                layer.save('data');
+                layer.store.title = title;
+                layer.save('title');
+                layer.store.legend = legend;
+                layer.save('legend');
+
+                layer.refresh();
+
+                // select project
+                M.Mixin.Events.fire('layerEdited', { detail : {
+                    projectUuid : app.activeProject.getUuid(),
+                    layerUuid : layer.store.uuid
+                }});
+
+            } else {
+
+                // create layer on server
+                this._createGeoJSONLayer({
+                    geojson : geojson,
+                    style   : style,
+                    popup   : popup,
+                    title   : title,
+                    legend  : legend
+                });
+
+            }
+
+            // close fullscreen
+            this._fullscreen.close();
+
+        }, this);
+
+    },
+
+
+
+    _importGeoJSON : function () {
+
+        var url = this._fullscreen.geojson_url_div.value;
+
+        // GET request
+        var http = new XMLHttpRequest();
+        http.open("GET", url, true);
+        http.onreadystatechange = function() {
+            if (http.readyState == 4) {
+                if (http.status == 200) {
+
+                    var json = http.responseText;
+
+                    // format string
+                    var pretty_json = M.stringify(M.parse(json), 2);
+
+                    // check if valid json
+                    if (pretty_json == 'false') {
+                        // invalid
+                        pretty_json = 'Invalid json!'
+                        var success_msg = 'Invalid GeoJSON. Please try again!';
+                        console.log('Invalid GeoJSON: ', http.responseText);
+        
+                    } else {
+                        // valid
+                        var success_msg = 'Successfully imported GeoJSON!';
+
+                    }
+
+                } else {
+                    // non-200 status
+
+                    var success_msg = 'Bad request. Check the URL and try again.'
+                    var pretty_json = 'Bad request. Check the URL and try again.'
+
+                }
+
+                // fill in geojson textarea
+                this._fullscreen.geojson_div.value = pretty_json 
+
+                // set success message in placeholder
+                this._fullscreen.geojson_url_div.value = '';
+                this._fullscreen.geojson_url_div.placeholder = success_msg;
+
+            }
+
+        }.bind(this);
+        http.send(null);
+
+    },
+
+     _importStyleJSON : function () {
+
+        var url = this._fullscreen.style_json_url_div.value;
+
+        // GET request
+        var http = new XMLHttpRequest();
+        http.open("GET", url, true);
+        http.onreadystatechange = function() {
+            if (http.readyState == 4) {
+                if (http.status == 200) {
+
+                    var json = http.responseText;
+
+                    // format string
+                    var pretty_json = M.stringify(M.parse(json), 2);
+
+                    // check if valid json
+                    if (pretty_json == 'false') {
+                        // invalid
+                        pretty_json = json;
+                        var success_msg = 'Successfully imported style!';
+        
+                    } else {
+                        // valid
+                        var success_msg = 'Successfully imported style!';
+
+                    }
+
+                } else {
+                    // non-200 status
+                    var success_msg = 'Bad request. Check the URL and try again.'
+                    var pretty_json = 'Bad request. Check the URL and try again.'
+
+                }
+
+                // fill in geojson textarea
+                this._fullscreen.style_json_div.value = pretty_json 
+
+                // set success message in placeholder
+                this._fullscreen.style_json_url_div.value = '';
+                this._fullscreen.style_json_url_div.placeholder = success_msg;
+                
+
+            }
+            
+        }.bind(this);
+        http.send(null);
+
+    },
+
+
+    _createGeoJSONLayer : function (options) {
+
+        // get project
+        var project = app.activeProject;
+
+        // get title
+        var title = options.title || 'New GeoJSON Layer';
+
+        var layer_options = {
+            data : {
+                geojson7946 : {
+                    geojson : options.geojson,
+                    style   : options.style,
+                    popup   : options.popup,
+                }
+            },
+            title : title,
+            legend : options.legend,
+
+            description : '',
+            file : null,
+            projectUuid : project.getUuid(), // pass to automatically attach to project
+        };
+
+        // create layer @ api
+        app.api.createLayer(layer_options, 
+
+        // callback
+        function (err, body) {
+            if (err) return console.error(err, body);
+            
+            // parse
+            var layerModel = M.parse(body);
+
+            // create layer on project
+            var layer = project.addLayer(layerModel);
+
+            // select project
+            M.Mixin.Events.fire('layerAdded', { detail : {
+                projectUuid : project.getUuid(),
+                layerUuid : layerModel.uuid
+            }});
+
+            // feedback
+            app.FeedbackPane.setMessage({title : 'Success!', description : 'GeoJSON Layer created'})
+
+        });
+
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // WMS FULLSCREEN
+
+    _createWMSUrlBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+
+        // are we editing?
+        var isEditing = _.isObject(layer);
+
+        // base url
+        var url_text = 'WMS Base URL';
+        var url_placeholder = 'eg. https://demo.boundlessgeo.com/geoserver/ows?';
+        var url_value = layer ? layer.getSourceURL() : '';
+
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text);
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', url_placeholder);
+        name_input.value = url_value;
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // save
+        this._fullscreen.wms_url_div = name_input;
+
+        // layers url
+        var url_text2 = 'WMS Layers';
+        var url_placeholder2 = 'eg. ne:ne_10m_admin_0_boundary_lines_land,ne:ne_10m_admin_0_countries';
+        var url_value2 = layer ? layer.getWMSLayerString() : '';
+
+        var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text2);
+        var name_input2 = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input2.setAttribute('placeholder', url_placeholder2);
+        name_input2.value = url_value2;
+        var name_error2 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // save
+        this._fullscreen.wms_layers_div = name_input2;
+
+        // extra options
+        var url_text3 = 'WMS Extra options';
+        var url_placeholder3 = 'eg. styles=red&transparent=true';
+        var url_value3 = layer ? layer.getWMSExtraOptions() : '';
+
+        var name3 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text3);
+        var name_input3 = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input3.setAttribute('placeholder', url_placeholder3);
+        name_input3.value = url_value3;
+        var name_error3 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // save
+        this._fullscreen.wms_options_div = name_input3;
+
+        // legend png
+        var url_text4 = 'Legend Endpoint';
+        var url_placeholder4 = 'URL to a .png file, eg. https://demo.boundlessgeo.com/legend/world.png';
+        var url_value4 = layer ? layer.getWMSLegend() : '';
+
+        var name4 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text4);
+        var name_input4 = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input4.setAttribute('placeholder', url_placeholder4);
+        name_input4.value = url_value4;
+        var name_error4 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // save
+        this._fullscreen.wms_legend_div = name_input4;
+
+
+        // return wrapper
+        return toggles_wrapper;
+    },
+
+    _createWMSNameBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+
+        // are we editing?
+        var isEditing = _.isObject(layer);
+
+        var name_text = 'Layer name';
+        var name_placeholder = 'Enter layer name here'
+        var name_value = layer ? layer.getTitle() : '';
+
+        // create divs
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Layer name');
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', name_placeholder);
+        name_input.value = name_value;
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // save
+        this._fullscreen.wms_name_div = name_input;
+
+        // return wrapper
+        return toggles_wrapper;
+    },
+
+    _createWMSOKButton : function (options) {
+
+        var container = options.container;
+        var layer = options.layer;
+
+
+        var btnTitle = layer ? 'Save changes' : 'Create layer';
+
+        // download button
+        var btnWrapper = M.DomUtil.create('div', 'pos-rel height-42', container);
+        var createBtn = M.DomUtil.create('div', 'smooth-fullscreen-save', btnWrapper, btnTitle);
+      
+        // deleete button event
+        M.DomEvent.on(createBtn, 'click', function (e) {
+
+            var layer_name = this._fullscreen.wms_name_div.value;
+            var base_url = this._fullscreen.wms_url_div.value;
+            var options_url = this._fullscreen.wms_options_div.value;
+            var layers_url = this._fullscreen.wms_layers_div.value;
+            var legend_url = this._fullscreen.wms_legend_div.value;
+
+            if (layer) {
+                // editing 
+
+                layer.store.data.wms = {
+                    source : base_url,
+                    layers : layers_url,
+                    options : options_url,
+                };
+                layer.save('data');
+                layer.store.title = layer_name;
+                layer.save('title');
+                layer.store.legend = legend_url;
+                layer.save('legend');
+
+                // select project
+                M.Mixin.Events.fire('layerEdited', { detail : {
+                    projectUuid : app.activeProject.getUuid(),
+                    layerUuid : layer.store.uuid
+                }});
+
+            } else {
+
+                // create layer on server
+                this._createWMSLayer({
+                    base    : base_url,
+                    layers  : layers_url,
+                    options : options_url,
+                    title   : layer_name,
+                    legend  : legend_url
+                });
+
+            }
+
+            // close fullscreen
+            this._fullscreen.close();
+
+        }, this);
+
+    },
+
+    _createWMSLayer : function (options) {
+
+        // get project
+        var project = app.activeProject;
+
+        // get title
+        var title = options.title || 'New WMS Layer';
+
+        var layer_options = {
+            projectUuid : project.getUuid(), // pass to automatically attach to project
+            data : {
+                wms : {
+                    source : options.base,
+                    layers : options.layers,
+                    options : options.options,
+                }
+            },
+            title : title,
+            description : '',
+            file : null,
+            legend : options.legend,
+        };
+
+        // create layer @ api
+        app.api.createLayer(layer_options, 
+
+        // callback
+        function (err, body) {
+            if (err) return console.error(err, body);
+            
+            // parse
+            var layerModel = M.parse(body);
+
+            // create layer on project
+            var layer = project.addLayer(layerModel);
+
+            // select project
+            M.Mixin.Events.fire('layerAdded', { detail : {
+                projectUuid : project.getUuid(),
+                layerUuid : layerModel.uuid
+            }});
+
+            // feedback
+            app.FeedbackPane.setMessage({title : 'Success!', description : 'WMS Layer created'})
+
+        });
+
+    },
 
     _createCubeNameBox : function (options) {
         var container = options.container;
@@ -3041,9 +3804,11 @@ M.Chrome.Data = M.Chrome.extend({
 
             var provider = layerBundle.key;
 
+
+
             // only do our layers
             // if (provider == 'postgis' || provider == 'cube' || provider == 'wms') {
-            if (provider == 'postgis' || provider == 'cube' || provider == 'graph') {
+            if (provider == 'postgis' || provider == 'cube' || provider == 'graph' || provider == 'wms' || provider == 'geojson7946') {
 
                 var layers = layerBundle.layers;
 
@@ -3097,7 +3862,7 @@ M.Chrome.Data = M.Chrome.extend({
     sortLayers : function (layers) {
 
         // var keys = ['postgis', 'google', 'norkart', 'geojson', 'mapbox', 'cube', 'wms'];
-        var keys = ['postgis', 'google', 'norkart', 'geojson', 'mapbox', 'cube', 'graph'];
+        var keys = ['postgis', 'google', 'norkart', 'geojson', 'mapbox', 'cube', 'graph', 'wms', 'geojson7946'];
         var results = [];
 
         keys.forEach(function (key) {
@@ -3109,7 +3874,14 @@ M.Chrome.Data = M.Chrome.extend({
                 var layer = layers[l];
                 if (layer) {
                     if (layer.store && layer.store.data.hasOwnProperty(key)) {
-                        sort.layers.push(layer)
+                        if (key == 'wms') {
+                            // only add if no other key
+                            if (_.size(layer.store.data) == 1) {
+                                sort.layers.push(layer);
+                            }
+                        } else {
+                            sort.layers.push(layer);
+                        }
                     }
                 }
             }
@@ -3586,7 +4358,7 @@ M.Chrome.Data = M.Chrome.extend({
                 return d.getTitle();
             }.bind(this))
             .on('dblclick', function (d) {
-                var editable = (library == 'postgis' || library == 'raster' || library == 'graph' || library == 'wms');
+                var editable = (library == 'postgis' || library == 'raster' || library == 'graph' || library == 'wms' || library == 'geojson7946');
                 editable && this.activateLayerInput(d, library);
             }.bind(this))
 
@@ -3690,7 +4462,7 @@ M.Chrome.Data = M.Chrome.extend({
 
     createLayerPopUpTrigger : function (parent, type) {
 
-        if ( type != 'postgis' && type != 'cube' && type != 'wms' && type != 'graph') return;
+        if ( type != 'postgis' && type != 'cube' && type != 'wms' && type != 'graph' && type != 'geojson7946') return;
 
         // Bind
         var popupTrigger = parent
@@ -3810,9 +4582,45 @@ M.Chrome.Data = M.Chrome.extend({
             }
         }
 
+
+
         if (library == 'graph') {
             var action = {
                 editGraph : {
+                    name : 'Edit layer',
+                    disabled : !canEdit
+                },
+                changeName : {
+                    name : 'Rename...',
+                    disabled : !canEdit
+                },
+                delete : {
+                    name : 'Delete',
+                    disabled : !canEdit
+                }
+            }
+        }
+
+        if (library == 'wms') {
+            var action = {
+                editWMS : {
+                    name : 'Edit layer',
+                    disabled : !canEdit
+                },
+                changeName : {
+                    name : 'Rename...',
+                    disabled : !canEdit
+                },
+                delete : {
+                    name : 'Delete',
+                    disabled : !canEdit
+                }
+            }
+        }
+
+        if (library == 'geojson7946') {
+            var action = {
+                editGeoJSON : {
                     name : 'Edit layer',
                     disabled : !canEdit
                 },
@@ -3889,6 +4697,12 @@ M.Chrome.Data = M.Chrome.extend({
         // edit
         if (trigger == 'editCube') this._editCube(layer);
 
+        // edit wms
+        if (trigger == 'editWMS') this._editWMS(layer);
+
+        // edit geojson
+        if (trigger == 'editGeoJSON') this._editGeoJSON(layer);
+
         // edit
         if (trigger == 'editGraph') this._editGraph(layer);
 
@@ -3896,6 +4710,14 @@ M.Chrome.Data = M.Chrome.extend({
         this.showLayerActionFor = false;
         this.selectedLayers = [];
         this._refreshLayers();
+    },
+
+    _editWMS : function (layer) {
+        this._openWMSFullscreen(layer);
+    },
+
+    _editGeoJSON : function (layer) {
+        this._openGeoJSONFullscreen(layer);
     },
 
     _editCube : function (layer) {

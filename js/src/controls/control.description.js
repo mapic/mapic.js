@@ -91,13 +91,11 @@ L.Control.Description = M.Control.extend({
 		
 		if ( app.isMobile || isMobile ) { // app.isMobile is not ready yet...
 
-
 			// Toggle while clicking on the container on toch devices
 			M.DomEvent.on(this._container, 'click', this.closeMobile, this);
 			M.DomEvent.on(this._legendCollapsed, 'click', this.openMobile, this);
 			M.DomEvent.on(this._legendCollapsed, 'click',  M.DomEvent.stop, this);
 			M.DomEvent.on(this._legendCollapsed, 'onscroll scroll mousewheel', M.DomEvent.stopPropagation, this);
-
 			
 		} else {
 			// collapsers
@@ -115,7 +113,6 @@ L.Control.Description = M.Control.extend({
 
 		M.DomEvent.on(this._toggeOpener, 'click', this.toggleOpen, this);
 
-
 	},
 
 	closeMobile : function () {
@@ -132,6 +129,7 @@ L.Control.Description = M.Control.extend({
 		M.Mixin.Events.on('updateLegend', this._legendIsBeingUpdated, this);
 		M.Mixin.Events.on('phantomjs', this.compactLegend, this);
 		M.Mixin.Events.on('toggleLeftChrome', this._toggleLeftChrome, this);
+
 	},
 
 	_toggleLeftChrome : function (e) {
@@ -186,16 +184,12 @@ L.Control.Description = M.Control.extend({
 	},
 
 	_layerEnabled : function (e) {
-
-		// console.log('control.description layerEnabled', e, this.layers);
 	},
 
 	_layerDisabled : function (e) {
-		// console.log('layer _layerDisabled', e);
 	},	
 
 	showHide : function () {
-		// console.error('showHide', this);
 
 		// Hide if empty
 		if ( !this.layers || this.isEmpty(this.layers) ) {
@@ -208,10 +202,8 @@ L.Control.Description = M.Control.extend({
 	},
 
 	_hide : function () {	
-		// console.error('TODO: hide/show not working. refactor!');
 		this._container.style.display = 'none'; 
 		this.isOpen = false;
-
 		this.toggleScale(false);
 	},
 
@@ -307,8 +299,6 @@ L.Control.Description = M.Control.extend({
 	},
 
 	_removeLayer : function (layer) {
-
-		// console.log('_removeLayer', layer, this);
 
 		// Delete layer from store
 		var layerUuid = layer.getUuid();
@@ -413,7 +403,6 @@ L.Control.Description = M.Control.extend({
 
 	getLegend : function (layer) {
 		var legendHTML = layer.isVector() ? this.createLegendHTML() : '';
-		// console.log('getLEgend', legendHTML);
 		return legendHTML;
 	},
 
@@ -444,6 +433,34 @@ L.Control.Description = M.Control.extend({
 		return description_meta;
 	},
 
+	_createWMSLegend : function (layer) {
+
+		var title = layer.getTitle();
+		var img = layer.getLegendImage();
+
+		// create legend
+		var html = '<div class="wms-legend-title">' + title + '</div>';
+		html += '<img src="' + img + '">';
+
+		M.DomUtil.addClass(this._singleLegendViewWrapper, 'wms-legend');
+
+		this._singleLegendViewWrapper.innerHTML = html;
+
+	},
+
+	_createGeoJSONLegend : function (layer) {
+
+		var title = layer.getTitle();
+		var img = layer.getLegend();
+
+		// create legend
+		var html = '<div class="wms-legend-title">' + title + '</div>';
+		html += '<img src="' + img + '">';
+
+		M.DomUtil.addClass(this._singleLegendViewWrapper, 'wms-legend');
+
+		this._singleLegendViewWrapper.innerHTML = html;
+	},
 
 	setHTMLfromStore : function (uuid) {
 
@@ -453,6 +470,11 @@ L.Control.Description = M.Control.extend({
 		var layer = this._project.getLayer(uuid);
 		if (!layer) return;
 
+		// create special legend for WMS layers
+		if (layer.isWMS()) return this._createWMSLegend(layer);
+		if (layer.isGeoJSON()) return this._createGeoJSONLegend(layer);
+
+		// get legend
 		var legend = layer.getLegends();
 
 		// Create legend if there are none

@@ -8,7 +8,6 @@ M.WMSLayer = M.Model.Layer.extend({
         
         // data not loaded
         this.loaded = false;
-
        
     },
 
@@ -25,39 +24,35 @@ M.WMSLayer = M.Model.Layer.extend({
 
     _prepareLayer : function () {
 
-        // set ids
-        // var fileUuid    = this._fileUuid;   // file id of geojson
-        // var cartoid     = this.store.data.cartoid || this._defaultCartoid;
-        // var tileServer  = app.options.servers.tiles.uri;
-        // var subdomains  = app.options.servers.tiles.subdomains;
-        // var access_token = '?access_token=' + app.tokens.access_token;
-        // var layerUuid = this._getLayerUuid();
-        // var url = app.options.servers.tiles.uri + '{layerUuid}/{z}/{x}/{y}.png' + access_token;
+        var source = this.store.data.wms.source;
+        var layers = this.store.data.wms.layers;
+        var options_string = this.store.data.wms.options;
 
-        // // add vector tile raster layer
-        // this.layer = L.tileLayer(url, {
-        //     fileUuid: fileUuid,
-        //     layerUuid : layerUuid,
-        //     subdomains : subdomains,
-        //     maxRequests : 0
-        // });
+        var options = this._queryStringToJSON(options_string) || {};
 
-        var wms_source = 'http://195.1.20.83/wms-follo/';
-        // var layer_name = 'EIENDOMSKART';
-
-        // console.log('_prepareLayer', this);
-
-        var layer_name = this._getFirstWMSLayer();
+        // options.source = source;
+        options.layers = layers;
+        options.transparent = true;
+        options.format = 'image/png';
 
         // create layer
-        this.layer = L.tileLayer.betterWms(wms_source, {
-            layers: layer_name,
-            transparent: true,
-            format: 'image/png',
-            openContent : this.openContent.bind(this),
-            parentLayer : this
+        this.layer = L.tileLayer.betterWms(source, options);
+
+    },
+
+    _queryStringToJSON : function (string) {   
+        if (!string) return {};         
+        var pairs = string.split('&');
+        
+        var result = {};
+        pairs.forEach(function(pair) {
+            pair = pair.split('=');
+            result[pair[0]] = decodeURIComponent(pair[1] || '');
         });
 
+        var parsed = M.parse(M.stringify(result));
+
+        return parsed;
     },
 
     _getFirstWMSLayer : function () {
@@ -93,13 +88,16 @@ M.WMSLayer = M.Model.Layer.extend({
         return this.project()._infobox;
     },
 
+    isWMS : function () {
+        return true;
+    },
+
     _createInfoBox : function () {
         var container = M.DomUtil.create('div', 'wms-info-box', app._appPane);
         var content = M.DomUtil.create('div', 'wms-info-box-content', container);
         var closeBtn = M.DomUtil.create('div', 'wms-info-box-close-btn', container, 'x');
 
         // set infobox
-        // this._infobox = content;
         this.project()._infobox = content;
 
         // set close event
@@ -462,13 +460,20 @@ M.WMSLayer = M.Model.Layer.extend({
 
     },
 
+    getLegendImage : function () {
+        var legendImage = this.store.legend;
+        return legendImage;
+    },
+
 
     remove : function (map) {
+
         var map = map || app._map;
 
         // leaflet fn
-        if (map.hasLayer(this.layer)) map.removeLayer(this.layer);
-
+        if (map.hasLayer(this.layer)) {
+            map.removeLayer(this.layer);
+        }
         // remove from active layers
         app.MapPane.removeActiveLayer(this);    
 
@@ -482,8 +487,8 @@ M.WMSLayer = M.Model.Layer.extend({
         this._removeFromZIndex();
 
         // remove from descriptionControl if avaialbe
-        // var descriptionControl = app.MapPane.getControls().description;
-        // if ( descriptionControl ) descriptionControl._removeLayer(this);
+        var descriptionControl = app.MapPane.getControls().description;
+        if (descriptionControl) descriptionControl._removeLayer(this);
 
         // remove overlays
         _.forEach(this._overlays, function (o) {
@@ -503,6 +508,21 @@ M.WMSLayer = M.Model.Layer.extend({
         return this._added;
     },
 
+    getSourceURL : function () {
+        return this.store.data.wms.source;
+    },
+
+    getWMSLayerString : function () {
+        return this.store.data.wms.layers;
+    },
+
+    getWMSExtraOptions : function () {
+        return this.store.data.wms.options;
+    },
+
+    getWMSLegend : function () {
+        return this.store.legend;
+    },
 
 });
 
@@ -520,7 +540,7 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
         // Triggered when the layer is added to a map.
         //   Register a click listener, then do all the upstream WMS things
         L.TileLayer.WMS.prototype.onAdd.call(this, map);
-        map.on('click', this.getFeatureInfo, this);
+        // map.on('click', this.getFeatureInfo, this);
     },
 
     onRemove: function (map) {

@@ -208,7 +208,10 @@ M.Api = M.Class.extend({
 		this.get(path, options, done);
 	},
 
-	
+	importExternalFile : function (options, done) {
+		var path = '/v2/data/external';
+		this.post(path, options, done);
+	},
 
 
 
@@ -556,7 +559,9 @@ M.Api = M.Class.extend({
 		var access_token = (window.app && app.tokens) ? app.tokens.access_token : null;
 		var options = _.isString(json) ? M.parse(json) : json;
 		options.access_token = options.access_token || access_token;
+
 		var send_json = M.stringify(options);
+		
 		// send
 		http.send(send_json);
 	},

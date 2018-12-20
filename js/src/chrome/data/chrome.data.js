@@ -2104,50 +2104,40 @@ M.Chrome.Data = M.Chrome.extend({
 
         var url = this._fullscreen.geojson_url_div.value;
 
-        // GET request
-        var http = new XMLHttpRequest();
-        http.open("GET", url, true);
-        http.onreadystatechange = function() {
-            if (http.readyState == 4) {
-                if (http.status == 200) {
+        // import file
+        app.api.importExternalFile({
+            url : url,
 
-                    var json = http.responseText;
+        }, function (err, result) {
+            if (err) console.error(err);
 
-                    // format string
-                    var pretty_json = M.stringify(M.parse(json), 2);
 
-                    // check if valid json
-                    if (pretty_json == 'false') {
-                        // invalid
-                        pretty_json = 'Invalid json!'
-                        var success_msg = 'Invalid GeoJSON. Please try again!';
-                        console.log('Invalid GeoJSON: ', http.responseText);
-        
-                    } else {
-                        // valid
-                        var success_msg = 'Successfully imported GeoJSON!';
+            var json = result;
 
-                    }
+            // format string
+            var pretty_json = M.stringify(M.parse(json), 2);
 
-                } else {
-                    // non-200 status
+            // check if valid json
+            if (pretty_json == 'false') {
+                // invalid
+                pretty_json = 'Invalid json!'
+                var success_msg = 'Invalid GeoJSON. Please try again!';
+                console.log('Invalid GeoJSON: ', result);
 
-                    var success_msg = 'Bad request. Check the URL and try again.'
-                    var pretty_json = 'Bad request. Check the URL and try again.'
-
-                }
-
-                // fill in geojson textarea
-                this._fullscreen.geojson_div.value = pretty_json 
-
-                // set success message in placeholder
-                this._fullscreen.geojson_url_div.value = '';
-                this._fullscreen.geojson_url_div.placeholder = success_msg;
-
+            } else {
+                // valid
+                var success_msg = 'Successfully imported GeoJSON!';
             }
 
-        }.bind(this);
-        http.send(null);
+            // fill in geojson textarea
+            this._fullscreen.geojson_div.value = pretty_json 
+
+            // set success message in placeholder
+            this._fullscreen.geojson_url_div.value = '';
+            this._fullscreen.geojson_url_div.placeholder = success_msg;
+
+        }.bind(this));
+
 
     },
 
@@ -2155,49 +2145,39 @@ M.Chrome.Data = M.Chrome.extend({
 
         var url = this._fullscreen.style_json_url_div.value;
 
-        // GET request
-        var http = new XMLHttpRequest();
-        http.open("GET", url, true);
-        http.onreadystatechange = function() {
-            if (http.readyState == 4) {
-                if (http.status == 200) {
+        //
+        app.api.importExternalFile({
+            url : url
+        }, function (err, result) {
+            if (err) console.error(err);
 
-                    var json = http.responseText;
+            var json = result;
 
-                    // format string
-                    var pretty_json = M.stringify(M.parse(json), 2);
+            // format string
+            var pretty_json = M.stringify(M.parse(json), 2);
 
-                    // check if valid json
-                    if (pretty_json == 'false') {
-                        // invalid
-                        pretty_json = json;
-                        var success_msg = 'Successfully imported style!';
-        
-                    } else {
-                        // valid
-                        var success_msg = 'Successfully imported style!';
+            // check if valid json
+            if (pretty_json == 'false') {
+                // invalid
+                pretty_json = json;
+                var success_msg = 'Successfully imported style!';
 
-                    }
+            } else {
+                // valid
+                var success_msg = 'Successfully imported style!';
 
-                } else {
-                    // non-200 status
-                    var success_msg = 'Bad request. Check the URL and try again.'
-                    var pretty_json = 'Bad request. Check the URL and try again.'
+            };
 
-                }
+            // fill in geojson textarea
+            this._fullscreen.style_json_div.value = pretty_json 
 
-                // fill in geojson textarea
-                this._fullscreen.style_json_div.value = pretty_json 
-
-                // set success message in placeholder
-                this._fullscreen.style_json_url_div.value = '';
-                this._fullscreen.style_json_url_div.placeholder = success_msg;
-                
-
-            }
+            // set success message in placeholder
+            this._fullscreen.style_json_url_div.value = '';
+            this._fullscreen.style_json_url_div.placeholder = success_msg;
             
-        }.bind(this);
-        http.send(null);
+
+        }.bind(this));
+      
 
     },
 

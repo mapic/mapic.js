@@ -98,8 +98,9 @@ M.Model.Layer.GeoJSONLayer = M.Model.Layer.extend({
     },
 
     _initLayer : function () {
-
         if (!this.store || !this.store.data || !this.store.data.geojson7946) return console.error('Invalid GeoJSON', this);
+
+        if (this.layer) this.remove();
 
         // parse geojson
         this._geojson = M.parse(this.store.data.geojson7946.geojson);
@@ -111,13 +112,14 @@ M.Model.Layer.GeoJSONLayer = M.Model.Layer.extend({
         this.setStyle();
 
         // set popup
-        this.setPopup();
+        this.refreshPopup();
 
     },
 
     refresh : function () {
         this.refreshPopup();
         this.setStyle();
+        this._initLayer();
     },
 
     refreshPopup : function () {
@@ -133,6 +135,7 @@ M.Model.Layer.GeoJSONLayer = M.Model.Layer.extend({
     setPopup : function () {
         var popup = this.store.data.geojson7946.popup;
         if (!popup) return;
+        if (!this._geojson) return;
 
         // set properties.popup
         this._geojson.properties = this._geojson.properties || {};
@@ -205,7 +208,7 @@ M.Model.Layer.GeoJSONLayer = M.Model.Layer.extend({
        
     },
 
-     _addTo : function (type) {
+    _addTo : function (type) {
         if (!this.layer) this._initLayer();
 
         var map = app._map;
@@ -223,17 +226,11 @@ M.Model.Layer.GeoJSONLayer = M.Model.Layer.extend({
 
     },
 
-    remove : function () {
-        app._map.removeLayer(this.layer);
-    },
-
     remove : function (map) {
 
-        var map = map || app._map;
-
         // leaflet fn
-        if (map.hasLayer(this.layer)) {
-            map.removeLayer(this.layer);
+        if (app._map.hasLayer(this.layer)) {
+            app._map.removeLayer(this.layer);
         }
         // remove from active layers
         app.MapPane.removeActiveLayer(this);    

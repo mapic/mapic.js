@@ -12,6 +12,7 @@ M.WMSLayer = M.Model.Layer.extend({
     },
 
     initLayer : function () {
+        if (this.layer) this.remove();
         this.update();
     },
 
@@ -412,7 +413,6 @@ M.WMSLayer = M.Model.Layer.extend({
     },
    
     _refreshLayer : function (layerUuid) {
-
         this.layer.setOptions({
             layerUuid : layerUuid
         });
@@ -528,6 +528,20 @@ M.WMSLayer = M.Model.Layer.extend({
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
 
     options : {
@@ -535,7 +549,7 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
         parentLayer : null,
         openContent : function () {}
     },
-  
+
     onAdd: function (map) {
         // Triggered when the layer is added to a map.
         //   Register a click listener, then do all the upstream WMS things
@@ -553,6 +567,9 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
             this._popup.remove();
         }
     },
+
+   
+
 
     getFeatureInfo: function (evt) {
         // Make an AJAX request to the server and hope for the best
@@ -603,12 +620,7 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
             showResults(err, evt.latlng, results);
         }); 
 
-       
-
-       
-
         // https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=AIzaSyBVrB_4RHkrlLHIpK15VHs1LrwFszWvfPI
-
     },
 
     getFeatureInfoUrl: function (latlng) {

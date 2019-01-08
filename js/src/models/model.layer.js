@@ -767,6 +767,9 @@ M.createLayer = function (layer) {
     // wms
     if (layer.data.wms) return new M.WMSLayer(layer);
 
+    // tile service
+    if (layer.data.tile_service) return new M.TileServiceLayer(layer);
+
     // catch-all error layer
     return new M.ErrorLayer(layer);
 };

@@ -149,6 +149,11 @@ M.Chrome.Data = M.Chrome.extend({
                 title : 'GeoJSON Layer',
                 onClick : this._onClickGeoJSONLayer.bind(this),
                 tooltip : 'Create a GeoJSON layer'
+            },
+             {
+                title : 'Tile Service Layer',
+                onClick : this._onClickTSLayer.bind(this),
+                tooltip : 'Create a Tile Service layer'
             }
         ];
 
@@ -188,6 +193,7 @@ M.Chrome.Data = M.Chrome.extend({
 
     _onClickWMSLayer : function () {
 
+        // hide popup
         this._removeNewDataLayerPopup();
 
         // create fullscreen
@@ -196,10 +202,21 @@ M.Chrome.Data = M.Chrome.extend({
     },
 
     _onClickGeoJSONLayer : function () {
+        
+        // hide popup
         this._removeNewDataLayerPopup();
 
         // create fullscreen
          this._openGeoJSONFullscreen();
+    },
+
+     _onClickTSLayer : function () {
+        
+        // hide popup
+        this._removeNewDataLayerPopup();
+
+        // create fullscreen
+         this._openTSFullscreen();
     },
 
     
@@ -1330,6 +1347,39 @@ M.Chrome.Data = M.Chrome.extend({
 
     },
 
+
+    _openTSFullscreen : function (layer) {
+
+        // create fullscreen
+        var layerTitle = layer ? layer.getTitle() : 'New Tile Service Layer';
+        var fullscreen = this._fullscreen = new M.Fullscreen({
+            title : '<i class="fa fa-bars file-option"></i>' + layerTitle,
+            titleClassName : 'slim-font'
+        });
+
+        // shortcuts
+        var content = this._fullscreen._content;
+
+        // create name box
+        this._createTSNameBox({
+            container : content,
+            layer : layer
+        });
+
+        // create URL input
+        this._createTSUrlBox({
+            container : content,
+            layer : layer
+        });
+
+        // create OK button
+        this._createTSOKButton({
+            container : content,
+            layer : layer
+        });
+
+    },
+
   
     // used both by new and edit layer
     _openCubeLayerEditFullscreen : function (layer) {
@@ -2237,6 +2287,216 @@ M.Chrome.Data = M.Chrome.extend({
 
 
 
+    // Tile Service Fullscreen
+
+    _createTSNameBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+
+        // are we editing?
+        var isEditing = _.isObject(layer);
+
+        var name_text = 'Layer name';
+        var name_placeholder = 'Enter layer name here'
+        var name_value = layer ? layer.getTitle() : '';
+
+        // create divs
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Layer name');
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', name_placeholder);
+        name_input.value = name_value;
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // save
+        this._fullscreen.ts_name_div = name_input;
+
+        // return wrapper
+        return toggles_wrapper;
+    },
+
+    _createTSUrlBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+
+        // are we editing?
+        var isEditing = _.isObject(layer);
+
+        // base url
+        var url_text = 'Tile Service URL';
+        var url_placeholder = 'eg. https://demo.boundlessgeo.com/geoserver/ows?';
+        var url_value = layer ? layer.getSourceURL() : '';
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text);
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', url_placeholder);
+        name_input.value = url_value;
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+        this._fullscreen.ts_url_div = name_input;
+
+
+
+        // // layers url
+        // var url_text2 = 'WMS Layers';
+        // var url_placeholder2 = 'eg. ne:ne_10m_admin_0_boundary_lines_land,ne:ne_10m_admin_0_countries';
+        // var url_value2 = layer ? layer.getWMSLayerString() : '';
+        // var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text2);
+        // var name_input2 = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        // name_input2.setAttribute('placeholder', url_placeholder2);
+        // name_input2.value = url_value2;
+        // var name_error2 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+        // this._fullscreen.ts_layers_div = name_input2;
+
+
+
+        // extra options
+        var url_text3 = 'Tile Service Subdomains';
+        var url_placeholder3 = 'String or Array of strings';
+        var url_value3 = layer ? layer.getSubdomains() : '';
+        var name3 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text3);
+        var name_input3 = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input3.setAttribute('placeholder', url_placeholder3);
+        name_input3.value = url_value3;
+        var name_error3 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+        this._fullscreen.ts_subdomains_div = name_input3;
+
+        // // legend png
+        // var url_text4 = 'Legend Endpoint';
+        // var url_placeholder4 = 'URL to a .png file, eg. https://demo.boundlessgeo.com/legend/world.png';
+        // var url_value4 = layer ? layer.getWMSLegend() : '';
+
+        // var name4 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text4);
+        // var name_input4 = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        // name_input4.setAttribute('placeholder', url_placeholder4);
+        // name_input4.value = url_value4;
+        // var name_error4 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // // save
+        // this._fullscreen.wms_legend_div = name_input4;
+
+
+        // return wrapper
+        return toggles_wrapper;
+    },
+
+    _createTSOKButton : function (options) {
+
+        var container = options.container;
+        var layer = options.layer;
+
+        var btnTitle = layer ? 'Save changes' : 'Create layer';
+
+        // download button
+        var btnWrapper = M.DomUtil.create('div', 'pos-rel height-42', container);
+        var createBtn = M.DomUtil.create('div', 'smooth-fullscreen-save', btnWrapper, btnTitle);
+      
+        // deleete button event
+        M.DomEvent.on(createBtn, 'click', function (e) {
+
+            var layer_name = this._fullscreen.ts_name_div.value;
+            var tile_url = this._fullscreen.ts_url_div.value;
+            var subdomains = this._fullscreen.ts_subdomains_div.value;
+
+            console.log('click!!', layer_name, tile_url, subdomains);
+            // return;
+
+            if (layer) {
+                // editing 
+
+                layer.store.data.tileservice = M.stringify({
+                    tile_url : tile_url,
+                    subdomains : subdomains,
+                });
+
+                layer.save('data');
+                layer.store.title = layer_name;
+                layer.save('title');
+                // layer.store.legend = legend_url;
+                // layer.save('legend');
+
+                // select project
+                M.Mixin.Events.fire('layerEdited', { detail : {
+                    projectUuid : app.activeProject.getUuid(),
+                    layerUuid : layer.store.uuid
+                }});
+
+            } else {
+
+                // create layer on server
+                this._createTSLayer({
+                    title  : layer_name,
+                    tile_url    : tile_url,
+                    subdomains  : subdomains,
+                    // title   : layer_name,
+                    // legend  : legend_url
+                });
+
+            }
+
+            // close fullscreen
+            this._fullscreen.close();
+
+        }, this);
+    },
+
+
+
+    _createTSLayer : function (options) {
+
+        // get project
+        var project = app.activeProject;
+
+        // get title
+        var title = options.title || 'New Tile Service Layer';
+
+        var layer_options = {
+            projectUuid : project.getUuid(), // pass to automatically attach to project
+            data : {
+                tile_service : M.stringify({
+                    tile_url : options.tile_url,
+                    subdomains : options.subdomains,
+                    // options : options.options,
+                })
+            },
+            title : title,
+            description : '',
+            file : null,
+            legend : options.legend,
+        };
+
+        // create layer @ api
+        app.api.createLayer(layer_options, 
+
+        // callback
+        function (err, body) {
+            if (err) return console.error(err, body);
+            
+            // parse
+            var layerModel = M.parse(body);
+
+            // create layer on project
+            var layer = project.addLayer(layerModel);
+
+            // select project
+            M.Mixin.Events.fire('layerAdded', { detail : {
+                projectUuid : project.getUuid(),
+                layerUuid : layerModel.uuid
+            }});
+
+            // feedback
+            app.FeedbackPane.setMessage({title : 'Success!', description : 'Tile Service Layer created'})
+
+        });
+
+
+    },
+
+
+
+
+
+
+
 
 
 
@@ -2461,6 +2721,36 @@ M.Chrome.Data = M.Chrome.extend({
         });
 
     },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     _createCubeNameBox : function (options) {
         var container = options.container;
@@ -3788,7 +4078,7 @@ M.Chrome.Data = M.Chrome.extend({
 
             // only do our layers
             // if (provider == 'postgis' || provider == 'cube' || provider == 'wms') {
-            if (provider == 'postgis' || provider == 'cube' || provider == 'graph' || provider == 'wms' || provider == 'geojson7946') {
+            if (provider == 'postgis' || provider == 'cube' || provider == 'graph' || provider == 'wms' || provider == 'geojson7946' || provider == 'tile_service') {
 
                 var layers = layerBundle.layers;
 
@@ -3842,7 +4132,7 @@ M.Chrome.Data = M.Chrome.extend({
     sortLayers : function (layers) {
 
         // var keys = ['postgis', 'google', 'norkart', 'geojson', 'mapbox', 'cube', 'wms'];
-        var keys = ['postgis', 'google', 'norkart', 'geojson', 'mapbox', 'cube', 'graph', 'wms', 'geojson7946'];
+        var keys = ['postgis', 'google', 'norkart', 'geojson', 'mapbox', 'cube', 'graph', 'wms', 'geojson7946', 'tile_service'];
         var results = [];
 
         keys.forEach(function (key) {
@@ -4338,7 +4628,7 @@ M.Chrome.Data = M.Chrome.extend({
                 return d.getTitle();
             }.bind(this))
             .on('dblclick', function (d) {
-                var editable = (library == 'postgis' || library == 'raster' || library == 'graph' || library == 'wms' || library == 'geojson7946');
+                var editable = (library == 'postgis' || library == 'raster' || library == 'graph' || library == 'wms' || library == 'geojson7946' || library == 'tileservice');
                 editable && this.activateLayerInput(d, library);
             }.bind(this))
 
@@ -4442,7 +4732,7 @@ M.Chrome.Data = M.Chrome.extend({
 
     createLayerPopUpTrigger : function (parent, type) {
 
-        if ( type != 'postgis' && type != 'cube' && type != 'wms' && type != 'graph' && type != 'geojson7946') return;
+        if ( type != 'postgis' && type != 'cube' && type != 'wms' && type != 'graph' && type != 'geojson7946' && type != 'tile_service') return;
 
         // Bind
         var popupTrigger = parent
@@ -4615,6 +4905,23 @@ M.Chrome.Data = M.Chrome.extend({
             }
         }
 
+         if (library == 'tile_service') {
+            var action = {
+                editTileService : {
+                    name : 'Edit layer',
+                    disabled : !canEdit
+                },
+                changeName : {
+                    name : 'Rename...',
+                    disabled : !canEdit
+                },
+                delete : {
+                    name : 'Delete',
+                    disabled : !canEdit
+                }
+            }
+        }
+
 
         for (var f in action) {
 
@@ -4682,6 +4989,9 @@ M.Chrome.Data = M.Chrome.extend({
 
         // edit geojson
         if (trigger == 'editGeoJSON') this._editGeoJSON(layer);
+        
+        // edit tile service
+        if (trigger == 'editTileService') this._editTileService(layer);
 
         // edit
         if (trigger == 'editGraph') this._editGraph(layer);
@@ -4698,6 +5008,10 @@ M.Chrome.Data = M.Chrome.extend({
 
     _editGeoJSON : function (layer) {
         this._openGeoJSONFullscreen(layer);
+    },
+
+    _editTileService : function (layer) {
+        this._openTSFullscreen(layer);
     },
 
     _editCube : function (layer) {

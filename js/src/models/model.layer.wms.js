@@ -714,3 +714,116 @@ L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
 L.tileLayer.betterWms = function (url, options) {
   return new L.TileLayer.BetterWMS(url, options);  
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+M.TileServiceLayer = M.Model.Layer.extend({
+
+    type : 'tile_service',
+
+    options : {
+        minZoom : 0,
+        maxZoom : 20
+    },
+
+    initialize : function (layer) {
+
+        // set source
+        this.store = layer; // db object
+        
+        // data not loaded
+        this.loaded = false;
+        
+    },
+
+    _addEvents : function () {
+        M.DomEvent.on(this.layer, 'loading', this.setAttribution, this);
+    },
+
+    getAttribution : function () {
+        var att = app.options.attribution ? app.options.attribution + ' | ' : '';
+        // att += '© 2015 <a href="https://maps.google.com/" target="_blank">Google</a>';
+        return att;
+    },
+
+    setAttribution : function () {
+        var att = this.getAttribution();
+        var attributionControl = this.getAttributionControl();
+        attributionControl.clear();
+        attributionControl.addAttribution(att);
+    },
+
+    initLayer : function () {
+        this.update();
+    },
+
+    update : function () {
+        var map = app._map;
+
+        // prepare raster
+        this._prepareRaster();
+    },
+
+    getSourceURL : function () {
+        var tile_service = M.parse(this.store.data.tile_service);
+        return tile_service.tile_url;
+    },
+
+    getSubdomains : function () {
+         var tile_service = M.parse(this.store.data.tile_service);
+        return tile_service.subdomains;
+    },
+
+    _prepareRaster : function () {
+
+        var tile_service = M.parse(this.store.data.tile_service);
+        var url = tile_service.tile_url;
+        var subdomains = tile_service.subdomains;
+
+        // add vector tile raster layer
+        this.layer = L.tileLayer(url, {
+            subdomains : subdomains,
+            maxRequests : 0,
+            tms : false,
+            maxZoom : this.options.maxZoom,
+            minZoom : this.options.minZoom
+        });
+
+        this._addEvents();
+    },
+
+    deleteLayer : function () {
+
+        // confirm
+        var message = 'Are you sure you want to delete this layer? \n - ' + this.getTitle();
+        if (!confirm(message)) return console.log('No layer deleted.');
+
+        // get project
+        var layerUuid = this.getUuid();
+        var project = _.find(app.Projects, function (p) {
+            return p.layers[layerUuid];
+        });
+
+        // delete layer
+        project.deleteLayer(this);
+    },
+
+
+
+});

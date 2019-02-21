@@ -27,6 +27,10 @@ M.Model.Layer.GeoJSONMaskLayer = M.Model.Layer.extend({
         // ensure simple geometry of geojson (as far as possible) // todo: move to import
         var geojson = this.ensureFlat(this.options.geojson);
 
+        if (_.isString(geojson)) {
+            geojson = M.parse(geojson);
+        }
+
         // create geojson layer
         this.layer = L.geoJson(geojson);
 

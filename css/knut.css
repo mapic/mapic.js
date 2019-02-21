@@ -3439,8 +3439,14 @@ input#geojson-upload {
 
 
 
+.smooth-fullscreen-save.save-mask-button {
+    position: relative;
+    width: 62px;
+}
 
-
+.padding-top-40 {
+    padding-top: 40px !important;
+}
 
 
 

@@ -329,7 +329,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         var datasets = this.getDatasets();
         var f = this.options.timeFormat;
         if (!_.size(datasets)) {
-            console.log('no datasets yet!');
             app.FeedbackPane.setError({
                 title : 'Missing datasets',
                 description : 'There are no datasets in the layer. Please add datasets before continuing.'
@@ -445,9 +444,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     _initGeoJSONMask : function (mask, done) {
-
-        // var maskStyling = this.getMaskStyling();
-        console.error('_initGeoJSONMask', mask);
 
         // create mask (geojson) layer
         var maskLayer = new M.Model.Layer.GeoJSONMaskLayer({
@@ -722,6 +718,33 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     },
 
+    saveMask : function (mask, done) {
+
+        // add mask @ server
+        app.api.addMask({
+            mask : mask,
+            cube_id : this.getCubeId()
+        }, function (err, result) {
+            if (err) {
+                console.error(err);
+                done && done(err);
+                return;
+            }
+            // parse
+            var masked_cube = M.parse(result);
+
+            // save updated cube
+            if (masked_cube) {
+                this._saveCube(masked_cube);
+            }
+
+            // callback
+            done && done(null);
+
+        }.bind(this));
+
+    },
+
     _onTileUnload : function (e) {
         var layer = e.target;
     },
@@ -742,8 +765,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         var didx = this._findDatasetByTimestamp(timestamp);
 
         if (didx < 0) {
-            console.error('no dataset corresponding to timestamp');
-            app.FeedbackPane.setError({title : 'No raster available', description : 'There is no satellite imagery available for this date.'})
+            console.error('no dataset corresponding to timestamp', timestamp);
+            app.FeedbackPane.setError({title : 'No raster available', description : 'There is no satellite imagery available for this date. Please try another date.'})
 
             // hide
             this._hideLayer(this.layer);
@@ -976,6 +999,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         var didx = _.findIndex(this._datasets, function (d) { 
             return _.toString(d.formattedTime) == b;
         });
+
         return didx;
     },
 

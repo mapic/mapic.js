@@ -1407,25 +1407,23 @@ M.Chrome.Data = M.Chrome.extend({
             layer : layer
         });
 
+        // create cubeset list
+        this._createMaskBox({
+            container : content,
+            layer : layer
+        });
+
         // add mask geojson styling box
         this._createCubeMaskStyling({
             container : content, 
             layer : layer
         });
 
-        // // create cubeset list
-        // this._createMaskBox({
-        //     container : content,
-        //     layer : layer
-        // });
-
         // create cubeset list
         this._createCubesetBox({
             container : content,
             layer : layer
         });
-
-       
 
     },
 
@@ -1695,6 +1693,51 @@ M.Chrome.Data = M.Chrome.extend({
     },
 
 
+    _createGeoJSONMaskBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+        var toggles_wrapper = options.toggles_wrapper;
+
+
+        // import geosjon
+        var url_text = 'Import GeoJSON from URL';
+        var url_placeholder = 'eg. https://demo.mapic.io/data/demo.geojson';
+        var url_value = '';
+
+        // var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text);
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', url_placeholder);
+        name_input.value = url_value;
+        var name_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // import button
+        var createBtn = M.DomUtil.create('div', 'smooth-fullscreen-save geojson-button', toggles_wrapper, 'Import');
+
+        // remember
+        this._fullscreen.geojson_url_div = name_input;
+
+        // click event on import btn
+        M.DomEvent.on(createBtn, 'click', this._importGeoJSON, this);
+
+
+        // geojson textarea
+        var url_text2 = 'GeoJSON';
+        var url_placeholder2 = JSON.stringify({ "type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [23.4850463378073, 46.7440954850672] }, "properties": {"popup": "<a href=’http://edinsight.no/popup?id=12’>Info</a>" }}]}, 0, 2);
+        // var url_value2 = layer ? layer.getGeoJSON() : '';
+        var url_value2 = '';
+
+        var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text2);
+        var name_input2 = M.DomUtil.create('textarea', 'smooth-input smaller-input geojson-textarea', toggles_wrapper);
+        name_input2.setAttribute('placeholder', url_placeholder2);
+        name_input2.value = url_value2;
+        var name_error2 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
+
+        // save
+        this._fullscreen.geojson_div = name_input2;
+
+    },
+
 
     _createMaskBox : function (options) {
 
@@ -1703,96 +1746,160 @@ M.Chrome.Data = M.Chrome.extend({
 
         // create divs
         var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Add mask');
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Mask');
 
-        // check for html5 file reader compatability
-        if (_.isUndefined(window.FileReader)) return console.error('no filereader available');
+        
+        // add mask (+)
+        // TODO? : - there can be several masks 
 
-        // create file upload input
-        var wrap_uploader = M.DomUtil.create('div', 'upload-mask-wrapper', toggles_wrapper);
-        var uploader_title = M.DomUtil.create('div', 'dropdown-mask-title', wrap_uploader, 'Upload vector mask');
-        var mask_uploader = M.DomUtil.create('input', 'mask-upload-input', wrap_uploader);
-        mask_uploader.setAttribute('type', 'file');
+        // each mask:
+        // 1. URL field for dataset (which includes jwt token)
+        // 2. URL for geojson ? 
 
-        // get, sort datasets (rasters only)
-        var mask_datasets = this._getRasterDatasets();
+        this._createMaskContainer({
+            layer : layer, 
+            container : toggles_wrapper
+        })
 
-        // create dropdown of datasets
-        var wrap_dropdown = M.DomUtil.create('div', 'dropdown-mask-wrapper', toggles_wrapper);
-        var dropdown_title = M.DomUtil.create('div', 'dropdown-mask-title', wrap_dropdown, 'Add raster mask from datasets');
 
-        this._cubesetDrowdown = new M.Dropdown({
-            fn: this._addDatasetAsMask.bind(this, layer),
-            appendTo: wrap_dropdown,
-            content: mask_datasets,
-            className : 'cubeset-dropdown',
+    },
+
+    _createMaskContainer : function (options) {
+        var layer = options.layer;
+        var toggles_wrapper = options.container;
+
+        var mask = layer.getMasks() ? layer.getMasks()[0] : false;
+
+        // title
+        // URL scf data
+        // URL import GeoJSON
+
+        // mask title
+        var title_text = 'Mask Title';
+        var title_placeholder = 'My Mask Title';
+        var title_value = mask && mask.meta ? mask.meta.title : '';
+        var title = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, title_text);
+        var title_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
+        title_input.setAttribute('placeholder', title_placeholder);
+        title_input.value = title_value;
+        this._fullscreen.mask_title_div = title_input;
+
+
+        // scf data input - yearly
+        var url_text = 'Data API Endpoint - yearly';
+        var url_placeholder = 'eg. https://demo.mapic.io/data/data.json';
+        var url_value = mask ? mask.data_url_yearly : '';
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text);
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', url_placeholder);
+        name_input.value = url_value;
+        this._fullscreen.mask_data_url_yearly_div = name_input;
+
+        // scf data input - backdrop
+        var url2_text = 'Data API Endpoint - backdrop';
+        var url2_placeholder = 'eg. https://demo.mapic.io/data/data.json';
+        var url2_value = mask ? mask.data_url_backdrop : '';
+        var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url2_text);
+        var name2_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
+        name2_input.setAttribute('placeholder', url2_placeholder);
+        name2_input.value = url2_value;
+        this._fullscreen.mask_data_url_backdrop_div = name2_input;
+
+        // geojson input
+        var url_text = 'Import GeoJSON from URL';
+        var url_placeholder = 'eg. https://demo.mapic.io/data/demo.geojson';
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth padding-top-40', toggles_wrapper, url_text);
+        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
+        name_input.setAttribute('placeholder', url_placeholder);
+        name_input.value = '';
+        var createBtn = M.DomUtil.create('div', 'smooth-fullscreen-save geojson-button', toggles_wrapper, 'Import');
+        this._fullscreen.mask_geojson_url_div = name_input;
+        M.DomEvent.on(createBtn, 'cd lick', this._importMaskGeoJSON, this);
+
+        // geojson textarea
+        var url_text2 = 'GeoJSON';
+        var url_placeholder2 = JSON.stringify({ "type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [23.4850463378073, 46.7440954850672] }, "properties": {"popup": "<a href=’http://maps.mapic.io/popup?id=12’>Info</a>" }}]}, 0, 2);
+        var url_value2 = mask ? JSON.stringify(mask.geometry, 0, 2) : '';
+        var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text2);
+        var name_input2 = M.DomUtil.create('textarea', 'smooth-input smaller-input geojson-textarea', toggles_wrapper);
+        name_input2.setAttribute('placeholder', url_placeholder2);
+        name_input2.value = url_value2;
+        this._fullscreen.mask_geojson_div = name_input2;
+
+        // save button
+        var saveBtn = M.DomUtil.create('div', 'smooth-fullscreen-save save-mask-button', toggles_wrapper, 'Save');
+
+        M.DomEvent.on(saveBtn, 'click', this._saveMask, this);
+
+        this._fullscreen.layer = layer;
+
+    },
+
+    _saveMask : function () {
+        var data_url_yearly = this._fullscreen.mask_data_url_yearly_div.value;
+        var data_url_backdrop = this._fullscreen.mask_data_url_backdrop_div.value;
+        var geojson = this._fullscreen.mask_geojson_div.value;
+        var title = this._fullscreen.mask_title_div.value;
+
+        // save mask to layer
+        var layer = this._fullscreen.layer;
+        layer.saveMask({
+            type : 'geojson',
+            data_url_yearly : data_url_yearly,
+            data_url_backdrop : data_url_backdrop,
+            geometry : M.parse(geojson),
+            meta : {
+                title : title,
+            }
+        }, function (err, result) {
+
+            // set feedback
+            app.feedback.setMessage({
+                title : 'Saved!',
+                description : 'Mask layer updated'
+            }); 
+
         });
 
 
-        // create feedback box
-        this._maskFeedback = M.DomUtil.create('div', 'mask-feedback', toggles_wrapper);
-        
-        // file input event
-        mask_uploader.onchange = function (e) {
-            e.preventDefault();
+    },
 
-            // get file
-            var file = mask_uploader.files[0];
-            
-            // only allow .geojson
-            // var valid_formats = ['geojson', 'topojson'];
-            if (!_.includes(file.name, '.geojson')) {
-                return this._abortMaskUpload({
-                    input : mask_uploader,
-                    err : 'Only GeoJSON is accepted for uploaded vector mask'
-                });
+    _importMaskGeoJSON : function () {
+
+        var url = this._fullscreen.mask_geojson_url_div.value;
+
+        // import file
+        app.api.importExternalFile({
+            url : url,
+
+        }, function (err, result) {
+            if (err) console.error(err);
+
+            var json = result;
+
+            // format string
+            var pretty_json = M.stringify(M.parse(json), 2);
+
+            // check if valid json
+            if (pretty_json == 'false') {
+                // invalid
+                pretty_json = 'Invalid json!'
+                var success_msg = 'Invalid GeoJSON. Please try again!';
+                console.log('Invalid GeoJSON: ', result);
+
+            } else {
+                // valid
+                var success_msg = 'Successfully imported GeoJSON!';
             }
 
-            // only allow < 5MB
-            if (file.size > 5000000) {
-                return this._abortMaskUpload({
-                    input : mask_uploader,
-                    err : 'Masks larger than 5MB not allowed'
-                });
-            }
+            // fill in geojson textarea
+            this._fullscreen.mask_geojson_div.value = pretty_json 
 
-            // create file reader
-            var fr = new FileReader();
+            // set success message in placeholder
+            this._fullscreen.mask_geojson_url_div.value = '';
+            this._fullscreen.mask_geojson_url_div.placeholder = success_msg;
 
-            // read file
-            fr.readAsText(file);
-
-            // callback for readAsText
-            fr.onload = function (a) {
-
-                // get mask
-                var geojsonMask = fr.result;
-                var cube_id = layer._cube.cube_id;
-
-                // test data
-                var data = {
-                    cube_id : cube_id,
-                    mask : {
-                        type : 'geojson',
-                        geometry : geojsonMask,
-                        title : file.name,
-                        // todo: add name of mask
-                    }
-                }
-
-                // add mask to layer (server request)
-                layer.addMask(data);
-
-                // fire layer edited
-                M.Mixin.Events.fire('maskUploaded', {detail : {
-                    name : file.name
-                }});
-
-            };
-
-            return false;
-
-        }.bind(this);
+        }.bind(this));
 
 
     },
@@ -2397,9 +2504,6 @@ M.Chrome.Data = M.Chrome.extend({
             var tile_url = this._fullscreen.ts_url_div.value;
             var subdomains = this._fullscreen.ts_subdomains_div.value;
 
-            console.log('click!!', layer_name, tile_url, subdomains);
-            // return;
-
             if (layer) {
                 // editing 
 
@@ -2879,10 +2983,6 @@ M.Chrome.Data = M.Chrome.extend({
 
         // get datasets
         var datasets = layer.getDatasets();
-
-
-        // debug: only show first 100
-        var datasets = _.sample(datasets, 100);
 
         // ensure array 
         if (!_.isArray(datasets)) datasets = [datasets];

@@ -130,11 +130,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     // make sure that "parsed()" is adding to unique mask ids above...
     parse : function (data, done) {
 
-        console.error('parse');
-
         // check store
-        if (this.parsed()) return done(null, this.parsed());
-
+        if (this.parsed()) {
+            return done(null, this.parsed());
+        }
       
 
         var parsed = {}
@@ -157,7 +156,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         //   }, ... // until last data in 2017
 
         // min/max/avg 
-        parsed.mma = this.average(data);
+        // parsed.mma = this.average(data);
+        parsed.mma = this.parseBackdrop(data.backdrop);
+        // parsed.mma = data.backdrop;
 
         // console.log('A002 ==> parsed.mma', parsed.mma);
         // [
@@ -201,7 +202,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // });
 
         // yearly
-        parsed.years = this.yearly(data);
+        // parsed.years = this.yearly(data);
+        parsed.years = this.parseYearly(data.yearly);
 
         // console.log('A004 ==> parsed.years', parsed.years);
         // [
@@ -237,147 +239,244 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     },
 
-    yearly : function (data) {
+    parseBackdrop : function (data) {
 
-        // get range
-        var range = this.getRange();
-        var years = _.range(range[0], range[1]+1); 
+        // all data needs a date for the graph, 
+        // even average data over several years 
+        // (which don't really have a single year)
+        // --
+        // to determine this "avg" year, we need to use eg. 2018 if 2018-2019
 
-        // optimize data search, divide into years
-        var dataRange = this.dataRange(); // [2001, 2018]
-        var yearly_range = _.range(dataRange[0], dataRange[1] + 1); // [2001, 2002, ... 2018]
+        var h = this._getHydrologicalYear();
 
-        // get hydrological year
-        var hy = this._getHydrologicalYear();
+        var parsed = [];
 
-        var opti_data = {};
-        yearly_range.forEach(function (r) {
-            opti_data[r] = _.filter(data, function (d) {
-                return d.year == r;
-            });
-        });
+        _.each(data, function (d) {
 
-        var yearly_data_2 = [];
-        var hydrological_doy;
-        _.times(365, function (i) {
-            var dohy = i;
-            var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
-            hydrological_doy = hydrological_date.dayOfYear();
-
-            yearly_data_2[i] = {
-                scf : {},
-                date : hydrological_date
-            };
-        })
-
-        _.forEach(years, function (y) { // [2001, 2002...2017, 2018]
-
-            _.times(365, function (i) {
-
-                // get hydrological date
-                var dohy = i;  
-                var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
-                hydrological_doy = hydrological_date.dayOfYear();
-
-                // aug-dec
-                // doy 243 = 31. aug
-                // doy 244 = 1. sept
-                if (hydrological_doy >= 244 && hydrological_doy <= 365) {
-                    var scf = _.find(opti_data[y], function (d) {
-                        return d.doy == hydrological_doy-1;
-                    });
-                }
-
-                // jan-sept y+1
-                if (hydrological_doy > 0 && hydrological_doy <= 243 ) {
-                    var scf = _.find(opti_data[y+1], function (d) {
-                        return d.doy == hydrological_doy-1;
-                    });
-                }
-
-                // set 
-                yearly_data_2[i].scf[y] = scf ? parseFloat(scf.scf) : false;
-
-
-            });
-
-        });
-        
-        // return yearly_data;
-        return yearly_data_2;
-    },
-
-
-
-    // calculate min/max/avg of scf per year
-    average : function (data) {
-
-        // clear
-        var average = [];
-
-        // get hydrological year
-        var hy = this._getHydrologicalYear();
-
-        // error handling
-        var errorDays = [];
-
-        // for each day
-        _.times(365, function (n) {
-
-            var doy = n+243;
-            if (doy > 365) doy -= 365;
-
-            // get this day's values
-            var today = _.filter(data, function (d) {
-                return d.doy == doy;
-            });
-
-            // return if no today
-            if (_.isEmpty(today)) {
-                errorDays.push(doy);
-                return;
+            // parse to year (eg. 2019-2018)
+            var year = h.year;
+            if (parseInt(d.doy) < 244) {
+                year = year+1;
             }
 
-            // get this day's max
-            var max = _.maxBy(today, function (d) {
-                return parseFloat(d.scf);
-            }).scf;
+            parsed.push({
+                doy : d.doy,
+                min : d.min,
+                max : d.max,
+                avg : d.scf,
+                date : moment(year + '-' + d.doy, 'YYYY-DDD')
+            })
 
-            // get this day's min
-            var min = _.minBy(today, function (d) {
-                return parseFloat(d.scf);
-            }).scf;
+        });
 
-            // get this day's avg
-            var sum = 0;
-            _.times(today.length, function (i) {
-                sum += parseFloat(today[i].scf);
-            });
-            var avg = sum/today.length;
-         
-            // moment.utc().year(hy.year).date(1).month(8).add(i, 'days');
-            var hydro_date = moment.utc().year(hy.year).date(1).month(8).add(n, 'days');
+        return parsed;
 
-            // add to array
-            average.push({
-                doy   : doy,
-                max  : parseFloat(max),
-                min  : parseFloat(min),
-                avg  : avg, 
-                date : hydro_date,        // year doesn't matter, as it's avg for all years
-                // date : moment.utc().year(dummy_year).dayOfYear(doy),        // year doesn't matter, as it's avg for all years
-            });                                                             // however: need to add a YEAR/DATE when adding to graph, 
-                                                                            // due to graph needing a date to know it should display data
-        }.bind(this));
-
-        if (!_.isEmpty(errorDays)) {
-            app.feedback.err('Error in JSON data', 'Failed to create averages due to missing days in the data.');
-        };
-
-        return average;
     },
 
-    setData : function (data, done) {
+    parseYearly : function (data) {
+
+        // console.log('A004 ==> parsed.years', parsed.years);
+        // [
+        //   {
+        //     "scf": {
+        //       "2001": 84.54,
+        //       "2002": 83.71,
+        //       "2003": 86.32,
+        //       "2004": 83.44,
+        //       "2005": 75.89,
+        //       "2006": 82.96,
+        //       "2007": 72.87,
+        //       "2008": 81.24,
+        //       "2009": 78.63,
+        //       "2010": 83.21,
+        //       "2011": 73.05,
+        //       "2012": 82.75,
+        //       "2013": 80.78,
+        //       "2014": 67.35,
+        //       "2015": 69.78,
+        //       "2016": 69.78,
+        //       "2017": 69.78,
+        //       "2018": false
+        //     },
+        //     "date": "2017-01-01T19:41:59.663Z"
+        //   }, ... times 365....! 
+
+
+        // needs to be sorted as hydrological year
+
+        var parsed = [];
+
+        _.each(data, function (d) {
+
+            var date = moment(d.date);
+            var year = date.year();
+
+            var p = {
+                date : date,
+                scf : {
+                    2018 : {},
+                    2019 : {}
+                }
+            };
+            p.scf[year] = d.scf;
+            p.scf[year-1] = d.scf;
+            parsed.push(p);
+
+        });
+
+        var sorted = _.sortBy(parsed, function (p) {
+            return p.date.unix()
+        });
+
+        return sorted;
+
+    },
+
+    // yearly : function (data) {
+
+    //     // get range
+    //     var range = this.getRange();
+    //     var years = _.range(range[0], range[1]+1); 
+
+    //     // optimize data search, divide into years
+    //     var dataRange = this.dataRange(); // [2001, 2018]
+    //     var yearly_range = _.range(dataRange[0], dataRange[1] + 1); // [2001, 2002, ... 2018]
+
+    //     // get hydrological year
+    //     var hy = this._getHydrologicalYear();
+
+    //     var opti_data = {};
+    //     yearly_range.forEach(function (r) {
+    //         opti_data[r] = _.filter(data, function (d) {
+    //             return d.year == r;
+    //         });
+    //     });
+
+    //     var yearly_data_2 = [];
+    //     var hydrological_doy;
+    //     _.times(365, function (i) {
+    //         var dohy = i;
+    //         var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
+    //         hydrological_doy = hydrological_date.dayOfYear();
+
+    //         yearly_data_2[i] = {
+    //             scf : {},
+    //             date : hydrological_date
+    //         };
+    //     })
+
+    //     _.forEach(years, function (y) { // [2001, 2002...2017, 2018]
+
+    //         _.times(365, function (i) {
+
+    //             // get hydrological date
+    //             var dohy = i;  
+    //             var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
+    //             hydrological_doy = hydrological_date.dayOfYear();
+
+    //             // aug-dec
+    //             // doy 243 = 31. aug
+    //             // doy 244 = 1. sept
+    //             if (hydrological_doy >= 244 && hydrological_doy <= 365) {
+    //                 var scf = _.find(opti_data[y], function (d) {
+    //                     return d.doy == hydrological_doy-1;
+    //                 });
+    //             }
+
+    //             // jan-sept y+1
+    //             if (hydrological_doy > 0 && hydrological_doy <= 243 ) {
+    //                 var scf = _.find(opti_data[y+1], function (d) {
+    //                     return d.doy == hydrological_doy-1;
+    //                 });
+    //             }
+
+    //             // set 
+    //             yearly_data_2[i].scf[y] = scf ? parseFloat(scf.scf) : false;
+
+
+    //         });
+
+    //     });
+        
+    //     // return yearly_data;
+    //     return yearly_data_2;
+    // },
+
+
+
+    // // calculate min/max/avg of scf per year
+    // average : function (data) {
+
+    //     // clear
+    //     var average = [];
+
+    //     // get hydrological year
+    //     var hy = this._getHydrologicalYear();
+
+    //     // error handling
+    //     var errorDays = [];
+
+    //     // for each day
+    //     _.times(365, function (n) {
+
+    //         var doy = n+243;
+    //         if (doy > 365) doy -= 365;
+
+    //         // get this day's values
+    //         var today = _.filter(data, function (d) {
+    //             return d.doy == doy;
+    //         });
+
+    //         // return if no today
+    //         if (_.isEmpty(today)) {
+    //             errorDays.push(doy);
+    //             return;
+    //         }
+
+    //         // get this day's max
+    //         var max = _.maxBy(today, function (d) {
+    //             return parseFloat(d.scf);
+    //         }).scf;
+
+    //         // get this day's min
+    //         var min = _.minBy(today, function (d) {
+    //             return parseFloat(d.scf);
+    //         }).scf;
+
+    //         // get this day's avg
+    //         var sum = 0;
+    //         _.times(today.length, function (i) {
+    //             sum += parseFloat(today[i].scf);
+    //         });
+    //         var avg = sum/today.length;
+         
+    //         // moment.utc().year(hy.year).date(1).month(8).add(i, 'days');
+    //         var hydro_date = moment.utc().year(hy.year).date(1).month(8).add(n, 'days');
+
+    //         // add to array
+    //         average.push({
+    //             doy   : doy,
+    //             max  : parseFloat(max),
+    //             min  : parseFloat(min),
+    //             avg  : avg, 
+    //             date : hydro_date,        // year doesn't matter, as it's avg for all years
+    //             // date : moment.utc().year(dummy_year).dayOfYear(doy),        // year doesn't matter, as it's avg for all years
+    //         });                                                             // however: need to add a YEAR/DATE when adding to graph, 
+    //                                                                         // due to graph needing a date to know it should display data
+    //     }.bind(this));
+
+    //     if (!_.isEmpty(errorDays)) {
+    //         app.feedback.err('Error in JSON data', 'Failed to create averages due to missing days in the data.');
+    //     };
+
+    //     return average;
+    // },
+
+    setData : function (options, done) {
+
+        var data = options.data;
+
+        this._mask.data = data;
 
         // set timeframe & range
         this._setTimeFrame();
@@ -414,21 +513,24 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     // without mask, there's no graph... 
     setMask : function (mask) {
 
+
         // set current mask
         this._mask = mask;
 
+
         async.series({
 
+            // GET endpoint data
             backdrop : function (done) {
-                app.api.getMaskBackdropData({
-                    data_id : 'data-id'
+                app.api.getEndpointData({
+                    url : mask.data_url_backdrop,
                 }, done);
             },
 
+            // GET endpoint data
             yearly : function (done) {
-                app.api.getMaskYearlyData({
-                    data_id : 'data_id',
-                    year : '2018'
+                app.api.getEndpointData({
+                    url : mask.data_url_yearly,
                 }, done);
             }
 
@@ -436,10 +538,17 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // final callback
         function (err, results) {
-            console.log('setMask async series done', err, results);
+
+            var yearly = M.parse(results.yearly);
+            var backdrop = M.parse(results.backdrop);
 
             // set data
-            this.setData(mask.data, function (err) {
+            this.setData({
+                data : {
+                    yearly : yearly,
+                    backdrop : backdrop
+                }
+            }, function (err) {
 
                 // update line graph
                 this._setLineGraph();
@@ -505,7 +614,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         if (this.isEditor()) this._addEditorPane();
 
         // add standalone top header
-        // this._topHeader = M.DomUtil.create('div', 'graph-top-header-container', app._graphContainer);
         this._topHeader = app.Chrome.Top._registerButton({
             name : 'SCF',
             className : 'chrome-button graph-scf-button',
@@ -657,14 +765,13 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     },
    
     _createAverageDataPane : function () {
-        if (this._average_pane) {
-            return;
-        }
+        if (this._average_pane) return;
 
         // range
-        // var years = _.range(2000, 2017);
         var range = this.getRange();
-        var years = _.range(range[0], range[1] + 1);
+        var hy = this._getHydrologicalYear();
+        if (range[1] > hy.year) range[1] = hy.year;
+        var years = _.range(range[1], range[1] + 1); // range[0] if you want more years
 
         // create pane
         var pane = this._average_pane = {};
@@ -802,6 +909,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._current.hydrological_year = isSameOrAfter ? year : year - 1;
         var hy = this._current.hydrological_year;
 
+        // var hy = 2018;
+
         var h = {
             year : hy,
             minDate : moment('01-09-' + hy, "DD-MM-YYYY"),
@@ -820,7 +929,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this.ndx.average_crossfilter = crossfilter(data.mma); // this._annualAverageData is avgs for 365 days
 
         // set dimension
-        var average_dimension = this.ndx.average_crossfilter.dimension(function(d) { return d.date; });
+        var average_dimension = this.ndx.average_crossfilter.dimension(function(d) { 
+            // console.log('dimension d.date', d.date); // 2018 dates
+            return d.date; 
+        });
 
         // create groups 
         var average_max_group = average_dimension.group().reduceSum(function(d) { return d.max });
@@ -994,17 +1106,21 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             if (mousex < 40) mousex = 40;
             if (mousex > cow) mousex = cow;
            
+
+
             // calc day-of-year
             // todo: check if works with all screen sizes, since we're dealing with pixels??
             var rof = that._container.offsetWidth - 190;
             var p = parseInt(((mousex - 40) / rof) * 364);
 
-            // ensure not past latest available dataset
-            var doy = parseInt(that.cube()._findLatestDOY()) - 244;
-            if (p > doy) {
-                p = doy;
-                mousex = (((p - 1) * rof) / 364) + 40;
-            }
+
+            // // prevent cursor past latest available dataset
+            // var doy = parseInt(that.cube()._findLatestDOY()) - 244;
+            // console.log('==== doy', doy);
+            // if (p > doy) {
+            //     p = doy;
+            //     mousex = (((p - 1) * rof) / 364) + 40;
+            // }
 
             // set position of line
             vertical.style("left", mousex + "px" )
@@ -1032,12 +1148,12 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             var rof = that._container.offsetWidth - 190;
             var p = parseInt(((mousex - 40) / rof) * 364) + 1
 
-            // ensure not past latest available dataset
-            var doy = parseInt(that.cube()._findLatestDOY()) - 244;
-            if (p > doy) {
-                p = doy;
-                mousex = (((p - 1) * rof) / 364) + 40;
-            }
+            // // prevent cursor past latest available dataset
+            // var doy = parseInt(that.cube()._findLatestDOY()) - 244;
+            // if (p > doy) {
+            //     p = doy;
+            //     mousex = (((p - 1) * rof) / 364) + 40;
+            // }
 
             // set position of line
             vertical.style("left", mousex + "px")
@@ -1096,7 +1212,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // set to doy
         var today = doy;
-        var diff = today - 244;
+        var diff = today - 244; // todo: only true if not leap year, otherwise 245
         var p = (diff < 0) ? 365 + diff : diff;
 
         // fire event
@@ -1243,7 +1359,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     _setTimeFrame : function () {
 
         // set avg data range
-        this._range.data[this._mask.id] = this.dataRange();
+        this._range.data[this._mask.id] = this.dataRange(); // [2001, 2018]
 
         // return if already set
         if (this._current && this._current.year && this._current.day) return; 
@@ -1275,6 +1391,11 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     },
 
     dataRange : function () {
+
+        // debug
+        return [2001, 2019];
+
+
         var data = this._mask.data;
         if (_.isString(data)) {
             data = M.parse(data);
@@ -1283,7 +1404,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var last = _.last(data);
         var firstYear = moment.utc().year(first.year).dayOfYear(first.doy);
         var lastYear = moment.utc().year(last.year).dayOfYear(last.doy);
-        return [firstYear.year(), lastYear.year()];
+        // return [firstYear.year(), lastYear.year()];
+
+
     },
 
     _setDate : function (year, day) {
@@ -1359,7 +1482,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var hy = this._getHydrologicalYear().year;
 
         // get date
-        var date1 = moment.utc().year(hy).date(1).month(8);
+        var date1 = moment.utc().year(hy).date(1).month(8); // sept 1st
         var date = date1.add(dohy, 'days');
         return date;
     },

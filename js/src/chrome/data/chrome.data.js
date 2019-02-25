@@ -1778,7 +1778,7 @@ M.Chrome.Data = M.Chrome.extend({
         var title_text = 'Mask Title';
         var title_placeholder = 'My Mask Title';
         var title_value = mask && mask.meta ? mask.meta.title : '';
-        var title = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, title_text);
+        var title = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth padding-top-10', toggles_wrapper, title_text);
         var title_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
         title_input.setAttribute('placeholder', title_placeholder);
         title_input.value = title_value;
@@ -1789,7 +1789,7 @@ M.Chrome.Data = M.Chrome.extend({
         var url_text = 'Data API Endpoint - yearly';
         var url_placeholder = 'eg. https://demo.mapic.io/data/data.json';
         var url_value = mask ? mask.data_url_yearly : '';
-        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text);
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth padding-top-10', toggles_wrapper, url_text);
         var name_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
         name_input.setAttribute('placeholder', url_placeholder);
         name_input.value = url_value;
@@ -1799,28 +1799,28 @@ M.Chrome.Data = M.Chrome.extend({
         var url2_text = 'Data API Endpoint - backdrop';
         var url2_placeholder = 'eg. https://demo.mapic.io/data/data.json';
         var url2_value = mask ? mask.data_url_backdrop : '';
-        var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url2_text);
+        var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth padding-top-10', toggles_wrapper, url2_text);
         var name2_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
         name2_input.setAttribute('placeholder', url2_placeholder);
         name2_input.value = url2_value;
         this._fullscreen.mask_data_url_backdrop_div = name2_input;
 
-        // geojson input
-        var url_text = 'Import GeoJSON from URL';
-        var url_placeholder = 'eg. https://demo.mapic.io/data/demo.geojson';
-        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth padding-top-40', toggles_wrapper, url_text);
-        var name_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
-        name_input.setAttribute('placeholder', url_placeholder);
-        name_input.value = '';
-        var createBtn = M.DomUtil.create('div', 'smooth-fullscreen-save geojson-button', toggles_wrapper, 'Import');
-        this._fullscreen.mask_geojson_url_div = name_input;
-        M.DomEvent.on(createBtn, 'cd lick', this._importMaskGeoJSON, this);
+        // // geojson input
+        // var url_text = 'Import GeoJSON from URL';
+        // var url_placeholder = 'eg. https://demo.mapic.io/data/demo.geojson';
+        // var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth padding-top-40', toggles_wrapper, url_text);
+        // var name_input = M.DomUtil.create('input', 'smooth-input smaller-input geojson-import-input', toggles_wrapper);
+        // name_input.setAttribute('placeholder', url_placeholder);
+        // name_input.value = '';
+        // var createBtn = M.DomUtil.create('div', 'smooth-fullscreen-save geojson-button', toggles_wrapper, 'Import');
+        // this._fullscreen.mask_geojson_url_div = name_input;
+        // M.DomEvent.on(createBtn, 'cd lick', this._importMaskGeoJSON, this);
 
         // geojson textarea
         var url_text2 = 'GeoJSON';
         var url_placeholder2 = JSON.stringify({ "type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [23.4850463378073, 46.7440954850672] }, "properties": {"popup": "<a href=’http://maps.mapic.io/popup?id=12’>Info</a>" }}]}, 0, 2);
         var url_value2 = mask ? JSON.stringify(mask.geometry, 0, 2) : '';
-        var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text2);
+        var name2 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth padding-top-10', toggles_wrapper, url_text2);
         var name_input2 = M.DomUtil.create('textarea', 'smooth-input smaller-input geojson-textarea', toggles_wrapper);
         name_input2.setAttribute('placeholder', url_placeholder2);
         name_input2.value = url_value2;
@@ -3137,12 +3137,35 @@ M.Chrome.Data = M.Chrome.extend({
         return false;
     },
 
+    parse_date_YYYYMMDD : function (f) {
+        // f is eg. "SCF_MOD_20150101.tif"
+        var a = f.split('.');
+        var b = a[0].split('_').reverse();
+        var dato = b[0];
+        var date = moment.utc(dato, "YYYYMMDD").format();
+        return date;
+    },
+
     _addCubesetItemByUuid : function (fileUuid) {
+
+        console.log('this ->>', this);
 
         var file = app.Account.getFile(fileUuid);
 
         // get date from filename (todo: make more flexible, with option to choose)
-        var date = this.parse_date_YYYY_DDD(file.getTitle());
+        var dateFormat = 'YYYY_DDD';
+        try {
+            var dateFormat = this._fullscreen.layer._cube.options.dateformat;
+        } catch (e) {
+        }
+
+        if (dateFormat == 'YYYYMMDD') {
+            var date = this.parse_date_YYYYMMDD(file.getTitle());
+        }
+        if (dateFormat == 'YYYY_DDD') {
+            var date = this.parse_date_YYYY_DDD(file.getTitle());
+        }
+
 
         var dataset = {
             id : file.getUuid(),

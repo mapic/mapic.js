@@ -2964,7 +2964,11 @@ M.Chrome.Data = M.Chrome.extend({
             var cube = M.parse(updatedCube);
 
             // update M.CubeLayer
-            var updatedLayer = layer._saveCube(cube);
+            if (cube) {
+                var updatedLayer = layer._saveCube(cube);
+            } else {
+                console.error('Error parsing cube:', updatedCube);
+            }
 
             // refresh list
             this._refreshCubeset(updatedLayer);
@@ -3273,8 +3277,12 @@ M.Chrome.Data = M.Chrome.extend({
             // parse cube
             var cube = M.parse(updatedCube);
 
-            // update M.CubeLayer
-            var updatedLayer = layer._saveCube(cube);
+            if (cube) {
+                // update M.CubeLayer
+                var updatedLayer = layer._saveCube(cube);
+            } else {
+                console.error('Error parsing cube:', updatedCube);
+            }
 
             // refresh list
             this._refreshCubeset(updatedLayer);
@@ -3301,8 +3309,12 @@ M.Chrome.Data = M.Chrome.extend({
             // parse cube
             var cube = M.parse(updatedCube);
 
-            // update M.CubeLayer
-            var updatedLayer = this._fullscreen._layer = layer._saveCube(cube);
+            if (cube) {
+                // update M.CubeLayer
+                var updatedLayer = this._fullscreen._layer = layer._saveCube(cube);
+            } else {
+                console.error('Error parsing cube:', updatedCube);
+            }
 
             // refresh list
             this._refreshCubeset(updatedLayer);
@@ -4976,6 +4988,14 @@ M.Chrome.Data = M.Chrome.extend({
         }
 
 
+        if (library == 'postgis') {
+            action.editPostgisLayer = {
+                name : 'Edit layer',
+                disabled : !canEdit
+            }
+        }
+
+
 
         if (library == 'graph') {
             var action = {
@@ -5107,6 +5127,11 @@ M.Chrome.Data = M.Chrome.extend({
         // edit
         if (trigger == 'editCube') this._editCube(layer);
 
+        // edit postgis
+        if (trigger == 'editPostgisLayer') this._editPostgisLayer(layer);
+
+        
+
         // edit wms
         if (trigger == 'editWMS') this._editWMS(layer);
 
@@ -5142,8 +5167,13 @@ M.Chrome.Data = M.Chrome.extend({
         this._openCubeLayerEditFullscreen(layer);
     },
 
-    _editGraph : function (layer) {
+     _editPostgisLayer : function (layer) {
 
+        console.log('_editPostgisLayer', layer);
+        // this._openCubeLayerEditFullscreen(layer);
+    },
+
+    _editGraph : function (layer) {
         this._openGraphLayerEditFullscreen(layer);
     },
 

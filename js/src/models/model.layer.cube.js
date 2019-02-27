@@ -287,7 +287,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             } else {
 
                 // save updated cube
-                this._saveCube(M.parse(cube));
+                var parsed_cube = M.parse(cube);
+                if (parsed_cube) {
+                    this._saveCube(parsed_cube);
+                } else {
+                    console.error('Something wrong parsing cube:', cube);
+                }
             }
 
             done();
@@ -704,12 +709,18 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             if (err) {
                 console.error(err);
                 done && done(err);
+                return;
             }
+            
             // parse
             var masked_cube = M.parse(result);
 
             // save updated cube
-            this._saveCube(masked_cube);
+            if (masked_cube) {
+                this._saveCube(masked_cube);
+            } else {
+                console.error('Error parsing cube:', masked_cube);
+            }
 
             // callback
             done && done(null);
@@ -736,6 +747,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             // save updated cube
             if (masked_cube) {
                 this._saveCube(masked_cube);
+            } else {
+                console.error('Error parsing cube:', masked_cube);
             }
 
             // callback
@@ -1057,7 +1070,11 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             var cube = M.parse(cubeJSON)
 
             // save updated cube
-            this._saveCube(cube);
+            if (cube) {
+                this._saveCube(cube);
+            } else {
+                console.error('Error parsing cube:', cubeJSON);
+            }
 
             // refresh layers
             this._refreshLayer();
@@ -1133,8 +1150,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             var cube = M.parse(cubeJSON)
 
             // save updated cube
-            this._saveCube(cube);
-
+            if (cube) {
+                this._saveCube(cube);
+            } else {
+                console.error('Error parsing cube: ', cubeJSON);
+            }
+            
             // refresh layers
             this._refreshLayer();
 

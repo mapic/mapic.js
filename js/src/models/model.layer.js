@@ -625,6 +625,9 @@ M.Model.Layer = M.Model.extend({
 
         } else {
             
+            // test
+            grid.on('mousemove', _.throttle(this._gridOnHover.bind(this), 200), this);
+
             // click popup
             grid[on]('mousedown', this._gridOnMousedown, this);     
             grid[on]('mouseup', this._gridOnMouseup, this);  

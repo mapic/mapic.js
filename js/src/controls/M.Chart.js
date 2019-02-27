@@ -19,6 +19,8 @@ M.Chart = M.Control.extend({
             // Create content
             var content = this.multiPointPopUp(multiPopUp);
 
+            console.log('XXXXXX 1');
+
         // csv 
         } else if (this.isCSV()) {
 
@@ -31,6 +33,9 @@ M.Chart = M.Control.extend({
             // create custom csv content
             var content = this.createCSVContent();
 
+            console.log('XXXXXX 2');
+
+
         // If we are sampling from point (click)
         } else {
 
@@ -42,6 +47,9 @@ M.Chart = M.Control.extend({
 
             // Create content
             var content = this.singlePopUp(e);
+     
+            console.log('XXXXXX 3');
+
         }
 
         // Return if disabled
@@ -66,6 +74,8 @@ M.Chart = M.Control.extend({
     },
 
     createCSVContent : function (layer) {
+
+        console.log('SSSSSSSSSSSSS createCSVContent', layer);
 
         // get layer
         var layer = layer || this.options.e.layer;
@@ -385,7 +395,11 @@ M.Chart = M.Control.extend({
     // Create "normal" pop-up content without time series
     _createPopupContent : function (e) {
 
+        // console.log('_createPOSOSOSO', e);
+
         this.popupSettings = e.layer.getTooltip();
+
+        console.log('popopusettings', this.popupSettings);
 
         var c3Obj = {
             data : e.data,

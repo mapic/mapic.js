@@ -346,13 +346,74 @@ M.VectorLayer = M.Model.Layer.extend({
     },
 
 
-    _gridOnHover : function (e) {},
+    _gridOnHover : function (e) {
+        if (!e.data || app.MapPane._drawing) return;
+
+        // pass layer
+        e.layer = this;
+
+        // fetch data
+        this._fetchData(e, function (ctx, json) {
+            if (!json) return console.error('no data for popup!');
+            var data = M.parse(json);
+            if (!data) return console.error('no data for popup!');
+
+            e.data = data;
+            // var event = e.originalEvent;
+            // this._event = {
+            //     x : event.x,
+            //     y : event.y
+            // };
+
+            // get label/popup settings
+            var label_settings = e.layer.getTooltip();
+
+            // filter active popup fields
+            var active_keys = [];
+            _.each(label_settings.metaFields, function (value, key) {
+                if (value.on) active_keys.push(key);
+            });
+            var filtered_data = [];
+            _.each(active_keys, function (a) {
+                filtered_data.push(a + ': ' + data[a]);
+            });
+
+            console.log('filtered_data', filtered_data);
+
+
+            console.log('THISISIS', this);
+
+            if (!this._tooltip) {
+                this._tooltip = L.tooltip({
+                    position: 'left',
+                    noWrap: true
+                });//.addTo(app._map);
+            }
+
+            console.log('tooltip', this._tooltip);
+
+            // this.layer.bindTooltip('tooltip!').openTooltip();
+
+            this._tooltip.setContent(filtered_data[0]);
+
+
+            // todo: 
+            // 1. get tooltip on map
+            // 2. remove after use
+            // 3. get full array on tooltip
+
+
+        }.bind(this));
+
+    },
+
 
     _fetching : {},
     _cache : {},
 
     // todo: move custom logic to popup-plugin
     _gridOnMouseOver : function (e) {
+        // console.log('__gridOnMouseOver', e);
         if (!e.data || app.MapPane._drawing) return;
         
         var gid = e.data.gid;
@@ -517,6 +578,7 @@ M.VectorLayer = M.Model.Layer.extend({
     },
 
     _gridOnClick : function (e) {
+        console.error('_gridOnClick', e);
         if (!e.data || app.MapPane._drawing) return;
 
         // pass layer

@@ -84,6 +84,9 @@ M.RasterLayer = M.Model.Layer.extend({
     },
 
     _mapClick : function (e) {
+
+        console.log('CLCIK!K RASTER', this, this.isRaster());
+
         if (!this._added) return;
         if (!this.isQueryable()) return;
         var latlng = e.latlng;
@@ -100,6 +103,13 @@ M.RasterLayer = M.Model.Layer.extend({
             point : latlng,
             e : e
         });
+    },
+
+    getLegendImage : function () {
+        var legendImage = this.store.legend;
+        console.log('LEGEDD ', legendImage);
+        if (_.isUndefined(legendImage)) return '';
+        return legendImage;
     },
 
     _checkInside : function (point, polygon) {

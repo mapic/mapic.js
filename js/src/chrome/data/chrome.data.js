@@ -1347,6 +1347,42 @@ M.Chrome.Data = M.Chrome.extend({
 
     },
 
+    _openRasterFullscreen : function (layer) {
+        if (!layer) return console.error('No layer?');
+
+        // create fullscreen
+        var layerTitle = layer.getTitle();
+        var fullscreen = this._fullscreen = new M.Fullscreen({
+            title : '<i class="fa fa-bars file-option"></i>' + layerTitle,
+            titleClassName : 'slim-font'
+        });
+
+        // shortcuts
+        // this._fullscreen._layer = layer;
+        var content = this._fullscreen._content;
+
+        console.log('FULLSCREEN _openRasterFullscreen', layer);
+
+        // // create name box
+        // this._createWMSNameBox({
+        //     container : content,
+        //     layer : layer
+        // });
+
+        // create URL input
+        this._createRasterBox({
+            container : content,
+            layer : layer
+        });
+
+        // // create OK button
+        // this._createWMSOKButton({
+        //     container : content,
+        //     layer : layer
+        // });
+
+    },
+
 
     _openTSFullscreen : function (layer) {
 
@@ -2598,19 +2634,49 @@ M.Chrome.Data = M.Chrome.extend({
 
 
 
+    _createRasterBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+        
+        // legend png
+        var url_text4 = 'Legend Endpoint';
+        var url_placeholder4 = 'URL to a .png file, eg. https://maps.mapic.io/legend/world.png';
+        var url_value4 = layer ? layer.getLegendImage() : '';
 
+        var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+        var name4 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, url_text4);
+        var name_input4 = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+        name_input4.setAttribute('placeholder', url_placeholder4);
+        name_input4.value = url_value4;
+        var name_error4 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
 
+        // save
+        this._fullscreen.wms_legend_div = name_input4;
 
+        M.DomEvent.on(name_input4, 'blur', function () {
+            
+            // do nothing if same
+            if (layer.store.legend == name_input4.value) return;
 
+            // save
+            layer.store.legend = name_input4.value;
+            layer.save('legend');
 
+            // select project
+            M.Mixin.Events.fire('layerEdited', { detail : {
+                projectUuid : app.activeProject.getUuid(),
+                layerUuid : layer.store.uuid
+            }});
 
+            // feedback
+            app.FeedbackPane.setMessage({title : 'Saved!', description : 'Legend has been updated.'})
 
+        }.bind(this));
 
+        // return wrapper
+        return toggles_wrapper;
 
-
-
-
-
+    },
 
 
 
@@ -4987,7 +5053,7 @@ M.Chrome.Data = M.Chrome.extend({
             }
         }
 
-
+        // raster/vector postgis layers
         if (library == 'postgis') {
             action.editPostgisLayer = {
                 name : 'Edit layer',
@@ -5130,8 +5196,6 @@ M.Chrome.Data = M.Chrome.extend({
         // edit postgis
         if (trigger == 'editPostgisLayer') this._editPostgisLayer(layer);
 
-        
-
         // edit wms
         if (trigger == 'editWMS') this._editWMS(layer);
 
@@ -5163,14 +5227,15 @@ M.Chrome.Data = M.Chrome.extend({
     },
 
     _editCube : function (layer) {
-
         this._openCubeLayerEditFullscreen(layer);
     },
 
      _editPostgisLayer : function (layer) {
-
-        console.log('_editPostgisLayer', layer);
-        // this._openCubeLayerEditFullscreen(layer);
+        if (layer.isRaster()) {
+            this._openRasterFullscreen(layer);
+        } else {
+            console.log("Can't edit postgis vector layers.");
+        }
     },
 
     _editGraph : function (layer) {

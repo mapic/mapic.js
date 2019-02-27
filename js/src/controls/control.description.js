@@ -448,6 +448,21 @@ L.Control.Description = M.Control.extend({
 
 	},
 
+	_createRasterLegendImage : function (layer) {
+
+		var title = layer.getTitle();
+		var img = layer.getLegendImage();
+
+		// create legend
+		var html = '<div class="wms-legend-title">' + title + '</div>';
+		html += '<img src="' + img + '">';
+
+		M.DomUtil.addClass(this._singleLegendViewWrapper, 'wms-legend');
+
+		this._singleLegendViewWrapper.innerHTML = html;
+
+	},
+
 	_createGeoJSONLegend : function (layer) {
 
 		var title = layer.getTitle();
@@ -472,7 +487,17 @@ L.Control.Description = M.Control.extend({
 
 		// create special legend for WMS layers
 		if (layer.isWMS()) return this._createWMSLegend(layer);
+		
+		// create special legend for GeoJSON layers
 		if (layer.isGeoJSON()) return this._createGeoJSONLegend(layer);
+		
+		// special legend for raster IF enabled
+		if (layer.isRaster()) {
+			var legendImage = layer.getLegendImage();
+			if (legendImage != '') {
+				return this._createRasterLegendImage(layer);
+			}
+		}
 
 		// get legend
 		var legend = layer.getLegends();

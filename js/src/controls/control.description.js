@@ -561,16 +561,6 @@ L.Control.Description = M.Control.extend({
 			this.setLegendHTML(grad);
 		} else if (layer.isRaster()) {
 
-			// console.log('SETTING LENGEND -->');
-			// console.log('layer:', layer);
-
-			// // see https://github.com/mapic/mapic/issues/58
-			// if (layer.isRaster() && _.includes(window.location.href, 'edinsights')) {
-			// 	this.setLegendHTML('<img src="https://image.ibb.co/nGM9kp/meanvelocity10mm.png" style="width:100%">');
-			// } else {
-			// 	this.setLegendHTML('');
-			// };
-
 			// create raster html and set
 			var html = this._createRasterLegend(layer);
 			this.setLegendHTML(html);

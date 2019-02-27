@@ -1358,28 +1358,13 @@ M.Chrome.Data = M.Chrome.extend({
         });
 
         // shortcuts
-        // this._fullscreen._layer = layer;
         var content = this._fullscreen._content;
-
-        console.log('FULLSCREEN _openRasterFullscreen', layer);
-
-        // // create name box
-        // this._createWMSNameBox({
-        //     container : content,
-        //     layer : layer
-        // });
 
         // create URL input
         this._createRasterBox({
             container : content,
             layer : layer
         });
-
-        // // create OK button
-        // this._createWMSOKButton({
-        //     container : content,
-        //     layer : layer
-        // });
 
     },
 
@@ -3217,8 +3202,6 @@ M.Chrome.Data = M.Chrome.extend({
     },
 
     _addCubesetItemByUuid : function (fileUuid) {
-
-        console.log('this ->>', this);
 
         var file = app.Account.getFile(fileUuid);
 

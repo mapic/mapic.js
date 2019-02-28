@@ -1480,9 +1480,6 @@ M.Chrome.Data = M.Chrome.extend({
         M.DomEvent.on(name_input4, 'blur', function () {
 
             var legend_url = name_input4.value;
-            console.log('blur saving legend', legend_url, layer);
-
-            // return;
 
              // do nothing if same
             if (layer.store.legend == name_input4.value) return;
@@ -1490,6 +1487,9 @@ M.Chrome.Data = M.Chrome.extend({
             // save
             layer.store.legend = name_input4.value;
             layer.save('legend');
+
+            // force reload of legend
+            layer.refreshLegend();
 
             // select project
             M.Mixin.Events.fire('layerEdited', { detail : {
@@ -1499,7 +1499,6 @@ M.Chrome.Data = M.Chrome.extend({
 
             // feedback
             app.FeedbackPane.setMessage({title : 'Saved!', description : 'Legend has been updated.'})
-
 
         }.bind(this));
 

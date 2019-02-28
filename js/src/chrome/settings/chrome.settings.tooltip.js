@@ -197,7 +197,40 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
             appendTo : labelsToggleLine.container,
             fn       : this._toggleLabels.bind(this)
         });
+
+
+         var labelsToggleLine = new M.fieldLine({
+            id       : 'enable',
+            appendTo : sectionWrapper,
+            title    : 'Enable tooltip on hover',
+            input    : false
+        });     
+
+        var labelsToggle = new M.button({
+            id       : 'enable-pop-up',
+            type     : 'switch',
+            isOn     : this.tooltipMeta.hover,
+            right    : false,
+            appendTo : labelsToggleLine.container,
+            fn       : this._toggleTooltipHover.bind(this)
+        });
    
+    },
+
+     _toggleTooltipHover : function (e, enabled) {
+       
+        // save
+        this.tooltipMeta.hover = enabled;
+        this._layer.setTooltip(this.tooltipMeta);
+
+        // // fire event
+        // if (enabled) {
+        //     this._layer.fire('showLabels');
+        // } else {
+        //     this._layer.fire('hideLabels');
+        // }
+
+        
     },
 
     _toggleLabels : function (e, enabled) {

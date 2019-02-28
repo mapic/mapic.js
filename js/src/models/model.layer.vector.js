@@ -307,6 +307,44 @@ M.VectorLayer = M.Model.Layer.extend({
 
     },
 
+    _addGridEvents : function () {
+        this._setGridEvents('on');
+    },
+
+    _removeGridEvents : function () {
+        this._setGridEvents('off');
+    },
+
+    _setGridEvents : function (on) {
+        var grid = this.gridLayer;
+        if (!grid || !on) return;
+
+
+
+        // experimental: hover popup in config
+        // if (app.options.custom && app.options.custom.hoverPopup) {
+        var label_settings = this.getTooltip();
+        if (label_settings && label_settings.hover) {
+
+            // // add movemouse event to grid
+            // grid[on]('mousemove', this._gridOnHover, this);
+            // grid[on]('mouseover', this._gridOnMouseOver, this);
+            // grid[on]('mouseout', this._gridOnMouseOut, this);
+
+             // test
+            grid[on]('mousemove', _.throttle(this._gridOnHover.bind(this), 200), this);
+
+
+        } else {
+            
+            // click popup
+            grid[on]('mousedown', this._gridOnMousedown, this);     
+            grid[on]('mouseup', this._gridOnMouseup, this);  
+            grid[on]('click', this._gridOnClick, this);
+        }
+
+    },
+
 
     _fetchData : function (e, callback) {
         var keys = Object.keys(e.data);
@@ -349,6 +387,10 @@ M.VectorLayer = M.Model.Layer.extend({
     _gridOnHover : function (e) {
         if (!e.data || app.MapPane._drawing) return;
 
+        // todo: 
+        // 1. connect to switch
+        // 2. throttle/wait for query
+
         // pass layer
         e.layer = this;
 
@@ -358,13 +400,6 @@ M.VectorLayer = M.Model.Layer.extend({
             var data = M.parse(json);
             if (!data) return console.error('no data for popup!');
 
-            e.data = data;
-            // var event = e.originalEvent;
-            // this._event = {
-            //     x : event.x,
-            //     y : event.y
-            // };
-
             // get label/popup settings
             var label_settings = e.layer.getTooltip();
 
@@ -373,38 +408,30 @@ M.VectorLayer = M.Model.Layer.extend({
             _.each(label_settings.metaFields, function (value, key) {
                 if (value.on) active_keys.push(key);
             });
-            var filtered_data = [];
+            var filtered_data = '<div class="tooltip-hover-title">' + this.getTitle() + '</div>';
             _.each(active_keys, function (a) {
-                filtered_data.push(a + ': ' + data[a]);
+                filtered_data += a + ': ' + data[a] + '<br>';
             });
-
-            console.log('filtered_data', filtered_data);
-
-
-            console.log('THISISIS', this);
-
+          
+            // create tooltip first run
             if (!this._tooltip) {
-                this._tooltip = L.tooltip({
-                    position: 'left',
-                    noWrap: true
-                });//.addTo(app._map);
-            }
+                this._tooltip = L.tooltip({})
+                .setLatLng(e.latlng)
+                .addTo(app._map)
+                .setContent(filtered_data);
+            } 
 
-            console.log('tooltip', this._tooltip);
-
-            // this.layer.bindTooltip('tooltip!').openTooltip();
-
-            this._tooltip.setContent(filtered_data[0]);
-
-
-            // todo: 
-            // 1. get tooltip on map
-            // 2. remove after use
-            // 3. get full array on tooltip
-
+            // update tooltip
+            this._tooltip.setLatLng(e.latlng).setContent(filtered_data);
+            
+            // remove after delay
+            if (this._removeTooltipTimer) clearTimeout(this._removeTooltipTimer);
+            this._removeTooltipTimer = setTimeout(function () {
+                this._tooltip.remove();
+                this._tooltip = null;
+            }.bind(this), 1000);
 
         }.bind(this));
-
     },
 
 
@@ -578,7 +605,6 @@ M.VectorLayer = M.Model.Layer.extend({
     },
 
     _gridOnClick : function (e) {
-        console.error('_gridOnClick', e);
         if (!e.data || app.MapPane._drawing) return;
 
         // pass layer

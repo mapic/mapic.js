@@ -3451,7 +3451,10 @@ input#geojson-upload {
 
 
 
-
+.tooltip-hover-title {
+    font-size: 14px;
+    font-weight: 600;
+}
 
 
 

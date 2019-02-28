@@ -28,7 +28,7 @@ L.Control.Description = M.Control.extend({
 		return container; // turns into this._container on return
 	},
 
-	_initContainer : function () {          
+	_initContainer : function () {        
 
 		// hide by default
 		this._container.style.display = "none";
@@ -435,6 +435,8 @@ L.Control.Description = M.Control.extend({
 
 	_createWMSLegend : function (layer) {
 
+		console.error('_createWMSLegend', layer);
+
 		var title = layer.getTitle();
 		var img = layer.getLegendImage();
 
@@ -578,6 +580,8 @@ L.Control.Description = M.Control.extend({
 		var max = style.scale.max;
 		var title = style.legendScaleTitle;
 		var gradient = this._getGradientCSS(style);
+
+		console.log('STYUE', style);
 
 		var html = '';
 		html = '<div class="info-legend-container">';

@@ -1643,6 +1643,9 @@ M.Tools.Legend = {
 
 		var gradientName = layer.getStyleJSON().legendScaleTitle || 'mean velocity per year in mm';
 
+		// console.log('gradientName = ', gradientName);
+		// console.log('styleJSON', layer.getStyleJSON());
+
 		// HTML PART
 		// HTML PART
 		// HTML PART

@@ -3436,9 +3436,6 @@ input#geojson-upload {
     border: 1px solid gray;
 }
 
-
-
-
 .smooth-fullscreen-save.save-mask-button {
     position: relative;
     width: 62px;
@@ -3448,19 +3445,29 @@ input#geojson-upload {
     padding-top: 40px !important;
 }
 
-
-
-
 .tooltip-hover-title {
     font-size: 14px;
     font-weight: 600;
 }
 
+.snow-raster-legend-container.custom-legend {
+    height: auto;
+    width: auto;
+    max-height: 300px;
+    max-width: 300px;
+}
 
+.custom-legend img {
+    max-height: 250px;
+    max-width: 250px;
+}
 
-
-
-
+.custom-legend-title {
+    font-size: 16px;
+    text-align: center;
+    padding-bottom: 10px;
+    font-weight: 500;
+}
 
 
 

@@ -1428,6 +1428,12 @@ M.Chrome.Data = M.Chrome.extend({
             layer : layer
         });
 
+        // create legend endpoint
+        this._createLegendEndpointBox({
+            container : content,
+            layer : layer
+        });
+
         // create cubeset list
         this._createMaskBox({
             container : content,
@@ -1445,6 +1451,57 @@ M.Chrome.Data = M.Chrome.extend({
             container : content,
             layer : layer
         });
+
+    },
+
+    _createLegendEndpointBox : function (options) {
+        var container = options.container;
+        var layer = options.layer;
+
+
+        var toggles_wrapper3 = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
+
+        // legend png
+        var url_text4 = 'Legend Endpoint';
+
+        var url_placeholder4 = 'URL to an image file, eg. https://demo.mapic.io/data/world-legend.png';
+        var url_value4 = layer ? layer.getLegend() : '';
+
+        var name4 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper3, url_text4);
+        var title = M.DomUtil.create('div', 'dropdown-mask-title padding-top-10 padding-bottom-10', toggles_wrapper3, 'Add custom legend to layer. If left empty, the default graph will be shown.');
+        var name_input4 = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper3);
+        name_input4.setAttribute('placeholder', url_placeholder4);
+        name_input4.value = url_value4;
+        var name_error4 = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper3);
+
+        // save
+        this._fullscreen.geojson_legend = name_input4;
+
+        M.DomEvent.on(name_input4, 'blur', function () {
+
+            var legend_url = name_input4.value;
+            console.log('blur saving legend', legend_url, layer);
+
+            // return;
+
+             // do nothing if same
+            if (layer.store.legend == name_input4.value) return;
+
+            // save
+            layer.store.legend = name_input4.value;
+            layer.save('legend');
+
+            // select project
+            M.Mixin.Events.fire('layerEdited', { detail : {
+                projectUuid : app.activeProject.getUuid(),
+                layerUuid : layer.store.uuid
+            }});
+
+            // feedback
+            app.FeedbackPane.setMessage({title : 'Saved!', description : 'Legend has been updated.'})
+
+
+        }.bind(this));
 
     },
 
@@ -1538,10 +1595,10 @@ M.Chrome.Data = M.Chrome.extend({
 
         // create divs
         var toggles_wrapper = this._cubesetBoxWrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
-        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'SCF Graph Statistics');
+        var name = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, 'Timeseries Graph Statistics');
 
         // add title
-        var title = M.DomUtil.create('div', 'dropdown-mask-title padding-top-10 padding-bottom-10', toggles_wrapper, 'Toggle visibility of SCF Graph Statistics box.');
+        var title = M.DomUtil.create('div', 'dropdown-mask-title padding-top-10 padding-bottom-10', toggles_wrapper, 'Toggle visibility of Timeseries Graph Statistics box.');
 
         // add toggle
         this._cubeGraphToggleDiv = M.DomUtil.create('div', 'chrome-switch-container scf-graph-switch', toggles_wrapper);

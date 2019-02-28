@@ -1185,6 +1185,10 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this._legendContainer.style.display = 'none';
     },
 
+    getLegend : function () {
+        return this.store.legend;
+    },
+
     // create legend
     _createLegend : function () {
         if (this._legendContainer) M.DomUtil.remove(this._legendContainer);
@@ -1198,8 +1202,23 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // set style
         var gradientStyle = 'background: -webkit-linear-gradient(' + gradient + ');background: -o-linear-gradient(' + gradient + ');background: -moz-linear-gradient(' + gradient + ');'
 
+        // create html
+        var legendHTML = '<div class="info-legend-frame snow-raster"><div class="info-legend-val info-legend-min-val">1%</div><div class="info-legend-header scf">Snow</div><div class="info-legend-val info-legend-max-val">100%</div><div class="info-legend-gradient-container" style="' + gradientStyle + '"></div></div>'
+
+
+        // check for legend url
+        var customLegend = this.getLegend();
+
+        if (customLegend) {
+            // create legend
+            var legendHTML = '<div class="custom-legend-title">' + this.getTitle() + '</div>';
+            legendHTML += '<img src="' + customLegend + '">';
+
+            M.DomUtil.addClass(this._legendContainer, 'custom-legend');
+        } 
+
         // set legend
-        this._legendContainer.innerHTML = '<div class="info-legend-frame snow-raster"><div class="info-legend-val info-legend-min-val">1%</div><div class="info-legend-header scf">Snow</div><div class="info-legend-val info-legend-max-val">100%</div><div class="info-legend-gradient-container" style="' + gradientStyle + '"></div></div>'
+        this._legendContainer.innerHTML = legendHTML;
 
     },
 

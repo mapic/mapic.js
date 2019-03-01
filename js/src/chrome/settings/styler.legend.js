@@ -4,8 +4,6 @@ M.Legend = M.Class.extend({
 
 	initialize : function (options) {
 
-		console.error('initialize', options);
-
 		this.options = options;
 
 		this.initLegends();
@@ -26,8 +24,6 @@ M.Legend = M.Class.extend({
 	},
 
 	updateLegend : function () {
-
-		console.error('this2', this);
 
 		// get style
 		var styleJSON = this.options.carto;
@@ -301,7 +297,7 @@ M.Legend = M.Class.extend({
 			value        : _name,
 			placeholder  : name,
 			tabindex     : 1,
-			fn 	     : this._saveLegendName,
+			fn 	     	 : this._saveLegendName,
 			className    : 'legend-each-name target-input',
 			allowText    : true,
 			sourceObject : object,
@@ -365,7 +361,7 @@ M.Legend = M.Class.extend({
 			isOn 	     : true,
 			right 	     : true,
 			appendTo     : gradientInfoWrapper,
-			fn 	     : this._saveGradientHeader,
+			fn 	     	 : this._saveGradientHeader,
 			className    : 'info-legend-header',
 			sourceObject : options.object,
 			allowText    : true,
@@ -1641,10 +1637,7 @@ M.Tools.Legend = {
 		var satelliteView = stylerObject.satelliteView;
 		var layer = stylerObject.options.layer;
 
-		var gradientName = layer.getStyleJSON().legendScaleTitle || 'mean velocity per year in mm';
-
-		// console.log('gradientName = ', gradientName);
-		// console.log('styleJSON', layer.getStyleJSON());
+		// var gradientName = layer.getStyleJSON().legendScaleTitle || 'mean velocity per year in mm';
 
 		// HTML PART
 		// HTML PART

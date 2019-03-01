@@ -3376,11 +3376,16 @@ M.Chrome.Data = M.Chrome.extend({
             }]
         }
 
+        console.log('REMVOING DATASET FROM CUBE');
+        console.log('cube before :', layer.getCube());
+
         app.api.removeFromCube(options, function (err, updatedCube) {
             if (err) return console.error(err);
 
             // parse cube
             var cube = M.parse(updatedCube);
+
+            console.log('CUBE AFTER #1: ', cube);
 
             if (cube) {
                 // update M.CubeLayer
@@ -3388,6 +3393,8 @@ M.Chrome.Data = M.Chrome.extend({
             } else {
                 console.error('Error parsing cube:', updatedCube);
             }
+
+            console.log('CUBE AFTER #2', updatedLayer);
 
             // refresh list
             this._refreshCubeset(updatedLayer);

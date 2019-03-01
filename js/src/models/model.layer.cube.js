@@ -982,6 +982,14 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         return this._cube.cube_id;
     },  
 
+    getCube : function () {
+        return this._cube;
+    },
+
+    getCubeJSON : function () {
+        return this.store.data.cube;
+    },
+
     _refreshCube : function () {
         // this._prepareRaster();
     },

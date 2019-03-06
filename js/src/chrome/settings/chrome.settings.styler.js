@@ -89,6 +89,8 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 			}, function (err, results) {
 				var res = M.parse(results);
 
+				console.log('preRender2: ', res);
+
 				// give feedback on error
 				if (res.error) {
 					return app.FeedbackPane.setError({ 
@@ -97,13 +99,26 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 					});
 				}
 
+				var estimated_time_human = moment.duration(res.estimated_time, "seconds").locale('en').humanize();
+
 				// give feedback
 				app.FeedbackPane.setMessage({ 
 					title : 'Pre-rendering started!', 
-					description : 'A total of ' + res.tiles + ' tiles are being rendered. <br><br>Estimated rendering time is ' + res.estimated_time + ' seconds.'
+					description : 'A total of ' + res.tiles + ' tiles are being rendered, down to zoom level ' + res.processed_zoom + '. <br><br>Estimated rendering time is ' + estimated_time_human + '...'
 				});
 
-			});
+				// add logs
+				app.log('prerendered:', { 
+					info : {
+			    		layer : this._layer.getTitle(),
+			    		project : app.activeProject.getName(),
+			    		layer_type : 'Timeseries layer',
+			    		estimated_time : estimated_time_human,
+			    		number_of_tiles : res.tiles
+			    	}
+			    });
+
+			}.bind(this));
 
 		} else {
 
@@ -119,17 +134,21 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 					title : 'Pre-rendering started!', 
 					description : 'A total of ' + res.tiles + ' tiles are being rendered. <br><br>Estimated rendering time is a few minutes...'
 				});
-			});
+
+				// add logs
+				app.log('prerendered:', { 
+					info : {
+			    		layer : this._layer.getTitle(),
+			    		project : app.activeProject.getName(),
+			    		layer_type : 'Vector tile layer'
+			    	}
+			    });
+
+			}.bind(this));
 
 		}	
 
-		// add logs
-		app.log('prerendered:', { 
-			info : {
-	    		layer : this._layer.getTitle(),
-	    		project : app.activeProject.getName()
-	    	}
-	    });
+		
 		
 	},
 

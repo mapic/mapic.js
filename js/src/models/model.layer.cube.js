@@ -283,7 +283,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             }
 
             if (this.store.data.cube == cube) {
-                // console.log('Cube is same.');
+                console.log('Cube is same.');
             } else {
 
                 // save updated cube
@@ -792,6 +792,9 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // set direction (for cache algorithm)
         this._cursorDirection = (didx > this._cursor) ? 1 : -1;
 
+        // don't reload if already cursor in right place
+        if (this._cursor == didx) return;
+
         // set
         this._cursor = didx;
        
@@ -850,7 +853,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this.layer = layer;
 
         // log
-        console.log('cursor @', this._cursor);
+        console.error('cursor @', this._cursor);
     },
 
     // update cache // todo: move cache to own Class ?

@@ -1,6 +1,8 @@
 // postgis vector layer
 M.VectorLayer = M.Model.Layer.extend({
 
+    type : 'vector',
+
     initLayer : function () {
         this.update();
         this.addHooks();

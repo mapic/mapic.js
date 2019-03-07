@@ -31,6 +31,10 @@ M.Model.Layer = M.Model.extend({
         M.DomEvent[on](this.layer, 'loading', this._onLayerLoading, this);
     },
 
+    getType : function () {
+        return this.type;
+    },
+
     // dummy
     _mapMove : function () {},
     

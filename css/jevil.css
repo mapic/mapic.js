@@ -1292,12 +1292,12 @@ input.chrome-field-input {
     position: relative;*/
     font-size: 15px;
     font-weight: 900;
-    margin-bottom: 6px;
+    /*margin-bottom: 6px;*/
     padding-left: 0;
     color: #666;
     top: 2px;
     position: relative;
-    padding-bottom: 5px; 
+    /*padding-bottom: 5px; */
 /*    margin-top: 15px;   */
 }
 

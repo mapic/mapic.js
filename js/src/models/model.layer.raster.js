@@ -2,6 +2,7 @@
 M.RasterLayer = M.Model.Layer.extend({
 
     _type : 'raster-layer',
+    type : 'raster',
 
     initialize : function (layer) {
 

@@ -1,6 +1,8 @@
 // wms layer
 M.WMSLayer = M.Model.Layer.extend({
 
+    type : 'wms',
+
     initialize : function (layer) {
 
         // set source

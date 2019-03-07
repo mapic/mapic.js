@@ -1,6 +1,8 @@
 M.Layer = M.Layer || {};
 M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
+    type : 'graph',
+
     options : {
         style : {
             fillColor : 'white',

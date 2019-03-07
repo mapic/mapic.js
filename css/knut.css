@@ -3470,4 +3470,6 @@ input#geojson-upload {
 }
 
 
-
+.description-control-meta-container {
+    /*padding-top: 10px;*/
+}

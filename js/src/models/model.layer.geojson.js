@@ -1,5 +1,7 @@
 M.Model.Layer.GeoJSONMaskLayer = M.Model.Layer.extend({
 
+    type : 'geojson-mask',
+
     options : {
         style : {
             fillColor : 'blue',
@@ -81,6 +83,8 @@ M.Model.Layer.GeoJSONMaskLayer = M.Model.Layer.extend({
 
 
 M.Model.Layer.GeoJSONLayer = M.Model.Layer.extend({
+
+    type : 'geojson',
 
     options : {
         style : {

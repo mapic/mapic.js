@@ -1,6 +1,8 @@
 // metalayer with several postgis raster layers 
 M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
+    type : 'timeseries',
+
     // languages
     localization : {
         lang : 'nor',

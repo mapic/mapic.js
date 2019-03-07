@@ -4,6 +4,8 @@ M.Chart = M.Control.extend({
 
         app.log('opened:chart');
 
+        console.log('M.Chart!');
+
         // set options
         M.setOptions(this, options);
         var multiPopUp = options.multiPopUp;
@@ -468,6 +470,7 @@ M.Chart = M.Control.extend({
             layer       : e.layer
         };
 
+        console.log('c3object', c3Obj);
 
         var content = M.DomUtil.create('div', 'popup-inner-content');
 
@@ -605,7 +608,8 @@ M.Chart = M.Control.extend({
             var area = _data.area / 1000000;
             var areaRounded = Math.floor(area * 1000) / 1000;
             var _areaSQ = areaRounded + 'km' + '<sup>2</sup>';
-        }       
+        }      
+
 
         var c3Obj = {
             data        : _average,
@@ -625,6 +629,8 @@ M.Chart = M.Control.extend({
             }
 
         };
+
+        console.log('c3Obj', c3Obj);
 
         this._c3Obj = this.createC3dataObj(c3Obj);
 
@@ -798,10 +804,13 @@ M.Chart = M.Control.extend({
     // Chart
     C3Chart : function (c3Obj) {
         
+        console.log('C3Chart -->', c3Obj);
 
         var data = c3Obj.d3array;
 
         this._currentChartData = data;
+
+        console.log('data', data);
 
         // Ticks
         var t = data.ticks;
@@ -879,6 +888,8 @@ M.Chart = M.Control.extend({
             var _width = 430;
         }   
 
+        console.log('_columns', _columns);
+
 
         // CHART SETTINGS
         var chartSettings = {
@@ -926,6 +937,11 @@ M.Chart = M.Control.extend({
                 types: {
                     mm : 'scatter',
                     regression : 'line'
+                },
+                color : function (color, d) {
+                    console.log('color, d', color, d);
+                    return '#0000FF';
+                    // return d.index === 4 ? "#d00" : "#ddd";
                 }
             },
 
@@ -967,6 +983,7 @@ M.Chart = M.Control.extend({
         };
         var chart = this._chart = c3.generate(chartSettings);
 
+        console.log('ragne', range);
 
         // add zoom events
         this._addChartEvents(_C3Container);

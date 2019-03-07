@@ -194,7 +194,6 @@ L.Control.Description = M.Control.extend({
 
         // Hide if empty
         if ( !this.layers || _.isEmpty(this.layers) ) {
-            console.log('HDIING');
             this._hide();
             return;
         }
@@ -241,8 +240,6 @@ L.Control.Description = M.Control.extend({
 
     _refreshLayer : function (layer) {
 
-        console.error('_refreshLayer', layer);
-
         // get layer
         this.layers[layer.getUuid()] = layer;
 
@@ -283,8 +280,6 @@ L.Control.Description = M.Control.extend({
     },
 
     _addLayer : function (layer) {
-
-        console.log('_addLayer', layer);
 
         this.layers = this.layers || {};
 
@@ -388,8 +383,6 @@ L.Control.Description = M.Control.extend({
     },
 
     toggleLegend : function (e) {   
-
-        console.error('toggleLegend', e);
 
         var id = e.target.id;
         var layerUuid = id.slice(10, id.length);
@@ -627,8 +620,6 @@ L.Control.Description = M.Control.extend({
         // no layer, no legend
         if (!layer) return;
 
-        console.log('=========== layer.getType()', layer.getType(), layer);
-
         // clear up previous legends
         this.clear_legends();
 
@@ -651,10 +642,8 @@ L.Control.Description = M.Control.extend({
                 return this.render_tile_service_legend(layer);
                 break;
             case 'layer':
-                console.log('SWITCH layer');
                 break;
             default:
-                console.log('SWITCH default');
                 break;
         }
         
@@ -717,13 +706,11 @@ L.Control.Description = M.Control.extend({
         layer.setLegends(legend_object);
 
         // return 
-        console.log('legend_object ::: ', legend_object);
         return legend_object;
 
     },
 
     setMetaTitle : function (title) {
-        console.error('setMetaTitle', title);
         this._metaTitle.innerHTML = title;
     },
 
@@ -802,7 +789,6 @@ L.Control.Description = M.Control.extend({
     },
 
     setLegendHTML : function (HTML) {
-        console.error('setLegendHTML', HTML);
         this._legendContainer.innerHTML = HTML;
     },
 
@@ -1112,6 +1098,5 @@ L.Control.Description = M.Control.extend({
 });
 
 L.control.description = function (options) {
-    console.error('L.control.description', options);
     return new L.Control.Description(options);
 };

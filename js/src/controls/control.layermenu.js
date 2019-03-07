@@ -93,6 +93,9 @@ L.Control.Layermenu = M.Control.extend({
 		this.addTo(app._map);
 		this._addHooks();
 		this._added = true;
+
+		// shortcut
+		app.Layermenu = this;
 	},
 
 	_flush : function () {
@@ -207,7 +210,6 @@ L.Control.Layermenu = M.Control.extend({
 
 
 		M.Mixin.Events.on('toggleLeftChrome', this._toggleLeftChrome, this);
-
 
 	},
 
@@ -562,8 +564,6 @@ L.Control.Layermenu = M.Control.extend({
 		start : function (e) {
 			var el = e.target;
 
-			console.log('drag start', el);
-
 			// add visual feedback on dragged element
 			M.DomUtil.addClass(el, 'dragged-ghost');
 
@@ -579,8 +579,6 @@ L.Control.Layermenu = M.Control.extend({
 
 		drop : function (e) {
 
-			console.log('drag drop');
-			
 			var uuid = e.dataTransfer.getData('uuid');
 			var el = document.getElementById(uuid);
 
@@ -609,8 +607,6 @@ L.Control.Layermenu = M.Control.extend({
 
 		over : function (e) {
 
-			console.log('drag over');
-
 			if (e.preventDefault) e.preventDefault(); // allows us to drop
 
 			// set first offset
@@ -624,8 +620,6 @@ L.Control.Layermenu = M.Control.extend({
 
 		leave : function (e) {
 
-			console.log('drag leave');
-			
 			// get element over which we're hovering
 			var x = e.clientX;
 			var y = e.clientY;
@@ -693,8 +687,6 @@ L.Control.Layermenu = M.Control.extend({
 
 	// check logic
 	checkLogic : function () {
-
-		console.log('checkLogic');
 
 		// clear prev invalids
 		this.clearInvalid();

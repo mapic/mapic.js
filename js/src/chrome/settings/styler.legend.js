@@ -4,14 +4,12 @@ M.Legend = M.Class.extend({
 
 	initialize : function (options) {
 
+		console.error('M.Legend (styler.legend.js)');
+
 		this.options = options;
 
 		this.initLegends();
 
-		// Set satellite view option
-		// if ( app.options.customizations && app.options.customizations.satelliteView ) {
-		// 	this.satelliteView = true;
-		// }
 
 		// set sat view option
 		this.satelliteView = (app.options.customizations && app.options.customizations.satelliteView);
@@ -346,17 +344,21 @@ M.Legend = M.Class.extend({
 		var maxVal = options.gradient.maxVal;
 		var bline = options.gradient.bline;
 		var gradientName = object.name ? object.name : bline;
+
+		// create container
 		var container = M.DomUtil.create('div', 'legend-each-container', this._legendContent);
 
+		// override style
 		container.style.paddingLeft = 0;
 
+		// create containers
 		var gradientWrapper = M.DomUtil.create('div', 'info-legend-container', container);
 		var gradientInfoWrapper = M.DomUtil.create('div', 'info-legend-frame', gradientWrapper);
 		var gradientInfoMinVal = M.DomUtil.create('div', 'info-legend-val info-legend-min-val', gradientInfoWrapper, minVal);
 
-		// Switch to toggle this specific legend on or off
+		// create input for adding text on top of gradient
 		var input = new M.button({
-			id 	     : 'gradient-header',
+			id 	     	 : 'gradient-header',
 			type 	     : 'input',
 			isOn 	     : true,
 			right 	     : true,
@@ -369,15 +371,16 @@ M.Legend = M.Class.extend({
 			context      : this
 		});
 
+		// set blur event
 		M.DomEvent.on(input.input, 'keydown', this.checkKey);		    
 		
-
+		// create containers
 		var gradientInfoMaxVal = M.DomUtil.create('div', 'info-legend-val info-legend-max-val', gradientInfoWrapper, maxVal);
 		var gradientLegend = M.DomUtil.create('div', 'info-legend-gradient-container', gradientInfoWrapper);
-		    gradientLegend.setAttribute('style', gradientStyle);
+		gradientLegend.setAttribute('style', gradientStyle);
 
 		// Set on to true by default
-		if ( typeof options.object.isOn == 'undefined' ) {
+		if (typeof options.object.isOn == 'undefined') {
     			options.object.isOn = true;
 		}
 
@@ -386,17 +389,18 @@ M.Legend = M.Class.extend({
 
 		// Switch to toggle this specific legend on or off
 		var button = new M.button({
-			id 	     : 'random',
+			id 	     	 : 'random',
 			type 	     : 'switch',
 			isOn 	     : options.object.isOn,
 			right 	     : true,
 			appendTo     : container,
-			fn 	     : this._switchGradient,
+			fn 	     	 : this._switchGradient,
 			className    : 'legend-switch',
 			sourceObject : options.object,
 			context      : this
 		});
 
+		// does nothing?
 		this.gradientBottom(options);
 
 	},
@@ -424,9 +428,7 @@ M.Legend = M.Class.extend({
 	},
 
 	checkKey : function (e) {
-
 		if ( e.keyCode == 13 ) this.blur();
-		
 	},
 
 
@@ -446,6 +448,8 @@ M.Legend = M.Class.extend({
 
 
 	_saveGradientHeader : function (e) {
+
+		console.log('_saveGradientHeader', e);
 		var value = e.target.value;
 
 		this.sourceObject.name = value;

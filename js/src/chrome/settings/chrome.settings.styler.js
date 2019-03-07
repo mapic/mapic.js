@@ -89,8 +89,6 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 			}, function (err, results) {
 				var res = M.parse(results);
 
-				console.log('preRender2: ', res);
-
 				// give feedback on error
 				if (res.error) {
 					return app.FeedbackPane.setError({ 
@@ -126,7 +124,6 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 			app.api.preRender({
 				layer_id : this._layer._getLayerUuid()
 			}, function (err, results) {
-				console.log('err, results', err, results);
 				var res = M.parse(results);
 
 				// give feedback
@@ -148,8 +145,6 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 
 		}	
 
-		
-		
 	},
 
 	_initVectorStyler : function () {
@@ -214,10 +209,7 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 
 		this._rasterStyler = new M.RasterStyler(options);
 
-		// console.log('RasterStyler', this._rasterStyler);
-
 		// Init legend options
-		// this._initLegendOptions();
 		this._initRasterLegendOptions();
 	},
 
@@ -252,10 +244,6 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 
 		this._legendStyler = new M.Legend.Raster(legendOptions);
 
-		// console.log('this._legendStyler', this._legendStyler)
-		// console.log('layer: ', this._layer);
-
-		// M.DomUtil.removeClass(this._legendStyler._legensOuter, 'displayNone');		
 	},
 
 
@@ -660,7 +648,7 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 	closed : function () {
 
 		// clean up
-		this._tempRemoveLayers();
+		// this._tempRemoveLayers();
 	},	
 
 	// event run when layer selected 
@@ -718,7 +706,10 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 		}
 
 		// Add temp layer
-		this._tempaddLayer();
+		// this._tempaddLayer();
+
+		// enable layer (but only if in layermenu)
+		app.Layermenu._enableLayerByUuid(this.layerUuid);
 
 		// Set active layer in dropdown
 		this.layerSelector.setFromUuid(uuid);

@@ -1,1272 +1,1205 @@
 // app.MapPane._controls.description
 L.Control.Description = M.Control.extend({
-	
-	type : 'description',
-
-	options: {
-		position : 'bottomright' 
-	},
-
-	_addTo : function () {
-		this.addTo(app._map);
-		this._initContainer();
-		this._addHooks();
-		this._added = true;
-	},	
-	
-	onAdd : function (map) {
-
-		console.error('L.control.description onAdd');
-
-		if ( app.options.customizations && app.options.customizations.satelliteView ) {
-			this.satelliteView = true;
-		}
-
-		var className = 'leaflet-control-description',
-		    container = L.DomUtil.create('div', className),
-		    options   = this.options;
-
-		// Wrapper for multiple layers
-		this._multipleLegendOuter = M.DomUtil.create('div', 'description-multiple-toggle-wrapper', container);
-		this._multipleLegendInner = M.DomUtil.create('div', 'description-multiple-toggle-inner', this._multipleLegendOuter);
-		this._multipleLegendInnerContent = M.DomUtil.create('div', 'description-multiple-toggle-inner-content', this._multipleLegendInner);
-		this._content = M.DomUtil.create('div', 'description-control-content', container);
-		this._outer = M.DomUtil.create('div', 'description-control-content-box', this._content);	
-
-		return container; // turns into this._container on return
-	},
-
-	_initContainer : function () {        
-
-		// hide by default
-		this._container.style.display = "none";
+    
+    type : 'description',
+
+    options: {
+        position : 'bottomright' 
+    },
+
+    _addTo : function () {
+        this.addTo(app._map);
+        this._initContainer();
+        this._addHooks();
+        this._added = true;
+    },  
+    
+    onAdd : function (map) {
+
+        if ( app.options.customizations && app.options.customizations.satelliteView ) {
+            this.satelliteView = true;
+        }
+
+        var className = 'leaflet-control-description',
+            container = L.DomUtil.create('div', className),
+            options   = this.options;
+
+        // Wrapper for multiple layers
+        this._multipleLegendOuter = M.DomUtil.create('div', 'description-multiple-toggle-wrapper', container);
+        this._multipleLegendInner = M.DomUtil.create('div', 'description-multiple-toggle-inner', this._multipleLegendOuter);
+        this._multipleLegendInnerContent = M.DomUtil.create('div', 'description-multiple-toggle-inner-content', this._multipleLegendInner);
+        this._content = M.DomUtil.create('div', 'description-control-content', container);
+        this._outer = M.DomUtil.create('div', 'description-control-content-box', this._content);    
+
+        return container; // turns into this._container on return
+    },
+
+    _initContainer : function () {        
+
+        // hide by default
+        this._container.style.display = "none";
+
+        // create scroller 
+        this._inner = M.DomUtil.create('div', 'description-control-inner', this._outer);
+
+        // header
+        this._header = M.DomUtil.create('div', 'description-control-header-section', this._inner);
 
-		// create scroller 
-		this._inner = M.DomUtil.create('div', 'description-control-inner', this._outer);
+        // toggle
+        this._toggle = M.DomUtil.create('div', 'description-control-minimize', this._multipleLegendOuter, '<i class="fa fa-arrow-down"></i>');
+
+        // SINGLE LEGEND VIEW WRAPPER
+        this._singleLegendViewWrapper = M.DomUtil.create('div', 'single-legend-view-wrapper', this._inner);
 
-		// header
-		this._header = M.DomUtil.create('div', 'description-control-header-section', this._inner);
+        // description
+        this._description = M.DomUtil.create('div', 'description-control-description displayNone', this._singleLegendViewWrapper);
+
+        // Toggle open
+        this._toggeOpener = M.DomUtil.create('div', 'description-control-toggle-opener displayNone', this._singleLegendViewWrapper);
+            
+        // Description box title
+        this._metaTitle = M.DomUtil.create('div', 'description-control-meta-title', this._singleLegendViewWrapper);
+        this._metaOuterContainer = M.DomUtil.create('div', 'description-meta-outer-container', this._singleLegendViewWrapper);
+
+        // COMPACT LEGEND VIEW WRAPPER      
+        this._compactLegendViewWrapper = M.DomUtil.create('div', 'compact-legend-view-wrapper displayNone', this._inner);
+        this._compactExpand = M.DomUtil.create('div', 'compact-legends-expand displayNone', this._outer, '<i class="fa fa-arrow-up"></i>');
+        this._compactLegendInnerScroller = M.DomUtil.create('div', 'compact-legend-scroll-wrapper', this._compactLegendViewWrapper);
+
+        // Meta
+        this._metaContainer = M.DomUtil.create('div', 'description-control-meta-container', this._metaOuterContainer);
+
+        // Init satellite path container
+        this.satelliteAngle = new M.satelliteAngle({angle : false, path: false, appendTo : this._metaOuterContainer});
+        
+        // Opacity 
+        this._opacityWrapper = M.DomUtil.create('div', 'description-opacity-wrapper', this._metaOuterContainer);
+        this._opacityTitle = M.DomUtil.create('div', 'description-control-opacity-title', this._opacityWrapper, 'Opacity:');
+        this._opacityContainer = M.DomUtil.create('div', 'description-control-opacity-container', this._opacityWrapper);
+
+        // legend
+        this._legendContainer = M.DomUtil.create('div', 'description-control-legend-container', this._singleLegendViewWrapper);
+
+        // copyright
+        this._copyright = M.DomUtil.create('div', 'description-copyright', this._outer, '');
+
+        // If mobile: enable complete collapse of legend
+        this._legendCollapsed = M.DomUtil.create('div', 'legend-collapsed-mobile displayNone', this._container, 'Legend');
+
+        // add event hooks
+        // this._addHooks();
+        this._listeners();
+    },
+
+    _addHooks : function () {
+        
+        var isMobile = L.Browser.mobile;
+        
+        if ( app.isMobile || isMobile ) { // app.isMobile is not ready yet...
+
+            // Toggle while clicking on the container on toch devices
+            M.DomEvent.on(this._container, 'click', this.closeMobile, this);
+            M.DomEvent.on(this._legendCollapsed, 'click', this.openMobile, this);
+            M.DomEvent.on(this._legendCollapsed, 'click',  M.DomEvent.stop, this);
+            M.DomEvent.on(this._legendCollapsed, 'onscroll scroll mousewheel', M.DomEvent.stopPropagation, this);
+            
+        } else {
+            // collapsers
+            M.DomEvent.on(this._toggle, 'click', this.toggle, this);
+        }
+
+        // prevent map double clicks
+        M.DomEvent.on(this._container, 'mousedown click dblclick',  M.DomEvent.stop, this);
+
+        M.DomEvent.on(this._multipleLegendInnerContent, 'onscroll scroll mousewheel', M.DomEvent.stopPropagation, this);
+
+        M.DomEvent.on(this._inner, 'onscroll scroll mousewheel', M.DomEvent.stopPropagation, this);
+
+        M.DomEvent.on(this._compactExpand, 'click', this.toggle, this);
+
+        M.DomEvent.on(this._toggeOpener, 'click', this.toggleOpen, this);
+
+    },
+
+    closeMobile : function () {
+        M.DomUtil.addClass(this._inner, 'displayNone');
+        M.DomUtil.removeClass(this._legendCollapsed, 'displayNone');
+    },
+
+    openMobile : function () {
+        M.DomUtil.removeClass(this._inner, 'displayNone');
+        M.DomUtil.addClass(this._legendCollapsed, 'displayNone');
+    },
+
+    _listeners : function () {
+        M.Mixin.Events.on('updateLegend', this._legendIsBeingUpdated, this);
+        M.Mixin.Events.on('phantomjs', this.compactLegend, this);
+        M.Mixin.Events.on('toggleLeftChrome', this._toggleLeftChrome, this);
+
+    },
+
+    _toggleLeftChrome : function (e) {
 
-		// toggle
-		this._toggle = M.DomUtil.create('div', 'description-control-minimize', this._multipleLegendOuter, '<i class="fa fa-arrow-down"></i>');
-
-		// SINGLE LEGEND VIEW WRAPPER
-		this._singleLegendViewWrapper = M.DomUtil.create('div', 'single-legend-view-wrapper', this._inner);
+        // Stopping computers and pads
+        if ( !app.isMobile || !app.isMobile.mobile ) return;
 
-		// description
-		this._description = M.DomUtil.create('div', 'description-control-description displayNone', this._singleLegendViewWrapper);
+        var isOpen = e.detail.leftPaneisOpen;
+        var display = isOpen ? "none" : "block";
+        this._container.style.display = display;
+    },
 
-		// Toggle open
-		this._toggeOpener = M.DomUtil.create('div', 'description-control-toggle-opener displayNone', this._singleLegendViewWrapper);
-			
-		// Description box title
-		this._metaTitle = M.DomUtil.create('div', 'description-control-meta-title', this._singleLegendViewWrapper);
-		this._metaOuterContainer = M.DomUtil.create('div', 'description-meta-outer-container', this._singleLegendViewWrapper);
-
-		// COMPACT LEGEND VIEW WRAPPER		
-		this._compactLegendViewWrapper = M.DomUtil.create('div', 'compact-legend-view-wrapper displayNone', this._inner);
-		this._compactExpand = M.DomUtil.create('div', 'compact-legends-expand displayNone', this._outer, '<i class="fa fa-arrow-up"></i>');
-		this._compactLegendInnerScroller = M.DomUtil.create('div', 'compact-legend-scroll-wrapper', this._compactLegendViewWrapper);
-
-		// Meta
-		this._metaContainer = M.DomUtil.create('div', 'description-control-meta-container', this._metaOuterContainer);
-
-		// Init satellite path container
-		this.satelliteAngle = new M.satelliteAngle({angle : false, path: false, appendTo : this._metaOuterContainer});
-		
-		// Opacity 
-		this._opacityWrapper = M.DomUtil.create('div', 'description-opacity-wrapper', this._metaOuterContainer);
-		this._opacityTitle = M.DomUtil.create('div', 'description-control-opacity-title', this._opacityWrapper, 'Opacity:');
-		this._opacityContainer = M.DomUtil.create('div', 'description-control-opacity-container', this._opacityWrapper);
-
-		// legend
-		this._legendContainer = M.DomUtil.create('div', 'description-control-legend-container', this._singleLegendViewWrapper);
-
-		// copyright
-		this._copyright = M.DomUtil.create('div', 'description-copyright', this._outer, '');
-
-		// If mobile: enable complete collapse of legend
-		this._legendCollapsed = M.DomUtil.create('div', 'legend-collapsed-mobile displayNone', this._container, 'Legend');
-
-		// add event hooks
-		// this._addHooks();
-		this._listeners();
-	},
-
-	_addHooks : function () {
-		
-		var isMobile = L.Browser.mobile;
-		
-		if ( app.isMobile || isMobile ) { // app.isMobile is not ready yet...
-
-			// Toggle while clicking on the container on toch devices
-			M.DomEvent.on(this._container, 'click', this.closeMobile, this);
-			M.DomEvent.on(this._legendCollapsed, 'click', this.openMobile, this);
-			M.DomEvent.on(this._legendCollapsed, 'click',  M.DomEvent.stop, this);
-			M.DomEvent.on(this._legendCollapsed, 'onscroll scroll mousewheel', M.DomEvent.stopPropagation, this);
-			
-		} else {
-			// collapsers
-			M.DomEvent.on(this._toggle, 'click', this.toggle, this);
-		}
-
-		// prevent map double clicks
-		M.DomEvent.on(this._container, 'mousedown click dblclick',  M.DomEvent.stop, this);
-
-		M.DomEvent.on(this._multipleLegendInnerContent, 'onscroll scroll mousewheel', M.DomEvent.stopPropagation, this);
-
-		M.DomEvent.on(this._inner, 'onscroll scroll mousewheel', M.DomEvent.stopPropagation, this);
-
-		M.DomEvent.on(this._compactExpand, 'click', this.toggle, this);
-
-		M.DomEvent.on(this._toggeOpener, 'click', this.toggleOpen, this);
-
-	},
-
-	closeMobile : function () {
-		M.DomUtil.addClass(this._inner, 'displayNone');
-		M.DomUtil.removeClass(this._legendCollapsed, 'displayNone');
-	},
-
-	openMobile : function () {
-		M.DomUtil.removeClass(this._inner, 'displayNone');
-		M.DomUtil.addClass(this._legendCollapsed, 'displayNone');
-	},
-
-	_listeners : function () {
-		M.Mixin.Events.on('updateLegend', this._legendIsBeingUpdated, this);
-		M.Mixin.Events.on('phantomjs', this.compactLegend, this);
-		M.Mixin.Events.on('toggleLeftChrome', this._toggleLeftChrome, this);
-
-	},
-
-	_toggleLeftChrome : function (e) {
-
-		// Stopping computers and pads
-		if ( !app.isMobile || !app.isMobile.mobile ) return;
+    _legendIsBeingUpdated : function (e) {
 
-		var isOpen = e.detail.leftPaneisOpen;
-		var display = isOpen ? "none" : "block";
-		this._container.style.display = display;
-	},
+        // If we are showing all legends at once!
+        if ( this.miniLegend ) {
+            return this.compactLegend();
+        }
 
-	_legendIsBeingUpdated : function (e) {
+        // If we are showing one and one legend
+        var layerID = e.detail.layerUuid;
+        if (layerID == this._legend_uuid) {
+            this.setHTMLfromStore(layerID);
+        }
+    },
+    
+    _isActive : function () {
+        if (!this._project) return false;
+        return this._project.getControls()[this.type];
+    },
 
-		// If we are showing all legends at once!
-		if ( this.miniLegend ) {
-			return this.compactLegend();
-		}
+    show : function () {
+        if (!this._container) return;
+        this._isActive() ? this._show() : this._hide();
+        this.toggleScale(true);
+    },
 
-		// If we are showing one and one legend
-		var layerID = e.detail.layerUuid;
-		if (layerID == this.legendUuid) {
-			this.setHTMLfromStore(layerID);
-		}
-	},
-	
-	_isActive : function () {
-		if (!this._project) return false;
-		return this._project.getControls()[this.type];
-	},
+    hide : function () {
+        if (!this._container) return;
+        this._hide();
+    },
 
-	show : function () {
-		if (!this._container) return;
-		this._isActive() ? this._show() : this._hide();
-		this.toggleScale(true);
-	},
+    _show : function () {
+        this.refresh();
+    },
 
-	hide : function () {
-		if (!this._container) return;
-		this._hide();
-	},
+    refresh : function () {
+        this.showHide();
+        this._calculateHeight();
+    },
 
-	_show : function () {
-		this.refresh();
-	},
+    _layerEnabled : function (e) {},
+    _layerDisabled : function (e) {},   
 
-	refresh : function () {
-		this.showHide();
-		this._calculateHeight();
-	},
+    showHide : function () {
 
-	_layerEnabled : function (e) {},
-	_layerDisabled : function (e) {},	
+        // Hide if empty
+        if ( !this.layers || _.isEmpty(this.layers) ) {
+            console.log('HDIING');
+            this._hide();
+            return;
+        }
 
-	showHide : function () {
+        // show
+        this._container.style.display = 'block';
+        this.isOpen = true;
+    },
 
-		// Hide if empty
-		if ( !this.layers || _.isEmpty(this.layers) ) {
-			console.log('HDIING');
-			this._hide();
-			return;
-		}
+    _hide : function () {   
+        this._container.style.display = 'none'; 
+        this.isOpen = false;
+        this.toggleScale(false);
+    },
 
-		this._container.style.display = 'block';
-		this.isOpen = true;
-	},
+    _flush : function () {
+        this.layers = {};
+        this._clear();
+    },
 
-	_hide : function () {	
-		this._container.style.display = 'none'; 
-		this.isOpen = false;
-		this.toggleScale(false);
-	},
+    _clear : function () {
+        this.isOpen = false;
+        this.toggleScale(false);
+    },
 
-	_flush : function () {
-		this.layers = {};
-		this._clear();
-	},
+    _refresh : function () {
 
-	_clear : function () {
-		this.isOpen = false;
-		this.toggleScale(false);
-	},
+        // should be active
+        if (!this._added) this._addTo();
 
-	_refresh : function () {
+        // get control active setting from project
+        var active = this._project.getControls()[this.type];
 
-		// should be active
-		if (!this._added) this._addTo();
+        // if not active in project, hide
+        if (!active) return this._hide();
 
-		// get control active setting from project
-		var active = this._project.getControls()[this.type];
+        // remove old content
+        this._flush();
 
-		// if not active in project, hide
-		if (!active) return this._hide();
+        // show
+        this._show();
 
-		// remove old content
-		this._flush();
+    },
 
-		// show
-		this._show();
+    _refreshLayer : function (layer) {
 
-	},
+        console.error('_refreshLayer', layer);
 
-	_refreshLayer : function (layer) {
+        // get layer
+        this.layers[layer.getUuid()] = layer;
 
-		console.error('_refreshLayer', layer);
+        this.setHTMLfromStore(layer.getUuid());
+        this.updateMultiple(layer.getUuid());
+    },
 
-		// get layer
-		this.layers[layer.getUuid()] = layer;
+    toggle : function () {
+        this.isCollapsed ? this.toggleOpen() : this.toggleClose();
+    },
 
-		this.setHTMLfromStore(layer.getUuid());
-		this.updateMultiple(layer.getUuid());
-	},
+    toggleOpen : function () {
 
-	toggle : function () {
-		this.isCollapsed ? this.toggleOpen() : this.toggleClose();
-	},
+        M.DomUtil.removeClass(this._multipleLegendOuter, 'displayNone');
+        M.DomUtil.removeClass(this._singleLegendViewWrapper, 'displayNone');
+        M.DomUtil.addClass(this._toggeOpener, 'displayNone');
+        M.DomUtil.addClass(this._compactLegendViewWrapper, 'displayNone');
+        M.DomUtil.removeClass(this._inner, 'multiview');
+        M.DomUtil.addClass(this._compactExpand, 'displayNone');
 
-	toggleOpen : function () {
+        this.isCollapsed = false;
+        this.miniLegend = false;
 
-		M.DomUtil.removeClass(this._multipleLegendOuter, 'displayNone');
-		M.DomUtil.removeClass(this._singleLegendViewWrapper, 'displayNone');
-		M.DomUtil.addClass(this._toggeOpener, 'displayNone');
-		M.DomUtil.addClass(this._compactLegendViewWrapper, 'displayNone');
-		M.DomUtil.removeClass(this._inner, 'multiview');
-		M.DomUtil.addClass(this._compactExpand, 'displayNone');
+        this._calculateHeight();
 
-		this.isCollapsed = false;
-		this.miniLegend = false;
+    },
 
-		this._calculateHeight();
+    toggleClose : function () {
 
-	},
+        M.DomUtil.addClass(this._multipleLegendOuter, 'displayNone');
+        M.DomUtil.removeClass(this._toggeOpener, 'displayNone');
 
-	toggleClose : function () {
+        this.isCollapsed = true;
+        this.compactLegend();
 
-		M.DomUtil.addClass(this._multipleLegendOuter, 'displayNone');
-		M.DomUtil.removeClass(this._toggeOpener, 'displayNone');
+        this._calculateHeight();
 
-		this.isCollapsed = true;
-		this.compactLegend();
+    },
 
-		this._calculateHeight();
+    _addLayer : function (layer) {
 
-	},
+        console.log('_addLayer', layer);
 
-	_addLayer : function (layer) {
+        this.layers = this.layers || {};
 
-		console.log('_addLayer', layer);
+        var layerUuid = layer.getUuid();
+        this.layers[layerUuid] = layer;
 
-		this.layers = this.layers || {};
+        this.setHTMLfromStore(layerUuid);
 
-		var layerUuid = layer.getUuid();
-		this.layers[layerUuid] = layer;
+        // For multiple layers
+        this.updateMultiple(layerUuid);
+    },
 
-		this.setHTMLfromStore(layerUuid);
+    _removeLayer : function (layer) {
 
-		// For multiple layers
-		this.updateMultiple(layerUuid);
-	},
+        // Delete layer from store
+        var layerUuid = layer.getUuid();
+        delete this.layers[layerUuid];
 
-	_removeLayer : function (layer) {
+        // Get first object
+        for ( var first in this.layers ) break;
 
-		// Delete layer from store
-		var layerUuid = layer.getUuid();
-		delete this.layers[layerUuid];
+        // If there are other legend, display it...
+        if ( first ) this.setHTMLfromStore(first);
 
-		// Get first object
-		for ( var first in this.layers ) break;
+        // For multiple layers
+        this.updateMultiple(first);
 
-		// If there are other legend, display it...
-		if ( first ) this.setHTMLfromStore(first);
+        this.refresh();
+    },
 
-		// For multiple layers
-		this.updateMultiple(first);
+    updateMultiple : function (layerUuid) {
 
-		this.refresh();
-	},
+        if ( this.miniLegend ) {
+            this.compactLegend();           
+        }
 
-	updateMultiple : function (layerUuid) {
+        if ( app.isMobile ) {
+            this.compactLegend();
+            return;
+        }
 
-		if ( this.miniLegend ) {
-			this.compactLegend();			
-		}
+        if ( this.isCollapsed ) M.DomUtil.addClass(this.satelliteAngle._innerContainer, 'displayNone');
 
-		if ( app.isMobile ) {
-			this.compactLegend();
-			return;
-		}
+        var wrapper = this._multipleLegendInnerContent;
+        wrapper.innerHTML = '';
 
-		if ( this.isCollapsed ) M.DomUtil.addClass(this.satelliteAngle._innerContainer, 'displayNone');
+        var length = 0;
+        for (var k in this.layers) {
+               length++;
+        }
 
-		var wrapper = this._multipleLegendInnerContent;
-		wrapper.innerHTML = '';
 
-		var length = 0;
-		for (var k in this.layers) {
-		       length++;
-		}
+        for ( var uuid in this.layers ) {
 
+            var layer = this.layers[uuid];
 
-		for ( var uuid in this.layers ) {
+            var title = layer.getTitle();
+            var multipleLayer = M.DomUtil.create('div', 'each-multiple-description', wrapper, title);
+            multipleLayer.id = 'mulitidec_' + uuid;
 
-			var layer = this.layers[uuid];
+            if ( uuid == layerUuid ) {
+                if ( length > 1 ) {
+                    // MULTIPLE LAYERS ARE OPEN
+                    M.DomUtil.addClass(multipleLayer, 'active');                    
 
-			var title = layer.getTitle();
-			var multipleLayer = M.DomUtil.create('div', 'each-multiple-description', wrapper, title);
-			multipleLayer.id = 'mulitidec_' + uuid;
+                    // Display toggle open button if menu is collapsed
+                    if ( this.isCollapsed ) {
 
-			if ( uuid == layerUuid ) {
-				if ( length > 1 ) {
-					// MULTIPLE LAYERS ARE OPEN
-					M.DomUtil.addClass(multipleLayer, 'active');					
+                        M.DomUtil.removeClass(this._toggeOpener, 'displayNone');
+                        
+                    } else {
+                        // Show layer list box
+                        M.DomUtil.removeClass(this._multipleLegendOuter, 'displayNone');
 
-					// Display toggle open button if menu is collapsed
-					if ( this.isCollapsed ) {
+                        M.DomUtil.addClass(this._toggeOpener, 'displayNone');
+                    }
 
-						M.DomUtil.removeClass(this._toggeOpener, 'displayNone');
-						
-					} else {
-						// Show layer list box
-						M.DomUtil.removeClass(this._multipleLegendOuter, 'displayNone');
 
-						M.DomUtil.addClass(this._toggeOpener, 'displayNone');
-					}
+                } else {
+                    // ONLY ONE LAYER IS OPEN
+                    M.DomUtil.addClass(multipleLayer, 'one-layer');
 
+                    // Hide layer list box
+                    M.DomUtil.addClass(this._multipleLegendOuter, 'displayNone');
 
-				} else {
-					// ONLY ONE LAYER IS OPEN
-					M.DomUtil.addClass(multipleLayer, 'one-layer');
+                    // Remove toggle open button
+                    M.DomUtil.addClass(this._toggeOpener, 'displayNone');
+                }
+                
 
-					// Hide layer list box
-					M.DomUtil.addClass(this._multipleLegendOuter, 'displayNone');
 
-					// Remove toggle open button
-					M.DomUtil.addClass(this._toggeOpener, 'displayNone');
-				}
-				
+            } else {
+                M.DomUtil.removeClass(multipleLayer, 'active');
+                M.DomUtil.removeClass(multipleLayer, 'one-layer');
+            }
 
+            M.DomEvent.on(multipleLayer, 'click', this.toggleLegend, this);
+        }
 
-			} else {
-				M.DomUtil.removeClass(multipleLayer, 'active');
-				M.DomUtil.removeClass(multipleLayer, 'one-layer');
-			}
+        this._calculateHeight();
+    },
 
-			M.DomEvent.on(multipleLayer, 'click', this.toggleLegend, this);
-		}
+    toggleLegend : function (e) {   
 
-		this._calculateHeight();
-	},
+        console.error('toggleLegend', e);
 
-	toggleLegend : function (e) {	
+        var id = e.target.id;
+        var layerUuid = id.slice(10, id.length);
 
-		console.error('toggleLegend', e);
+        this.setHTMLfromStore(layerUuid);
 
-		var id = e.target.id;
-		var layerUuid = id.slice(10, id.length);
+        // For multiple layers
+        this.updateMultiple(layerUuid);     
 
-		this.setHTMLfromStore(layerUuid);
+    },
 
-		// For multiple layers
-		this.updateMultiple(layerUuid);		
 
-	},
+    getLegend : function (layer) {
+        var legendHTML = layer.isVector() ? this.createLegendHTML() : '';
+        return legendHTML;
+    },
 
 
-	getLegend : function (layer) {
-		var legendHTML = layer.isVector() ? this.createLegendHTML() : '';
-		return legendHTML;
-	},
+    getMetaDescription : function (layer) {
 
+        var meta = layer.getMeta();
 
-	getMetaDescription : function (layer) {
+        // set geom type
+        var geom_type = 'items';
+        if (meta.geometry_type == 'ST_Point') geom_type = 'points';
+        if (meta.geometry_type == 'ST_MultiPolygon') geom_type = 'polygons';
 
-		var meta = layer.getMeta();
+        // create description meta
+        var area = Math.floor(meta.total_area / 1000000 * 100) / 100;
+        var num_points = meta.row_count;
+        var startend = this._parseStartEndDate(meta);
 
-		// set geom type
-		var geom_type = 'items';
-		if (meta.geometry_type == 'ST_Point') geom_type = 'points';
-		if (meta.geometry_type == 'ST_MultiPolygon') geom_type = 'polygons';
+        description_meta = {};
+        description_meta['Number of ' + geom_type] = num_points;
+        description_meta['Covered area (km<sup>2</sup>)'] = area;
+        
+        if (startend.start != startend.end) {
+            description_meta['Start date'] = startend.start;
+            description_meta['End date'] = startend.end;
+        }
 
-		// create description meta
-		var area = Math.floor(meta.total_area / 1000000 * 100) / 100;
-		var num_points = meta.row_count;
-		var startend = this._parseStartEndDate(meta);
+        return description_meta;
+    },
 
-		description_meta = {};
-		description_meta['Number of ' + geom_type] = num_points;
-		description_meta['Covered area (km<sup>2</sup>)'] = area;
-		
-		if (startend.start != startend.end) {
-			description_meta['Start date'] = startend.start;
-			description_meta['End date'] = startend.end;
-		}
 
-		return description_meta;
-	},
 
 
 
 
 
+    // -------------------
+    // refactored legends:
+    // -------------------
 
+    // todo vector: 
+    // - move vector here
+    // - heavy checking of all possibilites (all layer types)
+    // - add legend endpoint also for vectors
+    
+    // todo tile_service:
+    // - add legend endpoint
 
+    // fix measure control movement ("toggle-scale" below)
 
 
 
-	render_wms_legend : function (layer) {
+    render_wms_legend : function (layer) {
 
-		// get data
-		var title = layer.getTitle();
-		var img = layer.getLegendImage();
+        // render endpoint legend or nothing
+        this._render_custom_endpoint_legend(layer);
 
-		// create legend
-		var html = '<div class="wms-legend-title">' + title + '</div>';
-		html += '<img src="' + img + '">';
+    },
 
-		// add class
-		M.DomUtil.addClass(this._legendContainer, 'wms-legend');
+    render_raster_legend : function (layer) {
 
-		// add html
-		this._legendContainer.innerHTML = html;
+        // render endpoint legend or nothing
+        this._render_custom_endpoint_legend(layer);
 
-		// display legend content
-		M.DomUtil.removeClass(this._content, 'displayNone');
+    },
 
-	},
+    render_geojson_legend : function (layer) {
 
-	render_raster_legend : function (layer) {
+        // render endpoint legend or nothing
+        this._render_custom_endpoint_legend(layer);
+    },
 
+    render_tile_service_legend : function (layer) {
 
-		// get data
-		var title = layer.getTitle();
-		var img = layer.getLegendImage();
+        // render endpoint legend or nothing
+        this._render_custom_endpoint_legend(layer);
+    },
 
-		// check if legend image exists
-		if (!img || _.isNull(img) || img == '') {
+    _render_custom_endpoint_legend : function (layer) {
 
-			// hide legend if no image
-			return this.clear_legends();
-		}
+        // get data
+        var layer_title = layer.getTitle();
+        var legend_image = layer.getLegendImage();
 
-		// create legend
-		var html = '<div class="wms-legend-title">' + title + '</div>';
-		html += '<img src="' + img + '">';
+        console.log('|||||| rendering legend', layer.getType());
+        console.log('layer_title', layer_title);
+        console.log('legend_image', legend_image);
 
-		// add class
-		M.DomUtil.addClass(this._legendContainer, 'wms-legend');
+        // clear and return if no legend image
+        if (_.isEmpty(legend_image)) {
+            return this.clear_legends();
+        }
 
-		// add html
-		this._legendContainer.innerHTML = html;
+        // create legend
+        var html = '<div class="wms-legend-title">' + layer_title + '</div>';
+            html += '<img src="' + legend_image + '">';
 
-		// display legend content
-		M.DomUtil.removeClass(this._content, 'displayNone');
+        // add class
+        M.DomUtil.addClass(this._legendContainer, 'wms-legend');
 
-	},
+        // add html
+        this._legendContainer.innerHTML = html;
 
-	render_geojson_legend : function (layer) {
+        // display legend content
+        M.DomUtil.removeClass(this._content, 'displayNone');
+    },
 
-		// get data
-		var title = layer.getTitle();
-		var img = layer.getLegend();
+    render_vector_legend : function (layer) {
 
-		// create legend
-		var html = '<div class="wms-legend-title">' + title + '</div>';
-		html += '<img src="' + img + '">';
+        // get legend
+        var legend = layer.getLegends();
 
-		// add class
-		M.DomUtil.addClass(this._legendContainer, 'wms-legend');
+        // Create legend if there are none
+        if ( !legend ) {
+            console.log('X 2');
+            this.createLegend(layer);
+            legend = layer.getLegends();
+        }
 
-		// add html
-		this._legendContainer.innerHTML = html;
+        if ( legend && !legend.enable ) {
+            
 
-		// display legend content
-		M.DomUtil.removeClass(this._content, 'displayNone');
-	},
 
+            console.log('X 3');
+            // [vector layer]: runs when legend is disabled in Styler
 
-	render_vector_legend : function (layer) {
 
-		// todo vector: 
-		// - move vector here
-		// - heavy checking of all possibilites (all layer types)
-		// - add legend endpoint also for vectors
-		
-		// todo tile_service:
-		// - add legend endpoint
+            // clear all 
+            legend.layerMeta = false;
+            legend.opacitySlider = false;
+            legend.gradient = false;
+            legend.html = '';
+        }
 
-	},
 
-	render_tile_service_legend : function (layer) {
+        // Todo: write as plugin
+        var satellitePos = layer.getSatellitePosition();
+        if (satellitePos) {
+            
 
-		M.DomUtil.addClass(this._content, 'displayNone');
-		// this._inner : this is probably the container that should be hidden if no legends to display
+            console.log('X 4');
 
-		// console.error('render_tile_service_legend', layer);
+            satellitePos = JSON.parse(satellitePos);
+            this.satelliteAngle.update(satellitePos);
+            this.satelliteAngle.show();
 
-		// var title = layer.getTitle();
-		// var img = layer.getLegendImage();
+        } else {
+            this.satelliteAngle.hide();
 
-		// console.log('title, img', title, img);
+            
 
-		// // create legend
-		// var html = '<div class="wms-legend-title">' + title + '</div>';
-		// html += '<img src="' + img + '">';
+            console.log('X 5');
+            // [vector layer]: runs when legend is disabled in Styler
+            // [vector layer]: runs when legend is ENABLED in Styler
 
-		// M.DomUtil.addClass(this._singleLegendViewWrapper, 'wms-legend');
 
-		// this._singleLegendViewWrapper.innerHTML = html;
-	},
+        }
 
-	clear_legends : function () {
-		this._metaContainer.innerHTML = '';
-		this._legendContainer.innerHTML = '';
-		this._metaTitle.innerHTML = '';
-		M.DomUtil.addClass(this._opacityWrapper, 'displayNone');
-		M.DomUtil.removeClass(this._legendContainer, 'wms-legend');
+        // Title
+        var title = layer.getTitle();
 
-	},
+        // Set title
+        this.setMetaTitle(title);
 
-	setHTMLfromStore : function (uuid) {
+        
+        M.DomUtil.removeClass(this._content, 'displayNone');
 
-		console.error('setHTMLfromStore', uuid);
 
-		this.legendUuid = uuid;
+        console.log('BOTTOM PART OF LEGENDS');
+        console.log('BOTTOM PART OF LEGENDS');
+        console.log('BOTTOM PART OF LEGENDS');
+        console.log('BOTTOM PART OF LEGENDS');
 
-		// get layer
-		var layer = this._project.getLayer(uuid);
-		if (!layer) return;
 
-		console.log('-> layer', layer);
-		console.log('=========== layer.getType()', layer.getType());
+        // Layer meta
+        if ( legend.layerMeta ) {
 
 
-		// clear up previous legends
-		this.clear_legends();
+            console.log('#### - 1', legend.layerMeta); // = true
+            // [vector layer]: runs when legend is ENABLED in Styler
 
+            
+            // get/set description meta
+            var descriptionMeta = this.getMetaDescription(layer);
+            console.log('descriptionMeta', descriptionMeta);
+            this.setMetaHTML(descriptionMeta);
+            M.DomUtil.removeClass(this._metaContainer, 'displayNone');
 
-		// each layer type has different legend types
-		switch (layer.getType()) {
-			case 'wms':
-				console.log('SWITCH wms');
-				
-				return this.render_wms_legend(layer);
+        } else {
+            
 
-				break;
-			case 'geojson':
-				console.log('SWITCH geojson');
+            console.log('#### - 2');
+            // [vector layer]: runs when legend is disabled in Styler
 
-				return this.render_geojson_legend(layer);
+            
+            M.DomUtil.addClass(this._metaContainer, 'displayNone');
 
-				break;
-			case 'raster':
-				console.log('SWITCH raster');
+        }
 
-				return this.render_raster_legend(layer);
+        // Opacity slider
+        if ( legend.opacitySlider ) {
+            
 
-				break;
-			case 'vector':
-				console.log('SWITCH vector');
-				break;
-			
-			case 'tile_service':
-				console.log('SWITCH tile_service');
+            console.log('#### - 3', legend.opacitySlider ); // true
+            // [vector layer]: runs when legend is ENABLED in Styler
 
-				return this.render_tile_service_legend(layer);
 
-				break;
+            M.DomUtil.removeClass(this._opacityWrapper, 'displayNone');
+            // Set opacity slider
+            this.setOpacity(layer);
 
-			case 'layer':
-				console.log('SWITCH layer');
-				break;
 
-			default:
-				console.log('SWITCH default');
-				break;
-		}
+        } else {
+            
 
+            console.log('#### - 4');
+            // [vector layer]: runs when legend is disabled in Styler
 
-		// ======================================= 
-		// === raster, wms, geojson layers do not go past here
-		// =======================================
 
+            M.DomUtil.addClass(this._opacityWrapper, 'displayNone');
 
-		console.log('----------------');
-		console.log('----------------');
-		console.log('----------------');
-		console.log('type:', layer.getType());
+        }
 
+        // Legend
+        if ( legend.html && legend.html.length>10 && !legend.gradient ) {
+            console.log('#### - 5');
 
+            this.setLegendHTML(legend.html);
 
-		console.log('X 1');
-		// [vector layer]: runs when legend is disabled in Styler
-		// [vector layer]: runs when legend is ENABLED in Styler
 
+        } else if ( legend.gradient ) {
+            
 
 
-		// get legend
-		var legend = layer.getLegends();
+            console.log('#### - 6');
+            // [vector layer]: runs when legend is ENABLED in Styler
 
-		// Create legend if there are none
-		if ( !legend ) {
-			console.log('X 2');
-			this.createLegend(layer);
-			legend = layer.getLegends();
-		}
 
-		if ( legend && !legend.enable ) {
-			
 
+            var grad = legend.html + legend.gradient;
+            this.setLegendHTML(grad);
 
-			console.log('X 3');
-			// [vector layer]: runs when legend is disabled in Styler
 
+        } else if (layer.isRaster()) {
+            console.log('#### - 7');
 
+            // create raster html and set
+            var html = this._createRasterLegend(layer);
+            this.setLegendHTML(html);
 
-			legend.layerMeta = false;
-			legend.opacitySlider = false;
-			legend.gradient = false;
-			legend.html = '';
-		}
+        } else {
+            
 
+            // this.setLegendHTML('');
+            console.log('#### - 8');
+            // [vector layer]: runs when legend is disabled in Styler
 
-		// Todo: write as plugin
-		var satellitePos = layer.getSatellitePosition();
-		if (satellitePos) {
-			
 
-			console.log('X 4');
 
-			satellitePos = JSON.parse(satellitePos);
-			this.satelliteAngle.update(satellitePos);
-			this.satelliteAngle.show();
+            console.log('ELELELELELLE');
+            console.log('legend:', legend);
 
-		} else {
-			this.satelliteAngle.hide();
+            M.DomUtil.addClass(this._content, 'displayNone'); // hides the empty title-only legends
+            
+        }
 
-			
+    },
 
-			console.log('X 5');
-			// [vector layer]: runs when legend is disabled in Styler
-			// [vector layer]: runs when legend is ENABLED in Styler
+    clear_legends : function () {
+        this._metaContainer.innerHTML = '';
+        this._legendContainer.innerHTML = '';
+        this._metaTitle.innerHTML = '';
+        M.DomUtil.addClass(this._opacityWrapper, 'displayNone');
+        M.DomUtil.removeClass(this._legendContainer, 'wms-legend');
+        M.DomUtil.addClass(this._content, 'displayNone');
+    },
 
+    setHTMLfromStore : function (uuid) {
 
-		}
+        console.error('setHTMLfromStore', uuid);
 
-		// Title
-		var title = layer.getTitle();
+        this._legend_uuid = uuid;
 
-		// Set title
-		this.setMetaTitle(title);
+        // get layer
+        var layer = this._project.getLayer(uuid);
+        if (!layer) return;
 
-		
-		M.DomUtil.removeClass(this._content, 'displayNone');
+        console.log('=========== layer.getType()', layer.getType(), layer);
 
+        // clear up previous legends
+        this.clear_legends();
 
-		console.log('BOTTOM PART OF LEGENDS');
-		console.log('BOTTOM PART OF LEGENDS');
-		console.log('BOTTOM PART OF LEGENDS');
-		console.log('BOTTOM PART OF LEGENDS');
+        // each layer type has different legend types
+        switch (layer.getType()) {
+            case 'wms':
+                return this.render_wms_legend(layer);
+                break;
+            case 'geojson':
+                return this.render_geojson_legend(layer);
+                break;
+            case 'raster':
+                return this.render_raster_legend(layer);
+                break;
+            case 'vector':
+                return this.render_vector_legend(layer);
+                break;
+            
+            case 'tile_service':
+                return this.render_tile_service_legend(layer);
+                break;
+            case 'layer':
+                console.log('SWITCH layer');
+                break;
+            default:
+                console.log('SWITCH default');
+                break;
+        }
 
+        
+    },
 
-		// Layer meta
-		if ( legend.layerMeta ) {
+    _createRasterLegend : function (layer) {
 
+        var style = M.parse(layer.store.style);
+        if (!style || !style.scale) return '';
+        var min = style.scale.min;
+        var max = style.scale.max;
+        var title = style.legendScaleTitle;
+        var gradient = this._getGradientCSS(style);
 
-			console.log('#### - 1', legend.layerMeta); // = true
-			// [vector layer]: runs when legend is ENABLED in Styler
+        console.log('STYUE', style);
 
-			
-			// get/set description meta
-			var descriptionMeta = this.getMetaDescription(layer);
-			console.log('descriptionMeta', descriptionMeta);
-			this.setMetaHTML(descriptionMeta);
-			M.DomUtil.removeClass(this._metaContainer, 'displayNone');
+        var html = '';
+        html = '<div class="info-legend-container">';
+        html += '<div class="info-legend-frame">';
+        html += '<div class="info-legend-val info-legend-min-val">' + min + '</div>';
+        html += '<div class="info-legend-header">' + title + '</div>';
+        html += '<div class="info-legend-val info-legend-max-val">' + max + '</div>';
+        html += '<div class="info-legend-gradient-container" style="' + gradient + '"></div>';
+        html += '</div>';
+        html += '</div>';
+        return html;
 
-		} else {
-			
+    },
 
-			console.log('#### - 2');
-			// [vector layer]: runs when legend is disabled in Styler
 
-			
-			M.DomUtil.addClass(this._metaContainer, 'displayNone');
+    _getGradientCSS : function (options) {
 
-		}
+        function rgb2hex(rgb){
+         rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+         return (rgb && rgb.length === 4) ? "#" +
+          ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+          ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+          ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+        }
 
-		// Opacity slider
-		if ( legend.opacitySlider ) {
-			
+        var colorList = [];
+        _.each(options.stops, function (s) {
+            var rgbastr = 'rgba(' + s.col.r + ',' + s.col.g + ',' + s.col.b + ',' + s.col.a + ')';
+            var hex = rgb2hex(rgbastr);
+            colorList.push(hex);
+        });
 
-			console.log('#### - 3', legend.opacitySlider ); // true
-			// [vector layer]: runs when legend is ENABLED in Styler
+        // var colors = '#0000ff,#00ffff,#00ff00,#ffff00,#ff0000';
+        var colors = colorList.join(',');
+        var css = 'background: -webkit-linear-gradient(left, ' + colors + ');background: -o-linear-gradient(right, ' + colors + ');background: -moz-linear-gradient(right, ' + colors + ');background: linear-gradient(to right, ' + colors + ');';
+        return css;
+    },
 
 
-			M.DomUtil.removeClass(this._opacityWrapper, 'displayNone');
-			// Set opacity slider
-			this.setOpacity(layer);
+    createLegend : function (layer) {
 
+        console.log('CRATE LEGEND for ', layer.getType());
 
-		} else {
-			
+        var styleJSON = M.parse(layer.store.style);
+        if (!styleJSON) return;
 
-			console.log('#### - 4');
-			// [vector layer]: runs when legend is disabled in Styler
+        var legendObj = M.Tools.Legend.buildLegendObject(styleJSON, layer, false);
+        var legendArray = M.Tools.Legend.getLegendArray(legendObj.point, legendObj.line, legendObj.polygon);
+        var legendHTML = '';
+        var gradientHTML = '';
 
+        legendArray.forEach(function (l) {
+            
+            if ( l.gradient ) {
+                gradientHTML += M.Tools.Legend.gradientLegendHTML(l, this.satelliteView);
+            } else {
+                legendHTML += M.Tools.Legend.eachLegendHTML(l, this.satelliteView);
+            }
+            
+        }.bind(this));
 
-			M.DomUtil.addClass(this._opacityWrapper, 'displayNone');
+        legendObj.html = legendHTML;
+        legendObj.gradient = gradientHTML;
 
-		}
 
-		// Legend
-		if ( legend.html && legend.html.length>10 && !legend.gradient ) {
-			console.log('#### - 5');
+        legendObj.enable = true;
+        legendObj.layerMeta = true;
+        legendObj.opacitySlider = true;
+        legendObj.layerName = layer.getTitle();
 
-			this.setLegendHTML(legend.html);
+        // Save legend
+        layer.setLegends( legendObj );
 
+    },
 
-		} else if ( legend.gradient ) {
-			
+    setMetaTitle : function (title) {
+        console.error('setMetaTitle', title);
+        this._metaTitle.innerHTML = title;
+    },
 
+    setOpacity : function (layer) {     
 
-			console.log('#### - 6');
-			// [vector layer]: runs when legend is ENABLED in Styler
+        // create slider once
+        if (!this._slider) {
+            this._createOpacitySlider(layer);
+        }
+        
+        // set current layer
+        this._slider.layer = layer;
 
+        // set opacity value on slider
+        var opacity = layer.getOpacity();
+        this._slider.set(parseInt(opacity * 100));  
 
+        // set opacity on layer
+        layer.setOpacity(opacity);
 
-			var grad = legend.html + legend.gradient;
-			this.setLegendHTML(grad);
+    },
 
+    _createOpacitySlider : function (layer) {
 
-		} else if (layer.isRaster()) {
-			console.log('#### - 7');
+        // create slider
+        this._sliderContainer = M.DomUtil.create('div', 'opacity-slider', this._opacityContainer);
+        this._slider = noUiSlider.create(this._sliderContainer, {
+            start: [100],
+            range: {
+                'min': [0],
+                'max': [100]
+            }
+        });
 
-			// create raster html and set
-			var html = this._createRasterLegend(layer);
-			this.setLegendHTML(html);
+        // events
+        this._slider.on('update', this._updateOpacity.bind(this));
+        this._slider.on('start', function () {
+            app._map.dragging._draggable._enabled = false;
+        });
+        this._slider.on('end', function () {
+            app._map.dragging._draggable._enabled = true;
+        });
 
-		} else {
-			
+    },
 
-			// this.setLegendHTML('');
-			console.log('#### - 8');
-			// [vector layer]: runs when legend is disabled in Styler
+    _updateOpacity : function (values, handle) {
+        var styler = app.Chrome.Top._buttons.settingsSelector.options.context;
+        var opacity = parseFloat(values[0]) / 100;
+        var layer = this._slider.layer; 
 
+        layer && layer.setOpacity(opacity);
 
+        // only save opacity if styler is open
+        if (!styler._isOpen) return;
 
-			console.log('ELELELELELLE');
-			console.log('legend:', legend);
+        // set value on layer
+        layer && layer.saveOpacity(opacity);
 
-			M.DomUtil.addClass(this._content, 'displayNone');
-			
-		}
-	},
+    },
 
-	_createRasterLegend : function (layer) {
 
-		var style = M.parse(layer.store.style);
-		if (!style || !style.scale) return '';
-		var min = style.scale.min;
-		var max = style.scale.max;
-		var title = style.legendScaleTitle;
-		var gradient = this._getGradientCSS(style);
 
-		console.log('STYUE', style);
+    setMetaHTML : function (meta) {
 
-		var html = '';
-		html = '<div class="info-legend-container">';
-		html += '<div class="info-legend-frame">';
-		html += '<div class="info-legend-val info-legend-min-val">' + min + '</div>';
-		html += '<div class="info-legend-header">' + title + '</div>';
-		html += '<div class="info-legend-val info-legend-max-val">' + max + '</div>';
-		html += '<div class="info-legend-gradient-container" style="' + gradient + '"></div>';
-		html += '</div>';
-		html += '</div>';
-		return html;
+        // Clear container
+        this._metaContainer.innerHTML = '';
 
-	},
+        for (var key in meta) {
+            var val = meta[key];
 
+            // Make new content 
+            var metaLine = M.DomUtil.create('div', 'legends-meta-line', this._metaContainer);
+            var metaKey = M.DomUtil.create('div', 'legends-meta-key', metaLine, key);
+            var metaVal = M.DomUtil.create('div', 'legend-meta-valye', metaLine, val)
+        }
+    },
 
-	_getGradientCSS : function (options) {
+    setLegendHTML : function (HTML) {
+        console.error('setLegendHTML', HTML);
+        this._legendContainer.innerHTML = HTML;
+    },
 
-		function rgb2hex(rgb){
-		 rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
-		 return (rgb && rgb.length === 4) ? "#" +
-		  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-		  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-		  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
-		}
 
-		var colorList = [];
-		_.each(options.stops, function (s) {
-			var rgbastr = 'rgba(' + s.col.r + ',' + s.col.g + ',' + s.col.b + ',' + s.col.a + ')';
-			var hex = rgb2hex(rgbastr);
-			colorList.push(hex);
-		});
+    // HELPERS HELPERS HELPERS
+    _parseStartEndDate : function (meta) {
 
-		// var colors = '#0000ff,#00ffff,#00ff00,#ffff00,#ff0000';
-		var colors = colorList.join(',');
-		var css = 'background: -webkit-linear-gradient(left, ' + colors + ');background: -o-linear-gradient(right, ' + colors + ');background: -moz-linear-gradient(right, ' + colors + ');background: linear-gradient(to right, ' + colors + ');';
-		return css;
-	},
+        // get all columns with dates
+        var columns = meta.columns;
+        var times = [];
 
+        for (var c in columns) {
+            if (c.length == 8) { // because d12mnd is valid moment.js date (??)
+                var m = moment(c, "YYYYMMDD");
+                var unix = m.format('x');
+                if (m.isValid()) {
+                    var u = parseInt(unix);
+                    if (u > 0) { // remove errs
+                        times.push(u);
+                    }
+                }
+            }
+        }
 
-	createLegend : function (layer) {
+        function sortNumber(a,b) {
+            return a - b;
+        }
 
-		console.log('CRATE LEGEND for ', layer.getType());
+        times.sort(sortNumber);
 
-		var styleJSON = M.parse(layer.store.style);
-		if (!styleJSON) return;
+        var first = times[0];
+        var last = times[times.length-1];
+        var m_first = moment(first).format('MMM Do YYYY');
+        var m_last = moment(last).format('MMM Do YYYY');
 
-		var legendObj = M.Tools.Legend.buildLegendObject(styleJSON, layer, false);
-		var legendArray = M.Tools.Legend.getLegendArray(legendObj.point, legendObj.line, legendObj.polygon);
-		var legendHTML = '';
-		var gradientHTML = '';
+        var startend = {
+            start : m_first,
+            end : m_last
+        };
 
-		legendArray.forEach(function (l) {
-			
-			if ( l.gradient ) {
-				gradientHTML += M.Tools.Legend.gradientLegendHTML(l, this.satelliteView);
-			} else {
-				legendHTML += M.Tools.Legend.eachLegendHTML(l, this.satelliteView);
-			}
-			
-		}.bind(this));
+        return startend;
+    },
 
-		legendObj.html = legendHTML;
-		legendObj.gradient = gradientHTML;
+    isEmpty : function (obj) {
+        for(var prop in obj) {
+            if (obj.hasOwnProperty(prop)) return false;
+        }
+        return true;
+    },
 
+    // EXTERNAL EXTERNAL EXTERNAL
+    // Toggle scale/measure/mouseposition corner
+    toggleScale : function (openDescription) {
+        if (!app._map._controlCorners.topright) return;
+        if (openDescription) {
+            M.DomUtil.addClass(app._map._controlCorners.topright, 'toggle-scale');
+        } else {
+            M.DomUtil.removeClass(app._map._controlCorners.topright, 'toggle-scale');
+        }
+    },
 
-		legendObj.enable = true;
-		legendObj.layerMeta = true;
-		legendObj.opacitySlider = true;
-		legendObj.layerName = layer.getTitle();
+    _on : function () {
+        this._show();
+    },
 
-		// Save legend
-		layer.setLegends( legendObj );
+    _off : function () {
+        this._hide();
+    },
 
-	},
+    _calculateHeight : function () {
+            var windowSize = this._getWindowSize();
+            var h = windowSize.height - 55;
 
-	setMetaTitle : function (title) {
-		console.error('setMetaTitle', title);
-		this._metaTitle.innerHTML = title;
-	},
+            // LEGEND – SELECTOR HEIGHT (when we're showing one and one legend)
+            // LEGEND – SELECTOR HEIGHT (when we're showing one and one legend)
 
-	setOpacity : function (layer) {		
+            // Outer height
+            var legendSelectorOuterHeight = this.miniLegend ? 0 : this._multipleLegendInner.offsetHeight;
 
-		// create slider once
-		if (!this._slider) {
-			this._createOpacitySlider(layer);
-		}
-		
-		// set current layer
-		this._slider.layer = layer;
+            // Inner height
+            var legendSelectorInnerHeight = this.miniLegend ? 0 : this._multipleLegendInnerContent.scrollHeight;
 
-		// set opacity value on slider
-		var opacity = layer.getOpacity();
-		this._slider.set(parseInt(opacity * 100));	
+            // Visible height
+            if ( legendSelectorOuterHeight > legendSelectorInnerHeight ) {
+                var legendSelectorVisisbleHeight = legendSelectorOuterHeight;
+            } else {
+                var legendSelectorVisisbleHeight = legendSelectorInnerHeight;
+            }
 
-		// set opacity on layer
-		layer.setOpacity(opacity);
+            // LEGEND HEIGHT
+            // LEGEND HEIGHT
 
-	},
+            // Outer height
+            var legendOuterHeight = this._outer.offsetHeight;
 
-	_createOpacitySlider : function (layer) {
+            // Inner height
+            var legendInnerHeight = this._inner.scrollHeight;
 
-		// create slider
-		this._sliderContainer = M.DomUtil.create('div', 'opacity-slider', this._opacityContainer);
-		this._slider = noUiSlider.create(this._sliderContainer, {
-			start: [100],
-			range: {
-				'min': [0],
-				'max': [100]
-			}
-		});
+            // Visible height
+            // Problem: This is a little buggy if we're only watching
+            // the legend of one layer. Not a biggie, but will fix it.
+            if ( legendOuterHeight > legendInnerHeight ) {
+                var legendBoxVisisbleHeight = legendOuterHeight;
+                // M.DomUtil.removeClass(this._inner, 'allow-scrolling');               
 
-		// events
-		this._slider.on('update', this._updateOpacity.bind(this));
-		this._slider.on('start', function () {
-			app._map.dragging._draggable._enabled = false;
-		});
-		this._slider.on('end', function () {
-			app._map.dragging._draggable._enabled = true;
-		});
+            } else {
+                var legendBoxVisisbleHeight = legendInnerHeight;
+                // M.DomUtil.addClass(this._inner, 'allow-scrolling');
+            }
 
-	},
+            // Total height of legend
+            var legendTotalHeight = legendSelectorInnerHeight + legendInnerHeight;
 
-	_updateOpacity : function (values, handle) {
-		var styler = app.Chrome.Top._buttons.settingsSelector.options.context;
-		var opacity = parseFloat(values[0]) / 100;
-		var layer = this._slider.layer;	
+            // Visible height of legend
+            var legendVisibleHeight = legendBoxVisisbleHeight + legendSelectorVisisbleHeight;
 
-		layer && layer.setOpacity(opacity);
+            // LAYER SELECTOR HEIGHTS
+            // LAYER SELECTOR HEIGHTS
 
-		// only save opacity if styler is open
-		if (!styler._isOpen) return;
+            // Check if Layer selector exists
+            if ( app.MapPane._controls.layermenu && app.MapPane._controls.layermenu._innerScroller ) {
 
-		// set value on layer
-		layer && layer.saveOpacity(opacity);
+                var layermenu = app.MapPane._controls.layermenu._innerScroller;
+                // Height of wrapper
+                var layermenuOuterHeight = layermenu.offsetHeight;
+                // Inner height of scroller content
+                var layermenuInnerHeight = app.MapPane._controls.layermenu._content.scrollHeight;
 
-	},
+            // If the layer menu does not exist, set values to zero and declare false
+            } else {
 
+                var layermenu = false;
+                var layermenuOuterHeight = 0;
+                var layermenuInnerHeight = 0;
 
+            }
 
-	setMetaHTML : function (meta) {
+            // The content of the LAYER MENU and the LEGEND exceeds the height of
+            // the window. We need to restrict them, by setting max height.
+            if ( (layermenuInnerHeight + legendVisibleHeight) > (h-10) ) {
 
-		// Clear container
-		this._metaContainer.innerHTML = '';
+                // .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+                // LEGEND LEGEND LEGEND LEGEND LEGEND LEGEND LEGEND 
+                // .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+                
+                // Layer menu height is higher than 50% ->
+                // restrict legend total height to be more than 50%.
+                if ( layermenuInnerHeight > (h/2) ) {   
+                    var legendAllowedHeight = (h/2);
 
-		for (var key in meta) {
-			var val = meta[key];
+                // Layer menu height is less than 50% ->
+                // restrict legend to 100% - layermenu height
+                } else {
+                    var legendAllowedHeight = h - layermenuInnerHeight;
+                }
 
-			// Make new content	
-			var metaLine = M.DomUtil.create('div', 'legends-meta-line', this._metaContainer);
-			var metaKey = M.DomUtil.create('div', 'legends-meta-key', metaLine, key);
-			var metaVal = M.DomUtil.create('div', 'legend-meta-valye', metaLine, val)
-		}
-	},
 
-	setLegendHTML : function (HTML) {
-		console.error('setLegendHTML', HTML);
-		this._legendContainer.innerHTML = HTML;
-	},
+                // .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+                // LAYER MENU - LAYER MENU - LAYER MENU - LAYER MENU
+                // .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
 
+                // Legend total height is higher than 50% ->
+                // restrict legend total height to be more than 50%.
+                if ( legendVisibleHeight > (h/2) ) {    
+                    var layersAllowedHeight = (h/2);
+                
+                // Legend total height is less than 50% ->
+                // restrict layers to 100% - legend total height
+                } else {
+                    var layersAllowedHeight = h - (legendSelectorOuterHeight + legendOuterHeight + 10);
+                }
 
-	// HELPERS HELPERS HELPERS
-	_parseStartEndDate : function (meta) {
 
-		// get all columns with dates
-		var columns = meta.columns;
-		var times = [];
 
-		for (var c in columns) {
-			if (c.length == 8) { // because d12mnd is valid moment.js date (??)
-				var m = moment(c, "YYYYMMDD");
-				var unix = m.format('x');
-				if (m.isValid()) {
-					var u = parseInt(unix);
-					if (u > 0) { // remove errs
-						times.push(u);
-					}
-				}
-			}
-		}
 
-		function sortNumber(a,b) {
-			return a - b;
-		}
+                // .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
+                // LAYER MENU - LAYER MENU - LAYER MENU - LAYER MENU
+                // .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
 
-		times.sort(sortNumber);
+                
+                // Set layer menu total height
+                if ( layermenu ) {
+                    layermenu.style.maxHeight = layersAllowedHeight + 'px';
+                }
 
-		var first = times[0];
-		var last = times[times.length-1];
-		var m_first = moment(first).format('MMM Do YYYY');
-		var m_last = moment(last).format('MMM Do YYYY');
 
-		var startend = {
-			start : m_first,
-			end : m_last
-		};
+                // If the legend selector is collapsed, allow full size to legend
+                if ( this.isCollapsed ) {
+                    this._outer.style.maxHeight = legendAllowedHeight + 'px';
+                    this._inner.style.maxHeight = legendAllowedHeight - 30 + 'px';
 
-		return startend;
-	},
+                // If top legend selector is open, calculate height.
+                } else {
 
-	isEmpty : function (obj) {
-		for(var prop in obj) {
-			if (obj.hasOwnProperty(prop)) return false;
-		}
-		return true;
-	},
+                    // Legend selector inner height...
+                    // These two shall share legendAllowedHeight
+                    if ( ((legendSelectorVisisbleHeight + legendBoxVisisbleHeight)+2) > legendAllowedHeight) {
 
-	// EXTERNAL EXTERNAL EXTERNAL
-	// Toggle scale/measure/mouseposition corner
-	toggleScale : function (openDescription) {
-		if (!app._map._controlCorners.topright) return;
-		if (openDescription) {
-			M.DomUtil.addClass(app._map._controlCorners.topright, 'toggle-scale');
-		} else {
-			M.DomUtil.removeClass(app._map._controlCorners.topright, 'toggle-scale');
-		}
-	},
+                        // The boxes are taller than allowed
+                        var allowedHeightUnit = legendAllowedHeight/4;
 
-	_on : function () {
-		this._show();
-	},
+                        // Legend box is larger than 3/4 of available space
+                        // Force 3/4 of space to legend and 1/4 to legend selector
+                        if ( legendBoxVisisbleHeight > (allowedHeightUnit*3) ) {
+                            this._multipleLegendInner.style.maxHeight = allowedHeightUnit + 'px';
+                            this._outer.style.maxHeight = (allowedHeightUnit*3) + 'px';
+                            this._inner.style.maxHeight = (allowedHeightUnit*3) - 30 + 'px';                    
+                        
+                        // Legend box is NOT larger than 3/4 of available space
+                        // Remvoe maxHeight from Legend box, 
+                        // Give legend selector allowedHeight - legend box height
+                        } else {
+                            this._multipleLegendInner.style.maxHeight = (legendAllowedHeight - legendBoxVisisbleHeight) + 'px';
+                            this._outer.style.maxHeight = legendBoxVisisbleHeight + 'px';
+                            this._inner.style.maxHeight = legendBoxVisisbleHeight - 30 + 'px';
+                        }
 
-	_off : function () {
-		this._hide();
-	},
+                    } else {
+                        // The boxes are NOT taller than allowed
+                        this._multipleLegendInner.style.maxHeight = h + 'px';
+                        this._outer.style.maxHeight = h + 'px';
+                        this._inner.style.maxHeight = h - 30 + 'px';
+                    }
+                }
+                
 
-	_calculateHeight : function () {
-			var windowSize = this._getWindowSize();
-			var h = windowSize.height - 55;
+                
+            // It's not a crash 
+            // legend and layer selector can be as high as they want
+            } else {
 
-			// LEGEND – SELECTOR HEIGHT (when we're showing one and one legend)
-			// LEGEND – SELECTOR HEIGHT (when we're showing one and one legend)
+                if ( layermenu ) layermenu.style.maxHeight = h + 'px';
+                this._multipleLegendInner.style.maxHeight = h + 'px';
+                this._outer.style.maxHeight = h + 'px';
+                this._inner.style.maxHeight = h - 30 + 'px';
 
-			// Outer height
-			var legendSelectorOuterHeight = this.miniLegend ? 0 : this._multipleLegendInner.offsetHeight;
+            }
 
-			// Inner height
-			var legendSelectorInnerHeight = this.miniLegend ? 0 : this._multipleLegendInnerContent.scrollHeight;
+            // At the very end we set scrollers
+            // If we do it before, we will not get the real numbers,
+            // and it fails every once in a while
+            if ( this._outer.offsetHeight > this._inner.scrollHeight ) {
+                M.DomUtil.removeClass(this._inner, 'allow-scrolling');  
+            } else {
+                M.DomUtil.addClass(this._inner, 'allow-scrolling');
+            }
 
-			// Visible height
-			if ( legendSelectorOuterHeight > legendSelectorInnerHeight ) {
-				var legendSelectorVisisbleHeight = legendSelectorOuterHeight;
-			} else {
-				var legendSelectorVisisbleHeight = legendSelectorInnerHeight;
-			}
 
-			// LEGEND HEIGHT
-			// LEGEND HEIGHT
+    },
 
-			// Outer height
-			var legendOuterHeight = this._outer.offsetHeight;
+    compactLegend : function () {
 
-			// Inner height
-			var legendInnerHeight = this._inner.scrollHeight;
+        var length = 0;
+        for (var k in this.layers) {
+               length++;
+        }
 
-			// Visible height
-			// Problem: This is a little buggy if we're only watching
-			// the legend of one layer. Not a biggie, but will fix it.
-			if ( legendOuterHeight > legendInnerHeight ) {
-				var legendBoxVisisbleHeight = legendOuterHeight;
-				// M.DomUtil.removeClass(this._inner, 'allow-scrolling');				
+        if ( length <= 1 ) {
+            M.DomUtil.addClass(this._compactExpand, 'displayNone');
+        } else {
 
-			} else {
-				var legendBoxVisisbleHeight = legendInnerHeight;
-				// M.DomUtil.addClass(this._inner, 'allow-scrolling');
-			}
+            if ( !app.isMobile ) M.DomUtil.removeClass(this._compactExpand, 'displayNone');
+        }
 
-			// Total height of legend
-			var legendTotalHeight = legendSelectorInnerHeight + legendInnerHeight;
+        M.DomUtil.addClass(this._multipleLegendOuter, 'displayNone');
+        M.DomUtil.addClass(this._singleLegendViewWrapper, 'displayNone');
+        M.DomUtil.removeClass(this._compactLegendViewWrapper, 'displayNone');
+        M.DomUtil.addClass(this._inner, 'multiview');
 
-			// Visible height of legend
-			var legendVisibleHeight = legendBoxVisisbleHeight + legendSelectorVisisbleHeight;
+        var allLegendHTML = '';
+        var allGradientHTML = '';
 
-			// LAYER SELECTOR HEIGHTS
-			// LAYER SELECTOR HEIGHTS
+        for ( var f in this.layers ) {
+            var layer = this.layers[f]
+            var legend = layer.getLegends();
 
-			// Check if Layer selector exists
-			if ( app.MapPane._controls.layermenu && app.MapPane._controls.layermenu._innerScroller ) {
+            var title = layer.getTitle();
+            var layerTitle = '<div class="description-control-meta-title">' + title + '</div>';
+            // var layerTitle = '';
 
-				var layermenu = app.MapPane._controls.layermenu._innerScroller;
-				// Height of wrapper
-				var layermenuOuterHeight = layermenu.offsetHeight;
-				// Inner height of scroller content
-				var layermenuInnerHeight = app.MapPane._controls.layermenu._content.scrollHeight;
+            // if ( legend.html && legend.html.length>10 ) allLegendHTML += layerTitle + legend.html;
+            if ( legend.html && legend.html.length>10 ) allLegendHTML += legend.html;
+            if ( legend.gradient ) allGradientHTML += layerTitle + legend.gradient;
+            
+            if ( !legend.html && !legend.gradient ) {
+                // allLegendHTML += layerTitle + 'No legend!';
+            }
+            
+        }
 
-			// If the layer menu does not exist, set values to zero and declare false
-			} else {
+        this._compactLegendInnerScroller.innerHTML = '';
+        this._comactContent = M.DomUtil.create('div', 'compact-legends', this._compactLegendInnerScroller, allLegendHTML + allGradientHTML);
+        this.miniLegend = true;
 
-				var layermenu = false;
-				var layermenuOuterHeight = 0;
-				var layermenuInnerHeight = 0;
+    },
 
-			}
-
-			// The content of the LAYER MENU and the LEGEND exceeds the height of
-			// the window. We need to restrict them, by setting max height.
-			if ( (layermenuInnerHeight + legendVisibleHeight) > (h-10) ) {
-
-				// .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-				// LEGEND LEGEND LEGEND LEGEND LEGEND LEGEND LEGEND 
-				// .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-				
-				// Layer menu height is higher than 50% ->
-				// restrict legend total height to be more than 50%.
-				if ( layermenuInnerHeight > (h/2) ) {	
-					var legendAllowedHeight = (h/2);
-
-				// Layer menu height is less than 50% ->
-				// restrict legend to 100% - layermenu height
-				} else {
-					var legendAllowedHeight = h - layermenuInnerHeight;
-				}
-
-
-				// .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-				// LAYER MENU - LAYER MENU - LAYER MENU - LAYER MENU
-				// .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-
-				// Legend total height is higher than 50% ->
-				// restrict legend total height to be more than 50%.
-				if ( legendVisibleHeight > (h/2) ) {	
-					var layersAllowedHeight = (h/2);
-				
-				// Legend total height is less than 50% ->
-				// restrict layers to 100% - legend total height
-				} else {
-					var layersAllowedHeight = h - (legendSelectorOuterHeight + legendOuterHeight + 10);
-				}
-
-
-
-
-				// .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-				// LAYER MENU - LAYER MENU - LAYER MENU - LAYER MENU
-				// .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
-
-				
-				// Set layer menu total height
-				if ( layermenu ) {
-					layermenu.style.maxHeight = layersAllowedHeight + 'px';
-				}
-
-
-				// If the legend selector is collapsed, allow full size to legend
-				if ( this.isCollapsed ) {
-					this._outer.style.maxHeight = legendAllowedHeight + 'px';
-					this._inner.style.maxHeight = legendAllowedHeight - 30 + 'px';
-
-				// If top legend selector is open, calculate height.
-				} else {
-
-					// Legend selector inner height...
-					// These two shall share legendAllowedHeight
-					if ( ((legendSelectorVisisbleHeight + legendBoxVisisbleHeight)+2) > legendAllowedHeight) {
-
-						// The boxes are taller than allowed
-						var allowedHeightUnit = legendAllowedHeight/4;
-
-						// Legend box is larger than 3/4 of available space
-						// Force 3/4 of space to legend and 1/4 to legend selector
-						if ( legendBoxVisisbleHeight > (allowedHeightUnit*3) ) {
-							this._multipleLegendInner.style.maxHeight = allowedHeightUnit + 'px';
-							this._outer.style.maxHeight = (allowedHeightUnit*3) + 'px';
-							this._inner.style.maxHeight = (allowedHeightUnit*3) - 30 + 'px';					
-						
-						// Legend box is NOT larger than 3/4 of available space
-						// Remvoe maxHeight from Legend box, 
-						// Give legend selector allowedHeight - legend box height
-						} else {
-							this._multipleLegendInner.style.maxHeight = (legendAllowedHeight - legendBoxVisisbleHeight) + 'px';
-							this._outer.style.maxHeight = legendBoxVisisbleHeight + 'px';
-							this._inner.style.maxHeight = legendBoxVisisbleHeight - 30 + 'px';
-						}
-
-					} else {
-						// The boxes are NOT taller than allowed
-						this._multipleLegendInner.style.maxHeight = h + 'px';
-						this._outer.style.maxHeight = h + 'px';
-						this._inner.style.maxHeight = h - 30 + 'px';
-					}
-				}
-				
-
-				
-			// It's not a crash 
-			// legend and layer selector can be as high as they want
-			} else {
-
-				if ( layermenu ) layermenu.style.maxHeight = h + 'px';
-				this._multipleLegendInner.style.maxHeight = h + 'px';
-				this._outer.style.maxHeight = h + 'px';
-				this._inner.style.maxHeight = h - 30 + 'px';
-
-			}
-
-			// At the very end we set scrollers
-			// If we do it before, we will not get the real numbers,
-			// and it fails every once in a while
-			if ( this._outer.offsetHeight > this._inner.scrollHeight ) {
-				M.DomUtil.removeClass(this._inner, 'allow-scrolling');	
-			} else {
-				M.DomUtil.addClass(this._inner, 'allow-scrolling');
-			}
-
-
-	},
-
-	compactLegend : function () {
-
-		var length = 0;
-		for (var k in this.layers) {
-		       length++;
-		}
-
-		if ( length <= 1 ) {
-			M.DomUtil.addClass(this._compactExpand, 'displayNone');
-		} else {
-
-			if ( !app.isMobile ) M.DomUtil.removeClass(this._compactExpand, 'displayNone');
-		}
-
-		M.DomUtil.addClass(this._multipleLegendOuter, 'displayNone');
-		M.DomUtil.addClass(this._singleLegendViewWrapper, 'displayNone');
-		M.DomUtil.removeClass(this._compactLegendViewWrapper, 'displayNone');
-		M.DomUtil.addClass(this._inner, 'multiview');
-
-		var allLegendHTML = '';
-		var allGradientHTML = '';
-
-		for ( var f in this.layers ) {
-			var layer = this.layers[f]
-			var legend = layer.getLegends();
-
-			var title = layer.getTitle();
-			var layerTitle = '<div class="description-control-meta-title">' + title + '</div>';
-			// var layerTitle = '';
-
-			// if ( legend.html && legend.html.length>10 ) allLegendHTML += layerTitle + legend.html;
-			if ( legend.html && legend.html.length>10 ) allLegendHTML += legend.html;
-			if ( legend.gradient ) allGradientHTML += layerTitle + legend.gradient;
-			
-			if ( !legend.html && !legend.gradient ) {
-				// allLegendHTML += layerTitle + 'No legend!';
-			}
-			
-		}
-
-		this._compactLegendInnerScroller.innerHTML = '';
-		this._comactContent = M.DomUtil.create('div', 'compact-legends', this._compactLegendInnerScroller, allLegendHTML + allGradientHTML);
-		this.miniLegend = true;
-
-	},
-
-	_getWindowSize : function (argument) {
-		var w = window,
-		    d = document,
-		    e = d.documentElement,
-		    g = d.getElementsByTagName('body')[0],
-		    x = w.innerWidth || e.clientWidth || g.clientWidth,
-		    y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-		    return {width : x, height : y};
-	}
-	
+    _getWindowSize : function (argument) {
+        var w = window,
+            d = document,
+            e = d.documentElement,
+            g = d.getElementsByTagName('body')[0],
+            x = w.innerWidth || e.clientWidth || g.clientWidth,
+            y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+            return {width : x, height : y};
+    }
+    
 });
 
 L.control.description = function (options) {
-	console.error('L.control.description', options);
-	return new L.Control.Description(options);
+    console.error('L.control.description', options);
+    return new L.Control.Description(options);
 };

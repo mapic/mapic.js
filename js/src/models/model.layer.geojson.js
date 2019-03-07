@@ -268,6 +268,10 @@ M.Model.Layer.GeoJSONLayer = M.Model.Layer.extend({
         return this.store.legend;
     },  
 
+    getLegendImage : function () {
+        return this.store.legend;
+    },
+
     deleteLayer : function () {
 
         // confirm

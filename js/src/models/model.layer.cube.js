@@ -134,7 +134,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             this._updateCache();
 
             // sets cursor at current frame (ie. show layer on map)
-            this._updateCursor();
+            // (but don't fire on init, since this creates a double fire when setting date later)
+            if (!_.isNull(this._cursor)) this._updateCursor();
 
             // add to active layers
             app.MapPane.addActiveLayer(this);   // includes baselayers, todo: evented
@@ -161,7 +162,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         }.bind(this));
 
-
     },
 
     hasMask : function () {
@@ -183,11 +183,10 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         };
 
         // remove from active layers
-        // todo: evented!
         app.MapPane.removeActiveLayer(this);    
 
         // remove from zIndex
-        this._removeFromZIndex(); // todo: evented
+        this._removeFromZIndex();
 
         // hide legend
         this._hideLegend();
@@ -271,7 +270,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             cube_id : cube_id
         }, function (err, cube) {
             if (err) {
-                console.log('err, cube', err, cube);
+                console.error('app.api.getCube -> err, cube:', err, cube);
 
                 // error msg
                 var errorMsg = 'Please check your cube layer for errors. ';
@@ -320,12 +319,15 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             cube     : this,
         });
 
+        // return
+        done && done();
+
     },
 
     _initCursor : function () {
 
         // init cursor
-        this._cursor = 0;
+        this._cursor = null;
 
         // init feature group
         this._group = L.featureGroup([]);//.addTo(app._map);
@@ -417,27 +419,67 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         masks = _.isArray(masks) ? masks : [masks];
 
-        masks.forEach(function (m) {
+        async.each(masks, function (m, cb) {
 
             // check if raster mask
-            if (m.type == 'postgis-raster') return this._initRasterMask(m, done);
+            if (m.type == 'postgis-raster') return this._initRasterMask(m, cb);
 
             // check if vector mask
-            if (m.type == 'topojson') return this._initTopoJSONMask(m, done);
+            if (m.type == 'topojson') return this._initTopoJSONMask(m, cb);
 
             // check if vector mask
-            if (m.type == 'geojson') return this._initGeoJSONMask(m, done);
+            if (m.type == 'geojson') return this._initGeoJSONMask(m, cb);
 
             console.error('Unsupported mask', m);
 
-        }.bind(this));
+        }.bind(this), 
 
-        done && done();
+        // callback
+        function (err) {
 
-        // select first mask by default
-        this.setDefaultMask();
+            done && done();
+
+            // select first mask by default
+            this.setDefaultMask();
+
+        }.bind(this))
+
 
     },
+
+    // old_initMask : function (done) {
+
+    //     this._maskLayers = [];
+
+    //     // get mask
+    //     var masks = this.getMasks();
+
+    //     // return if no mask
+    //     if (!masks || _.isEmpty(masks)) return done();
+
+    //     masks = _.isArray(masks) ? masks : [masks];
+
+    //     masks.forEach(function (m) {
+
+    //         // check if raster mask
+    //         if (m.type == 'postgis-raster') return this._initRasterMask(m, done);
+
+    //         // check if vector mask
+    //         if (m.type == 'topojson') return this._initTopoJSONMask(m, done);
+
+    //         // check if vector mask
+    //         if (m.type == 'geojson') return this._initGeoJSONMask(m, done);
+
+    //         console.error('Unsupported mask', m);
+
+    //     }.bind(this));
+
+    //     done && done();
+
+    //     // select first mask by default
+    //     this.setDefaultMask();
+
+    // },
 
     // _masks : [],
     // _maskLayers : [],

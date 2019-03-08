@@ -1408,7 +1408,7 @@ M.Chrome.Data = M.Chrome.extend({
         // create fullscreen
         var layerTitle = layer ? layer.getTitle() : '';
         var fullscreen = this._fullscreen = new M.Fullscreen({
-            title : '<i class="fa fa-bars file-option"></i>Snow Cover Fraction Layer ' + layerTitle,
+            title : '<i class="fa fa-bars file-option"></i>Timeseries Layer ' + layerTitle,
             titleClassName : 'slim-font'
         });
 

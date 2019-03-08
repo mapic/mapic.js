@@ -3478,3 +3478,42 @@ input#geojson-upload {
 .form-combobox_options_wrapper.open {
     font-size: 17px;
 }
+
+.info-legend-bottom-line {
+    text-align: center;
+    font-size: 10px;
+    top: 22px;
+    position: absolute;
+    width: 100%;
+    color: #3c3c3c;
+}
+
+.sub-gradient-container .info-legend-footer {
+    position: relative;
+    width: 40%;
+    text-align: center;
+    font-size: 10px;
+    color: #666;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.info-legend-footer.align-right {
+    float: right;
+    text-align: right;
+}
+.info-legend-footer.align-left {
+    float: left;
+    text-align: left;
+}
+
+
+
+
+
+
+
+
+
+
+
+

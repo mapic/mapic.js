@@ -520,6 +520,7 @@ M.Model.Layer = M.Model.extend({
     },
 
     setLegends : function (legends) {
+        console.error('setLegends', legends);
         if (!legends) return;
         this.store.legends = JSON.stringify(legends);
         this.save('legends');

@@ -456,7 +456,7 @@ M.button = M.Class.extend({
 		var className   = this.options.className;
 		var isOn        = this.options.isOn;
 		var allowText   = this.options.allowText;
-		var _class = 'chrome-field-input ';
+		var _class 		= 'chrome-field-input ';
 
 		if ( className ) _class += className;
 

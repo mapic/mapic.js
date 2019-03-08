@@ -567,6 +567,8 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 
 	_updateVector : function (newLegend) {
 
+		console.error('_updateVector', newLegend);
+
 		// Update point
 		if (this._pointStyler) {
 			this._pointStyler.setCarto(this._carto.point);

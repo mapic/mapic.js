@@ -18,6 +18,24 @@ M.Api = M.Class.extend({
 		this.get(path, options, done);
 	},
 
+	cubes : {
+		render : {
+			start : function (options, done) {
+				var path = '/v2/cubes/render/start';
+				app.api.post(path, options, done);
+			},
+
+			estimate : function (options, done) {
+				var path = '/v2/cubes/render/estimate';
+				app.api.post(path, options, done);
+			},
+
+			status : function (options, done) {
+				var path = '/v2/cubes/render/status';
+				app.api.post(path, options, done);
+			},
+		}
+	},
 
 	// pre-render
 	preRender : function (options, done) {
@@ -27,7 +45,7 @@ M.Api = M.Class.extend({
 
 	// pre-render
 	preRenderCube : function (options, done) {
-		var path = '/v2/tiles/renderCube';
+		var path = '/v2/cubes/render';
 		this.post(path, options, done);
 	},
 

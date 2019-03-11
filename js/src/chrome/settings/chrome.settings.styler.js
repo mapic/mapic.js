@@ -74,74 +74,105 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 
 	},
 
-	_preRender : function () {
+	pre_render_cube : function () {
 
-		var confirmed = confirm('Are you sure you want to pre-render the layer?');
-		if (!confirmed) return;
+		// request pre-render of cube
+		app.api.cubes.render.start({
+			cube_id : this._layer.getCubeId(), 
+			// dry_run : true // debug
+		}, function (err, results) {
+			var res = M.parse(results);
+
+			console.log('render res:', res);
+
+			// give feedback on error
+			if (res.error) {
+				return app.FeedbackPane.setError({ 
+					title : 'Something went wrong!', 
+					description : res.error 
+				});
+			}
+
+			// get estimated time
+			var estimated_time_human = moment.duration(res.estimated_time, "seconds").locale('en').humanize();
+
+			// give feedback
+			app.FeedbackPane.setMessage({ 
+				title : 'Pre-rendering started!', 
+				description : 'A total of ' + res.tiles + ' tiles are being rendered, down to zoom level ' + res.processed_zoom + '. <br><br>Estimated rendering time is ' + estimated_time_human + '...'
+			});
+
+			// add logs
+			app.log('prerendered:', { 
+				info : {
+		    		layer : this._layer.getTitle(),
+		    		project : app.activeProject.getName(),
+		    		layer_type : 'Timeseries layer',
+		    		estimated_time : estimated_time_human,
+		    		number_of_tiles : res.tiles
+		    	}
+		    });
+
+		}.bind(this));
+
+	},
+
+	pre_render_layer : function () {
+
+		// request pre-render
+		app.api.preRender({
+			layer_id : this._layer._getLayerUuid()
+		}, function (err, results) {
+			var res = M.parse(results);
+
+			// give feedback
+			app.FeedbackPane.setMessage({ 
+				title : 'Pre-rendering started!', 
+				description : 'A total of ' + res.tiles + ' tiles are being rendered. <br><br>Estimated rendering time is a few minutes...'
+			});
+
+			// add logs
+			app.log('prerendered:', { 
+				info : {
+		    		layer : this._layer.getTitle(),
+		    		project : app.activeProject.getName(),
+		    		layer_type : 'Vector tile layer'
+		    	}
+		    });
+
+		}.bind(this));
+
+	},
+
+	_preRender : function () {
 
 		var isCube = this._layer.isCube();
 
 		if (isCube) {
 
-			// request pre-render of cube
-			app.api.preRenderCube({
-				cube_id : this._layer.getCubeId(), 
-			}, function (err, results) {
-				var res = M.parse(results);
+			// get estimate
+			app.api.cubes.render.estimate({
+				cube_id : this._layer.getCubeId()
+			}, function (err, result) {
 
-				// give feedback on error
-				if (res.error) {
-					return app.FeedbackPane.setError({ 
-						title : 'Something went wrong!', 
-						description : res.error 
-					});
-				}
+				// parse
+				var estimate = M.parse(result);
+			
+				// time
+				var estimated_time_human = moment.duration(estimate.estimated_time, "seconds").locale('en').humanize();
 
-				var estimated_time_human = moment.duration(res.estimated_time, "seconds").locale('en').humanize();
+				// confirm dialog
+				var confirmed = confirm('The render job entails ' + estimate.num_tiles + ' tiles down to zoom level ' + estimate.processed_zoom + ', and will take ' + estimated_time_human + '. Do you wish to start this render job?');
+				if (!confirmed) return;
 
-				// give feedback
-				app.FeedbackPane.setMessage({ 
-					title : 'Pre-rendering started!', 
-					description : 'A total of ' + res.tiles + ' tiles are being rendered, down to zoom level ' + res.processed_zoom + '. <br><br>Estimated rendering time is ' + estimated_time_human + '...'
-				});
-
-				// add logs
-				app.log('prerendered:', { 
-					info : {
-			    		layer : this._layer.getTitle(),
-			    		project : app.activeProject.getName(),
-			    		layer_type : 'Timeseries layer',
-			    		estimated_time : estimated_time_human,
-			    		number_of_tiles : res.tiles
-			    	}
-			    });
+				// start pre-render
+				this.pre_render_cube();
 
 			}.bind(this));
 
 		} else {
 
-			// request pre-render
-			app.api.preRender({
-				layer_id : this._layer._getLayerUuid()
-			}, function (err, results) {
-				var res = M.parse(results);
-
-				// give feedback
-				app.FeedbackPane.setMessage({ 
-					title : 'Pre-rendering started!', 
-					description : 'A total of ' + res.tiles + ' tiles are being rendered. <br><br>Estimated rendering time is a few minutes...'
-				});
-
-				// add logs
-				app.log('prerendered:', { 
-					info : {
-			    		layer : this._layer.getTitle(),
-			    		project : app.activeProject.getName(),
-			    		layer_type : 'Vector tile layer'
-			    	}
-			    });
-
-			}.bind(this));
+			this.pre_render_layer();
 
 		}	
 

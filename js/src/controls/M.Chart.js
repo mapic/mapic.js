@@ -804,13 +804,9 @@ M.Chart = M.Control.extend({
     // Chart
     C3Chart : function (c3Obj) {
         
-        console.log('C3Chart -->', c3Obj);
-
         var data = c3Obj.d3array;
 
         this._currentChartData = data;
-
-        console.log('data', data);
 
         // Ticks
         var t = data.ticks;
@@ -888,9 +884,6 @@ M.Chart = M.Control.extend({
             var _width = 430;
         }   
 
-        console.log('_columns', _columns);
-
-
         // CHART SETTINGS
         var chartSettings = {
             interaction : true,
@@ -924,37 +917,41 @@ M.Chart = M.Control.extend({
             data: {
 
                 xs: {
-                        mm: 'field_x',
-                        regression : 'reg_x'
+                    mm: 'field_x',
+                    regression : 'reg_x'
                 },
 
                 columns: _columns,
 
                 colors : {
                     mm: '#0000FF',
-                    regression: '#C83333'
+                    regression: '#C83333',
                 },
                 types: {
                     mm : 'scatter',
                     regression : 'line'
                 },
                 color : function (color, d) {
-                    console.log('color, d', color, d);
-                    return '#0000FF';
-                    // return d.index === 4 ? "#d00" : "#ddd";
+
+                    // hacky interpolation coloring scheme
+                    var a = _.toString(d.value)
+                    var i = _.includes(a, '00001');
+
+                    // return red or default color                 
+                    return i ? 'red' : '#0000FF';
                 }
             },
 
             axis: {
 
                 x: {
-                        type: 'timeseries',
-                        localtime: false,
-                        tick: {
-                                format: '%Y',
-                                values: [],
-                                multiline: true
-                        }
+                    type: 'timeseries',
+                    localtime: false,
+                    tick: {
+                            format: '%Y',
+                            values: [],
+                            multiline: true
+                    }
                 },
 
                 y: {
@@ -982,8 +979,6 @@ M.Chart = M.Control.extend({
             }               
         };
         var chart = this._chart = c3.generate(chartSettings);
-
-        console.log('ragne', range);
 
         // add zoom events
         this._addChartEvents(_C3Container);

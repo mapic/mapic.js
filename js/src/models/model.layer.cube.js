@@ -823,15 +823,17 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         if (didx < 0) {
             console.error('no dataset corresponding to timestamp', timestamp);
-            app.FeedbackPane.setError({title : 'No raster available', description : 'There is no satellite imagery available for this date. Please try another date.'})
+            // app.FeedbackPane.setError({title : 'No raster available', description : 'There is no satellite imagery available for this date. Please try another date.'})
 
             // hide
-            this._hideLayer(this.layer);
+            // this._hideLayer(this.layer);
+
+            // jump to latest available
+            this._graph._setSliderToLatestAvailableImage();
 
             // done
             return;
         }
-
 
         // set direction (for cache algorithm)
         this._cursorDirection = (didx > this._cursor) ? 1 : -1;

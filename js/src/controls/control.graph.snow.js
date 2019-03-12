@@ -1190,9 +1190,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         });
 
         // set default slider position
-        // this._setSliderToToday();
-
-        // set default slider position
         this._setSliderToLatestAvailableImage();
 
     },

@@ -2792,7 +2792,7 @@ M.Chrome.Data = M.Chrome.extend({
         // save
         this._fullscreen.wms_legend_div = name_input4;
 
-        var isOn = layer.getCustomOptions().listen_timeseries_event || false;
+        var isOn = layer ? layer.getCustomOptions().listen_timeseries_event || false : false;
 
         // timeseries listen event
         var name5 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth margin-bottom-40', toggles_wrapper, 'Listen to Timeseries Layer Events');
@@ -2807,6 +2807,9 @@ M.Chrome.Data = M.Chrome.extend({
             className: 'chrome-switch-container timeseries-listen top-minus-30'
         });
 
+        // save
+        this._fullscreen.listen_timeseries_event = isOn;
+
         // save layer
         this._fullscreen.layer = layer;
 
@@ -2818,6 +2821,12 @@ M.Chrome.Data = M.Chrome.extend({
 
         // save
         var layer = this._fullscreen.layer;
+
+        // save
+        this._fullscreen.listen_timeseries_event = isOn;
+
+        if (!layer) return;
+
         layer.setCustomOptions({
             listen_timeseries_event : isOn
         });
@@ -2874,6 +2883,7 @@ M.Chrome.Data = M.Chrome.extend({
             var options_url = this._fullscreen.wms_options_div.value;
             var layers_url = this._fullscreen.wms_layers_div.value;
             var legend_url = this._fullscreen.wms_legend_div.value;
+            var listen_timeseries_event = this._fullscreen.listen_timeseries_event;
 
             if (layer) {
                 // editing 
@@ -2882,6 +2892,7 @@ M.Chrome.Data = M.Chrome.extend({
                     source : base_url,
                     layers : layers_url,
                     options : options_url,
+                    listen_timeseries_event : listen_timeseries_event
                 };
                 layer.save('data');
                 layer.store.title = layer_name;

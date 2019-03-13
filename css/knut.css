@@ -3575,7 +3575,9 @@ input#geojson-upload {
     top: -30px;
 }
 
-
+.move-description-above {
+    top: -350px;
+}
 
 
 

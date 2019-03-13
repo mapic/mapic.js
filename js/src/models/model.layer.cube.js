@@ -160,6 +160,11 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
                 layer : this
             });
 
+            // fire global event
+            app._map.fire('enabled_layer', {
+                layer : this
+            });
+
         }.bind(this));
 
     },
@@ -198,6 +203,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this.fire('disabled', {
             layer : this
         });
+
+        // fire global event
+        app._map.fire('disabled_layer', {
+            layer : this
+        });
+
     },
 
     // add leaflet layer only
@@ -446,43 +457,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
 
     },
-
-    // old_initMask : function (done) {
-
-    //     this._maskLayers = [];
-
-    //     // get mask
-    //     var masks = this.getMasks();
-
-    //     // return if no mask
-    //     if (!masks || _.isEmpty(masks)) return done();
-
-    //     masks = _.isArray(masks) ? masks : [masks];
-
-    //     masks.forEach(function (m) {
-
-    //         // check if raster mask
-    //         if (m.type == 'postgis-raster') return this._initRasterMask(m, done);
-
-    //         // check if vector mask
-    //         if (m.type == 'topojson') return this._initTopoJSONMask(m, done);
-
-    //         // check if vector mask
-    //         if (m.type == 'geojson') return this._initGeoJSONMask(m, done);
-
-    //         console.error('Unsupported mask', m);
-
-    //     }.bind(this));
-
-    //     done && done();
-
-    //     // select first mask by default
-    //     this.setDefaultMask();
-
-    // },
-
-    // _masks : [],
-    // _maskLayers : [],
 
     _initRasterMask : function (mask, done) {
         console.error('todo: RASTER MASK');
@@ -851,7 +825,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this._updateCursor();
 
         // fire global event
-        console.log('firing event')
         M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
             timestamp : timestamp
         }}); 

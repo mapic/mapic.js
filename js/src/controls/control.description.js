@@ -119,6 +119,16 @@ L.Control.Description = M.Control.extend({
 
         M.DomEvent.on(this._toggeOpener, 'click', this.toggleOpen, this);
 
+        M.DomEvent.on(app._map, 'enabled_layer', this._onLayerEnabled, this);
+        M.DomEvent.on(app._map, 'disabled_layer', this._onLayerDisabled, this);
+
+    },
+
+    _onLayerEnabled : function (d) {
+        this._ensureLegendVisible();
+    },
+    _onLayerDisabled : function (d) {
+        this._ensureLegendVisible();
     },
 
     closeMobile : function () {
@@ -171,11 +181,36 @@ L.Control.Description = M.Control.extend({
         if (!this._container) return;
         this._isActive() ? this._show() : this._hide();
         this.toggleScale(true);
+
+        // ensure description is not under SCF graph
+        this._ensureLegendVisible();
+    },
+
+    _ensureLegendVisible : function () {
+        var move = false;
+        var activeLayers = app.MapPane.getActiveLayers();
+
+        _.each(activeLayers, function (a) {
+            if (a.isCube()) {
+                move = true;
+            }
+        });
+
+        if (move) {
+            M.DomUtil.addClass(this._content, 'move-description-above');
+        } else {
+            M.DomUtil.removeClass(this._content, 'move-description-above');
+
+        }
+
     },
 
     hide : function () {
         if (!this._container) return;
         this._hide();
+
+        // reset
+        M.DomUtil.removeClass(this._content, 'move-description-above');
     },
 
     _show : function () {

@@ -19,10 +19,7 @@ M.Model.Layer = M.Model.extend({
 
     },
 
-    _on_timeseries_layer_date_changed : function () {
-        console.log('firing');
-    },
-
+    _on_timeseries_layer_date_changed : function () {},
 
     addHooks : function () {
         this._setHooks('on');
@@ -40,6 +37,8 @@ M.Model.Layer = M.Model.extend({
         M.DomEvent[on](this.layer, 'loading', this._onLayerLoading, this);
 
         M.Mixin.Events[on]('timeseries_layer_date_changed', this._on_timeseries_layer_date_changed, this);
+
+      
     },
 
     getType : function () {
@@ -545,7 +544,6 @@ M.Model.Layer = M.Model.extend({
     },
 
     setLegends : function (legends) {
-        console.error('setLegends', legends);
         if (!legends) return;
         this.store.legends = JSON.stringify(legends);
         this.save('legends');
@@ -606,8 +604,6 @@ M.Model.Layer = M.Model.extend({
         json[field] = this.store[field];
         json.layer  = this.store.uuid;
         json.uuid   = app.activeProject.getUuid(); // project uuid
-
-        console.log('saving ...', json);
         this._save(json);
     },
 
@@ -622,8 +618,6 @@ M.Model.Layer = M.Model.extend({
             }
 
             var result = M.parse(result);
-
-            console.log('result: ', result);
 
             if (!result || result.error) {
                 return app.feedback.setError({

@@ -155,16 +155,13 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
         
         // Header
         var header = M.DomUtil.create('div', 'chrome-content-header', sectionWrapper, 'Popup/labels');
-        // var headerExtra = M.DomUtil.create('span', 'chrome-content-header-gray', header, ' (auto detected)');
 
         if ( typeof this.tooltipMeta.enable == 'undefined' ) {
             this.tooltipMeta.enable = true;
         }
 
-        // Enable/disable switch
-        // Enable/disable switch
-        // Enable/disable switch
 
+        // Enable/disable switch
         var enableDisableLine = new M.fieldLine({
             id       : 'enable',
             appendTo : sectionWrapper,
@@ -182,6 +179,7 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
         });
 
 
+        // labels
         var labelsToggleLine = new M.fieldLine({
             id       : 'enable',
             appendTo : sectionWrapper,
@@ -199,7 +197,8 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
         });
 
 
-         var labelsToggleLine = new M.fieldLine({
+        // hover
+        var labelsToggleLine = new M.fieldLine({
             id       : 'enable',
             appendTo : sectionWrapper,
             title    : 'Enable tooltip on hover',
@@ -223,12 +222,12 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
         this.tooltipMeta.hover = enabled;
         this._layer.setTooltip(this.tooltipMeta);
 
-        // // fire event
-        // if (enabled) {
-        //     this._layer.fire('showLabels');
-        // } else {
-        //     this._layer.fire('hideLabels');
-        // }
+        // fire event
+        if (enabled) {
+            this._layer.fire('hover_enabled');
+        } else {
+            this._layer.fire('hover_disabled');
+        }
 
         
     },

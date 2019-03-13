@@ -13,6 +13,9 @@ M.Model.Layer = M.Model.extend({
         
         // data not loaded
         this.loaded = false;
+
+        this.on('hover_enabled', this._onHoverEnabled);
+        this.on('hover_disabled', this._onHoverDisabled);
     },
 
     addHooks : function () {
@@ -726,6 +729,8 @@ M.Model.Layer = M.Model.extend({
         return false;
     },
 
+    _onHoverEnabled : function () {},
+    _onHoverDisabled : function () {},
 });
 
 

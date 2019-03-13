@@ -933,6 +933,8 @@ M.Chart = M.Control.extend({
                 },
                 color : function (color, d) {
 
+                    console.log('d.value:', d.value);
+
                     // hacky interpolation coloring scheme
                     var a = _.toString(d.value)
                     var i = _.includes(a, '00001');

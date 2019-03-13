@@ -26,12 +26,6 @@ M.VectorLayer = M.Model.Layer.extend({
 
     _onLayerLoaded : function () {
         var loadTime = Date.now() - this._loadStart;
-
-        // // fire loaded event
-        // app.Analytics._eventLayerLoaded({
-        //     layer : this.getTitle(),
-        //     load_time : loadTime
-        // });
     },
 
     update : function (options, callback) {
@@ -309,6 +303,16 @@ M.VectorLayer = M.Model.Layer.extend({
 
     },
 
+    _onHoverEnabled : function () {
+        this._setClickEvents('off');
+        this._setHoverEvents('on');
+    },
+
+    _onHoverDisabled : function () {
+        this._setClickEvents('on');
+        this._setHoverEvents('off');
+    },
+
     _addGridEvents : function () {
         this._setGridEvents('on');
     },
@@ -318,33 +322,32 @@ M.VectorLayer = M.Model.Layer.extend({
     },
 
     _setGridEvents : function (on) {
+        // hover popup in config
+        var label_settings = this.getTooltip();
+        if (label_settings && label_settings.hover) {
+            this._setHoverEvents(on);
+        } else {
+            this._setClickEvents(on);
+        }
+    },
+
+    _setHoverEvents : function (on) {
         var grid = this.gridLayer;
         if (!grid || !on) return;
 
+        // hover event
+        grid[on]('mousemove', _.throttle(this._gridOnHover.bind(this), 200), this);
 
+    },
 
-        // experimental: hover popup in config
-        // if (app.options.custom && app.options.custom.hoverPopup) {
-        var label_settings = this.getTooltip();
-        if (label_settings && label_settings.hover) {
+    _setClickEvents : function (on) {
+        var grid = this.gridLayer;
+        if (!grid || !on) return;
 
-            // // add movemouse event to grid
-            // grid[on]('mousemove', this._gridOnHover, this);
-            // grid[on]('mouseover', this._gridOnMouseOver, this);
-            // grid[on]('mouseout', this._gridOnMouseOut, this);
-
-             // test
-            grid[on]('mousemove', _.throttle(this._gridOnHover.bind(this), 200), this);
-
-
-        } else {
-            
-            // click popup
-            grid[on]('mousedown', this._gridOnMousedown, this);     
-            grid[on]('mouseup', this._gridOnMouseup, this);  
-            grid[on]('click', this._gridOnClick, this);
-        }
-
+        // click popup
+        grid[on]('mousedown', this._gridOnMousedown, this);     
+        grid[on]('mouseup', this._gridOnMouseup, this);  
+        grid[on]('click', this._gridOnClick, this);
     },
 
 

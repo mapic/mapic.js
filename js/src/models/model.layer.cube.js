@@ -850,6 +850,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // sets cursor at current frame (ie. show layer on map)
         this._updateCursor();
 
+        // fire global event
+        console.log('firing event')
+        M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
+            timestamp : timestamp
+        }}); 
+
     },
 
     // this is where layers are shown on map 

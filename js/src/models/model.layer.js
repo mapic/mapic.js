@@ -16,7 +16,13 @@ M.Model.Layer = M.Model.extend({
 
         this.on('hover_enabled', this._onHoverEnabled);
         this.on('hover_disabled', this._onHoverDisabled);
+
     },
+
+    _on_timeseries_layer_date_changed : function () {
+        console.log('firing');
+    },
+
 
     addHooks : function () {
         this._setHooks('on');
@@ -32,6 +38,8 @@ M.Model.Layer = M.Model.extend({
         // all visible tiles loaded event (for phantomJS)
         M.DomEvent[on](this.layer, 'load', this._onLayerLoaded, this);
         M.DomEvent[on](this.layer, 'loading', this._onLayerLoading, this);
+
+        M.Mixin.Events[on]('timeseries_layer_date_changed', this._on_timeseries_layer_date_changed, this);
     },
 
     getType : function () {
@@ -103,11 +111,6 @@ M.Model.Layer = M.Model.extend({
         this._addToZIndex(type);
 
         this._added = true;
-
-        // // fire event
-        // M.Mixin.Events.fire('layerEnabled', { detail : {
-        //     layer : this
-        // }}); 
 
         // fire layer enabled
         this.fire('enabled', {
@@ -272,6 +275,25 @@ M.Model.Layer = M.Model.extend({
 
     disable : function () {
         this.remove();
+    },
+
+
+    getCustomOptions : function () {
+        var c = M.parse(this.store.options) || {};
+        return c;
+    },
+
+    setCustomOptions : function (o) {
+        var existing_options = M.parse(this.store.options) || {};
+
+        _.each(o, function (value, key) {
+            existing_options[key] = value;
+        });
+
+        // save
+        this.store.options = JSON.stringify(existing_options);
+        this.save('options');
+
     },
 
     saveOpacity : function (opacity) {
@@ -584,6 +606,8 @@ M.Model.Layer = M.Model.extend({
         json[field] = this.store[field];
         json.layer  = this.store.uuid;
         json.uuid   = app.activeProject.getUuid(); // project uuid
+
+        console.log('saving ...', json);
         this._save(json);
     },
 
@@ -598,6 +622,8 @@ M.Model.Layer = M.Model.extend({
             }
 
             var result = M.parse(result);
+
+            console.log('result: ', result);
 
             if (!result || result.error) {
                 return app.feedback.setError({

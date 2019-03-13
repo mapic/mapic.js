@@ -3,16 +3,7 @@ M.WMSLayer = M.Model.Layer.extend({
 
     type : 'wms',
 
-    initialize : function (layer) {
-
-        // set source
-        this.store = layer; // db object
-        
-        // data not loaded
-        this.loaded = false;
-       
-    },
-
+  
     initLayer : function () {
         if (this.layer) this.remove();
         this.update();
@@ -38,8 +29,10 @@ M.WMSLayer = M.Model.Layer.extend({
         options.transparent = true;
         options.format = 'image/png';
 
+        this._wms_options = options;
+
         // create layer
-        this.layer = L.tileLayer.betterWms(source, options);
+        this.layer = L.tileLayer.wms(source, options);
 
     },
 
@@ -57,6 +50,22 @@ M.WMSLayer = M.Model.Layer.extend({
 
         return parsed;
     },
+
+    _on_timeseries_layer_date_changed : function (e) {
+
+        var isOn = this.getCustomOptions().listen_timeseries_event || false;
+        if (!isOn) return;
+
+        var timestamp = e.detail.timestamp;
+        var parsed_time = moment(timestamp).format('YYYY-MM-DD');
+
+        this._wms_options['TIME'] = parsed_time;
+
+        console.log('updating wms params and redrwaing');
+        this.layer.setParams(this._wms_options);        
+
+    },
+
 
     _getFirstWMSLayer : function () {
         var wms = this.store.data.wms;
@@ -322,27 +331,6 @@ M.WMSLayer = M.Model.Layer.extend({
 
     _overlays : {},
 
-    // _getLayerUuid : function () {
-    //     return this.store.data.postgis.layer_id;
-    // },
-
-    // getMeta : function () {
-    //     var metajson = this.store.metadata;
-    //     var meta = M.parse(metajson);
-    //     return meta;
-    // },
-
-    // getData : function () {
-    //     return this.store.data.postgis;
-    // },
-
-    // getFileMeta : function () {
-    //     var file = app.Account.getFile(this.store.file);
-    //     var metajson = file.store.data.raster.metadata;
-    //     var meta = M.parse(metajson);
-    //     return meta;
-    // },
-
     getExtent : function () {
         var meta = this.getMeta();
         if (!meta) return;
@@ -431,19 +419,31 @@ M.WMSLayer = M.Model.Layer.extend({
         this.addTo();
     },
 
-    addTo : function () {
-        if (!this._inited) this.initLayer();
+    ensureLayerInited : function (done) {
+        if (this._inited) return done();
 
-        // add to map
-        this._addTo();
-        
-        // add to controls
-        this.addToControls();
+        // init layer
+        this.initLayer();
+
+        // and wait a bit
+        setTimeout(done.bind(this), 300);
+    },
+
+    addTo : function () {
+
+        // ensure layer is ready
+        this.ensureLayerInited(function () {
+
+            // add to map
+            this._addTo();
+            
+            // add to controls
+            this.addToControls();
+
+        }.bind(this));
     },
 
     _addTo : function (type) {
-        if (!this._inited) this.initLayer();
-
         var map = app._map;
 
         // leaflet fn
@@ -454,6 +454,9 @@ M.WMSLayer = M.Model.Layer.extend({
 
         // mark
         this._added = true;
+
+        // events
+        this.addHooks();
 
         // fire event
         M.Mixin.Events.fire('layerEnabled', { detail : {
@@ -467,9 +470,12 @@ M.WMSLayer = M.Model.Layer.extend({
         return legendImage;
     },
 
+    _setHooks : function (on) {
+        M.Mixin.Events[on]('timeseries_layer_date_changed', this._on_timeseries_layer_date_changed, this);
+    },
+
 
     remove : function (map) {
-
         var map = map || app._map;
 
         // leaflet fn
@@ -500,6 +506,9 @@ M.WMSLayer = M.Model.Layer.extend({
 
         this._added = false;
 
+        // events
+        this.removeHooks();
+
         // fire layer enabled
         this.fire('disabled', {
             layer : this
@@ -526,6 +535,8 @@ M.WMSLayer = M.Model.Layer.extend({
         return this.store.legend;
     },
 
+  
+
 });
 
 
@@ -544,178 +555,178 @@ M.WMSLayer = M.Model.Layer.extend({
 
 
 
-L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
+// L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
 
-    options : {
-        // prepareContent : function () {},
-        parentLayer : null,
-        openContent : function () {}
-    },
+//     options : {
+//         // prepareContent : function () {},
+//         parentLayer : null,
+//         openContent : function () {}
+//     },
 
-    onAdd: function (map) {
-        // Triggered when the layer is added to a map.
-        //   Register a click listener, then do all the upstream WMS things
-        L.TileLayer.WMS.prototype.onAdd.call(this, map);
-        // map.on('click', this.getFeatureInfo, this);
-    },
+//     onAdd: function (map) {
+//         // Triggered when the layer is added to a map.
+//         //   Register a click listener, then do all the upstream WMS things
+//         L.TileLayer.WMS.prototype.onAdd.call(this, map);
+//         // map.on('click', this.getFeatureInfo, this);
+//     },
 
-    onRemove: function (map) {
-        // Triggered when the layer is removed from a map.
-        //   Unregister a click listener, then do all the upstream WMS things
-        L.TileLayer.WMS.prototype.onRemove.call(this, map);
-        map.off('click', this.getFeatureInfo, this);
+//     onRemove: function (map) {
+//         // Triggered when the layer is removed from a map.
+//         //   Unregister a click listener, then do all the upstream WMS things
+//         L.TileLayer.WMS.prototype.onRemove.call(this, map);
+//         // map.off('click', this.getFeatureInfo, this);
 
-        if (this._popup) {
-            this._popup.remove();
-        }
-    },
+//         if (this._popup) {
+//             this._popup.remove();
+//         }
+//     },
 
    
 
 
-    getFeatureInfo: function (evt) {
-        // Make an AJAX request to the server and hope for the best
-        var url = this.getFeatureInfoUrl(evt.latlng);
-        var showResults = L.Util.bind(this.showGetFeatureInfo, this);
+    // getFeatureInfo: function (evt) {
+    //     // Make an AJAX request to the server and hope for the best
+    //     var url = this.getFeatureInfoUrl(evt.latlng);
+    //     var showResults = L.Util.bind(this.showGetFeatureInfo, this);
 
-        var ops = {};
+    //     var ops = {};
 
 
-        // set progress bar
-        app.ProgressBar.timedProgress(1500)
+    //     // set progress bar
+    //     app.ProgressBar.timedProgress(1500)
 
-        ops.feature = function (callback) {
-            $.ajax({
-                url: url,
-                success: function (data, status, xhr) {
-                    var err = typeof data === 'string' ? null : data;
-                    callback(err, data);
-                },
-                error: function (xhr, status, error) {
-                    callback(error);  
-                }
-            });
-        };
+    //     ops.feature = function (callback) {
+    //         $.ajax({
+    //             url: url,
+    //             success: function (data, status, xhr) {
+    //                 var err = typeof data === 'string' ? null : data;
+    //                 callback(err, data);
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 callback(error);  
+    //             }
+    //         });
+    //     };
 
-        ops.geocoding = function (callback) {
+    //     ops.geocoding = function (callback) {
 
-            var url = [
-                'https://maps.googleapis.com/maps/api/geocode/json?',
-                'latlng=',
-                evt.latlng.lat + ',' + evt.latlng.lng,
-                '&key=AIzaSyCavrqiBU2rP7UljU4y3-UQP4h8gjB1IEw'
-            ];
+    //         var url = [
+    //             'https://maps.googleapis.com/maps/api/geocode/json?',
+    //             'latlng=',
+    //             evt.latlng.lat + ',' + evt.latlng.lng,
+    //             '&key=AIzaSyCavrqiBU2rP7UljU4y3-UQP4h8gjB1IEw'
+    //         ];
             
-            $.ajax({
-                url: url.join(''),
-                success: function (data, status, xhr) {
-                    var err = typeof data === 'string' ? null : data;
-                    callback(null, data);
-                },
-                error: function (xhr, status, error) {
-                    callback(null);  
-                }
-            });
-        };
+    //         $.ajax({
+    //             url: url.join(''),
+    //             success: function (data, status, xhr) {
+    //                 var err = typeof data === 'string' ? null : data;
+    //                 callback(null, data);
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 callback(null);  
+    //             }
+    //         });
+    //     };
 
-        async.parallel(ops, function (err, results) {
-            showResults(err, evt.latlng, results);
-        }); 
+    //     async.parallel(ops, function (err, results) {
+    //         showResults(err, evt.latlng, results);
+    //     }); 
 
-        // https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=AIzaSyBVrB_4RHkrlLHIpK15VHs1LrwFszWvfPI
-    },
+    //     // https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=AIzaSyBVrB_4RHkrlLHIpK15VHs1LrwFszWvfPI
+    // },
 
-    getFeatureInfoUrl: function (latlng) {
+    // getFeatureInfoUrl: function (latlng) {
         
-        // Construct a GetFeatureInfo request URL given a point
-        var point = this._map.latLngToContainerPoint(latlng, this._map.getZoom());
-        var size = this._map.getSize();
+    //     // Construct a GetFeatureInfo request URL given a point
+    //     var point = this._map.latLngToContainerPoint(latlng, this._map.getZoom());
+    //     var size = this._map.getSize();
 
-        // console.log('poinint:', point, latlng);
-        // var params = {
-        //     request: 'GetFeatureInfo',
-        //     service: 'WMS',
-        //     srs: 'EPSG:4326',
-        //     styles: this.wmsParams.styles,
-        //     transparent: this.wmsParams.transparent,
-        //     version: this.wmsParams.version,      
-        //     format: this.wmsParams.format,
-        //     bbox: this._map.getBounds().toBBoxString(),
-        //     height: size.y,
-        //     width: size.x,
-        //     layers: this.wmsParams.layers,
-        //     query_layers: this.wmsParams.layers,
-        //     info_format: 'text/html'
-        // };
+    //     // console.log('poinint:', point, latlng);
+    //     // var params = {
+    //     //     request: 'GetFeatureInfo',
+    //     //     service: 'WMS',
+    //     //     srs: 'EPSG:4326',
+    //     //     styles: this.wmsParams.styles,
+    //     //     transparent: this.wmsParams.transparent,
+    //     //     version: this.wmsParams.version,      
+    //     //     format: this.wmsParams.format,
+    //     //     bbox: this._map.getBounds().toBBoxString(),
+    //     //     height: size.y,
+    //     //     width: size.x,
+    //     //     layers: this.wmsParams.layers,
+    //     //     query_layers: this.wmsParams.layers,
+    //     //     info_format: 'text/html'
+    //     // };
 
-        // var params = {
-        //     request: 'GetFeatureInfo',
-        //     service: 'WMS',
-        //     srs: 'EPSG:4326',
-        //     // styles: this.wmsParams.styles,
-        //     // transparent: this.wmsParams.transparent,
-        //     version: '1.1.0',
-        //     tolerance : 25,  
-        //     styles : '',    
-        //     // format: this.wmsParams.format,
-        //     // bbox: this._map.getBounds().toBBoxString(),
-        //     height: size.y,
-        //     width: size.x,
-        //     layers: this.wmsParams.layers,
-        //     query_layers: 'SKI_WMS-FOLLO:EIENDOMSKART,KULTURMINNER',
-        //     layers: 'SKI_WMS-FOLLO:EIENDOMSKART,KULTURMINNER',
-        //     format : 'image/png',
+    //     // var params = {
+    //     //     request: 'GetFeatureInfo',
+    //     //     service: 'WMS',
+    //     //     srs: 'EPSG:4326',
+    //     //     // styles: this.wmsParams.styles,
+    //     //     // transparent: this.wmsParams.transparent,
+    //     //     version: '1.1.0',
+    //     //     tolerance : 25,  
+    //     //     styles : '',    
+    //     //     // format: this.wmsParams.format,
+    //     //     // bbox: this._map.getBounds().toBBoxString(),
+    //     //     height: size.y,
+    //     //     width: size.x,
+    //     //     layers: this.wmsParams.layers,
+    //     //     query_layers: 'SKI_WMS-FOLLO:EIENDOMSKART,KULTURMINNER',
+    //     //     layers: 'SKI_WMS-FOLLO:EIENDOMSKART,KULTURMINNER',
+    //     //     format : 'image/png',
 
-        //     info_format: 'text/html',
-        //     x : point.x,
-        //     y : point.y,
-        //     bbox : app._map.getBounds().toBBoxString(),
-        // };
+    //     //     info_format: 'text/html',
+    //     //     x : point.x,
+    //     //     y : point.y,
+    //     //     bbox : app._map.getBounds().toBBoxString(),
+    //     // };
 
 
-        // norkart proxy query
-        var params = {
-            service: 'WMS',
-            srs: 'EPSG:4326',
-            tolerance : 25,  
-            y : latlng.lat,
-            x : latlng.lng,
-            appId : 'CPC-Kommunekart',
-            // querylayers : 'SKI_WMS-FOLLO:EIENDOMSKART'
-        };
+    //     // norkart proxy query
+    //     var params = {
+    //         service: 'WMS',
+    //         srs: 'EPSG:4326',
+    //         tolerance : 25,  
+    //         y : latlng.lat,
+    //         x : latlng.lng,
+    //         appId : 'CPC-Kommunekart',
+    //         // querylayers : 'SKI_WMS-FOLLO:EIENDOMSKART'
+    //     };
 
-        var querylayers = 'SKI_WMS-FOLLO:EIENDOMSKART,KULTURMINNER,PBLTILTAK,BYGGESAKER_UNDER_ARBEID,KP2,RP2,BP3VN2,RP3VN2,KP3,AR5,VEIKATEGORI,RODER;GeoServer_WMS_DOK:layergroup_63;Follo-WMS-TURKART-SOMMER:SYKKELRUTE,SYKKELRUTEFORSLAG,FOTRUTE,FOTRUTEFORSLAG;AreaWMS:0213;';
-        params.querylayers = querylayers;
+    //     var querylayers = 'SKI_WMS-FOLLO:EIENDOMSKART,KULTURMINNER,PBLTILTAK,BYGGESAKER_UNDER_ARBEID,KP2,RP2,BP3VN2,RP3VN2,KP3,AR5,VEIKATEGORI,RODER;GeoServer_WMS_DOK:layergroup_63;Follo-WMS-TURKART-SOMMER:SYKKELRUTE,SYKKELRUTEFORSLAG,FOTRUTE,FOTRUTEFORSLAG;AreaWMS:0213;';
+    //     params.querylayers = querylayers;
 
-        // debug url, norkart proxy
-        var url = 'https://kommunekart.com/api/WebPublisher/GfiProxy?';
-        var done_url = url + L.Util.getParamString(params, url, true);
-        return done_url;
-    },
+    //     // debug url, norkart proxy
+    //     var url = 'https://kommunekart.com/api/WebPublisher/GfiProxy?';
+    //     var done_url = url + L.Util.getParamString(params, url, true);
+    //     return done_url;
+    // },
 
-    getPopup : function () {
-        return this._popup;
-    },
+    // getPopup : function () {
+    //     return this._popup;
+    // },
 
-    showGetFeatureInfo: function (err, latlng, content) {
-        if (err) { console.log(err); return; } // do nothing if there's an error
+    // showGetFeatureInfo: function (err, latlng, content) {
+    //     if (err) { console.log(err); return; } // do nothing if there's an error
 
-        // don't add if layer was removed from map while querying
-        if (!this.options.parentLayer.isAdded()) return;
+    //     // don't add if layer was removed from map while querying
+    //     if (!this.options.parentLayer.isAdded()) return;
 
-        // open content in description box
-        this.options.openContent({
-            latlng : latlng,
-            content : content
-        });
+    //     // open content in description box
+    //     this.options.openContent({
+    //         latlng : latlng,
+    //         content : content
+    //     });
 
-    },
+    // },
 
-});
+// });
 
-L.tileLayer.betterWms = function (url, options) {
-  return new L.TileLayer.BetterWMS(url, options);  
-};
+// L.tileLayer.betterWms = function (url, options) {
+//   return new L.TileLayer.BetterWMS(url, options);  
+// };
 
 
 

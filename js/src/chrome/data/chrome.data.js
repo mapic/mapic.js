@@ -2792,9 +2792,40 @@ M.Chrome.Data = M.Chrome.extend({
         // save
         this._fullscreen.wms_legend_div = name_input4;
 
+        var isOn = layer.getCustomOptions().listen_timeseries_event || false;
+
+        // timeseries listen event
+        var name5 = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth margin-bottom-40', toggles_wrapper, 'Listen to Timeseries Layer Events');
+        var timeseries_event_button = new M.button({
+            id: 'timeseries-event-switch',
+            type: 'switch',
+            isOn: isOn,
+            right: false,
+            disabled: false,
+            appendTo: toggles_wrapper,
+            fn: this._toggleTimeseriesEventListener.bind(this),
+            className: 'chrome-switch-container timeseries-listen top-minus-30'
+        });
+
+        // save layer
+        this._fullscreen.layer = layer;
 
         // return wrapper
         return toggles_wrapper;
+    },
+
+    _toggleTimeseriesEventListener : function (e, isOn) {
+
+        // save
+        var layer = this._fullscreen.layer;
+        layer.setCustomOptions({
+            listen_timeseries_event : isOn
+        });
+
+        // feedback
+        var msg = isOn ? 'Layer is now listening to Timeseries events.' : 'Layer is no longer listening to Timeseries events.'
+        app.FeedbackPane.setMessage({title : 'Saved!', description : msg})
+
     },
 
     _createWMSNameBox : function (options) {

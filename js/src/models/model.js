@@ -13,6 +13,7 @@ M.Model = M.Evented.extend({
 	},      
 
 	_listen : function () {
+		console.log('listening');
 		M.Mixin.Events.on('projectSelected', this._projectSelected, this);
 		M.Mixin.Events.on('editEnabled',     this._editEnabled, this);
 		M.Mixin.Events.on('editDisabled',    this._editDisabled, this);
@@ -27,9 +28,9 @@ M.Model = M.Evented.extend({
 		M.Mixin.Events.on('animationPlay',   this._onAnimationPlay, this);
 		M.Mixin.Events.on('animationStop',   this._onAnimationStop, this);
 		M.Mixin.Events.on('animationSlide',  this._onAnimationSlide, this);
-		M.Mixin.Events.on('setFPS',   		  this._onSetFPS, this);
-		M.Mixin.Events.on('mapClick',   	  this._onMapClick, this);
-		M.Mixin.Events.on('sliderSet',  	  this._onSliderSet, this);
+		M.Mixin.Events.on('setFPS',   		 this._onSetFPS, this);
+		M.Mixin.Events.on('mapClick',   	 this._onMapClick, this);
+		M.Mixin.Events.on('sliderSet',  	 this._onSliderSet, this);
 		M.Mixin.Events.on('sliderUpdate',    this._onSliderUpdate, this);
 		
 		// file events

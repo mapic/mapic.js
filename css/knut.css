@@ -3067,7 +3067,7 @@ span.mask-item-value {
     color: rgba(220, 220, 220, 0.52);
     position: absolute;
     top: 6px;
-    left: 0px;
+    right: 0px;
     width: 20px;
     height: 20px;
     transform: rotate(90deg);
@@ -3277,8 +3277,8 @@ input#geojson-upload {
 
 .graph-help-button {
     position: absolute;
-    right: 0;
-    top: 0;
+    left: 0;
+    top: -11px;
     margin: 10px;
     font-size: 20px;
 }
@@ -3290,7 +3290,7 @@ input#geojson-upload {
 .graph-help-tooltip {
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;
+    /*border-bottom: 1px dotted black;*/
 }
 
 .graph-help-tooltip .graph-help-tooltiptext {
@@ -3329,14 +3329,14 @@ input#geojson-upload {
     background: red;
     z-index: 100000;
     margin-bottom: 1px;
-    margin-left: 50px;
+    /*margin-left: 50px;*/
     float: left;
     left: 0px;
     bottom: 5px;
 }
 
 .snow-graph-container .big-graph-outer-container {
-    right: 0px;
+    left: 0px;
     bottom: 5px;
 
 }

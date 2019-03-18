@@ -798,7 +798,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         var didx = this._findDatasetByTimestamp(timestamp);
 
         // fire global event
-        console.log('firing time')
         M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
             timestamp : timestamp
         }}); 
@@ -1037,7 +1036,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     // event when slider is set
     _onSliderSet : function (e) {
-        console.log('_onSliderSet', e);
         if (!this._added) return;
 
         // get timestamp

@@ -674,14 +674,14 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // set size of container
         var height = this._resizeValues.h - movement_y;
-        var width = this._resizeValues.w - movement_x;
+        var width = this._resizeValues.w + movement_x;
         if (height < 300) height = 300;
         if (width < 600) width = 600;
         this._container.style.height = height + 'px';
         this._container.style.width = width + 'px';
 
         // set size of chart
-        var chart_width = this._resizeValues.cw - movement_x; // 500
+        var chart_width = this._resizeValues.cw + movement_x; // 500
         var chart_height = this._resizeValues.ch - movement_y; // 220
         if (chart_width < 500) chart_width = 500;
         if (chart_height < 220) chart_height = 220;
@@ -689,7 +689,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this.dc.renderAll();
 
         // set text offsets
-        var left = this._resizeValues.dl - movement_x;
+        var left = this._resizeValues.dl + movement_x;
         if (left < 330) left = 330;
         this._dateTitle.style.left = left + 'px';
 

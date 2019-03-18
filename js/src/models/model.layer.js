@@ -207,11 +207,17 @@ M.Model.Layer = M.Model.extend({
         // hide if empty and not editor
         var project = app.activeProject;
         var isEditor = project.isEditor();
-        if (this.store.description || isEditor) { // todo: what if only editor 
-            descriptionControl.show();
-        } else {                                // refactor to descriptionControl
-            descriptionControl.hide();
-        }
+
+        // ensure description control is visible
+        descriptionControl.show(); // debug
+        return; // debug
+
+
+        // if (this.store.description || isEditor) { // todo: what if only editor 
+        //     descriptionControl.show();
+        // } else {                                // refactor to descriptionControl
+        //     descriptionControl.hide();
+        // }
         
     },
 

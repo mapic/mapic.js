@@ -125,10 +125,10 @@ L.Control.Description = M.Control.extend({
     },
 
     _onLayerEnabled : function (d) {
-        this._ensureLegendVisible();
+        // this._ensureLegendVisible();
     },
     _onLayerDisabled : function (d) {
-        this._ensureLegendVisible();
+        // this._ensureLegendVisible();
     },
 
     closeMobile : function () {
@@ -156,6 +156,7 @@ L.Control.Description = M.Control.extend({
         var isOpen = e.detail.leftPaneisOpen;
         var display = isOpen ? "none" : "block";
         this._container.style.display = display;
+
     },
 
     _legendIsBeingUpdated : function (e) {
@@ -183,10 +184,11 @@ L.Control.Description = M.Control.extend({
         this.toggleScale(true);
 
         // ensure description is not under SCF graph
-        this._ensureLegendVisible();
+        // this._ensureLegendVisible();
     },
 
     _ensureLegendVisible : function () {
+        return;
         var move = false;
         var activeLayers = app.MapPane.getActiveLayers();
 
@@ -202,7 +204,6 @@ L.Control.Description = M.Control.extend({
             M.DomUtil.removeClass(this._content, 'move-description-above');
 
         }
-
     },
 
     hide : function () {
@@ -229,6 +230,7 @@ L.Control.Description = M.Control.extend({
 
         // Hide if empty
         if ( !this.layers || _.isEmpty(this.layers) ) {
+            
             this._hide();
             return;
         }
@@ -236,6 +238,7 @@ L.Control.Description = M.Control.extend({
         // show
         this._container.style.display = 'block';
         this.isOpen = true;
+
     },
 
     _hide : function () {   

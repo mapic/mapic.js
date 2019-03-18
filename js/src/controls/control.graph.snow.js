@@ -579,7 +579,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         if (this._container) return;
 
         // todo: refactor the DOM, incl. animator
-        app._graphContainer = app._graphContainer || M.DomUtil.create('div', 'graph-container', app._appPane);
+        app._graphContainer          = app._graphContainer || M.DomUtil.create('div', 'graph-container', app._appPane);
         this._mainContainer          = M.DomUtil.create('div', 'snow-graph-container',                 app._graphContainer);
         this._container              = M.DomUtil.create('div', 'big-graph-outer-container',            this._mainContainer);
         this._infoContainer          = M.DomUtil.create('div', 'big-graph-info-container',             this._container);
@@ -1201,6 +1201,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         if (_.isUndefined(latest)) {
             // no datasets at all
+            return;
             return this._setSliderToToday();
         }
 
@@ -1424,6 +1425,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // update titles
         this._updateTitles();
+
+        
     },
 
     _getTitle : function () {

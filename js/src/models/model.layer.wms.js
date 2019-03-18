@@ -55,6 +55,8 @@ M.WMSLayer = M.Model.Layer.extend({
 
     _on_timeseries_layer_date_changed : function (e) {
 
+        console.log('_on_timeseries_layer_date_changed', e);
+
         var isOn = this.getCustomOptions().listen_timeseries_event || false;
         if (!isOn) return;
 
@@ -268,6 +270,8 @@ M.WMSLayer = M.Model.Layer.extend({
 
     _setHooks : function (on) {
         M.Mixin.Events[on]('timeseries_layer_date_changed', this._on_timeseries_layer_date_changed, this);
+        // M.Mixin.Events.on('sliderSet', this._on_timeseries_layer_date_changed, this);
+
     },
 
     remove : function (map) {

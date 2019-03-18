@@ -2067,7 +2067,7 @@ g.axis.y {
     padding-right: 0px;
     position: absolute;
     right: 100px;
-    bottom: 45px !important;
+    /*bottom: 45px !important;*/
     border-radius: 0;
     /* opacity: 0; */
     color: white;
@@ -3320,6 +3320,7 @@ input#geojson-upload {
     position: absolute;
     width: 100%;
 }
+
 .snow-graph-container {
     position: relative;
     width: 560px;
@@ -3327,11 +3328,17 @@ input#geojson-upload {
     top: 0;
     background: red;
     z-index: 100000;
-    right: 0;
-    bottom: 0px;
-    float: right;
     margin-bottom: 1px;
     margin-left: 50px;
+    float: left;
+    left: 0px;
+    bottom: 5px;
+}
+
+.snow-graph-container .big-graph-outer-container {
+    right: 0px;
+    bottom: 5px;
+
 }
 
 .graph-scf-button {
@@ -3365,7 +3372,7 @@ input#geojson-upload {
     margin: 0;
     line-height: 0px;
     min-height: unset;
-    right: -130px;
+    /*right: -130px;*/
 }
 
 .hidden-scf-graph  .big-graph-info-container {
@@ -3576,7 +3583,7 @@ input#geojson-upload {
 }
 
 .move-description-above {
-    top: -350px;
+    /*top: -350px;*/
 }
 
 

@@ -150,7 +150,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             }
 
             // show legend
-            this._showLegend();
+            // this._showLegend();
 
             // mark added
             this._added = true;
@@ -787,6 +787,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     _onLayerClick : function (e) {
     },
 
+    _n : 0,
+
     _moveCursor : function (options) {
 
         // get options
@@ -795,6 +797,13 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // find index of dataset corresponding to current date
         var didx = this._findDatasetByTimestamp(timestamp);
 
+        // fire global event
+        console.log('firing time')
+        M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
+            timestamp : timestamp
+        }}); 
+
+
         if (didx < 0) {
             console.error('no dataset corresponding to timestamp', timestamp);
             // app.FeedbackPane.setError({title : 'No raster available', description : 'There is no satellite imagery available for this date. Please try another date.'})
@@ -802,8 +811,16 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             // hide
             // this._hideLayer(this.layer);
 
-            // jump to latest available
-            this._graph._setSliderToLatestAvailableImage();
+            this._n += 1;
+
+            if (this._n < 2) {
+
+                // jump to latest available
+                // this._graph._setSliderToLatestAvailableImage();
+
+            } else {
+                this._n = 0;
+            }
 
             // done
             return;
@@ -824,11 +841,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // sets cursor at current frame (ie. show layer on map)
         this._updateCursor();
 
-        // fire global event
-        M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
-            timestamp : timestamp
-        }}); 
-
+       
     },
 
     // this is where layers are shown on map 
@@ -1024,6 +1037,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     // event when slider is set
     _onSliderSet : function (e) {
+        console.log('_onSliderSet', e);
         if (!this._added) return;
 
         // get timestamp

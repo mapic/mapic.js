@@ -326,8 +326,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // create graph
         this._graph = new M.Graph.SnowCoverFraction({ 
-            type     : 'annualCycles',
-            cube     : this,
+            type : 'annualCycles',
+            cube : this,
         });
 
         // return
@@ -797,12 +797,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // find index of dataset corresponding to current date
         var didx = this._findDatasetByTimestamp(timestamp);
 
-        // fire global event
-        M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
-            timestamp : timestamp
-        }}); 
-
-
         if (didx < 0) {
             console.error('no dataset corresponding to timestamp', timestamp);
             // app.FeedbackPane.setError({title : 'No raster available', description : 'There is no satellite imagery available for this date. Please try another date.'})
@@ -891,6 +885,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // log
         console.error('cursor @', this._cursor);
+
+        // fire global event
+        M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
+            timestamp : dataset.timestamp
+        }}); 
+
     },
 
     // update cache // todo: move cache to own Class ?
@@ -1160,6 +1160,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     setDatasetDate : function (options, done) {
+
+        console.error('setDatasetDate', options);
 
         // get date, dataset
         var date = options.date;

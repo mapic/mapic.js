@@ -1082,11 +1082,11 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .attr("class", 'vertical-scf-graph-line')
         .style("position", "absolute")
         .style("z-index", "19")
-        .style("width", "4px")
+        .style("width", "8px")
         .style("height", "180px")
         .style("bottom", "34px")
         .style("left", "40px") // starting position
-        .style("background", "rgb(6, 137, 128)");
+        .style("background", "rgba(74, 255, 242, 0.67)");
 
         // remember state
         var that = this;
@@ -1169,22 +1169,27 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
             if (that._slider.state) {
                 // turn OFF
-                vertical.style("width", "2px" )
+                vertical.style("width", "8px");
                 that._slider.state = false;
 
                 // fire
                 that.fire('sliderClick');
                 that._slider.left = mousex;
 
+                vertical.style("background", "rgba(74, 255, 242, 0.67)"); 
+
             } else {
                 // turn ON
-                vertical.style("width", "1px" )
+                vertical.style("width", "4px");
                 that._slider.state = true;
 
                 // set to mousepointer on click
                 mousex = d3.mouse(this)[0] + 0;
                 vertical.style("left", mousex + "px")
                 that._slider.left = mousex;
+
+                vertical.style("background", "white");
+
 
             }
         });

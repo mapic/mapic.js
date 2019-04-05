@@ -815,6 +815,11 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
                 this._n = 0;
             }
 
+            // fire global event
+            M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
+                timestamp : timestamp
+            }}); 
+
             // done
             return;
         }
@@ -872,6 +877,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             // M.Mixin.Events.fire('cubeCacheNoLayer', { detail : { 
             //     cube : this 
             // }});
+
+
             
             // done here
             return;

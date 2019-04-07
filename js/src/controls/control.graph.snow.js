@@ -922,6 +922,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     // should run only once! 
     _createGraph : function (data) {
 
+        // save
+        this._data = data;
+
         // store crossfilters, dimensions, etc
         this.ndx = {};
 
@@ -1195,9 +1198,46 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         });
 
         // set default slider position
-        this._setSliderToLatestAvailableImage();
+        // this._setSliderToLatestAvailableImage();
+        this._setSliderToLatestAvailable();
 
     },
+
+    getYearlyData : function () {
+        return this._data;
+    },
+
+
+    _setSliderToLatestAvailable : function () {
+
+        // get latest image
+        var latest = _.last(this._data.years);
+
+        if (_.isUndefined(latest)) return;
+
+        var date = latest.date;
+        var doy = date.format('DDD');
+
+        // set to doy
+        var today = doy;
+        var diff = today - 244; // todo: only true if not leap year, otherwise 245
+        var p = (diff < 0) ? 365 + diff : diff;
+
+        // fire event
+        this.fire('sliderMovement', {
+            p : p
+        });
+
+        // calc and set
+        var todaymousex = (p * 82 / 73) + 40;
+        this._slider.vertical.style("left", todaymousex + "px");
+
+        // set cursor and date to current date
+        var date = this._getSliderDate(this._p);
+        this.cube().setCursor(date);
+
+    },
+
 
     _setSliderToLatestAvailableImage : function () {
 

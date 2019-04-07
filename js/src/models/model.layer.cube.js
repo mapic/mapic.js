@@ -789,6 +789,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     _n : 0,
 
+    _findLatestExternalData : function () {
+        var data = this._graph.getYearlyData();
+        var latest = _.last(data.years);
+        return latest;
+    },
+
     _moveCursor : function (options) {
 
         // get options
@@ -797,31 +803,33 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // find index of dataset corresponding to current date
         var didx = this._findDatasetByTimestamp(timestamp);
 
-        if (didx < 0) {
+        // find latest data
+        var latest_external_data = this._findLatestExternalData();
+        var beyond = timestamp.isAfter(latest_external_data.date, 'day');
+
+        if (didx < 0 && beyond) {
+        // if (didx < 0) {
             console.error('no dataset corresponding to timestamp', timestamp);
-            // app.FeedbackPane.setError({title : 'No raster available', description : 'There is no satellite imagery available for this date. Please try another date.'})
+           
+            // jump to latest available
+            this._graph._setSliderToLatestAvailable();
 
-            // hide
-            // this._hideLayer(this.layer);
+            // fire global event
+            M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
+                timestamp : latest_external_data.date
+            }}); 
 
-            this._n += 1;
+            // done
+            return;
 
-            if (this._n < 2) {
 
-                // jump to latest available
-                // this._graph._setSliderToLatestAvailableImage();
-
-            } else {
-                this._n = 0;
-            }
+        } else {
+            console.log('there should be some data');
 
             // fire global event
             M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
                 timestamp : timestamp
             }}); 
-
-            // done
-            return;
         }
 
         // set direction (for cache algorithm)

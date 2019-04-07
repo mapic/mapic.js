@@ -46,7 +46,7 @@ L.Control.Description = M.Control.extend({
         this._header = M.DomUtil.create('div', 'description-control-header-section', this._inner);
 
         // toggle
-        this._toggle = M.DomUtil.create('div', 'description-control-minimize', this._multipleLegendOuter, '<i class="fa fa-arrow-down"></i>');
+        // this._toggle = M.DomUtil.create('div', 'description-control-minimize', this._multipleLegendOuter, '<i class="fa fa-arrow-down"></i>');
 
         // SINGLE LEGEND VIEW WRAPPER
         this._singleLegendViewWrapper = M.DomUtil.create('div', 'single-legend-view-wrapper', this._inner);
@@ -105,7 +105,7 @@ L.Control.Description = M.Control.extend({
             
         } else {
             // collapsers
-            M.DomEvent.on(this._toggle, 'click', this.toggle, this);
+            // M.DomEvent.on(this._toggle, 'click', this.toggle, this);
         }
 
         // prevent map double clicks
@@ -1009,6 +1009,7 @@ L.Control.Description = M.Control.extend({
                 
                 // Set layer menu total height
                 if ( layermenu ) {
+                    console.log('setting maxheight #1: ', layersAllowedHeight);
                     layermenu.style.maxHeight = layersAllowedHeight + 'px';
                 }
 
@@ -1017,6 +1018,10 @@ L.Control.Description = M.Control.extend({
                 if ( this.isCollapsed ) {
                     this._outer.style.maxHeight = legendAllowedHeight + 'px';
                     this._inner.style.maxHeight = legendAllowedHeight - 30 + 'px';
+
+                    console.log('setting maxheight #2: ', legendAllowedHeight);
+                    console.log('setting maxheight #3: ', legendAllowedHeight, '- 30');
+
 
                 // If top legend selector is open, calculate height.
                 } else {
@@ -1033,7 +1038,10 @@ L.Control.Description = M.Control.extend({
                         if ( legendBoxVisisbleHeight > (allowedHeightUnit*3) ) {
                             this._multipleLegendInner.style.maxHeight = allowedHeightUnit + 'px';
                             this._outer.style.maxHeight = (allowedHeightUnit*3) + 'px';
-                            this._inner.style.maxHeight = (allowedHeightUnit*3) - 30 + 'px';                    
+                            this._inner.style.maxHeight = (allowedHeightUnit*3) - 30 + 'px';   
+
+                            console.log('setting maxheight #4: ', allowedHeightUnit, ' * 3');
+
                         
                         // Legend box is NOT larger than 3/4 of available space
                         // Remvoe maxHeight from Legend box, 
@@ -1042,6 +1050,9 @@ L.Control.Description = M.Control.extend({
                             this._multipleLegendInner.style.maxHeight = (legendAllowedHeight - legendBoxVisisbleHeight) + 'px';
                             this._outer.style.maxHeight = legendBoxVisisbleHeight + 'px';
                             this._inner.style.maxHeight = legendBoxVisisbleHeight - 30 + 'px';
+
+                            console.log('setting maxheight #5: ', legendBoxVisisbleHeight);
+
                         }
 
                     } else {
@@ -1049,6 +1060,9 @@ L.Control.Description = M.Control.extend({
                         this._multipleLegendInner.style.maxHeight = h + 'px';
                         this._outer.style.maxHeight = h + 'px';
                         this._inner.style.maxHeight = h - 30 + 'px';
+
+                        console.log('setting maxheight #6: ', h);
+
                     }
                 }
                 
@@ -1062,6 +1076,9 @@ L.Control.Description = M.Control.extend({
                 this._multipleLegendInner.style.maxHeight = h + 'px';
                 this._outer.style.maxHeight = h + 'px';
                 this._inner.style.maxHeight = h - 30 + 'px';
+
+                console.log('setting maxheight #7: ', h);
+
 
             }
 

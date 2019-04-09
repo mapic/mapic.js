@@ -117,6 +117,18 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         if (this._topHeader) this._topHeader.style.display = 'none';
     },
 
+    // _findLatestExternalData : function () {
+    //     var data = this.getYearlyData();
+    //     var latest = _.last(data.years);
+    //     return latest;
+    // },
+
+    // _getDefaultTimestamp : function () {
+    //     var time = this._findLatestExternalData();
+    //     var timestamp = time.date;
+    //     return timestamp;
+    // },
+
     // get/set parsed based on mask.id
     parsed : function (parsed) {
         if (parsed) {

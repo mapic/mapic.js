@@ -55,11 +55,28 @@ M.WMSLayer = M.Model.Layer.extend({
 
     _on_timeseries_layer_date_changed : function (e) {
 
+        console.log('_on_timeseries_layer_date_changed', e);
+
         var isOn = this.getCustomOptions().listen_timeseries_event || false;
         if (!isOn) return;
 
         // get time
-        var timestamp = e.detail.timestamp;
+        this._timestamp = e.detail.timestamp;
+
+        // set param
+        this.setTimestampParam();
+
+    },
+
+    setTimestampParam : function () {
+
+        var timestamp = this._timestamp;
+        if (!timestamp) {
+            var timestamp = moment(); // today
+            // return console.error('no timestamp');
+        }
+        
+        // parse time
         var parsed_time = moment(timestamp).format('YYYY-MM-DD');
 
         // save time options
@@ -235,6 +252,9 @@ M.WMSLayer = M.Model.Layer.extend({
             // add to controls
             this.addToControls();
 
+            // set timetamp param
+            this.setTimestampParam();
+
         }.bind(this));
     },
 
@@ -257,6 +277,8 @@ M.WMSLayer = M.Model.Layer.extend({
         M.Mixin.Events.fire('layerEnabled', { detail : {
             layer : this
         }}); 
+
+        console.log('wms add');
 
     },
 

@@ -795,6 +795,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         return latest;
     },
 
+    _getDefaultTimestamp : function () {
+        var time = this._findLatestExternalData();
+        var timestamp = time.date;
+        return timestamp;
+    },
+
     _moveCursor : function (options) {
 
         // get options

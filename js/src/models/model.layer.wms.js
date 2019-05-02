@@ -72,8 +72,11 @@ M.WMSLayer = M.Model.Layer.extend({
 
         var timestamp = this._timestamp;
         if (!timestamp) {
-            var timestamp = moment(); // today
-            // return console.error('no timestamp');
+            // var timestamp = moment(); // today
+            // var timestamp = moment().subtract(1, 'days'); // today
+            console.error('no timestamp');
+            // var timestamp = app._scf_latest ? app._scf_latest.date : moment();
+            var timestamp = app._scf_current;
         }
         
         // parse time
@@ -252,9 +255,10 @@ M.WMSLayer = M.Model.Layer.extend({
             // add to controls
             this.addToControls();
 
-            // set timetamp param
-            this.setTimestampParam();
+            // // set timetamp param
+            // this.setTimestampParam();
 
+           
         }.bind(this));
     },
 
@@ -279,6 +283,10 @@ M.WMSLayer = M.Model.Layer.extend({
         }}); 
 
         console.log('wms add');
+
+        // set timetamp param
+        this.setTimestampParam();
+
 
     },
 

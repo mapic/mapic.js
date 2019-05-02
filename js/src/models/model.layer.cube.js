@@ -789,14 +789,15 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     _n : 0,
 
-    _findLatestExternalData : function () {
-        var data = this._graph.getYearlyData();
-        var latest = _.last(data.years);
-        return latest;
-    },
+    // _findLatestExternalData : function () {
+    //     var data = this._graph.getYearlyData();
+    //     var latest = _.last(data.years);
+    //     return latest;
+    // },
 
     _getDefaultTimestamp : function () {
-        var time = this._findLatestExternalData();
+        // var time = this._findLatestExternalData();
+        var time = app._scf_latest;
         var timestamp = time.date;
         return timestamp;
     },
@@ -806,19 +807,24 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // get options
         var timestamp = options.timestamp;
 
+
         // find index of dataset corresponding to current date
         var didx = this._findDatasetByTimestamp(timestamp);
 
         // find latest data
-        var latest_external_data = this._findLatestExternalData();
+        // var latest_external_data = this._findLatestExternalData();
+        var latest_external_data = app._scf_latest;
         var beyond = timestamp.isAfter(latest_external_data.date, 'day');
 
         if (didx < 0 && beyond) {
         // if (didx < 0) {
             console.error('no dataset corresponding to timestamp', timestamp);
-           
+
+            app._scf_current = latest_external_data.date;
+
             // jump to latest available
             this._graph._setSliderToLatestAvailable();
+
 
             // fire global event
             M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
@@ -831,6 +837,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         } else {
             console.log('there should be some data');
+
+            app._scf_current = timestamp;
 
             // fire global event
             M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {

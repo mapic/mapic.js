@@ -937,6 +937,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // save
         this._data = data;
 
+        // save globally
+        app._scf_latest = _.last(this._data.years);
+
         // store crossfilters, dimensions, etc
         this.ndx = {};
 

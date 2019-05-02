@@ -16,7 +16,6 @@ M.Pane = M.Class.extend({
 	},      
 
 	_listen : function () {
-		console.log('pane listen');
 		M.Mixin.Events.on('projectSelected', this._projectSelected, this);
 		M.Mixin.Events.on('editEnabled',     this._editEnabled, this);
 		M.Mixin.Events.on('editDisabled',    this._editDisabled, this);

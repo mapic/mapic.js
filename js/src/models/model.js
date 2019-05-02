@@ -13,7 +13,6 @@ M.Model = M.Evented.extend({
 	},      
 
 	_listen : function () {
-		console.log('listening');
 		M.Mixin.Events.on('projectSelected', this._projectSelected, this);
 		M.Mixin.Events.on('editEnabled',     this._editEnabled, this);
 		M.Mixin.Events.on('editDisabled',    this._editDisabled, this);

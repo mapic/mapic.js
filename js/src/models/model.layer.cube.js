@@ -117,7 +117,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     _addTo : function () {
 
-        console.log('M.Model.Layer.CubeLayer: ', this);
+        console.log(this);
 
         // ensure inited
         this.initLayer(function (err) {
@@ -836,7 +836,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
 
         } else {
-            console.log('there should be some data');
+            // console.log('there should be some data');
 
             app._scf_current = timestamp;
 

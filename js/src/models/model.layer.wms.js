@@ -55,8 +55,6 @@ M.WMSLayer = M.Model.Layer.extend({
 
     _on_timeseries_layer_date_changed : function (e) {
 
-        console.log('_on_timeseries_layer_date_changed', e);
-
         var isOn = this.getCustomOptions().listen_timeseries_event || false;
         if (!isOn) return;
 
@@ -74,7 +72,6 @@ M.WMSLayer = M.Model.Layer.extend({
         if (!timestamp) {
             // var timestamp = moment(); // today
             // var timestamp = moment().subtract(1, 'days'); // today
-            console.error('no timestamp');
             // var timestamp = app._scf_latest ? app._scf_latest.date : moment();
             var timestamp = app._scf_current;
         }
@@ -282,11 +279,8 @@ M.WMSLayer = M.Model.Layer.extend({
             layer : this
         }}); 
 
-        console.log('wms add');
-
         // set timetamp param
         this.setTimestampParam();
-
 
     },
 

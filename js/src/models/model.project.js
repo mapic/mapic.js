@@ -454,6 +454,26 @@ M.Model.Project = M.Model.extend({
 
 	},
 
+	getCustomLogo : function () {
+
+		// // css object
+		// var default_logo = {
+		// 	width : "200px",
+		// 	height: "100px",
+		// 	background : ""
+		// } 
+
+
+		var logo = M.parse(this.store.logo) || false;
+
+		return logo;
+	},
+
+	setCustomLogo : function (logo_object) {
+		this.store.logo = M.stringify(logo_object) || "";
+		this._update('logo');
+	},
+
 	removeMapboxAccount : function (account) {
 		var removed = _.remove(this.store.connectedAccounts.mapbox, function (m) {	// todo: include access token
 			return m == account;

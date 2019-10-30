@@ -3588,6 +3588,18 @@ input#geojson-upload {
 
 
 
+.layer-item-up.vertical {
+    right: 60px;
+    background-position: -346px -25px;
+}
+.layer-item-down.vertical {
+    right: 40px;
+    background-position: -346px 3px;
+}
+
+.layer-item-delete {
+    right: 80px;
+}
 
 
 

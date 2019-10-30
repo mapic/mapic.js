@@ -320,7 +320,7 @@ M.Model.Project = M.Model.extend({
 		this._refresh();
 	},
 
-	_update : function (field, value) {
+	_update : function (field, value, noRefresh) {
 
 		// set fields
 		var options = {};
@@ -328,7 +328,7 @@ M.Model.Project = M.Model.extend({
 		options.uuid = this.store.uuid;
 
 		// save to server
-		this._save(options);
+		this._save(options, noRefresh);
 	},
 
 	_updateSlug : function (field , value) {
@@ -344,10 +344,17 @@ M.Model.Project = M.Model.extend({
 		console.error('deprecated');
 	},
 
-	_save : function (options) {
+	noop : function () {
+
+	},
+
+	_save : function (options, noRefresh) {
 		
+		var callback = noRefresh ? this.noop : this._saved.bind(this);
+
 		// save to server                                       	
-		app.api.updateProject(options, this._saved.bind(this));
+		// app.api.updateProject(options, this._saved.bind(this));
+		app.api.updateProject(options, callback);
 	},
 
 	// callback for save

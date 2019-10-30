@@ -1185,6 +1185,19 @@ L.Control.Layermenu = M.Control.extend({
 		}
 
 
+	
+
+
+		var inner = M.DomUtil.create('div', 'layer-menu-item', wrap);
+		inner.setAttribute('type', 'layerItem');
+		inner.innerHTML = caption;
+
+
+		// add hooks
+		M.DomEvent.on(up,   'click', function (e) { this.upFolder(uuid); 	  }, this);
+		M.DomEvent.on(down, 'click', function (e) { this.downFolder(uuid); 	  }, this);
+
+
 		// add vertical-movement triggers
 		var v_up = M.DomUtil.create('div', 'layer-item-up vertical', wrap);
 		var v_down = M.DomUtil.create('div', 'layer-item-down vertical', wrap);
@@ -1197,16 +1210,6 @@ L.Control.Layermenu = M.Control.extend({
 			var parentEl = e.target.parentNode;
 			this.drag.moveElementDown(parentEl);
 		}, this);
-
-
-		var inner = M.DomUtil.create('div', 'layer-menu-item', wrap);
-		inner.setAttribute('type', 'layerItem');
-		inner.innerHTML = caption;
-
-
-		// add hooks
-		M.DomEvent.on(up,   'click', function (e) { this.upFolder(uuid); 	  }, this);
-		M.DomEvent.on(down, 'click', function (e) { this.downFolder(uuid); 	  }, this);
 
 
 		if (!layer) { // folder
@@ -1437,8 +1440,8 @@ L.Control.Layermenu = M.Control.extend({
 
 		// save on timeout
 		this.saveTimer = setTimeout(function () {
-			that._project._update('layermenu');
-		}, 1000);       // don't save more than every goddamed second
+			that._project._update('layermenu', null, true); // noRefresh = true (to avoid heavy reload of project)
+		}, 300); // don't save too often
 
 	},
 

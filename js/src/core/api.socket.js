@@ -68,7 +68,7 @@ M.Socket = M.Class.extend({
 		});
 		
 		socket.on('event', function(data){
-			console.log('event data: ', data);
+			console.log('socket event data: ', data);
 		});
 
 		socket.on('tile_count', function(data){
@@ -84,23 +84,24 @@ M.Socket = M.Class.extend({
 		});
 		
 		socket.on('disconnect', function(){
-			console.log('disconnect!');
+			console.log('socket disconnect!');
 			// app._login('You have been logged out. Please log back in.')
 		});
 		
 		socket.on('reconnect', function(){
-			console.log('reconnecting!');
+			console.log('socket reconnecting!');
 		});
 		
 		socket.on('reconnect_error', function(){
-			console.log('reconnect_error!');
+			console.log('socket reconnect_error!');
 		});
 		
 		socket.on('reconnect_failed', function(){
-			console.log('reconnect_failed!');
+			console.log('socket reconnect_failed!');
 		});
 		
 		socket.on('processingProgress', function(data) {
+			console.log('socket processingProgress', data)
 			M.Mixin.Events.fire('processingProgress', {
 				detail : data
 			});
@@ -110,6 +111,7 @@ M.Socket = M.Class.extend({
 		});
 		
 		socket.on('uploadDone', function (data) {
+			console.log('socket uploadDone', data);
 		});
 		
 		socket.on('generate_tiles', function (data) {
@@ -123,11 +125,13 @@ M.Socket = M.Class.extend({
 		});
 		
 		socket.on('downloadReady', function (data) {
+			console.log('socket downloadReady', data);
 			var event_id = 'downloadReady-' + data.file_id;
 			M.Mixin.Events.fire(event_id, {detail : data});
 		});
 		
 		socket.on('processingDone', function (data) {
+			console.log('socket processingDone', data);
 
 			// notify data lib
 			var file_id = data.file_id;
@@ -137,6 +141,7 @@ M.Socket = M.Class.extend({
 		});
 		
 		socket.on('errorMessage', function (data) {
+			console.log('socket errorMessage', data);
 
 			var content = data.error;
 			var uniqueIdentifier = content.uniqueIdentifier;

@@ -678,6 +678,8 @@ M.VectorLayer = M.Model.Layer.extend({
         path += '&type=shp';
         path += '&access_token=' + app.tokens.access_token;
 
+        console.log('_onDownloadReady', path);
+
         // open (note: some browsers will block pop-ups. todo: test browsers!)
         window.open(path, 'mywindow');
 

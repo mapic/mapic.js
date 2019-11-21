@@ -7,7 +7,13 @@ M.Socket = M.Class.extend({
 		}
 
 		// create socket
-		this._socket = window.io.connect();
+		// this._socket = window.io.connect(window.location.origin, { forceNew: false });
+		this._socket = window.io.connect('/', {
+			rememberUpgrade : true,
+			timeout : 60000,
+			reconnection : true,
+
+		});
 
 		// add listeners
 		this._listen();
@@ -19,7 +25,7 @@ M.Socket = M.Class.extend({
 	_addLoops : function () {
 		setInterval(function () {
 			this._getServerStats();
-		}.bind(this), 2000);
+		}.bind(this), 10000);
 	},
 
 	_getServerStats : function () {
@@ -65,7 +71,9 @@ M.Socket = M.Class.extend({
 		socket.on('connect', function(){
 			console.log('Securely connected to socket.');
 			app.Socket.send('ready');
-			app.log('socket:ready');
+			app.log('socket:ready', { info : {
+				socket_id : app.Socket._socket.socket.sessionid
+			}});
 		});
 		
 		socket.on('event', function(data){

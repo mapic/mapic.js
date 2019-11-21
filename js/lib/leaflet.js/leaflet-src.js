@@ -397,9 +397,9 @@ function checkDeprecatedMixinEvents(includes) {
 
     for (var i = 0; i < includes.length; i++) {
         if (includes[i] === L.Mixin.Events) {
-            console.warn('Deprecated include of L.Mixin.Events: ' +
-                'this property will be removed in future releases, ' +
-                'please inherit from L.Evented instead.', new Error().stack);
+            // console.warn('Deprecated include of L.Mixin.Events: ' +
+            //     'this property will be removed in future releases, ' +
+            //     'please inherit from L.Evented instead.', new Error().stack);
         }
     }
 }

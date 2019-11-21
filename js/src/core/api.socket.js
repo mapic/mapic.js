@@ -65,10 +65,15 @@ M.Socket = M.Class.extend({
 		socket.on('connect', function(){
 			console.log('Securely connected to socket.');
 			app.Socket.send('ready');
+			app.log('socket:ready');
 		});
 		
 		socket.on('event', function(data){
 			console.log('socket event data: ', data);
+			app.log('socket:event', {
+				info : data
+			});
+
 		});
 
 		socket.on('tile_count', function(data){
@@ -85,19 +90,27 @@ M.Socket = M.Class.extend({
 		
 		socket.on('disconnect', function(){
 			console.log('socket disconnect!');
+			app.log('socket:disconnect');
+
 			// app._login('You have been logged out. Please log back in.')
 		});
 		
 		socket.on('reconnect', function(){
 			console.log('socket reconnecting!');
+			
+			app.log('socket:reconnecting');
 		});
 		
 		socket.on('reconnect_error', function(){
 			console.log('socket reconnect_error!');
+
+			app.log('socket:reconnect:error');
 		});
 		
 		socket.on('reconnect_failed', function(){
 			console.log('socket reconnect_failed!');
+
+			app.log('socket:reconnect:failed');
 		});
 		
 		socket.on('processingProgress', function(data) {
@@ -105,6 +118,8 @@ M.Socket = M.Class.extend({
 			M.Mixin.Events.fire('processingProgress', {
 				detail : data
 			});
+
+			app.log('processing:progress', { info : data });
 		});
 		
 		socket.on('stats', function(data) {
@@ -112,6 +127,8 @@ M.Socket = M.Class.extend({
 		
 		socket.on('uploadDone', function (data) {
 			console.log('socket uploadDone', data);
+			app.log('upload:done', { info : data });
+
 		});
 		
 		socket.on('generate_tiles', function (data) {
@@ -126,12 +143,17 @@ M.Socket = M.Class.extend({
 		
 		socket.on('downloadReady', function (data) {
 			console.log('socket downloadReady', data);
+
+			app.log('download:ready', { info : data });
+			
 			var event_id = 'downloadReady-' + data.file_id;
 			M.Mixin.Events.fire(event_id, {detail : data});
 		});
 		
 		socket.on('processingDone', function (data) {
 			console.log('socket processingDone', data);
+
+			app.log('processing:done', { info : data });
 
 			// notify data lib
 			var file_id = data.file_id;
@@ -142,6 +164,8 @@ M.Socket = M.Class.extend({
 		
 		socket.on('errorMessage', function (data) {
 			console.log('socket errorMessage', data);
+			
+			app.log('socket:error', { info : data });
 
 			var content = data.error;
 			var uniqueIdentifier = content.uniqueIdentifier;

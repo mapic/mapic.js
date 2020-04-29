@@ -1068,7 +1068,7 @@ M.Chrome.Projects = M.Chrome.extend({
 					var user = app.Users[userUuid];
 
 					// ensure user
-					if (!user) return console.error('no such user');
+					if (!user) return console.error('no such user: ', userUuid);
 
 					this._checkedUsers[options.type][user.getFullName()] = user;
 					this._addUserAccessItem({

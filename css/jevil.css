@@ -666,7 +666,7 @@ input.chrome-field-input {
 .leaflet-popup-content-wrapper {
     border-radius: 4px;
     box-shadow: none;
-    max-height: 400px;
+    /*max-height: 400px;*/
     overflow-y: scroll;
     }
 

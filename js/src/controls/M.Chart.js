@@ -4,7 +4,7 @@ M.Chart = M.Control.extend({
 
         app.log('opened:chart');
 
-        console.log('M.Chart!');
+        console.log('M.Chart!', this);
 
         // set options
         M.setOptions(this, options);
@@ -488,8 +488,57 @@ M.Chart = M.Control.extend({
             var _chart = this.C3Chart(this._c3Obj);
             var _chartTicks = this.chartTicks(this._c3Obj);
             _chartContainer.appendChild(_chart);
+            console.log('_chart', _chart);
+
+            // resizable
+            var resizeButton = M.DomUtil.create('div', 'resize-chart-button');
+            resizeButton.innerHTML = '<i class="fa fa-expand"></i>';
+            _chartContainer.appendChild(resizeButton);
+            
+            M.DomEvent.on(resizeButton, 'mousedown', function (e) {
+                console.log('resizebutton mousedonw', e);
+
+                var start_x = e.x;
+                var start_y = e.y;
+
+                var start_size_x = _chart.offsetWidth;
+                var start_size_y = _chart.offsetHeight;
+
+                // create ghost fullscreen
+                var ghost = M.DomUtil.create('div', 'resize-ghost-fullscreen');
+                app._appPane.appendChild(ghost); // add 
+                M.DomEvent.on(ghost, 'mouseup', function (e) {
+                    console.log('MOUSEUP!');
+                    M.DomUtil.remove(ghost);
+                });
+
+                M.DomEvent.on(ghost, 'mousemove', function (e) {
+                    if (Math.random() > 0.5) return;
+                    var move_x = e.x - start_x;
+                    var move_y = start_y - e.y;
+                    console.log('move_x:', move_x, ', move_y:', move_y);
+                    console.log('start_size_x:', start_size_x, ', start_size_y:', start_size_y);
+
+                    var new_x = start_size_x + move_x;
+                    var new_y = start_size_y + move_y;
+
+                    if (new_x < 400) new_x = 400;
+                    if (new_y < 200) new_y = 200;
+
+                    // resize
+                    this._chart.resize({height : new_y, width : new_x})
+
+                    app._rememberChartSizeHeight = new_y;
+                    app._rememberChartSizeWidth = new_x;
+
+                }.bind(this))
+
+
+                
+            }.bind(this));
         
         }
+
 
         return content;         
     },
@@ -891,9 +940,8 @@ M.Chart = M.Control.extend({
             bindto: _C3Container,
 
             size: {
-                height: 200,
-                // width: 430
-                width : _width
+                height: app._rememberChartSizeHeight || 200,
+                width : app._rememberChartSizeWidth || _width
             },
 
             point : {

@@ -490,11 +490,14 @@ M.Chart = M.Control.extend({
             _chartContainer.appendChild(_chart);
             console.log('_chart', _chart);
 
+
+
             // resizable
             var resizeButton = M.DomUtil.create('div', 'resize-chart-button');
             resizeButton.innerHTML = '<i class="fa fa-expand"></i>';
             _chartContainer.appendChild(resizeButton);
             
+            // on resize start
             M.DomEvent.on(resizeButton, 'mousedown', function (e) {
                 console.log('resizebutton mousedonw', e);
 
@@ -509,9 +512,12 @@ M.Chart = M.Control.extend({
                 app._appPane.appendChild(ghost); // add 
                 M.DomEvent.on(ghost, 'mouseup', function (e) {
                     console.log('MOUSEUP!');
+
+                    // resize end
                     M.DomUtil.remove(ghost);
                 });
 
+                // resize move
                 M.DomEvent.on(ghost, 'mousemove', function (e) {
                     if (Math.random() > 0.5) return;
                     var move_x = e.x - start_x;
@@ -525,11 +531,53 @@ M.Chart = M.Control.extend({
                     if (new_x < 400) new_x = 400;
                     if (new_y < 200) new_y = 200;
 
+                    console.log('new_x:', new_x, ', new_y:', new_y);
+
                     // resize
                     this._chart.resize({height : new_y, width : new_x})
 
+                    // remember
                     app._rememberChartSizeHeight = new_y;
                     app._rememberChartSizeWidth = new_x;
+
+                    // fix font sizes
+                    if (new_x < 500) { 
+                        _header.style.zoom = 1;
+                        this._footerDates.style.fontSize = '12px';
+                        this._regressionButtonWrapper.style.zoom = 1;
+                    } 
+                    if (new_x >= 500 && new_x < 700) {
+                        _header.style.zoom = 1.2;
+                        this._footerDates.style.fontSize = '14px';
+                        this._regressionButtonWrapper.style.zoom = 1.2;
+                    }
+                    if (new_x >= 700 && new_x < 900) {
+                        _header.style.zoom = 1.4;
+                        this._footerDates.style.fontSize = '16px';
+                        this._regressionButtonWrapper.style.zoom = 1.4;
+                    }
+                    if (new_x >= 900 && new_x < 1100) {
+                        _header.style.zoom = 1.6;
+                        this._footerDates.style.fontSize = '18px';
+                        this._regressionButtonWrapper.style.zoom = 1.6;
+                    }
+                    if (new_x >= 1100 && new_x < 1400) {
+                        _header.style.zoom = 1.8;
+                        this._footerDates.style.fontSize = '20px';
+                        this._regressionButtonWrapper.style.zoom = 1.8;
+                    }
+                    if (new_x >= 1400 && new_x < 1700) {
+                        _header.style.zoom = 2;
+                        this._footerDates.style.fontSize = '21px';
+                        this._regressionButtonWrapper.style.zoom = 2;
+                    }
+                    if (new_x >= 1700 ) {
+                        _header.style.zoom = 2.2;
+                        this._footerDates.style.fontSize = '22px';
+                        this._regressionButtonWrapper.style.zoom = 2.2;
+                    }
+
+
 
                 }.bind(this))
 
@@ -1093,11 +1141,13 @@ M.Chart = M.Control.extend({
             type      : 'switch',
             isOn      : false,
             right     : false,
-            id    : 'regression-button',
+            id        : 'regression-button',
             appendTo  : w,
-            fn    : this._updateRegression.bind(this),
+            fn        : this._updateRegression.bind(this),
             className : 'relative-switch'
         });
+
+        this._regressionButtonWrapper = w;
 
         // label
         var label = M.DomUtil.create('label', 'invite-permissions-label', w);

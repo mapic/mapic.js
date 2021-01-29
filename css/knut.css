@@ -3146,7 +3146,8 @@ span.mask-item-value {
     position: absolute;
     height: 25px;
     right: 20px;
-    top: 31px;
+    /*top: 31px;*/
+    bottom: 0px;
     background: rgba(61, 72, 90, 0.91);
     color: #fcfcfc;
     border-radius: 3px;

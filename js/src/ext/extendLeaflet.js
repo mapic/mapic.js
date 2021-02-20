@@ -1,8 +1,4 @@
 
-
-
-
-
 // smoother zooming, especially on apple mousepad
 L._lastScroll = new Date().getTime();
 L.Map.ScrollWheelZoom.prototype._onWheelScroll = function (e) {

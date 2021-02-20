@@ -3602,4 +3602,7 @@ input#geojson-upload {
 }
 
 
-
+.pixel-fix img {
+    width: 256.5px !important;
+    height: 256.5px !important;
+}

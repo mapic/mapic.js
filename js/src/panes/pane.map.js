@@ -124,13 +124,14 @@ M.MapPane = M.Pane.extend({
             maxZoom : maxZoom,
             minZoom : 0,
             zoomControl : false,
-            inertia : false,
 
             // js optimizing attempt
-            fadeAnimation : false,
-            // zoomAnimation : false,
-
-            // exp
+            fadeAnimation : true,
+            zoomAnimation : true,
+            inertia : true,
+            edgeBufferTiles: 3,
+            // zoomSnap : 0,
+            // experiments
             // zoomSnap : 0,
             // zoomDelta : 2,
             // wheelPxPerZoomLevel : 100,

@@ -1,5 +1,6 @@
 M.MapboxLayer = M.Model.Layer.extend({
 
+    
     type : 'mapboxLayer',
     
     initLayer : function () {
@@ -11,7 +12,9 @@ M.MapboxLayer = M.Model.Layer.extend({
             mapboxUri : this.store.data.mapbox,
 
             // edge buffer plugin
-            // edgeBufferTiles : 2,
+            edgeBufferTiles : 5,
+            className : 'pixel-fix'
+            
         });
 
         // add hooks
@@ -107,12 +110,13 @@ M.GoogleLayer = M.Model.Layer.extend({
         // add vector tile raster layer
         this.layer = L.tileLayer(url, {
             type : type,
-            // format : format,
             subdomains : subdomains,
-            maxRequests : 0,
             tms : false,
             maxZoom : this.options.maxZoom,
-            minZoom : this.options.minZoom
+            minZoom : this.options.minZoom,
+            edgeBufferTiles : 5,
+            className : 'pixel-fix'
+
         });
 
         this._addEvents();
@@ -180,7 +184,10 @@ M.NorkartLayer = M.Model.Layer.extend({
             maxRequests : 0,
             tms : false,
             maxZoom : this.options.maxZoom,
-            minZoom : this.options.minZoom
+            minZoom : this.options.minZoom,
+            edgeBufferTiles : 5,
+            className : 'pixel-fix'
+            
         });
 
         // add clear background cache event (hack for hanging tiles)
@@ -238,7 +245,7 @@ M.NorkartLayer = M.Model.Layer.extend({
         
         // log
         var logstring = this.options.log_url + "WMS-REQUEST=BBOX=" + t + "," + i + "," + r + "," + n + "&MAPSTYLE=" + this.options.current_mapstyle + "&CUSTOMER=" + this.options.customer_id;
-        s.src = logstring;
+        // s.src = logstring;
         s = null;
     },
 

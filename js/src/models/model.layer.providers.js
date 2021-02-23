@@ -3,24 +3,38 @@ M.MapboxLayer = M.Model.Layer.extend({
     
     type : 'mapboxLayer',
     
-    initLayer : function () {
+     initLayer : function () {
 
-        var url = 'https://{s}.tiles.mapbox.com/v4/{mapboxUri}/{z}/{x}/{y}.png?access_token={accessToken}';
+        var url = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
+        var style_id = this._legacyGetMapboxId();
 
         this.layer = L.tileLayer(url, {
-            accessToken : this.store.accessToken,
-            mapboxUri : this.store.data.mapbox,
-
-            // edge buffer plugin
+            tileSize: 512,
+            zoomOffset: -1,
+            id: style_id,
             edgeBufferTiles : 2,
-            className : 'pixel-fix'
-            
+            className : 'pixel-fix-512',
+            accessToken: 'pk.eyJ1Ijoia251dG9sZSIsImEiOiJjaXQ2MGJ1eXgwMDF0MnNxYWdiY2I1ZHZxIn0.klQG51Lz7KhGn_9ItBUklw'
         });
 
         // add hooks
         this._addEvents();
         this.loaded = true;
         this._inited = true;
+
+    },
+
+    _legacyGetMapboxId : function () {
+        var string = this.store.title;
+        if (string == 'Mapbox Terrain')                 return 'mapbox/outdoors-v11'
+        if (string == 'Mapbox Natural Satellite')       return 'mapbox/satellite-streets-v11'
+        if (string == 'Mapbox Satellite, No Labels')    return 'mapbox/satellite-v9'
+        if (string == 'Mapbox Streets')                 return 'mapbox/streets-v11'
+        if (string == 'Mapbox Light')                   return 'mapbox/light-v10'
+        if (string == 'Mapbox Outdoors')                return 'mapbox/outdoors-v11'
+        if (string == 'Mapbox Pencil')                  return 'mapbox/dark-v10'
+        console.log('missing mapbox style name, using default.');
+        return 'mapbox/satellite-streets-v11'
     },
 
     setAttribution : function () {

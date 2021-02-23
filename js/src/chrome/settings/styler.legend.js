@@ -4,14 +4,12 @@ M.Legend = M.Class.extend({
 
 	initialize : function (options) {
 
+		console.error('M.Legend (styler.legend.js)');
+
 		this.options = options;
 
 		this.initLegends();
 
-		// Set satellite view option
-		// if ( app.options.customizations && app.options.customizations.satelliteView ) {
-		// 	this.satelliteView = true;
-		// }
 
 		// set sat view option
 		this.satelliteView = (app.options.customizations && app.options.customizations.satelliteView);
@@ -231,8 +229,6 @@ M.Legend = M.Class.extend({
 
 		var legendArray = M.Tools.Legend.getLegendArray(points, lines, polygons);
 
-		// console.log('legendArray', legendArray);
-
 		// Create legend settings from array
 		this.createLegendSettingsFromArray(legendArray);
 
@@ -282,14 +278,12 @@ M.Legend = M.Class.extend({
 		// Legend name
 		var _name = object.name ? object.name : '';
 
-
-
 		// NAME INPUT
 		// NAME INPUT
 		// NAME INPUT
 
 		var input = new M.button({
-			id 	     : 'test',
+			id 	     	 : 'test',
 			type 	     : 'input',
 			right 	     : false,
 			isOn         : true,
@@ -297,7 +291,7 @@ M.Legend = M.Class.extend({
 			value        : _name,
 			placeholder  : name,
 			tabindex     : 1,
-			fn 	     : this._saveLegendName,
+			fn 	     	 : this._saveLegendName,
 			className    : 'legend-each-name target-input',
 			allowText    : true,
 			sourceObject : object,
@@ -322,12 +316,12 @@ M.Legend = M.Class.extend({
 
 		// Switch to toggle this specific legend on or off
 		var button = new M.button({
-			id 	     : name,
+			id 	     	 : name,
 			type 	     : 'switch',
 			isOn 	     : object.isOn,
 			right 	     : true,
 			appendTo     : container,
-			fn 	     : this._switchLegend,
+			fn 	     	 : this._switchLegend,
 			className    : 'legend-switch',
 			sourceObject : object,
 			context      : this
@@ -339,6 +333,7 @@ M.Legend = M.Class.extend({
 	// SETTINGS SETTINGS
 	// SETTINGS SETTINGS
 
+
 	gradientLegendSetting : function (options) {
 		var gradientStyle = options.style;
 		var object = options.object;
@@ -346,22 +341,34 @@ M.Legend = M.Class.extend({
 		var maxVal = options.gradient.maxVal;
 		var bline = options.gradient.bline;
 		var gradientName = object.name ? object.name : bline;
+		var gradident_footer_left = object.left_footer || 'left';
+		var gradident_footer_right = object.right_footer || 'right';
+
+		console.error('### 1 # gradientLegendSetting', options);
+
+		// create container
 		var container = M.DomUtil.create('div', 'legend-each-container', this._legendContent);
 
+		// override style
 		container.style.paddingLeft = 0;
 
+		// create containers
 		var gradientWrapper = M.DomUtil.create('div', 'info-legend-container', container);
 		var gradientInfoWrapper = M.DomUtil.create('div', 'info-legend-frame', gradientWrapper);
-		var gradientInfoMinVal = M.DomUtil.create('div', 'info-legend-val info-legend-min-val', gradientInfoWrapper, minVal);
+		var gradientInfoMinVal = M.DomUtil.create('div', 'info-legend-val info-legend-min-val', gradientInfoWrapper, _.toString(minVal));
 
-		// Switch to toggle this specific legend on or off
+
+		// this is where the GUI in the Legend Styler is created
+
+
+		// create input for adding text on top of gradient
 		var input = new M.button({
-			id 	     : 'gradient-header',
+			id 	     	 : 'gradient-header',
 			type 	     : 'input',
 			isOn 	     : true,
 			right 	     : true,
 			appendTo     : gradientInfoWrapper,
-			fn 	     : this._saveGradientHeader,
+			fn 	     	 : this._saveGradientHeader,
 			className    : 'info-legend-header',
 			sourceObject : options.object,
 			allowText    : true,
@@ -369,15 +376,51 @@ M.Legend = M.Class.extend({
 			context      : this
 		});
 
-		M.DomEvent.on(input.input, 'keydown', this.checkKey);		    
-		
+		// add two inputs under gradient to add left/right keywords to legend
+		var gradient_footer_container = M.DomUtil.create('div', 'sub-gradient-container', gradientWrapper);
 
-		var gradientInfoMaxVal = M.DomUtil.create('div', 'info-legend-val info-legend-max-val', gradientInfoWrapper, maxVal);
+		// create input for adding text on bottom of gradient
+		var input2 = new M.button({
+			id 	     	 : 'gradient-footer-left',
+			type 	     : 'input',
+			isOn 	     : true,
+			right 	     : true,
+			appendTo     : gradient_footer_container,
+			fn 	     	 : this._saveGradientFooterLeft,
+			className    : 'info-legend-footer align-left',
+			sourceObject : options.object,
+			allowText    : true,
+			placeholder  : gradident_footer_left,
+			context      : this
+		});
+
+		// create input for adding text on bottom of gradient
+		var input3 = new M.button({
+			id 	     	 : 'gradient-footer-right',
+			type 	     : 'input',
+			isOn 	     : true,
+			right 	     : true,
+			appendTo     : gradient_footer_container,
+			fn 	     	 : this._saveGradientFooterRight,
+			className    : 'info-legend-footer align-right',
+			sourceObject : options.object,
+			allowText    : true,
+			placeholder  : gradident_footer_right,
+			context      : this
+		});
+
+		// set blur event
+		M.DomEvent.on(input.input, 'keydown', this.checkKey);		    
+		M.DomEvent.on(input2.input, 'keydown', this.checkKey);		    
+		M.DomEvent.on(input3.input, 'keydown', this.checkKey);		    
+		
+		// create containers
+		var gradientInfoMaxVal = M.DomUtil.create('div', 'info-legend-val info-legend-max-val', gradientInfoWrapper, _.toString(maxVal));
 		var gradientLegend = M.DomUtil.create('div', 'info-legend-gradient-container', gradientInfoWrapper);
-		    gradientLegend.setAttribute('style', gradientStyle);
+		gradientLegend.setAttribute('style', gradientStyle);
 
 		// Set on to true by default
-		if ( typeof options.object.isOn == 'undefined' ) {
+		if (typeof options.object.isOn == 'undefined') {
     			options.object.isOn = true;
 		}
 
@@ -386,53 +429,73 @@ M.Legend = M.Class.extend({
 
 		// Switch to toggle this specific legend on or off
 		var button = new M.button({
-			id 	     : 'random',
+			id 	     	 : 'random',
 			type 	     : 'switch',
 			isOn 	     : options.object.isOn,
 			right 	     : true,
 			appendTo     : container,
-			fn 	     : this._switchGradient,
+			fn 	     	 : this._switchGradient,
 			className    : 'legend-switch',
 			sourceObject : options.object,
 			context      : this
 		});
 
-		this.gradientBottom(options);
+		// does nothing?
+		// this.gradientBottom(options);
 
 	},
 
 
+	_saveGradientFooterLeft : function (e) {
+		var value = e.target.value;
 
-	gradientBottom : function (options) {
-		if ( !this.satelliteView ) return;
+		this.sourceObject.left_footer = value;
+		this.context.updateLegend();
 
-		var container = M.DomUtil.create('div', 'legend-each-container', this._legendContent);
-
-		container.style.paddingLeft = 0;
-
-		var cont     = M.DomUtil.create('div', 'info-legend-gradient-bottomline', container);
-		var leg      = M.DomUtil.create('div', 'legend-gradient-footer', cont);
-		leg.id   	 = 'legend-gradient-footer';
-		var top      = M.DomUtil.create('div', 'legend-gradient-footer-top', leg, 'Deformation in satellite line of sight')
-		var lineCont = M.DomUtil.create('div', 'legend-gradient-footer-line-container', leg);
-		var line     = M.DomUtil.create('div', 'legend-gradient-footer-line', lineCont);
-		var arrowL   = M.DomUtil.create('div', 'legend-gradient-footer-arrow-left', lineCont);
-		var arrowR   = M.DomUtil.create('div', 'legend-gradient-footer-arrow-right', lineCont);
-		var midLine  = M.DomUtil.create('div', 'legend-gradient-footer-middle-line', lineCont);
-		var textL    = M.DomUtil.create('div', 'legend-gradient-footer-toward', leg, 'Towards satellite');
-		var textR    = M.DomUtil.create('div', 'legend-gradient-footer-from', leg, 'Away from satellite');
 	},
+
+	_saveGradientFooterRight : function (e) {
+		var value = e.target.value;
+
+		this.sourceObject.right_footer = value;
+		this.context.updateLegend();
+
+	},
+
+	_saveGradientHeader : function (e) {
+
+		var value = e.target.value;
+
+		this.sourceObject.name = value;
+		this.context.updateLegend();
+
+	},
+
+
+	// gradientBottom : function (options) {
+	// 	if ( !this.satelliteView ) return;
+
+	// 	var container = M.DomUtil.create('div', 'legend-each-container', this._legendContent);
+
+	// 	container.style.paddingLeft = 0;
+
+	// 	var cont     = M.DomUtil.create('div', 'info-legend-gradient-bottomline', container);
+	// 	var leg      = M.DomUtil.create('div', 'legend-gradient-footer', cont);
+	// 	leg.id   	 = 'legend-gradient-footer';
+	// 	var top      = M.DomUtil.create('div', 'legend-gradient-footer-top', leg, 'Deformation in satellite line of sight')
+	// 	var lineCont = M.DomUtil.create('div', 'legend-gradient-footer-line-container', leg);
+	// 	var line     = M.DomUtil.create('div', 'legend-gradient-footer-line', lineCont);
+	// 	var arrowL   = M.DomUtil.create('div', 'legend-gradient-footer-arrow-left', lineCont);
+	// 	var arrowR   = M.DomUtil.create('div', 'legend-gradient-footer-arrow-right', lineCont);
+	// 	var midLine  = M.DomUtil.create('div', 'legend-gradient-footer-middle-line', lineCont);
+	// 	var textL    = M.DomUtil.create('div', 'legend-gradient-footer-toward', leg, 'Towards satellite');
+	// 	var textR    = M.DomUtil.create('div', 'legend-gradient-footer-from', leg, 'Away from satellite');
+	// },
 
 	checkKey : function (e) {
-
+		// key: enter
 		if ( e.keyCode == 13 ) this.blur();
-		
 	},
-
-
-	// SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES 
-	// SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES 
-	// SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES SWITCHES 
 
 	_saveLegendName : function (e) {
 
@@ -445,13 +508,7 @@ M.Legend = M.Class.extend({
 	},
 
 
-	_saveGradientHeader : function (e) {
-		var value = e.target.value;
-
-		this.sourceObject.name = value;
-		this.context.updateLegend();
-	},
-
+	
 
 
 	_switch : function (e) {
@@ -803,11 +860,18 @@ M.Tools.Legend = {
 			if ( this.oldLegendObj.point.all.name ) {
 				legend.name = this.oldLegendObj.point.all.name;
 			}
+			if ( this.oldLegendObj.point.all.left_footer ) {
+				legend.left_footer = this.oldLegendObj.point.all.left_footer;
+			}
+			if ( this.oldLegendObj.point.all.right_footer ) {
+				legend.right_footer = this.oldLegendObj.point.all.right_footer;
+			}
 
 			if ( typeof this.oldLegendObj.point.all.isOn !== 'undefined' ) {
 				legend.isOn = this.oldLegendObj.point.all.isOn;
 			}
 		}
+
 
 		// Push legend object into array
 		this.legendObj.point.all = legend;
@@ -843,6 +907,12 @@ M.Tools.Legend = {
 				if ( this.oldLegendObj && this.oldLegendObj.point.target[i] ) {
 					if ( this.oldLegendObj.point.target[i].name ) {
 						legend.name = this.oldLegendObj.point.target[i].name;
+					}
+					if ( this.oldLegendObj.point.all.left_footer ) {
+						legend.left_footer = this.oldLegendObj.point.target[i].left_footer;
+					}
+					if ( this.oldLegendObj.point.all.right_footer ) {
+						legend.right_footer = this.oldLegendObj.point.target[i].right_footer;
 					}
 
 					if ( typeof this.oldLegendObj.point.target[i].isOn !== 'undefined' ) {
@@ -1248,7 +1318,7 @@ M.Tools.Legend = {
 		// TARGETED POINTS
 		// TARGETED POINTS
 
-		points.target.forEach(function (point, i) {			
+		points.target.forEach(function (point, i) {		
 
 			// Color & opacity
 			var color   = point.color,
@@ -1637,7 +1707,10 @@ M.Tools.Legend = {
 		var satelliteView = stylerObject.satelliteView;
 		var layer = stylerObject.options.layer;
 
-		var gradientName = layer.getStyleJSON().legendScaleTitle || 'mean velocity per year in mm';
+		var gradident_footer_left = object.left_footer;
+		var gradident_footer_right = object.right_footer;
+
+		// var gradientName = layer.getStyleJSON().legendScaleTitle || 'mean velocity per year in mm';
 
 		// HTML PART
 		// HTML PART
@@ -1667,6 +1740,8 @@ M.Tools.Legend = {
 
 			// Gradient
 			_legendHTML += '<div class="info-legend-gradient-container" style="' + gradientStyle + '"></div>';
+			_legendHTML += '<div class="info-legend-bottom-line"><span style="float:left; text-align: left">' + gradident_footer_left + '</span><span style="float:right; text-align: right">'+ gradident_footer_right + '</span></div>';
+
 			_legendHTML += '</div>';
 			_legendHTML += '</div>';
 
@@ -1775,13 +1850,13 @@ M.Tools.Legend = {
 M.Legend.Raster = M.Legend.extend({
 
 			
-	initialize : function (options) {
+	// initialize : function (options) {
 
-		// console.log('M.Legend.Raster', options);
+	// 	// console.log('M.Legend.Raster', options);
 
-		// background: linear-gradient(to right, #0000ff,#00ffff,#00ff00,#ffff00,#ff0000);
+	// 	// background: linear-gradient(to right, #0000ff,#00ffff,#00ff00,#ffff00,#ff0000);
 
-	},
+	// },
 
 
 });

@@ -2,6 +2,7 @@
 M.RasterLayer = M.Model.Layer.extend({
 
     _type : 'raster-layer',
+    type : 'raster',
 
     initialize : function (layer) {
 
@@ -47,7 +48,8 @@ M.RasterLayer = M.Model.Layer.extend({
             fileUuid: fileUuid,
             layerUuid : layerUuid,
             subdomains : subdomains,
-            maxRequests : 0
+            maxRequests : 0,
+            edgeBufferTiles: 5
         });
 
         // hacky click event (cause no utf-grid)
@@ -84,6 +86,7 @@ M.RasterLayer = M.Model.Layer.extend({
     },
 
     _mapClick : function (e) {
+
         if (!this._added) return;
         if (!this.isQueryable()) return;
         var latlng = e.latlng;
@@ -100,6 +103,12 @@ M.RasterLayer = M.Model.Layer.extend({
             point : latlng,
             e : e
         });
+    },
+
+    getLegendImage : function () {
+        var legendImage = this.store.legend;
+        if (_.isUndefined(legendImage)) return '';
+        return legendImage;
     },
 
     _checkInside : function (point, polygon) {

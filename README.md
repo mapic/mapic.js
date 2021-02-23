@@ -1,6 +1,5 @@
 # Mapic.js [![Build Status](https://travis-ci.org/mapic/mapic.js.svg)](https://travis-ci.org/mapic/mapic.js)
 
-
 This is the client-side javascript library for Mapic.
 
 ## Install

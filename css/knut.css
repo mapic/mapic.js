@@ -940,6 +940,130 @@
 }
 
 
+/*switch*/
+.scf-graph-switch {
+    width: 110px;
+    height: 30px;
+    position: relative;
+    float: none;
+    margin-bottom: 40px;
+    content: '';
+    position: relative;
+    background-color: white;
+    left: 0;
+    width: 99px;
+    height: 29px;
+    border-radius: 20px;
+    -webkit-transition: left 100ms;
+    -moz-transition: left 100ms;
+    -ms-transition: left 100ms;
+    -o-transition: left 100ms;
+    transition: left 100ms;
+    box-shadow: none;
+    margin-right: 20px;
+    float: left;
+}
+.scf-graph-switch {
+    background-color: #FF607E;
+}
+.scf-graph-switch:before {
+    left: 72px;
+        top: 2px;
+        width: 25px;
+        height: 25px;
+        box-shadow: none;
+}
+.scf-graph-switch.switch-on:before {
+    left: 2px;
+}
+.scf-graph-switch:after {
+    content : 'private';
+    color: white;
+}
+.scf-graph-switch.switch-on:after {
+    content: 'Show';
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    left: 37px;
+    position: absolute;
+    top: 4px;
+}
+.scf-graph-switch:after {
+    content: 'Hide';
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    left: 24px;
+    position: absolute;
+    top: 4px;
+}
+
+
+
+
+
+/*switch*/
+.timeseries-listen {
+    width: 110px;
+    height: 30px;
+    position: relative;
+    float: none;
+    margin-bottom: 40px;
+    content: '';
+    position: relative;
+    background-color: white;
+    left: 0;
+    width: 99px;
+    height: 29px;
+    border-radius: 20px;
+    -webkit-transition: left 100ms;
+    -moz-transition: left 100ms;
+    -ms-transition: left 100ms;
+    -o-transition: left 100ms;
+    transition: left 100ms;
+    box-shadow: none;
+    margin-right: 20px;
+    float: left;
+}
+.timeseries-listen {
+    background-color: #FF607E;
+}
+.timeseries-listen:before {
+    left: 72px;
+        top: 2px;
+        width: 25px;
+        height: 25px;
+        box-shadow: none;
+}
+.timeseries-listen.switch-on:before {
+    left: 2px;
+}
+.timeseries-listen:after {
+    content : 'private';
+    color: white;
+}
+.timeseries-listen.switch-on:after {
+    content: 'Listen';
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    left: 37px;
+    position: absolute;
+    top: 4px;
+}
+.timeseries-listen:after {
+    content: 'Off';
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    left: 24px;
+    position: absolute;
+    top: 4px;
+}
+
+
+
 
 
 /*switch*/
@@ -1776,8 +1900,8 @@ a.login-forgot-link {
     padding: 10px;
     cursor: pointer;
 }
-.cubeset-wrapper:nth-child(even) {
-    background: #F9F9F9;
+.cubeset-wrapper:nth-child(odd) {
+    background: #e6e6e6;
 }
 .cubeset-hover {
     background: #C7CACF !important;
@@ -1943,7 +2067,7 @@ g.axis.y {
     padding-right: 0px;
     position: absolute;
     right: 100px;
-    bottom: 45px !important;
+    /*bottom: 45px !important;*/
     border-radius: 0;
     /* opacity: 0; */
     color: white;
@@ -2027,7 +2151,7 @@ g.axis.y {
     height: 60px;
     width: 200px;
     background: rgba(60, 71, 89, 0.61);
-    bottom: 30px;
+    bottom: 4px;
     left: 5px;
     z-index: 1000;
     color: white !important;
@@ -2943,7 +3067,7 @@ span.mask-item-value {
     color: rgba(220, 220, 220, 0.52);
     position: absolute;
     top: 6px;
-    left: 0px;
+    right: 0px;
     width: 20px;
     height: 20px;
     transform: rotate(90deg);
@@ -3153,8 +3277,8 @@ input#geojson-upload {
 
 .graph-help-button {
     position: absolute;
-    right: 0;
-    top: 0;
+    left: 0;
+    top: -11px;
     margin: 10px;
     font-size: 20px;
 }
@@ -3166,7 +3290,7 @@ input#geojson-upload {
 .graph-help-tooltip {
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;
+    /*border-bottom: 1px dotted black;*/
 }
 
 .graph-help-tooltip .graph-help-tooltiptext {
@@ -3178,7 +3302,7 @@ input#geojson-upload {
     border-radius: 6px;
     padding: 10px;
     position: absolute;
-    right: 0;
+    left: 0;
     font-size: 15px;
     z-index: 1000000;
     bottom: 30px;
@@ -3188,3 +3312,302 @@ input#geojson-upload {
     visibility: visible;
 }
 
+
+
+.graph-container {
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    width: 100%;
+}
+
+.snow-graph-container {
+    position: relative;
+    width: 560px;
+    height: 0px;
+    top: 0;
+    background: red;
+    z-index: 100000;
+    margin-bottom: 1px;
+    /*margin-left: 50px;*/
+    float: left;
+    left: 0px;
+    bottom: 5px;
+}
+
+.snow-graph-container .big-graph-outer-container {
+    left: 0px;
+    bottom: 5px;
+
+}
+
+.graph-scf-button {
+    width: auto !important; 
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: 600 !important;
+}
+
+
+.empty-space {
+    position: relative;
+    height: 40px;
+}
+
+.chrome-switch-container.switch-on {
+    background-color: #29474C !important;
+}
+
+.padding-bottom-10 {
+    padding-bottom: 10px;
+}
+
+
+
+.hidden-scf-graph  .big-graph-outer-container {
+    height: 22px !important;
+    overflow: hidden;
+    padding: 0;
+    padding-top: 10px;
+    margin: 0;
+    line-height: 0px;
+    min-height: unset;
+    /*right: -130px;*/
+}
+
+.hidden-scf-graph  .big-graph-info-container {
+    display: none;
+}
+
+.hidden-scf-graph  .big-graph-resizer {
+    display: none;
+}
+
+.hidden-scf-graph  .big-graph-plugin-container {
+    display: none;
+}
+.hidden-scf-graph  .big-graph-current-day {
+    display: none;
+}
+.hidden-scf-graph  .graph-help-button {
+    display: none;
+}
+.hidden-scf-graph  .big-graph-inner-container {
+    bottom: -4px;
+}
+
+.hidden-scf-graph .vertical-scf-graph-line {
+    bottom: 0px !important;
+    /*background: rgba(74, 255, 242, 0.67) !important;*/
+    /*width: 9px !important;*/
+}
+
+
+
+
+
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+.tg .tg-0pky1{border-color:inherit;text-align:left;vertical-align:top; background-color: white;}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+.mask-style-input {border: none;}
+
+.feedback-pane-content {
+    border-radius: 6px;
+    border: 1px solid gainsboro;
+    -webkit-box-shadow: 0px 0px 8px -1px rgba(163,163,163,1);
+    -moz-box-shadow: 0px 0px 8px -1px rgba(163,163,163,1);
+    box-shadow: 0px 0px 8px -1px rgba(163,163,163,1);
+
+}
+
+.feedback-pane-content.error {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    border: none;
+}
+
+
+
+.chrome-data-top {
+    display: none;
+}
+
+.chrome-left-new-button.right-align-new-layers-button {
+    position: inherit;
+    float: right;
+}
+
+.new-data-popup {
+    width: 160px;
+    text-align: left;
+    top: 40px;
+}
+
+.file-action:hover:after {
+    width: 159px !important;
+}
+
+
+.wms-legend img {
+    max-height: 100px;
+    max-width: 220px;
+}
+
+.wms-legend-title {
+    font-size: 18px;
+}
+
+
+.smooth-input.smaller-input.geojson-import-input {
+    position: relative;
+    float: left;
+    width: calc(100% - 100px);
+}
+
+.smooth-fullscreen-save.geojson-button {
+    position: relative;
+    float: right;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.smooth-input.smaller-input.geojson-textarea {
+    height: 520px;
+    font-size: 13px;
+    font-weight: 600;
+    resize: vertical;
+}
+
+.geojson-textarea.invalid-geojson {
+    border: 1px solid #ffa7a7;
+}
+
+
+.leaflet-popup.geojson-popup .leaflet-popup-content-wrapper {
+    /*background: red;*/
+    padding: 10px !important;
+}
+
+
+
+.leaflet-container a.leaflet-popup-close-button {
+    top: 3px;
+    right: 0px;
+}
+
+.geojson-popup .leaflet-popup-content-wrapper {
+    border: 1px solid gray;
+}
+
+.smooth-fullscreen-save.save-mask-button {
+    position: relative;
+    width: 62px;
+}
+
+.padding-top-40 {
+    padding-top: 40px !important;
+}
+
+.tooltip-hover-title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.snow-raster-legend-container.custom-legend {
+    height: auto;
+    width: auto;
+    max-height: 300px;
+    max-width: 300px;
+}
+
+.custom-legend img {
+    max-height: 250px;
+    max-width: 250px;
+}
+
+.custom-legend-title {
+    font-size: 16px;
+    text-align: center;
+    padding-bottom: 10px;
+    font-weight: 500;
+}
+
+
+.description-control-meta-container {
+    /*padding-top: 10px;*/
+}
+
+
+.form-combobox_options_wrapper.open {
+    font-size: 17px;
+}
+
+.info-legend-bottom-line {
+    text-align: center;
+    font-size: 10px;
+    top: 22px;
+    position: absolute;
+    width: 100%;
+    color: #3c3c3c;
+}
+
+.sub-gradient-container .info-legend-footer {
+    position: relative;
+    width: 40%;
+    text-align: center;
+    font-size: 10px;
+    color: #666;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.info-legend-footer.align-right {
+    float: right;
+    text-align: right;
+}
+.info-legend-footer.align-left {
+    float: left;
+    text-align: left;
+}
+
+.margin-bottom-40 {
+    margin-bottom: 40px;
+}
+
+
+.top-minus-30 {
+    top: -30px;
+}
+
+.move-description-above {
+    /*top: -350px;*/
+}
+
+
+
+.layer-item-up.vertical {
+    right: 60px;
+    background-position: -346px -25px;
+}
+.layer-item-down.vertical {
+    right: 40px;
+    background-position: -346px 3px;
+}
+
+.layer-item-delete {
+    right: 80px;
+}
+
+
+.pixel-fix img {
+    width: 256.5px !important;
+    height: 256.5px !important;
+}
+
+.pixel-fix-512 img {
+    width: 512.5px !important;
+    height: 512.5px !important;
+}

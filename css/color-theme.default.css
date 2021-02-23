@@ -14,3 +14,16 @@
 .chrome-set, .setClear.setClear-on {
     background: #068a81;
 }
+
+.chrome-project-title {
+    background: white;
+    color: #068a81;
+    cursor: pointer !important;
+}
+.chrome-project-title:hover {
+    color: #068a81 !important;
+}
+
+.layer-menu-item-wrap.menufolder, .layer-menu-item-wrap.menufolder:hover {
+    background-color: #068a81 !important;
+}

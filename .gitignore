@@ -10,12 +10,15 @@ css/style.min.css
 css/mapic_logo_inverted_blank.png
 flash-logo.png
 images/portal-logo.png
+images/favicon.ico
 
 # Dependency directory
 node_modules
 
 # test data
 test/open-data
+
+js/src/tests/*
 
 css/color-theme.css
 css/color-theme.*.css

@@ -76,6 +76,11 @@ M.Pane.Account = M.Pane.extend({
 
 			M.DomEvent.on(this._locate, 'click', this._toggleLocate, this);
 
+			if (this.tabCount == 2) {
+				console.log('tabCount = 2');
+				this._accountDropdown.style.left = '42px';
+			}
+
 		}
 		
 		// mark open

@@ -38,6 +38,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         },
     },
 
+    // _legendsDOM : {},
+
     options : {
         fetchLineGraph : false, // debug, until refactored fetching line graph to cube
         editorOptions : {
@@ -74,23 +76,58 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // set project
         this._project = app.activeProject;
 
+        // set layer
+        this._layer = this.options.cube;
+
+        this._legendsDOM = {};
+        this._selectedYears = {};
+        this._parsed = {};
+        this._slider = {
+            vertical : null,
+            left : 0,
+            state : false
+        };
+        this._range = {
+            datasets : [],
+            data : {} // by mask
+        };
+
+
         // create DOM
         this._initContainer();
+
+        // create dc
+        this.dc = dc;
 
         // events
         this.on('sliderMovement', this._onSliderMovement);
         this.on('sliderClick', this._onSliderClick);
         this.options.cube.on('enabled', this._onLayerEnabled.bind(this));
         this.options.cube.on('disabled', this._onLayerDisabled.bind(this));
+        M.Mixin.Events.on('toggleGraphContainer', this._onToggleGraphContainer, this);
 
     },
 
     _onLayerEnabled : function () {
-        if (this._container) this._container.style.display = 'block';
+        if (this._mainContainer) this._mainContainer.style.display = 'block';
+        if (this._topHeader) this._topHeader.style.display = 'inline-block';
     },
     _onLayerDisabled : function () {
-        if (this._container) this._container.style.display = 'none';
+        if (this._mainContainer) this._mainContainer.style.display = 'none';
+        if (this._topHeader) this._topHeader.style.display = 'none';
     },
+
+    // _findLatestExternalData : function () {
+    //     var data = this.getYearlyData();
+    //     var latest = _.last(data.years);
+    //     return latest;
+    // },
+
+    // _getDefaultTimestamp : function () {
+    //     var time = this._findLatestExternalData();
+    //     var timestamp = time.date;
+    //     return timestamp;
+    // },
 
     // get/set parsed based on mask.id
     parsed : function (parsed) {
@@ -106,8 +143,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     parse : function (data, done) {
 
         // check store
-        if (this.parsed()) return done(null, this.parsed());
-
+        if (this.parsed()) {
+            return done(null, this.parsed());
+        }
       
 
         var parsed = {}
@@ -130,7 +168,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         //   }, ... // until last data in 2017
 
         // min/max/avg 
-        parsed.mma = this.average(data);
+        // parsed.mma = this.average(data);
+        parsed.mma = this.parseBackdrop(data.backdrop);
+        // parsed.mma = data.backdrop;
 
         // console.log('A002 ==> parsed.mma', parsed.mma);
         // [
@@ -174,7 +214,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // });
 
         // yearly
-        parsed.years = this.yearly(data);
+        // parsed.years = this.yearly(data);
+        parsed.years = this.parseYearly(data.yearly);
 
         // console.log('A004 ==> parsed.years', parsed.years);
         // [
@@ -210,133 +251,244 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     },
 
-    yearly : function (data) {
+    parseBackdrop : function (data) {
 
-        // get range
-        var range = this.getRange();
-        var years = _.range(range[0], range[1]+1); 
+        // all data needs a date for the graph, 
+        // even average data over several years 
+        // (which don't really have a single year)
+        // --
+        // to determine this "avg" year, we need to use eg. 2018 if 2018-2019
 
-        // optimize data search, divide into years
-        var dataRange = this.dataRange(); // [2001, 2018]
-        var yearly_range = _.range(dataRange[0], dataRange[1] + 1); // [2001, 2002, ... 2018]
+        var h = this._getHydrologicalYear();
 
-        // get hydrological year
-        var hy = this._getHydrologicalYear();
+        var parsed = [];
 
-        var opti_data = {};
-        yearly_range.forEach(function (r) {
-            opti_data[r] = _.filter(data, function (d) {
-                return d.year == r;
-            });
+        _.each(data, function (d) {
+
+            // parse to year (eg. 2019-2018)
+            var year = h.year;
+            if (parseInt(d.doy) < 244) {
+                year = year+1;
+            }
+
+            parsed.push({
+                doy : d.doy,
+                min : d.min,
+                max : d.max,
+                avg : d.scf,
+                date : moment(year + '-' + d.doy, 'YYYY-DDD')
+            })
+
         });
 
-        var yearly_data_2 = [];
-        var hydrological_doy;
-        _.times(365, function (i) {
-            var dohy = i;
-            var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
-            hydrological_doy = hydrological_date.dayOfYear();
+        return parsed;
 
-            yearly_data_2[i] = {
-                scf : {},
-                date : hydrological_date
+    },
+
+    parseYearly : function (data) {
+
+        // console.log('A004 ==> parsed.years', parsed.years);
+        // [
+        //   {
+        //     "scf": {
+        //       "2001": 84.54,
+        //       "2002": 83.71,
+        //       "2003": 86.32,
+        //       "2004": 83.44,
+        //       "2005": 75.89,
+        //       "2006": 82.96,
+        //       "2007": 72.87,
+        //       "2008": 81.24,
+        //       "2009": 78.63,
+        //       "2010": 83.21,
+        //       "2011": 73.05,
+        //       "2012": 82.75,
+        //       "2013": 80.78,
+        //       "2014": 67.35,
+        //       "2015": 69.78,
+        //       "2016": 69.78,
+        //       "2017": 69.78,
+        //       "2018": false
+        //     },
+        //     "date": "2017-01-01T19:41:59.663Z"
+        //   }, ... times 365....! 
+
+
+        // needs to be sorted as hydrological year
+
+        var parsed = [];
+
+        _.each(data, function (d) {
+
+            var date = moment(d.date);
+            var year = date.year();
+
+            var p = {
+                date : date,
+                scf : {
+                    2018 : {},
+                    2019 : {}
+                }
             };
-        })
-
-        _.forEach(years, function (y) { // [2001, 2002...2017, 2018]
-
-            _.times(365, function (i) {
-
-                // get hydrological date
-                var dohy = i;  
-                var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
-                hydrological_doy = hydrological_date.dayOfYear();
-
-                // aug-dec
-                // doy 243 = 31. aug
-                // doy 244 = 1. sept
-                if (hydrological_doy >= 244 && hydrological_doy <= 365) {
-                    var scf = _.find(opti_data[y], function (d) {
-                        return d.doy == hydrological_doy-1;
-                    });
-                }
-
-                // jan-sept y+1
-                if (hydrological_doy > 0 && hydrological_doy <= 243 ) {
-                    var scf = _.find(opti_data[y+1], function (d) {
-                        return d.doy == hydrological_doy-1;
-                    });
-                }
-
-                // set 
-                yearly_data_2[i].scf[y] = scf ? parseFloat(scf.scf) : false;
-
-
-            });
+            p.scf[year] = d.scf;
+            p.scf[year-1] = d.scf;
+            parsed.push(p);
 
         });
+
+        var sorted = _.sortBy(parsed, function (p) {
+            return p.date.unix()
+        });
+
+        return sorted;
+
+    },
+
+    // yearly : function (data) {
+
+    //     // get range
+    //     var range = this.getRange();
+    //     var years = _.range(range[0], range[1]+1); 
+
+    //     // optimize data search, divide into years
+    //     var dataRange = this.dataRange(); // [2001, 2018]
+    //     var yearly_range = _.range(dataRange[0], dataRange[1] + 1); // [2001, 2002, ... 2018]
+
+    //     // get hydrological year
+    //     var hy = this._getHydrologicalYear();
+
+    //     var opti_data = {};
+    //     yearly_range.forEach(function (r) {
+    //         opti_data[r] = _.filter(data, function (d) {
+    //             return d.year == r;
+    //         });
+    //     });
+
+    //     var yearly_data_2 = [];
+    //     var hydrological_doy;
+    //     _.times(365, function (i) {
+    //         var dohy = i;
+    //         var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
+    //         hydrological_doy = hydrological_date.dayOfYear();
+
+    //         yearly_data_2[i] = {
+    //             scf : {},
+    //             date : hydrological_date
+    //         };
+    //     })
+
+    //     _.forEach(years, function (y) { // [2001, 2002...2017, 2018]
+
+    //         _.times(365, function (i) {
+
+    //             // get hydrological date
+    //             var dohy = i;  
+    //             var hydrological_date = moment.utc().year(hy.year).date(1).month(8).add(dohy, 'days');
+    //             hydrological_doy = hydrological_date.dayOfYear();
+
+    //             // aug-dec
+    //             // doy 243 = 31. aug
+    //             // doy 244 = 1. sept
+    //             if (hydrological_doy >= 244 && hydrological_doy <= 365) {
+    //                 var scf = _.find(opti_data[y], function (d) {
+    //                     return d.doy == hydrological_doy-1;
+    //                 });
+    //             }
+
+    //             // jan-sept y+1
+    //             if (hydrological_doy > 0 && hydrological_doy <= 243 ) {
+    //                 var scf = _.find(opti_data[y+1], function (d) {
+    //                     return d.doy == hydrological_doy-1;
+    //                 });
+    //             }
+
+    //             // set 
+    //             yearly_data_2[i].scf[y] = scf ? parseFloat(scf.scf) : false;
+
+
+    //         });
+
+    //     });
         
-        // return yearly_data;
-        return yearly_data_2;
-    },
+    //     // return yearly_data;
+    //     return yearly_data_2;
+    // },
 
 
 
-    // calculate min/max/avg of scf per year
-    average : function (data) {
+    // // calculate min/max/avg of scf per year
+    // average : function (data) {
 
-        // clear
-        var average = [];
+    //     // clear
+    //     var average = [];
 
-        var hy = this._getHydrologicalYear();
+    //     // get hydrological year
+    //     var hy = this._getHydrologicalYear();
 
-        // for each day
-        _.times(365, function (n) {
+    //     // error handling
+    //     var errorDays = [];
 
-            var doy = n+243;
-            if (doy > 365) doy -= 365;
+    //     // for each day
+    //     _.times(365, function (n) {
 
-            // get this day's values
-            var today = _.filter(data, function (d) {
-                return d.doy == doy;
-            });
+    //         var doy = n+243;
+    //         if (doy > 365) doy -= 365;
 
-            // get this day's max
-            var max = _.maxBy(today, function (d) {
-                return parseFloat(d.scf);
-            }).scf;
+    //         // get this day's values
+    //         var today = _.filter(data, function (d) {
+    //             return d.doy == doy;
+    //         });
 
-            // get this day's min
-            var min = _.minBy(today, function (d) {
-                return parseFloat(d.scf);
-            }).scf;
+    //         // return if no today
+    //         if (_.isEmpty(today)) {
+    //             errorDays.push(doy);
+    //             return;
+    //         }
 
-            // get this day's avg
-            var sum = 0;
-            _.times(today.length, function (i) {
-                sum += parseFloat(today[i].scf);
-            });
-            var avg = sum/today.length;
+    //         // get this day's max
+    //         var max = _.maxBy(today, function (d) {
+    //             return parseFloat(d.scf);
+    //         }).scf;
+
+    //         // get this day's min
+    //         var min = _.minBy(today, function (d) {
+    //             return parseFloat(d.scf);
+    //         }).scf;
+
+    //         // get this day's avg
+    //         var sum = 0;
+    //         _.times(today.length, function (i) {
+    //             sum += parseFloat(today[i].scf);
+    //         });
+    //         var avg = sum/today.length;
          
-            // moment.utc().year(hy.year).date(1).month(8).add(i, 'days');
-            var hydro_date = moment.utc().year(hy.year).date(1).month(8).add(n, 'days');
+    //         // moment.utc().year(hy.year).date(1).month(8).add(i, 'days');
+    //         var hydro_date = moment.utc().year(hy.year).date(1).month(8).add(n, 'days');
 
-            // add to array
-            average.push({
-                doy   : doy,
-                max  : parseFloat(max),
-                min  : parseFloat(min),
-                avg  : avg, 
-                date : hydro_date,        // year doesn't matter, as it's avg for all years
-                // date : moment.utc().year(dummy_year).dayOfYear(doy),        // year doesn't matter, as it's avg for all years
-            });                                                             // however: need to add a YEAR/DATE when adding to graph, 
-                                                                            // due to graph needing a date to know it should display data
-        }.bind(this));
+    //         // add to array
+    //         average.push({
+    //             doy   : doy,
+    //             max  : parseFloat(max),
+    //             min  : parseFloat(min),
+    //             avg  : avg, 
+    //             date : hydro_date,        // year doesn't matter, as it's avg for all years
+    //             // date : moment.utc().year(dummy_year).dayOfYear(doy),        // year doesn't matter, as it's avg for all years
+    //         });                                                             // however: need to add a YEAR/DATE when adding to graph, 
+    //                                                                         // due to graph needing a date to know it should display data
+    //     }.bind(this));
 
-        return average;
-    },
+    //     if (!_.isEmpty(errorDays)) {
+    //         app.feedback.err('Error in JSON data', 'Failed to create averages due to missing days in the data.');
+    //     };
 
-    setData : function (data, done) {
+    //     return average;
+    // },
+
+    setData : function (options, done) {
+
+        var data = options.data;
+
+        this._mask.data = data;
 
         // set timeframe & range
         this._setTimeFrame();
@@ -361,8 +513,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         }.bind(this));
     },
 
-    _parsed : {},
-
     onMaskSelected : function (options) {
         this.setMask(options.mask);
     },
@@ -375,19 +525,53 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     // without mask, there's no graph... 
     setMask : function (mask) {
 
+
         // set current mask
         this._mask = mask;
 
-        // set data
-        this.setData(mask.data, function (err) {
 
-            // update line graph
-            this._updateLineGraph();
+        async.series({
 
-            // adjust slider
-            this._adjustSlider();
+            // GET endpoint data
+            backdrop : function (done) {
+                app.api.getEndpointData({
+                    url : mask.data_url_backdrop,
+                }, done);
+            },
+
+            // GET endpoint data
+            yearly : function (done) {
+                app.api.getEndpointData({
+                    url : mask.data_url_yearly,
+                }, done);
+            }
+
+        }, 
+
+        // final callback
+        function (err, results) {
+
+            var yearly = M.parse(results.yearly);
+            var backdrop = M.parse(results.backdrop);
+
+            // set data
+            this.setData({
+                data : {
+                    yearly : yearly,
+                    backdrop : backdrop
+                }
+            }, function (err) {
+
+                // update line graph
+                this._setLineGraph();
+
+                // adjust slider
+                this._adjustSlider();
+
+            }.bind(this));
 
         }.bind(this));
+
 
     },
 
@@ -398,16 +582,17 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     _listen : function () {
 
         // layer events 
-        // (todo: rename options.cube to this._layer for more generic flow)
         this.options.cube.on('maskSelected', this.onMaskSelected.bind(this));
         this.options.cube.on('maskUnselected', this.onMaskUnselected.bind(this));
+        
     },
 
     _initContainer : function () {
         if (this._container) return;
 
         // todo: refactor the DOM, incl. animator
-        this._mainContainer          = M.DomUtil.create('div', 'snow-graph-container', app._appPane);
+        app._graphContainer          = app._graphContainer || M.DomUtil.create('div', 'graph-container', app._appPane);
+        this._mainContainer          = M.DomUtil.create('div', 'snow-graph-container',                 app._graphContainer);
         this._container              = M.DomUtil.create('div', 'big-graph-outer-container',            this._mainContainer);
         this._infoContainer          = M.DomUtil.create('div', 'big-graph-info-container',             this._container);
 
@@ -430,7 +615,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
        
         // container for graph
         this._graphContainer         = M.DomUtil.create('div', 'big-graph-inner-container',            this._container);
-        
+        this._graphContainer.setAttribute('id', 'graph-container-' + this.options.cube.getUuid().substring(6, 14));    
+
         // help button
         this._helpButton            = M.DomUtil.create('div', 'graph-help-button', this._container);
         this._helpTooltip           = M.DomUtil.create('div', 'graph-help-tooltip', this._helpButton, '<i class="fa fa-info-circle" aria-hidden="true"></i>');
@@ -439,8 +625,28 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // add editor items
         if (this.isEditor()) this._addEditorPane();
 
+        // add standalone top header
+        this._topHeader = app.Chrome.Top._registerButton({
+            name : 'SCF',
+            className : 'chrome-button graph-scf-button',
+            trigger : this._onTopHeaderClick,
+            context : this,
+            project_dependent : false,
+            setLast : true
+        });
+
+        // set default resize width
+        this._resize_width = this._container.offsetWidth;
+
         // add resize event
         M.DomEvent.on(this._resizer, 'mousedown', this._initResize, this);
+
+        // show/hide by default
+        var state = this._layer.getGraphEnabled();
+        if (!state) this._hideGraphContainer(); 
+    },
+
+    _onTopHeaderClick : function () {
     },
 
     _initResize : function () {
@@ -458,7 +664,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     _doResize : function (e) {
 
         var container = this._container;
-     
+
         // remember inital values
         if (!this._resizeValues) {
             this._resizeValues = {
@@ -470,7 +676,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 cw : this._composite.width(),
                 dl : this._dateTitle.offsetLeft,
                 pt : this._pluginMainContainer.offsetTop,
-                et : this._editorPane.offsetTop
+                // et : this._editorPane.offsetTop
             }
         }
 
@@ -480,30 +686,33 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // set size of container
         var height = this._resizeValues.h - movement_y;
-        var width = this._resizeValues.w - movement_x;
-        if (height < 360) height = 360;
+        var width = this._resizeValues.w + movement_x;
+        if (height < 300) height = 300;
         if (width < 600) width = 600;
         this._container.style.height = height + 'px';
         this._container.style.width = width + 'px';
 
         // set size of chart
-        var chart_width = this._resizeValues.cw - movement_x; // 500
+        var chart_width = this._resizeValues.cw + movement_x; // 500
         var chart_height = this._resizeValues.ch - movement_y; // 220
         if (chart_width < 500) chart_width = 500;
         if (chart_height < 220) chart_height = 220;
         this._composite.width(chart_width).height(chart_height);
-        dc.renderAll();
+        this.dc.renderAll();
 
         // set text offsets
-        var left = this._resizeValues.dl - movement_x;
+        var left = this._resizeValues.dl + movement_x;
         if (left < 330) left = 330;
         this._dateTitle.style.left = left + 'px';
 
-        // set editor pane offset
-        var top = this._resizeValues.et + movement_y;
-        if (top > -365) top = -365;
-        this._editorPane.style.top = top + 'px';
+        // set vertical line height
+        var s = this._slider.vertical[0][0];
+        s.style.height = (chart_height - 40) + 'px';
 
+        // set vertical line left
+        var rof = this._container.offsetWidth - 190;
+        var s_b = ((this._p * rof) / 364) + 40
+        this._slider.vertical.style("left", s_b + 'px');
     },
 
     _addEditorPane : function () {
@@ -512,6 +721,23 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             var checkbox = this._createFilterCheckbox({
                 appendTo : this._container
             });
+        }
+    },
+
+    _hideGraphContainer : function () {
+        M.DomUtil.addClass(this._mainContainer, 'hidden-scf-graph');
+    },
+
+    _showGraphContainer : function () {
+        M.DomUtil.removeClass(this._mainContainer, 'hidden-scf-graph');
+    },
+
+    _onToggleGraphContainer : function (e) {
+        var state = e.detail.state;
+        if (state) {
+            this._showGraphContainer();
+        } else {
+            this._hideGraphContainer();
         }
     },
 
@@ -554,9 +780,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         if (this._average_pane) return;
 
         // range
-        // var years = _.range(2000, 2017);
         var range = this.getRange();
-        var years = _.range(range[0], range[1] + 1);
+        var hy = this._getHydrologicalYear();
+        if (range[1] > hy.year) range[1] = hy.year;
+        var years = _.range(range[1], range[1] + 1); // range[0] if you want more years
 
         // create pane
         var pane = this._average_pane = {};
@@ -572,18 +799,18 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var span = M.DomUtil.create('span', 'caret', btn);
         var ul = M.DomUtil.create('ul', 'dropdown-menu bullet pull-left pull-top', btn_group);
 
+        var cube_id = this._layer.getUuid();
+
         // years
         years.forEach(function (y, i) {
 
-             var year_name = y + '-' + (parseInt(y)+1);
+            var year_name = y + '-' + (parseInt(y)+1);
           
             var li = M.DomUtil.create('li', '', ul);
             var input = M.DomUtil.create('input', '', li);
             var label = M.DomUtil.create('label', '', li, year_name);
 
-           
-
-            input.id = 'years-dropdown-' + y;
+            input.id = 'years-dropdown-' + y + '-' + cube_id;
             input.setAttribute('type', 'checkbox');
             input.setAttribute('name', year_name);
             input.setAttribute('value', year_name);
@@ -610,7 +837,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     },
 
-    _selectedYears : {},
+    // _selectedYears : {},
 
     getSelectedYears : function () {
          var s = [];
@@ -624,7 +851,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // count and limit checked years
         var cyc = _.size(_.filter(this._selectedYears))
-        if (cyc > 6 && checked) return true;
+        if (cyc > 4 && checked) return true;
 
         // remember
         this._selectedYears[year] = checked;
@@ -645,6 +872,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var selectedYears = this.getSelectedYears();
         var range = this.getRange();
         var allYears = _.range(range[0], range[1] + 1);
+        var that = this;
 
         // create legends
         allYears.reverse().forEach(function (s, i) {
@@ -652,35 +880,35 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             // if should be active
             if (_.indexOf(selectedYears, s) >= 0) {
 
-                var div = this._legendsDOM[s];
+                var div = that._legendsDOM[s];
 
                 if (div) {
                     // show if already created
                     M.DomUtil.removeClass(div, 'displayNone');
+
                 } else {
 
                     // create legend
-                    var legend = M.DomUtil.create('div', 'graph-legend-module', this._legendContainer);
+                    var legend = M.DomUtil.create('div', 'graph-legend-module', that._legendContainer);
                     var legend_color = M.DomUtil.create('div', 'graph-legend-color', legend);
                     var legend_name = s.toString() + '-' + (parseInt(s) + 1);
                     var legend_text = M.DomUtil.create('div', 'graph-legend-text', legend, legend_name);
 
                     // set color
-                    legend_color.style.background = this.getColor(i);
+                    legend_color.style.background = that.getColor(i);
 
                     // rememeber
-                    this._legendsDOM[s] = legend;
+                    that._legendsDOM[s] = legend;
                 }
             } else {
 
                 // hide
-                var div = this._legendsDOM[s];
+                var div = that._legendsDOM[s];
                 if (div) M.DomUtil.addClass(div, 'displayNone');
             }
         }.bind(this));
     },
  
-    _legendsDOM : {},
 
     isEditor : function () {
         return app.activeProject.isEditor();
@@ -693,6 +921,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._current.hydrological_year = isSameOrAfter ? year : year - 1;
         var hy = this._current.hydrological_year;
 
+        // var hy = 2018;
+
         var h = {
             year : hy,
             minDate : moment('01-09-' + hy, "DD-MM-YYYY"),
@@ -704,6 +934,12 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     // should run only once! 
     _createGraph : function (data) {
 
+        // save
+        this._data = data;
+
+        // save globally
+        app._scf_latest = _.last(this._data.years);
+
         // store crossfilters, dimensions, etc
         this.ndx = {};
 
@@ -711,7 +947,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this.ndx.average_crossfilter = crossfilter(data.mma); // this._annualAverageData is avgs for 365 days
 
         // set dimension
-        var average_dimension = this.ndx.average_crossfilter.dimension(function(d) { return d.date; });
+        var average_dimension = this.ndx.average_crossfilter.dimension(function(d) { 
+            // console.log('dimension d.date', d.date); // 2018 dates
+            return d.date; 
+        });
 
         // create groups 
         var average_max_group = average_dimension.group().reduceSum(function(d) { return d.max });
@@ -737,15 +976,16 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         });
 
         // create composite chart @ container
-        var composite = this._composite = dc.compositeChart(this._graphContainer);
+        var composite = this._composite = this.dc.compositeChart(this._graphContainer);
 
         // define compose charts
         var compose_charts = [
 
             // max 
-            dc.lineChart(composite)
+            this.dc.lineChart(composite)
             .group(average_max_group)
             .colors('#DDDDDD')
+            // .colors('black')
             .renderArea(true)
             .renderHorizontalGridLines(true)
             .renderVerticalGridLines(true)   
@@ -753,17 +993,19 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
             .xyTipsOn(false),
 
             // min 
-            dc.lineChart(composite)
+            this.dc.lineChart(composite)
             .group(average_min_group)
             .colors('#3C4759')
+            // .colors('red')
             .renderArea(true)       
             .renderDataPoints(false)
-            .renderHorizontalGridLines(true)
+            // .renderHorizontalGridLines(true)
+            .renderHorizontalGridLines(false)
             .renderVerticalGridLines(true)
             .xyTipsOn(false),
 
             // avg 
-            dc.lineChart(composite)
+            this.dc.lineChart(composite)
             .group(average_avg_group)
             .colors('white')
             .renderHorizontalGridLines(true)
@@ -789,8 +1031,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         }
 
         // add yearly lines to composite array
+        var that = this;
         line_groups.forEach(function (lg, i) {
-            compose_charts.push(dc.lineChart(composite)
+            compose_charts.push(that.dc.lineChart(composite)
             .group(remove_falseys(lg))
             .colors(this.getColor(i))
             .renderHorizontalGridLines(true)
@@ -809,7 +1052,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .clipPadding(10)    
         .elasticY(false)
         .elasticX(false)
-        .on('renderlet', this._onRenderlet)
+        .on('renderlet', this._onRenderlet.bind(this))
         .renderHorizontalGridLines(true)
         .renderVerticalGridLines(true)
         .brushOn(false)
@@ -823,7 +1066,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         .tickFormat(d3.time. format('%b'));
         
         // render
-        dc.renderAll(); 
+        this.dc.renderAll(); 
 
         // update titles
         this._updateTitles();
@@ -837,54 +1080,68 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // add vertical line to graph
         this._addVerticalLine();
     },
-    _slider : {
-        vertical : null,
-        left : 0,
-        state : false
-    },
-
+ 
     _addVerticalLine : function () {
 
         // remove vertical line if already existing
-        var existing = M.DomUtil.get('chart-vertical-line');
+        var vertical_line_id = 'chart-vertical-line-' + this.options.cube.getUuid().substring(6, 14);
+        var existing = M.DomUtil.get(vertical_line_id);
 
         if (existing) {
             M.DomUtil.remove(existing);
         }
 
         // define vertical line
-        var vertical = d3.select(".dc-chart")
+        var chart_id = 'graph-container-' + this.options.cube.getUuid().substring(6, 14);
+        var vertical = d3.select("#" + chart_id)
         .append("div")
-        .attr("id", "chart-vertical-line")
+        .attr("id", vertical_line_id)
+        // .attr("id", "chart-vertical-line")
+        .attr("class", 'vertical-scf-graph-line')
         .style("position", "absolute")
         .style("z-index", "19")
-        .style("width", "4px")
+        .style("width", "8px")
         .style("height", "180px")
         .style("bottom", "34px")
         .style("left", "40px") // starting position
-        .style("background", "rgb(6, 137, 128)");
+        .style("background", "rgba(74, 255, 242, 0.67)");
 
         // remember state
         var that = this;
         this._slider.vertical = vertical;
 
-        d3.select(".dc-chart")
+        // d3.select(".dc-chart")
+        d3.select("#" + chart_id)
         .on("mousemove", function(){  
             if (!that._slider.state) return;
-            
+
+            var cow = that._container.offsetWidth - 150;
+
             // get mouse pos
             mousex = d3.mouse(this)[0];
 
             // max/min
             if (mousex < 40) mousex = 40;
-            if (mousex > 450) mousex = 450;
+            if (mousex > cow) mousex = cow;
+           
 
-            // set position of line
-            vertical.style("left", mousex + "px" )
 
             // calc day-of-year
             // todo: check if works with all screen sizes, since we're dealing with pixels??
-            var p = parseInt(((mousex - 40) / 410) * 364);
+            var rof = that._container.offsetWidth - 190;
+            var p = parseInt(((mousex - 40) / rof) * 364);
+
+
+            // // prevent cursor past latest available dataset
+            // var doy = parseInt(that.cube()._findLatestDOY()) - 244;
+            // console.log('==== doy', doy);
+            // if (p > doy) {
+            //     p = doy;
+            //     mousex = (((p - 1) * rof) / 364) + 40;
+            // }
+
+            // set position of line
+            vertical.style("left", mousex + "px" )
 
             // fire event
             that.fire('sliderMovement', {
@@ -895,20 +1152,29 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         })
         .on("mouseover", function(){  
             if (!that._slider.state) return;
+
+            var cow = that._container.offsetWidth - 150;
             
             // get mouse pos
             mousex = d3.mouse(this)[0];
 
             // max/min
             if (mousex < 40) mousex = 40;
-            if (mousex > 450) mousex = 450;
+            if (mousex > cow) mousex = cow;
+
+            // calc day-of-year
+            var rof = that._container.offsetWidth - 190;
+            var p = parseInt(((mousex - 40) / rof) * 364) + 1
+
+            // // prevent cursor past latest available dataset
+            // var doy = parseInt(that.cube()._findLatestDOY()) - 244;
+            // if (p > doy) {
+            //     p = doy;
+            //     mousex = (((p - 1) * rof) / 364) + 40;
+            // }
 
             // set position of line
             vertical.style("left", mousex + "px")
-
-            // calc day-of-year
-            // todo: check if works with all screen sizes, since we're dealing with pixels??
-            var p = parseInt(((mousex - 40) / 410) * 364) + 1
 
             // fire
             that.fire('sliderMovement', {
@@ -921,16 +1187,18 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
             if (that._slider.state) {
                 // turn OFF
-                vertical.style("width", "2px" )
+                vertical.style("width", "8px");
                 that._slider.state = false;
 
                 // fire
                 that.fire('sliderClick');
                 that._slider.left = mousex;
 
+                vertical.style("background", "rgba(74, 255, 242, 0.67)"); 
+
             } else {
                 // turn ON
-                vertical.style("width", "1px" )
+                vertical.style("width", "4px");
                 that._slider.state = true;
 
                 // set to mousepointer on click
@@ -938,28 +1206,104 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
                 vertical.style("left", mousex + "px")
                 that._slider.left = mousex;
 
+                vertical.style("background", "white");
+
+
             }
         });
 
+        // set default slider position
+        // this._setSliderToLatestAvailableImage();
+        this._setSliderToLatestAvailable();
 
+    },
+
+    getYearlyData : function () {
+        return this._data;
+    },
+
+
+    _setSliderToLatestAvailable : function () {
+
+        // get latest image
+        var latest = _.last(this._data.years);
+
+        if (_.isUndefined(latest)) return;
+
+        var date = latest.date;
+        var doy = date.format('DDD');
+
+        // set to doy
+        var today = doy;
+        var diff = today - 244; // todo: only true if not leap year, otherwise 245
+        var p = (diff < 0) ? 365 + diff : diff;
+
+        // fire event
+        this.fire('sliderMovement', {
+            p : p
+        });
+
+        // calc and set
+        var todaymousex = (p * 82 / 73) + 40;
+        this._slider.vertical.style("left", todaymousex + "px");
+
+        // set cursor and date to current date
+        var date = this._getSliderDate(this._p);
+        this.cube().setCursor(date);
+
+    },
+
+
+    _setSliderToLatestAvailableImage : function () {
+
+        // get latest image
+        var latest = this.cube()._findLatestDataset();
+
+        if (_.isUndefined(latest)) {
+            // no datasets at all
+            return;
+            return this._setSliderToToday();
+        }
+
+        // get doy
+        var doy = parseInt(latest.formattedTime.split('-')[1]);
+
+        // set to doy
+        var today = doy;
+        var diff = today - 244; // todo: only true if not leap year, otherwise 245
+        var p = (diff < 0) ? 365 + diff : diff;
+
+        // fire event
+        this.fire('sliderMovement', {
+            p : p
+        });
+
+        // calc and set
+        var todaymousex = (p * 82 / 73) + 40;
+        this._slider.vertical.style("left", todaymousex + "px");
+
+        // set cursor and date to current date
+        var date = this._getSliderDate(this._p);
+        this.cube().setCursor(date);
+
+    },
+
+    _setSliderToToday : function () {
         // set to current date
         var today = moment().dayOfYear();
         var diff = today - 245;
-        if (diff < 0) {
-            var p = 365 + diff;
-        } else {
-            var p = diff;
-        }
+        var p = (diff < 0) ? 365 + diff : diff;
 
         // fire event
-        that.fire('sliderMovement', {
+        this.fire('sliderMovement', {
             p : p
         });
         var todaymousex = (p * 82 / 73) + 40;
         this._slider.vertical.style("left", todaymousex + "px");
 
-       
-
+        // set cursor and date to current date
+        var date = this._getSliderDate(this._p);
+        this.cube().setCursor(date);
     },
 
     _onGridMousemove : function (e) {
@@ -968,8 +1312,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
     _onRenderlet : function (chart) {
         // hack gridlines on top
-        var h = document.getElementsByClassName('grid-line horizontal')[0];
-        var v = document.getElementsByClassName('grid-line vertical')[0];
+        var chart_id = 'graph-container-' + this.options.cube.getUuid().substring(6, 14);
+        var p = M.DomUtil.get(chart_id);
+        var h = p.getElementsByClassName('grid-line horizontal')[0];
+        var v = p.getElementsByClassName('grid-line vertical')[0];
         h.parentNode.appendChild(h);
         v.parentNode.appendChild(v);
     },
@@ -991,7 +1337,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this.ndx.line_crossfilter.add(cache);
 
         // redraw
-        dc.redrawAll();
+        this.dc.redrawAll();
 
         // update titles
         this._updateTitles();
@@ -1071,7 +1417,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     _setTimeFrame : function () {
 
         // set avg data range
-        this._range.data[this._mask.id] = this.dataRange();
+        this._range.data[this._mask.id] = this.dataRange(); // [2001, 2018]
 
         // return if already set
         if (this._current && this._current.year && this._current.day) return; 
@@ -1083,10 +1429,10 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._range.datasets = this.datasetRange();
     },
 
-    _range : {
-        datasets : [],
-        data : {} // by mask
-    },
+    // _range : {
+    //     datasets : [],
+    //     data : {} // by mask
+    // },
 
     getRange : function () {
         var range = [this._range.data[this._mask.id][0], this._range.datasets[1]];
@@ -1103,6 +1449,11 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
     },
 
     dataRange : function () {
+
+        // debug
+        return [2001, 2019];
+
+
         var data = this._mask.data;
         if (_.isString(data)) {
             data = M.parse(data);
@@ -1111,7 +1462,9 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var last = _.last(data);
         var firstYear = moment.utc().year(first.year).dayOfYear(first.doy);
         var lastYear = moment.utc().year(last.year).dayOfYear(last.doy);
-        return [firstYear.year(), lastYear.year()];
+        // return [firstYear.year(), lastYear.year()];
+
+
     },
 
     _setDate : function (year, day) {
@@ -1132,6 +1485,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
 
         // update titles
         this._updateTitles();
+
+        
     },
 
     _getTitle : function () {
@@ -1175,6 +1530,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var datehtml =  '<div class="date-item-scf">' + title.scfTitle + '</div>';
         datehtml += '<div class="date-item-date">' + title.dateTitle + '</div>';
         this._dateTitle.innerHTML = datehtml;
+
+        this._topHeader.innerHTML = 'SCF @ ' + title.date.format('Do MMM YYYY');
     },
 
     _getSliderDate : function (p) {
@@ -1185,7 +1542,7 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         var hy = this._getHydrologicalYear().year;
 
         // get date
-        var date1 = moment.utc().year(hy).date(1).month(8);
+        var date1 = moment.utc().year(hy).date(1).month(8); // sept 1st
         var date = date1.add(dohy, 'days');
         return date;
     },
@@ -1203,7 +1560,8 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         // return date/scf
         return {
             scfTitle : scfTitle, 
-            dateTitle : dateTitle
+            dateTitle : dateTitle,
+            date : date
         }
     },
 
@@ -1236,10 +1594,6 @@ M.Graph.SnowCoverFraction = M.Graph.extend({
         this._maskTitle.innerHTML = this._getMaskTitle();   
     },
 
-    _updateLineGraph : function (options) {
-        this._setLineGraph();
-    },
-  
     _parseDates : function (cache) {
         if (!_.isArray(cache)) return;
         cache.forEach(function (c) {

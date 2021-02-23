@@ -7,7 +7,13 @@ M.Socket = M.Class.extend({
 		}
 
 		// create socket
-		this._socket = window.io.connect();
+		// this._socket = window.io.connect(window.location.origin, { forceNew: false });
+		this._socket = window.io.connect('/', {
+			rememberUpgrade : true,
+			timeout : 60000,
+			reconnection : true,
+
+		});
 
 		// add listeners
 		this._listen();
@@ -19,7 +25,7 @@ M.Socket = M.Class.extend({
 	_addLoops : function () {
 		setInterval(function () {
 			this._getServerStats();
-		}.bind(this), 2000);
+		}.bind(this), 10000);
 	},
 
 	_getServerStats : function () {
@@ -65,10 +71,17 @@ M.Socket = M.Class.extend({
 		socket.on('connect', function(){
 			console.log('Securely connected to socket.');
 			app.Socket.send('ready');
+			app.log('socket:ready', { info : {
+				socket_id : app.Socket._socket.socket.sessionid
+			}});
 		});
 		
 		socket.on('event', function(data){
-			console.log('event data: ', data);
+			console.log('socket event data: ', data);
+			app.log('socket:event', {
+				info : data
+			});
+
 		});
 
 		socket.on('tile_count', function(data){
@@ -84,32 +97,46 @@ M.Socket = M.Class.extend({
 		});
 		
 		socket.on('disconnect', function(){
-			console.log('disconnect!');
+			console.log('socket disconnect!');
+			app.log('socket:disconnect');
+
 			// app._login('You have been logged out. Please log back in.')
 		});
 		
 		socket.on('reconnect', function(){
-			console.log('reconnecting!');
+			console.log('socket reconnecting!');
+			
+			app.log('socket:reconnecting');
 		});
 		
 		socket.on('reconnect_error', function(){
-			console.log('reconnect_error!');
+			console.log('socket reconnect_error!');
+
+			app.log('socket:reconnect:error');
 		});
 		
 		socket.on('reconnect_failed', function(){
-			console.log('reconnect_failed!');
+			console.log('socket reconnect_failed!');
+
+			app.log('socket:reconnect:failed');
 		});
 		
 		socket.on('processingProgress', function(data) {
+			console.log('socket processingProgress', data)
 			M.Mixin.Events.fire('processingProgress', {
 				detail : data
 			});
+
+			app.log('processing:progress', { info : data });
 		});
 		
 		socket.on('stats', function(data) {
 		});
 		
 		socket.on('uploadDone', function (data) {
+			console.log('socket uploadDone', data);
+			app.log('upload:done', { info : data });
+
 		});
 		
 		socket.on('generate_tiles', function (data) {
@@ -123,11 +150,18 @@ M.Socket = M.Class.extend({
 		});
 		
 		socket.on('downloadReady', function (data) {
+			console.log('socket downloadReady', data);
+
+			app.log('download:ready', { info : data });
+			
 			var event_id = 'downloadReady-' + data.file_id;
 			M.Mixin.Events.fire(event_id, {detail : data});
 		});
 		
 		socket.on('processingDone', function (data) {
+			console.log('socket processingDone', data);
+
+			app.log('processing:done', { info : data });
 
 			// notify data lib
 			var file_id = data.file_id;
@@ -137,6 +171,9 @@ M.Socket = M.Class.extend({
 		});
 		
 		socket.on('errorMessage', function (data) {
+			console.log('socket errorMessage', data);
+			
+			app.log('socket:error', { info : data });
 
 			var content = data.error;
 			var uniqueIdentifier = content.uniqueIdentifier;

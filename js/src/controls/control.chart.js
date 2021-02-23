@@ -4,6 +4,8 @@ M.Control.Chart = M.Control.extend({
 
 		M.setOptions(this, options);
 
+		console.log('m.control.chart')
+
 		// OTHER OPTIONS
 		var multiPopUp = options.multiPopUp;
 		var e = options.e;

@@ -1,6 +1,8 @@
 // postgis vector layer
 M.VectorLayer = M.Model.Layer.extend({
 
+    type : 'vector',
+
     initLayer : function () {
         this.update();
         this.addHooks();
@@ -24,12 +26,6 @@ M.VectorLayer = M.Model.Layer.extend({
 
     _onLayerLoaded : function () {
         var loadTime = Date.now() - this._loadStart;
-
-        // // fire loaded event
-        // app.Analytics._eventLayerLoaded({
-        //     layer : this.getTitle(),
-        //     load_time : loadTime
-        // });
     },
 
     update : function (options, callback) {
@@ -307,6 +303,53 @@ M.VectorLayer = M.Model.Layer.extend({
 
     },
 
+    _onHoverEnabled : function () {
+        this._setClickEvents('off');
+        this._setHoverEvents('on');
+    },
+
+    _onHoverDisabled : function () {
+        this._setClickEvents('on');
+        this._setHoverEvents('off');
+    },
+
+    _addGridEvents : function () {
+        this._setGridEvents('on');
+    },
+
+    _removeGridEvents : function () {
+        this._setGridEvents('off');
+    },
+
+    _setGridEvents : function (on) {
+        // hover popup in config
+        var label_settings = this.getTooltip();
+        if (label_settings && label_settings.hover) {
+            this._setHoverEvents(on);
+        } else {
+            this._setClickEvents(on);
+        }
+    },
+
+    _setHoverEvents : function (on) {
+        var grid = this.gridLayer;
+        if (!grid || !on) return;
+
+        // hover event
+        grid[on]('mousemove', _.throttle(this._gridOnHover.bind(this), 200), this);
+
+    },
+
+    _setClickEvents : function (on) {
+        var grid = this.gridLayer;
+        if (!grid || !on) return;
+
+        // click popup
+        grid[on]('mousedown', this._gridOnMousedown, this);     
+        grid[on]('mouseup', this._gridOnMouseup, this);  
+        grid[on]('click', this._gridOnClick, this);
+    },
+
 
     _fetchData : function (e, callback) {
         var keys = Object.keys(e.data);
@@ -346,13 +389,63 @@ M.VectorLayer = M.Model.Layer.extend({
     },
 
 
-    _gridOnHover : function (e) {},
+    _gridOnHover : function (e) {
+        if (!e.data || app.MapPane._drawing) return;
+
+        // todo: 
+        // 1. connect to switch
+        // 2. throttle/wait for query
+
+        // pass layer
+        e.layer = this;
+
+        // fetch data
+        this._fetchData(e, function (ctx, json) {
+            if (!json) return console.error('no data for popup!');
+            var data = M.parse(json);
+            if (!data) return console.error('no data for popup!');
+
+            // get label/popup settings
+            var label_settings = e.layer.getTooltip();
+
+            // filter active popup fields
+            var active_keys = [];
+            _.each(label_settings.metaFields, function (value, key) {
+                if (value.on) active_keys.push(key);
+            });
+            var filtered_data = '<div class="tooltip-hover-title">' + this.getTitle() + '</div>';
+            _.each(active_keys, function (a) {
+                filtered_data += a + ': ' + data[a] + '<br>';
+            });
+          
+            // create tooltip first run
+            if (!this._tooltip) {
+                this._tooltip = L.tooltip({})
+                .setLatLng(e.latlng)
+                .addTo(app._map)
+                .setContent(filtered_data);
+            } 
+
+            // update tooltip
+            this._tooltip.setLatLng(e.latlng).setContent(filtered_data);
+            
+            // remove after delay
+            if (this._removeTooltipTimer) clearTimeout(this._removeTooltipTimer);
+            this._removeTooltipTimer = setTimeout(function () {
+                this._tooltip.remove();
+                this._tooltip = null;
+            }.bind(this), 1000);
+
+        }.bind(this));
+    },
+
 
     _fetching : {},
     _cache : {},
 
     // todo: move custom logic to popup-plugin
     _gridOnMouseOver : function (e) {
+        // console.log('__gridOnMouseOver', e);
         if (!e.data || app.MapPane._drawing) return;
         
         var gid = e.data.gid;
@@ -584,6 +677,8 @@ M.VectorLayer = M.Model.Layer.extend({
         path += '?file=' + filepath;
         path += '&type=shp';
         path += '&access_token=' + app.tokens.access_token;
+
+        console.log('_onDownloadReady', path);
 
         // open (note: some browsers will block pop-ups. todo: test browsers!)
         window.open(path, 'mywindow');

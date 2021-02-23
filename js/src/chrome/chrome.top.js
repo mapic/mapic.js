@@ -72,6 +72,7 @@ M.Chrome.Top = M.Chrome.extend({
 		var name = button.name;
 		var ctx = button.context;
 		var project_dependent = button.project_dependent;
+		var setLast = button.setLast;
 
 		if (project_dependent) className += ' displayNone';
 
@@ -81,10 +82,16 @@ M.Chrome.Top = M.Chrome.extend({
 		// create button
 		var buttonDiv = M.DomUtil.create('div', className);
 
-		// css exp // hacky! (depending if logo is shown or not)
-		var clientLogoConfig = app.options.logos.clientLogo;
-		var referenceNode = (clientLogoConfig && clientLogoConfig.active) ? this._buttonWrapper.lastChild.previousSibling : this._buttonWrapper.lastChild;
-		this._buttonWrapper.insertBefore(buttonDiv, referenceNode);
+		// determine where to put button
+		if (setLast == true) {
+			this._buttonWrapper.appendChild(buttonDiv);
+		} else {
+			// css exp // hacky! (depending if logo is shown or not)
+			var clientLogoConfig = app.options.logos.clientLogo;
+			var referenceNode = (clientLogoConfig && clientLogoConfig.active) ? this._buttonWrapper.lastChild.previousSibling : this._buttonWrapper.lastChild;
+			this._buttonWrapper.insertBefore(buttonDiv, referenceNode);
+	
+		}
 
 		// save
 		this._buttons[name] = {
@@ -114,11 +121,38 @@ M.Chrome.Top = M.Chrome.extend({
 				M.DomUtil.removeClass(button.div, 'displayNone');
 			});
 
+			// limit tabs for Viewers
+			var isEditor = app.activeProject.isEditor();
+			if (!isEditor) {
+				buttons.forEach(function (button) {
+
+					if (button.options.name == 'data') {
+						M.DomUtil.addClass(button.div, 'displayNone');
+					}
+					if (button.options.name == 'settings') {
+						M.DomUtil.addClass(button.div, 'displayNone');
+					}
+					if (button.options.name == 'settingsSelector') {
+						M.DomUtil.addClass(button.div, 'displayNone');
+					}
+					if (button.options.name == 'share') {
+						M.DomUtil.addClass(button.div, 'displayNone');
+					}
+
+					// adjust account tab dropdown left
+					app.AccountPane.tabCount = 2;
+
+					// M.DomUtil.removeClass(button.div, 'displayNone');
+				});
+			}
+
 		} else {
 			buttons.forEach(function (button) {
 				M.DomUtil.addClass(button.div, 'displayNone');
 			});
 		}
+
+
 	},
 
 	initDefault : function () {

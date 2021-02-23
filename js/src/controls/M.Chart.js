@@ -4,6 +4,8 @@ M.Chart = M.Control.extend({
 
         app.log('opened:chart');
 
+        console.log('M.Chart!');
+
         // set options
         M.setOptions(this, options);
         var multiPopUp = options.multiPopUp;
@@ -31,6 +33,7 @@ M.Chart = M.Control.extend({
             // create custom csv content
             var content = this.createCSVContent();
 
+
         // If we are sampling from point (click)
         } else {
 
@@ -42,6 +45,7 @@ M.Chart = M.Control.extend({
 
             // Create content
             var content = this.singlePopUp(e);
+     
         }
 
         // Return if disabled
@@ -466,6 +470,7 @@ M.Chart = M.Control.extend({
             layer       : e.layer
         };
 
+        console.log('c3object', c3Obj);
 
         var content = M.DomUtil.create('div', 'popup-inner-content');
 
@@ -603,7 +608,8 @@ M.Chart = M.Control.extend({
             var area = _data.area / 1000000;
             var areaRounded = Math.floor(area * 1000) / 1000;
             var _areaSQ = areaRounded + 'km' + '<sup>2</sup>';
-        }       
+        }      
+
 
         var c3Obj = {
             data        : _average,
@@ -623,6 +629,8 @@ M.Chart = M.Control.extend({
             }
 
         };
+
+        console.log('c3Obj', c3Obj);
 
         this._c3Obj = this.createC3dataObj(c3Obj);
 
@@ -796,7 +804,6 @@ M.Chart = M.Control.extend({
     // Chart
     C3Chart : function (c3Obj) {
         
-
         var data = c3Obj.d3array;
 
         this._currentChartData = data;
@@ -877,7 +884,6 @@ M.Chart = M.Control.extend({
             var _width = 430;
         }   
 
-
         // CHART SETTINGS
         var chartSettings = {
             interaction : true,
@@ -911,32 +917,41 @@ M.Chart = M.Control.extend({
             data: {
 
                 xs: {
-                        mm: 'field_x',
-                        regression : 'reg_x'
+                    mm: 'field_x',
+                    regression : 'reg_x'
                 },
 
                 columns: _columns,
 
                 colors : {
                     mm: '#0000FF',
-                    regression: '#C83333'
+                    regression: '#C83333',
                 },
                 types: {
                     mm : 'scatter',
                     regression : 'line'
+                },
+                color : function (color, d) {
+
+                    // hacky interpolation coloring scheme
+                    var a = _.toString(d.value)
+                    var i = _.includes(a, '00001');
+
+                    // return red or default color                 
+                    return i ? 'red' : '#0000FF';
                 }
             },
 
             axis: {
 
                 x: {
-                        type: 'timeseries',
-                        localtime: false,
-                        tick: {
-                                format: '%Y',
-                                values: [],
-                                multiline: true
-                        }
+                    type: 'timeseries',
+                    localtime: false,
+                    tick: {
+                            format: '%Y',
+                            values: [],
+                            multiline: true
+                    }
                 },
 
                 y: {
@@ -964,7 +979,6 @@ M.Chart = M.Control.extend({
             }               
         };
         var chart = this._chart = c3.generate(chartSettings);
-
 
         // add zoom events
         this._addChartEvents(_C3Container);

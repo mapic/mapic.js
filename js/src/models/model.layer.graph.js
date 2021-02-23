@@ -1,6 +1,8 @@
 M.Layer = M.Layer || {};
 M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
+    type : 'graph',
+
     options : {
         style : {
             fillColor : 'white',
@@ -109,6 +111,7 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
     getGraphTitle : function () {
         var csv = this.data.csv[0];
+        if (!csv) return 'no csv';
         var y_axis_label = csv.y_axis_label;
         var graph_title = csv.csv.data[0][1];
 
@@ -117,6 +120,8 @@ M.Layer.Graph = M.Model.Layer.GeoJSONMaskLayer.extend({
 
     getGraphYAxisTitle : function () {
         var csv = this.data.csv[0];
+        if (!csv) return 'no csv';
+        
         var y_axis_label = csv.y_axis_label;
         return y_axis_label;
     },

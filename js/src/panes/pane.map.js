@@ -90,6 +90,9 @@ M.MapPane = M.Pane.extend({
         // set background color :: NEW
         this.setBackgroundColor();
 
+        // set custom logo
+        this.setCustomLogo();
+
     },
 
     _flush : function () {
@@ -121,13 +124,14 @@ M.MapPane = M.Pane.extend({
             maxZoom : maxZoom,
             minZoom : 0,
             zoomControl : false,
-            inertia : false,
 
             // js optimizing attempt
-            fadeAnimation : false,
-            // zoomAnimation : false,
-
-            // exp
+            fadeAnimation : true,
+            zoomAnimation : true,
+            inertia : true,
+            edgeBufferTiles: 1,
+            // zoomSnap : 0,
+            // experiments
             // zoomSnap : 0,
             // zoomDelta : 2,
             // wheelPxPerZoomLevel : 100,
@@ -189,7 +193,7 @@ M.MapPane = M.Pane.extend({
         this._attributionControl = L.control.attribution({position : 'bottomleft', prefix : false});
 
         // add to map
-        map.addControl(this._attributionControl);
+        // map.addControl(this._attributionControl);
 
         // set content
         var portalClientName = 'ED Insights'
@@ -281,6 +285,37 @@ M.MapPane = M.Pane.extend({
     setBackgroundColor : function () {
         var bgc = this._project.getBackgroundColor() ? this._project.getBackgroundColor() : '#3C4759 url(../images/canvas.png)';
         app.MapPane._container.style.background = bgc;
+    },
+
+    setCustomLogo : function () {
+        var logo_css = this._project.getCustomLogo();
+
+        var div = app.MapPane._logo_div;
+
+        if (logo_css) {
+            
+            if (!div) {
+                
+                div = M.DomUtil.create('div', 'custom-logo-div', app._mapPane);
+            }
+
+            setTimeout(function () {
+
+                _.each(logo_css, function (value, key) {
+                    div.style[key] = value;
+                });
+
+            }.bind(this), 500);
+
+            app.MapPane._logo_div = div;
+
+        } else {
+            
+            if (app.MapPane._logo_div) {
+                M.DomUtil.remove(app.MapPane._logo_div);
+                app.MapPane._logo_div = null;
+            }
+        }
     },
 
     addBaseLayer : function (baseLayer) {

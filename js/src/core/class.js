@@ -573,9 +573,10 @@ M.Util = {
 	},
 
 	// parse with error handling
-	_stringify : function (json) {
+	_stringify : function (json, a) {
+		a = a || 2;
 		try { 
-			var str = JSON.stringify(json); 
+			var str = JSON.stringify(json, 0, a); 
 			return str;
 		} catch (e) { 
 			return false; 
@@ -1095,7 +1096,12 @@ M.Util = {
 
 		return isMobile;
 
-	}
+	},
+
+	ensureString : function (s) {
+		var string = _.isString(s) ? s : M.stringify(s);
+		return string;
+	},
 
 
 	

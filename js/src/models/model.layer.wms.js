@@ -1,18 +1,11 @@
 // wms layer
 M.WMSLayer = M.Model.Layer.extend({
 
-    initialize : function (layer) {
+    type : 'wms',
 
-        // set source
-        this.store = layer; // db object
-        
-        // data not loaded
-        this.loaded = false;
-
-       
-    },
-
+  
     initLayer : function () {
+        if (this.layer) this.remove();
         this.update();
     },
 
@@ -25,38 +18,72 @@ M.WMSLayer = M.Model.Layer.extend({
 
     _prepareLayer : function () {
 
-        // set ids
-        // var fileUuid    = this._fileUuid;   // file id of geojson
-        // var cartoid     = this.store.data.cartoid || this._defaultCartoid;
-        // var tileServer  = app.options.servers.tiles.uri;
-        // var subdomains  = app.options.servers.tiles.subdomains;
-        // var access_token = '?access_token=' + app.tokens.access_token;
-        // var layerUuid = this._getLayerUuid();
-        // var url = app.options.servers.tiles.uri + '{layerUuid}/{z}/{x}/{y}.png' + access_token;
+        var source = this.store.data.wms.source;
+        var layers = this.store.data.wms.layers;
+        var options_string = this.store.data.wms.options;
+        var options = this._queryStringToJSON(options_string) || {};
 
-        // // add vector tile raster layer
-        // this.layer = L.tileLayer(url, {
-        //     fileUuid: fileUuid,
-        //     layerUuid : layerUuid,
-        //     subdomains : subdomains,
-        //     maxRequests : 0
-        // });
+        // options.source = source;
+        options.layers = layers;
+        options.transparent = true;
+        options.format = 'image/png';
 
-        var wms_source = 'http://195.1.20.83/wms-follo/';
-        // var layer_name = 'EIENDOMSKART';
-
-        // console.log('_prepareLayer', this);
-
-        var layer_name = this._getFirstWMSLayer();
+        // remember options
+        this._wms_options = options;
 
         // create layer
-        this.layer = L.tileLayer.betterWms(wms_source, {
-            layers: layer_name,
-            transparent: true,
-            format: 'image/png',
-            openContent : this.openContent.bind(this),
-            parentLayer : this
+        this.layer = L.tileLayer.wms(source, options);
+
+    },
+
+    _queryStringToJSON : function (string) {   
+        if (!string) return {};         
+        var pairs = string.split('&');
+        
+        // parse each param
+        var result = {};
+        pairs.forEach(function(pair) {
+            pair = pair.split('=');
+            result[pair[0]] = decodeURIComponent(pair[1] || '');
         });
+
+        // parse
+        var parsed = M.parse(M.stringify(result));
+
+        return parsed;
+    },
+
+    _on_timeseries_layer_date_changed : function (e) {
+
+        var isOn = this.getCustomOptions().listen_timeseries_event || false;
+        if (!isOn) return;
+
+        // get time
+        this._timestamp = e.detail.timestamp;
+
+        // set param
+        this.setTimestampParam();
+
+    },
+
+    setTimestampParam : function () {
+
+        var timestamp = this._timestamp;
+        if (!timestamp) {
+            // var timestamp = moment(); // today
+            // var timestamp = moment().subtract(1, 'days'); // today
+            // var timestamp = app._scf_latest ? app._scf_latest.date : moment();
+            var timestamp = app._scf_current;
+        }
+        
+        // parse time
+        var parsed_time = moment(timestamp).format('YYYY-MM-DD');
+
+        // save time options
+        this._wms_options['TIME'] = parsed_time;
+
+        // refresh options
+        this.layer.setParams(this._wms_options);        
 
     },
 
@@ -70,27 +97,14 @@ M.WMSLayer = M.Model.Layer.extend({
         return app.activeProject;
     },
 
-    openContent : function (options) {
-
-        // clear old
-        this.clearSelection();
-
-        // parse content
-        var parsed_content = this._prepareContent(options.content);
-
-        // get info box
-        var info_box = this.getInfoBox();
-
-        // clear
-        info_box.innerHTML = '';
-
-        // append
-        info_box.appendChild(parsed_content);
-    },
 
     getInfoBox : function () {
         if (!this.project()._infobox) this._createInfoBox();
         return this.project()._infobox;
+    },
+
+    isWMS : function () {
+        return true;
     },
 
     _createInfoBox : function () {
@@ -99,7 +113,6 @@ M.WMSLayer = M.Model.Layer.extend({
         var closeBtn = M.DomUtil.create('div', 'wms-info-box-close-btn', container, 'x');
 
         // set infobox
-        // this._infobox = content;
         this.project()._infobox = content;
 
         // set close event
@@ -129,218 +142,7 @@ M.WMSLayer = M.Model.Layer.extend({
         return content.results[0].formatted_address;
     },
 
-    _prepareContent : function (results) {
-        if (!this._added) return;
-
-        // parse content
-        var content = M.parse(results.feature);
-
-        // create containers
-        var html = M.DomUtil.create('div', 'wms-content');
-        var main_header = M.DomUtil.create('div', 'wms-header', html);
-        var main_content = M.DomUtil.create('div', 'wms-content', html);
-
-        // set header
-        main_header.innerHTML = 'Plananalyse';
-
-        // address bar
-        var address_text = this._getGeocodingAddress(results.geocoding);
-        var address_header = M.DomUtil.create('div', 'wms-address', main_content, address_text);
-
-        var content = _.sortBy(content, function (cont) {
-            return cont.FeatureType;
-        });
-
-        // get "eiendom" index
-        // add eiendom to front
-        var ie = _.findIndex(content, function (con) {
-            return con.FeatureType == 'Eiendom';
-        });
-        var eiendom = _.find(content, function (c) {
-            return c.FeatureType == 'Eiendom';
-        });
-        content.splice(ie, 1);
-        content.unshift(eiendom);
-
-        _.forEach(content, function (c) {
-
-            // skip teiggrenser
-            if (c.FeatureType == 'Teiggrense') return;
-
-            // container
-            var container = M.DomUtil.create('div', 'wms-content-container', main_content);
-            var header = M.DomUtil.create('div', 'wms-content-header', container);
-            var attributes = M.DomUtil.create('div', 'wms-content-attributes-container', container);
-
-            // set header
-            header.innerHTML = _.capitalize(c.FeatureType);
-
-            // attributes
-            _.forEach(c.AttributesList, function (a) {
-
-                var wrap = M.DomUtil.create('div', 'wms-content-attributes-wrapper', attributes)
-                var namediv = M.DomUtil.create('div', 'wms-content-attributes-name', wrap);
-                var valuediv = M.DomUtil.create('div', 'wms-content-attributes-value', wrap);
-
-                // set values
-                var name = a.Name + ':';
-                var value = a.Value;
-
-                // create link
-                if (a.Name == 'Link') {
-                    value = '<a href="' + value + '" target="_blank">Se mer informasjon</a>';
-                    name = 'Info:';
-                } 
-                
-                // add values
-                namediv.innerHTML = name;
-                valuediv.innerHTML = value;
-
-            });
-
-            // create polygon from geometry
-            var geometry = [];
-            _.forEach(c.Geometry.Positions, function (g) {
-                geometry.push([g.X, g.Y]);
-            });
-
-            if (c.FeatureType == 'Eiendom') {
-
-                // // create polygon from geometry
-                // var geometry = [];
-                // _.forEach(c.Geometry.Positions, function (g) {
-                //     geometry.push([g.X, g.Y]);
-                // });
-
-                // create polygon
-                var polygon = turf.polygon([geometry]);
-
-                // add geojson
-                var overlay = this._overlays[c.FeatureType] = L.geoJSON(polygon, {
-                    style : {
-                        "color": "red",
-                        "weight": 5,
-                        "opacity": 0.65,
-                        "fillOpacity" : 0.1
-                    }
-                });
-
-                // add permanently
-                overlay.addTo(app._map);
-
-                // highlight polygon on hover
-                M.DomEvent.on(container, 'mouseenter', function (e) {
-                    container.style.background = 'rgb(99, 109, 125)';
-                    overlay.setStyle({
-                        "color": "red",
-                        "weight": 5,
-                        "opacity": 0.65,
-                        "fillOpacity" : 0.2
-                    });
-                });
-                // highlight polygon on hover
-                M.DomEvent.on(container, 'mouseleave', function (e) {
-                    container.style.background = '';
-                    overlay.setStyle({
-                        "color": "red",
-                        "weight": 5,
-                        "opacity": 0.65,
-                        "fillOpacity" : 0.1
-                    });
-                });
-
-
-            } else {
-
-                // var exempt = ['Kommune', 'Vei', 'Kommuneplan'];
-                
-                var exempt = [];
-
-                if (!_.includes(exempt, c.FeatureType)) {
-
-                    // // create polygon from geometry
-                    // var geometry = [];
-                    // _.forEach(c.Geometry.Positions, function (g) {
-                    //     geometry.push([g.X, g.Y]);
-                    // });
-
-                    // first/last
-                    var first = _.first(c.Geometry.Positions);
-                    var last = _.last(c.Geometry.Positions);
-
-                    var isPolygon = (first.X == last.X && first.Y == last.Y);
-
-                     try {
-                        
-                        // if (isPolygon) {
-
-                        //     // create polygon
-                        //     var geojson = turf.polygon([geometry]);
-                            
-                        // } else {
-                           
-                        //     // is polyline
-                        //     var geojson = turf.linestring(geometry);
-                        // }
-
-                        var geojson = isPolygon ? turf.polygon([geometry]) : turf.linestring(geometry);
-
-                    } catch (e) {
-                        console.log('turf err', e, c);
-                        return;
-                    }
-
-                    // add geojson
-                    var overlay = this._overlays[c.FeatureType] = L.geoJSON(geojson, {
-                        style : {
-                            "color": "#ff7800",
-                            "weight": 5,
-                            "opacity": 0.65,
-                            "fillOpacity" : 0.2
-                        }
-                    });
-
-                    // highlight polygon on hover
-                    M.DomEvent.on(container, 'mouseenter', function (e) {
-                        container.style.background = 'rgb(99, 109, 125)';
-                        overlay.addTo(app._map);
-                    });
-                    // highlight polygon on hover
-                    M.DomEvent.on(container, 'mouseleave', function (e) {
-                        container.style.background = '';
-                        overlay.remove();
-                    });
-
-                } 
-            }
-
-        }.bind(this));
-
-        return html;
-    },
-
     _overlays : {},
-
-    // _getLayerUuid : function () {
-    //     return this.store.data.postgis.layer_id;
-    // },
-
-    // getMeta : function () {
-    //     var metajson = this.store.metadata;
-    //     var meta = M.parse(metajson);
-    //     return meta;
-    // },
-
-    // getData : function () {
-    //     return this.store.data.postgis;
-    // },
-
-    // getFileMeta : function () {
-    //     var file = app.Account.getFile(this.store.file);
-    //     var metajson = file.store.data.raster.metadata;
-    //     var meta = M.parse(metajson);
-    //     return meta;
-    // },
 
     getExtent : function () {
         var meta = this.getMeta();
@@ -400,7 +202,6 @@ M.WMSLayer = M.Model.Layer.extend({
     },
 
     downloadLayer : function () {
-        console.log('wms downloadLayer');
     },
 
     isRaster : function () {
@@ -414,7 +215,6 @@ M.WMSLayer = M.Model.Layer.extend({
     },
    
     _refreshLayer : function (layerUuid) {
-
         this.layer.setOptions({
             layerUuid : layerUuid
         });
@@ -431,19 +231,35 @@ M.WMSLayer = M.Model.Layer.extend({
         this.addTo();
     },
 
-    addTo : function () {
-        if (!this._inited) this.initLayer();
+    ensureLayerInited : function (done) {
+        if (this._inited) return done();
 
-        // add to map
-        this._addTo();
-        
-        // add to controls
-        this.addToControls();
+        // init layer
+        this.initLayer();
+
+        // and wait a bit
+        setTimeout(done.bind(this), 300);
+    },
+
+    addTo : function () {
+
+        // ensure layer is ready
+        this.ensureLayerInited(function () {
+
+            // add to map
+            this._addTo();
+            
+            // add to controls
+            this.addToControls();
+
+            // // set timetamp param
+            // this.setTimestampParam();
+
+           
+        }.bind(this));
     },
 
     _addTo : function (type) {
-        if (!this._inited) this.initLayer();
-
         var map = app._map;
 
         // leaflet fn
@@ -455,20 +271,37 @@ M.WMSLayer = M.Model.Layer.extend({
         // mark
         this._added = true;
 
+        // events
+        this.addHooks();
+
         // fire event
         M.Mixin.Events.fire('layerEnabled', { detail : {
             layer : this
         }}); 
 
+        // set timetamp param
+        this.setTimestampParam();
+
     },
 
+    getLegendImage : function () {
+        var legendImage = this.store.legend;
+        return legendImage;
+    },
+
+    _setHooks : function (on) {
+        M.Mixin.Events[on]('timeseries_layer_date_changed', this._on_timeseries_layer_date_changed, this);
+        // M.Mixin.Events.on('sliderSet', this._on_timeseries_layer_date_changed, this);
+
+    },
 
     remove : function (map) {
         var map = map || app._map;
 
         // leaflet fn
-        if (map.hasLayer(this.layer)) map.removeLayer(this.layer);
-
+        if (map.hasLayer(this.layer)) {
+            map.removeLayer(this.layer);
+        }
         // remove from active layers
         app.MapPane.removeActiveLayer(this);    
 
@@ -482,8 +315,8 @@ M.WMSLayer = M.Model.Layer.extend({
         this._removeFromZIndex();
 
         // remove from descriptionControl if avaialbe
-        // var descriptionControl = app.MapPane.getControls().description;
-        // if ( descriptionControl ) descriptionControl._removeLayer(this);
+        var descriptionControl = app.MapPane.getControls().description;
+        if (descriptionControl) descriptionControl._removeLayer(this);
 
         // remove overlays
         _.forEach(this._overlays, function (o) {
@@ -492,6 +325,9 @@ M.WMSLayer = M.Model.Layer.extend({
         }.bind(this))
 
         this._added = false;
+
+        // events
+        this.removeHooks();
 
         // fire layer enabled
         this.fire('disabled', {
@@ -503,182 +339,130 @@ M.WMSLayer = M.Model.Layer.extend({
         return this._added;
     },
 
+    getSourceURL : function () {
+        return this.store.data.wms.source;
+    },
+
+    getWMSLayerString : function () {
+        return this.store.data.wms.layers;
+    },
+
+    getWMSExtraOptions : function () {
+        return this.store.data.wms.options;
+    },
+
+    getWMSLegend : function () {
+        return this.store.legend;
+    },
+
+  
 
 });
 
 
 
-L.TileLayer.BetterWMS = L.TileLayer.WMS.extend({
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+M.TileServiceLayer = M.Model.Layer.extend({
+
+    type : 'tile_service',
 
     options : {
-        // prepareContent : function () {},
-        parentLayer : null,
-        openContent : function () {}
-    },
-  
-    onAdd: function (map) {
-        // Triggered when the layer is added to a map.
-        //   Register a click listener, then do all the upstream WMS things
-        L.TileLayer.WMS.prototype.onAdd.call(this, map);
-        map.on('click', this.getFeatureInfo, this);
+        minZoom : 0,
+        maxZoom : 20
     },
 
-    onRemove: function (map) {
-        // Triggered when the layer is removed from a map.
-        //   Unregister a click listener, then do all the upstream WMS things
-        L.TileLayer.WMS.prototype.onRemove.call(this, map);
-        map.off('click', this.getFeatureInfo, this);
+    initialize : function (layer) {
 
-        if (this._popup) {
-            this._popup.remove();
-        }
-    },
-
-    getFeatureInfo: function (evt) {
-        // Make an AJAX request to the server and hope for the best
-        var url = this.getFeatureInfoUrl(evt.latlng);
-        var showResults = L.Util.bind(this.showGetFeatureInfo, this);
-
-        var ops = {};
-
-
-        // set progress bar
-        app.ProgressBar.timedProgress(1500)
-
-        ops.feature = function (callback) {
-            $.ajax({
-                url: url,
-                success: function (data, status, xhr) {
-                    var err = typeof data === 'string' ? null : data;
-                    callback(err, data);
-                },
-                error: function (xhr, status, error) {
-                    callback(error);  
-                }
-            });
-        };
-
-        ops.geocoding = function (callback) {
-
-            var url = [
-                'https://maps.googleapis.com/maps/api/geocode/json?',
-                'latlng=',
-                evt.latlng.lat + ',' + evt.latlng.lng,
-                '&key=AIzaSyCavrqiBU2rP7UljU4y3-UQP4h8gjB1IEw'
-            ];
-            
-            $.ajax({
-                url: url.join(''),
-                success: function (data, status, xhr) {
-                    var err = typeof data === 'string' ? null : data;
-                    callback(null, data);
-                },
-                error: function (xhr, status, error) {
-                    callback(null);  
-                }
-            });
-        };
-
-        async.parallel(ops, function (err, results) {
-            showResults(err, evt.latlng, results);
-        }); 
-
-       
-
-       
-
-        // https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=AIzaSyBVrB_4RHkrlLHIpK15VHs1LrwFszWvfPI
-
-    },
-
-    getFeatureInfoUrl: function (latlng) {
+        // set source
+        this.store = layer; // db object
         
-        // Construct a GetFeatureInfo request URL given a point
-        var point = this._map.latLngToContainerPoint(latlng, this._map.getZoom());
-        var size = this._map.getSize();
-
-        // console.log('poinint:', point, latlng);
-        // var params = {
-        //     request: 'GetFeatureInfo',
-        //     service: 'WMS',
-        //     srs: 'EPSG:4326',
-        //     styles: this.wmsParams.styles,
-        //     transparent: this.wmsParams.transparent,
-        //     version: this.wmsParams.version,      
-        //     format: this.wmsParams.format,
-        //     bbox: this._map.getBounds().toBBoxString(),
-        //     height: size.y,
-        //     width: size.x,
-        //     layers: this.wmsParams.layers,
-        //     query_layers: this.wmsParams.layers,
-        //     info_format: 'text/html'
-        // };
-
-        // var params = {
-        //     request: 'GetFeatureInfo',
-        //     service: 'WMS',
-        //     srs: 'EPSG:4326',
-        //     // styles: this.wmsParams.styles,
-        //     // transparent: this.wmsParams.transparent,
-        //     version: '1.1.0',
-        //     tolerance : 25,  
-        //     styles : '',    
-        //     // format: this.wmsParams.format,
-        //     // bbox: this._map.getBounds().toBBoxString(),
-        //     height: size.y,
-        //     width: size.x,
-        //     layers: this.wmsParams.layers,
-        //     query_layers: 'SKI_WMS-FOLLO:EIENDOMSKART,KULTURMINNER',
-        //     layers: 'SKI_WMS-FOLLO:EIENDOMSKART,KULTURMINNER',
-        //     format : 'image/png',
-
-        //     info_format: 'text/html',
-        //     x : point.x,
-        //     y : point.y,
-        //     bbox : app._map.getBounds().toBBoxString(),
-        // };
-
-
-        // norkart proxy query
-        var params = {
-            service: 'WMS',
-            srs: 'EPSG:4326',
-            tolerance : 25,  
-            y : latlng.lat,
-            x : latlng.lng,
-            appId : 'CPC-Kommunekart',
-            // querylayers : 'SKI_WMS-FOLLO:EIENDOMSKART'
-        };
-
-        var querylayers = 'SKI_WMS-FOLLO:EIENDOMSKART,KULTURMINNER,PBLTILTAK,BYGGESAKER_UNDER_ARBEID,KP2,RP2,BP3VN2,RP3VN2,KP3,AR5,VEIKATEGORI,RODER;GeoServer_WMS_DOK:layergroup_63;Follo-WMS-TURKART-SOMMER:SYKKELRUTE,SYKKELRUTEFORSLAG,FOTRUTE,FOTRUTEFORSLAG;AreaWMS:0213;';
-        params.querylayers = querylayers;
-
-        // debug url, norkart proxy
-        var url = 'https://kommunekart.com/api/WebPublisher/GfiProxy?';
-        var done_url = url + L.Util.getParamString(params, url, true);
-        return done_url;
+        // data not loaded
+        this.loaded = false;
     },
 
-    getPopup : function () {
-        return this._popup;
+    _addEvents : function () {
+        M.DomEvent.on(this.layer, 'loading', this.setAttribution, this);
     },
 
-    showGetFeatureInfo: function (err, latlng, content) {
-        if (err) { console.log(err); return; } // do nothing if there's an error
+    getAttribution : function () {
+        var att = app.options.attribution ? app.options.attribution + ' | ' : '';
+        return att;
+    },
 
-        // don't add if layer was removed from map while querying
-        if (!this.options.parentLayer.isAdded()) return;
+    setAttribution : function () {
+        var att = this.getAttribution();
+        var attributionControl = this.getAttributionControl();
+        attributionControl.clear();
+        attributionControl.addAttribution(att);
+    },
 
-        // open content in description box
-        this.options.openContent({
-            latlng : latlng,
-            content : content
+    initLayer : function () {
+        this.update();
+    },
+
+    update : function () {
+        var map = app._map;
+
+        // prepare raster
+        this._prepareRaster();
+    },
+
+    getSourceURL : function () {
+        var tile_service = M.parse(this.store.data.tile_service);
+        return tile_service.tile_url;
+    },
+
+    getSubdomains : function () {
+         var tile_service = M.parse(this.store.data.tile_service);
+        return tile_service.subdomains;
+    },
+
+    _prepareRaster : function () {
+
+        var tile_service = M.parse(this.store.data.tile_service);
+        var url = tile_service.tile_url;
+        var subdomains = tile_service.subdomains;
+
+        // add vector tile raster layer
+        this.layer = L.tileLayer(url, {
+            subdomains : subdomains,
+            maxRequests : 0,
+            tms : false,
+            maxZoom : this.options.maxZoom,
+            minZoom : this.options.minZoom
         });
 
+        this._addEvents();
+    },
+
+    deleteLayer : function () {
+
+        // confirm
+        var message = 'Are you sure you want to delete this layer? \n - ' + this.getTitle();
+        if (!confirm(message)) return console.log('No layer deleted.');
+
+        // get project
+        var layerUuid = this.getUuid();
+        var project = _.find(app.Projects, function (p) {
+            return p.layers[layerUuid];
+        });
+
+        // delete layer
+        project.deleteLayer(this);
     },
 
 });
-
-L.tileLayer.betterWms = function (url, options) {
-  return new L.TileLayer.BetterWMS(url, options);  
-};

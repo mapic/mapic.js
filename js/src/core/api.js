@@ -18,6 +18,24 @@ M.Api = M.Class.extend({
 		this.get(path, options, done);
 	},
 
+	cubes : {
+		render : {
+			start : function (options, done) {
+				var path = '/v2/cubes/render/start';
+				app.api.post(path, options, done);
+			},
+
+			estimate : function (options, done) {
+				var path = '/v2/cubes/render/estimate';
+				app.api.post(path, options, done);
+			},
+
+			status : function (options, done) {
+				var path = '/v2/cubes/render/status';
+				app.api.post(path, options, done);
+			},
+		}
+	},
 
 	// pre-render
 	preRender : function (options, done) {
@@ -27,7 +45,7 @@ M.Api = M.Class.extend({
 
 	// pre-render
 	preRenderCube : function (options, done) {
-		var path = '/v2/tiles/renderCube';
+		var path = '/v2/cubes/render';
 		this.post(path, options, done);
 	},
 
@@ -208,9 +226,10 @@ M.Api = M.Class.extend({
 		this.get(path, options, done);
 	},
 
-	
-
-
+	importExternalFile : function (options, done) {
+		var path = '/v2/data/external';
+		this.post(path, options, done);
+	},
 
 
   	// LAYERS
@@ -315,10 +334,60 @@ M.Api = M.Class.extend({
 		this.post(path, options, done);
 	},
 
+	// getMaskBackdropData : function (options, done) {
+	// 	console.log('getMaskData', options);
+	// 	// var path = 'https://gist.githubusercontent.com/knutole/f37803e645d966698b91f66ddb674b04/raw/8977bd7e73f26ffb7f10eef655b852841322326c/dummy-scf-backdrop-data.json'
+	// 	// this.get(path, options, done);
+
+	// 	var data_id = options.data_id;
+
+	// 	var dummy_data = M.stringify([
+	// 		{
+	// 			"doy" : 1,
+	// 			"min" : 1,
+	// 			"max" : 20,
+	// 			"average" : 10
+	// 		},
+	// 		{
+	// 			"doy" : 2,
+	// 			"min" : 3,
+	// 			"max" : 30,
+	// 			"average" : 20
+	// 		}
+	// 	]);
+	// 	return done(null, dummy_data);
+	// },
 
 
+	// getMaskYearlyData : function (options, done) {
 
+	// 	var data_id = options.data_id;
+	// 	var year = options.year;
 
+	// 	var dummy_data = M.stringify([
+	// 		{
+	// 			"year" : "2018",
+	// 			"doy" : 1,
+	// 			"min" : 1,
+	// 			"max" : 20,
+	// 			"average" : 10
+	// 		},
+	// 		{
+	// 			"year" : "2018",
+	// 			"doy" : 2,
+	// 			"min" : 3,
+	// 			"max" : 30,
+	// 			"average" : 20
+	// 		}
+	// 	]);
+	// 	return done(null, dummy_data);
+
+	// },
+
+	getEndpointData : function (options, done) {
+		var path = options.url;
+		this.get(options.url, {}, done);
+	},
 
 
 
@@ -510,7 +579,9 @@ M.Api = M.Class.extend({
 		var access_token = (window.app && app.tokens) ? app.tokens.access_token : null;
 		var options = _.isString(json) ? M.parse(json) : json;
 		options.access_token = options.access_token || access_token;
+
 		var send_json = M.stringify(options);
+		
 		// send
 		http.send(send_json);
 	},
@@ -524,7 +595,11 @@ M.Api = M.Class.extend({
 	_get : function (path, options, done, context, baseurl) {
 		var http = new XMLHttpRequest();
 		var url = baseurl || this.options.url || M.Util._getServerUrl();
-		url += path;
+		if (_.includes(path, 'http') && _.includes(path, '://')) {
+			url = path;
+		} else {
+			url += path;
+		}
 
 		// add options to query
 		url = this._addQueryOptions(url, options);

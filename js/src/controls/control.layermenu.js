@@ -93,6 +93,9 @@ L.Control.Layermenu = M.Control.extend({
 		this.addTo(app._map);
 		this._addHooks();
 		this._added = true;
+
+		// shortcut
+		app.Layermenu = this;
 	},
 
 	_flush : function () {
@@ -207,7 +210,6 @@ L.Control.Layermenu = M.Control.extend({
 
 
 		M.Mixin.Events.on('toggleLeftChrome', this._toggleLeftChrome, this);
-
 
 	},
 
@@ -562,8 +564,6 @@ L.Control.Layermenu = M.Control.extend({
 		start : function (e) {
 			var el = e.target;
 
-			console.log('drag start', el);
-
 			// add visual feedback on dragged element
 			M.DomUtil.addClass(el, 'dragged-ghost');
 
@@ -579,10 +579,10 @@ L.Control.Layermenu = M.Control.extend({
 
 		drop : function (e) {
 
-			console.log('drag drop');
-			
 			var uuid = e.dataTransfer.getData('uuid');
 			var el = document.getElementById(uuid);
+
+			console.log('drop: uuid, el', uuid, el);
 
 			// remove visual feedback on dragged element
 			M.DomUtil.removeClass(el, 'dragged-ghost');
@@ -609,8 +609,6 @@ L.Control.Layermenu = M.Control.extend({
 
 		over : function (e) {
 
-			console.log('drag over');
-
 			if (e.preventDefault) e.preventDefault(); // allows us to drop
 
 			// set first offset
@@ -624,8 +622,6 @@ L.Control.Layermenu = M.Control.extend({
 
 		leave : function (e) {
 
-			console.log('drag leave');
-			
 			// get element over which we're hovering
 			var x = e.clientX;
 			var y = e.clientY;
@@ -652,6 +648,58 @@ L.Control.Layermenu = M.Control.extend({
 				// Insert element after to elementToMoveNextTo.
 				elementToMoveNextTo.parentNode.insertBefore(element, elementToMoveNextTo.nextSibling);
 			}
+
+		},
+
+
+		moveElementUp : function (element) {
+
+			var nextSibling = element.nextSibling;
+			var prevSibling = element.previousSibling;
+
+			// check if on top
+			if (!prevSibling) return console.log('already on top');
+
+			// move
+			element.parentNode.insertBefore(element, prevSibling);
+
+			// save
+			this.saveAfterMove(element);
+
+		},
+
+		moveElementDown : function (element) {
+
+			var nextSibling = element.nextSibling;
+			var prevSibling = element.previousSibling;
+
+			// check if on bottom
+			if (!nextSibling) return console.log('already on top');
+
+			// move
+			element.parentNode.insertBefore(element, nextSibling.nextSibling);
+
+			// save
+			this.saveAfterMove(element);
+		},
+
+		saveAfterMove : function (el) {
+
+			var that = app.Layermenu;
+
+			var uuid = el.getAttribute('id');
+
+			// get new position in layermenu array
+			var nodeList = Array.prototype.slice.call(that._content.childNodes);
+			
+			var newIndex = nodeList.indexOf(el);
+			var oldIndex = _.findIndex(that._project.store.layermenu, {uuid : uuid});
+
+			// move in layermenu array
+			that._project.store.layermenu.move(oldIndex, newIndex);
+
+			// save
+			that.save();
 
 		},
 
@@ -693,8 +741,6 @@ L.Control.Layermenu = M.Control.extend({
 
 	// check logic
 	checkLogic : function () {
-
-		console.log('checkLogic');
 
 		// clear prev invalids
 		this.clearInvalid();
@@ -1138,6 +1184,10 @@ L.Control.Layermenu = M.Control.extend({
 		    	layerItemFlyTo.innerHTML = '<i class="fa fa-search fly-to"></i>';
 		}
 
+
+	
+
+
 		var inner = M.DomUtil.create('div', 'layer-menu-item', wrap);
 		inner.setAttribute('type', 'layerItem');
 		inner.innerHTML = caption;
@@ -1146,7 +1196,22 @@ L.Control.Layermenu = M.Control.extend({
 		// add hooks
 		M.DomEvent.on(up,   'click', function (e) { this.upFolder(uuid); 	  }, this);
 		M.DomEvent.on(down, 'click', function (e) { this.downFolder(uuid); 	  }, this);
-		
+
+
+		// add vertical-movement triggers
+		var v_up = M.DomUtil.create('div', 'layer-item-up vertical', wrap);
+		var v_down = M.DomUtil.create('div', 'layer-item-down vertical', wrap);
+
+		M.DomEvent.on(v_up,   'click', function (e) {   
+			var parentEl = e.target.parentNode;
+			this.drag.moveElementUp(parentEl);
+		}, this);
+		M.DomEvent.on(v_down,   'click', function (e) { 
+			var parentEl = e.target.parentNode;
+			this.drag.moveElementDown(parentEl);
+		}, this);
+
+
 		if (!layer) { // folder
 			M.DomEvent.on(inner, 'dblclick', function (e) { this._editFolderTitle(uuid); },this);
 			M.DomEvent.on(del,  'click', function (e) { this.deleteMenuFolder(uuid); }, this);
@@ -1160,7 +1225,6 @@ L.Control.Layermenu = M.Control.extend({
 		// drag
 		// set dragstart event
 		M.DomEvent.on(wrap, 'dragstart', this.drag.start, this);
-		// M.DomEvent.on(wrap, 'mousedown', console.log, this);
 		
 		// Stop Propagation
 		M.DomEvent.on(this._container, 'touchstart mousedown click dblclick',  M.DomEvent.stopPropagation, this);
@@ -1376,8 +1440,8 @@ L.Control.Layermenu = M.Control.extend({
 
 		// save on timeout
 		this.saveTimer = setTimeout(function () {
-			that._project._update('layermenu');
-		}, 1000);       // don't save more than every goddamed second
+			that._project._update('layermenu', null, true); // noRefresh = true (to avoid heavy reload of project)
+		}, 300); // don't save too often
 
 	},
 

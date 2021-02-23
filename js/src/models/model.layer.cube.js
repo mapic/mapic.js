@@ -1,6 +1,8 @@
 // metalayer with several postgis raster layers 
 M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
+    type : 'timeseries',
+
     // languages
     localization : {
         lang : 'nor',
@@ -27,7 +29,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         mask : {
             
             defaultStyle : {
-                fillColor : '#d35658',
+                // fillColor : '#d35658',
+                fillColor : 'green',
                 fillOpacity : 0,
                 color : '#16d6f3',
                 opacity : 0.6,
@@ -35,7 +38,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             },
 
             hoverStyle : {
-                fillColor : '#d35658',
+                // fillColor : '#d35658',
+                fillColor : 'blue',
                 fillOpacity : 0.2,
                 color : '#d35658',
                 opacity : 0.9,
@@ -45,7 +49,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             selectedStyle : {
                 fillColor : 'black',
                 fillOpacity : 0,
-                color : 'red',
+                // color : 'red',
+                color : 'green',
                 opacity : 0.9,
                 weight : 2,
             },
@@ -53,7 +58,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             selectedHoverStyle : {
                 fillColor : 'black',
                 fillOpacity : 0,
-                color : 'red',
+                // color : 'red',
+                color : 'orange',
                 opacity : 0.9,
                 weight : 2,
             },
@@ -75,13 +81,20 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         emptyTile : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAB9JREFUaIHtwQENAAAAwqD3T20ON6AAAAAAAAAAAL4NIQAAAZpg4dUAAAAASUVORK5CYII=',
     },
 
-    _cache : [],
-
+    // inited on page load,
+    // all cube layers are inited across all projects
     _initialize : function (store) {
 
         // set store
         this._setStore(store);
 
+        this._cache = [];
+
+        this._data = {};
+
+        this._masks = [];
+
+        this._maskLayers = [];
     },
 
     _setStore : function (store) {
@@ -91,22 +104,20 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // parse cube json
         this._cube = M.parse(this.store.data.cube);
+
     },
 
-    add : function (type) {
+    add : function () {
         this.addTo();
     },
 
     addTo : function () {
-       
-        // add to map
         this._addTo();
-
     },
 
-    _addTo : function (type) {
+    _addTo : function () {
 
-        console.log('M.Model.Layer.CubeLayer: ', this);
+        console.log(this);
 
         // ensure inited
         this.initLayer(function (err) {
@@ -123,7 +134,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             this._updateCache();
 
             // sets cursor at current frame (ie. show layer on map)
-            this._updateCursor();
+            // (but don't fire on init, since this creates a double fire when setting date later)
+            if (!_.isNull(this._cursor)) this._updateCursor();
 
             // add to active layers
             app.MapPane.addActiveLayer(this);   // includes baselayers, todo: evented
@@ -138,7 +150,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             }
 
             // show legend
-            this._showLegend();
+            // this._showLegend();
 
             // mark added
             this._added = true;
@@ -148,8 +160,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
                 layer : this
             });
 
-        }.bind(this));
+            // fire global event
+            app._map.fire('enabled_layer', {
+                layer : this
+            });
 
+        }.bind(this));
 
     },
 
@@ -172,11 +188,10 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         };
 
         // remove from active layers
-        // todo: evented!
         app.MapPane.removeActiveLayer(this);    
 
         // remove from zIndex
-        this._removeFromZIndex(); // todo: evented
+        this._removeFromZIndex();
 
         // hide legend
         this._hideLegend();
@@ -188,6 +203,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this.fire('disabled', {
             layer : this
         });
+
+        // fire global event
+        app._map.fire('disabled_layer', {
+            layer : this
+        });
+
     },
 
     // add leaflet layer only
@@ -259,14 +280,31 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         app.api.getCube({
             cube_id : cube_id
         }, function (err, cube) {
-            if (err) console.log('err, cube', err, cube);
+            if (err) {
+                console.error('app.api.getCube -> err, cube:', err, cube);
+
+                // error msg
+                var errorMsg = 'Please check your cube layer for errors. ';
+                var cubeError = M.parse(cube);
+                if (cubeError) {
+                    errorMsg += '(' + cubeError.error + ')';
+                }
+
+                // set feedback
+                app.feedback.err('Error with cube.', errorMsg);
+            }
 
             if (this.store.data.cube == cube) {
-                // console.log('Cube is same.');
+                console.log('Cube is same.');
             } else {
 
                 // save updated cube
-                this._saveCube(M.parse(cube));
+                var parsed_cube = M.parse(cube);
+                if (parsed_cube) {
+                    this._saveCube(parsed_cube);
+                } else {
+                    console.error('Something wrong parsing cube:', cube);
+                }
             }
 
             done();
@@ -282,22 +320,25 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     // for storing requested data
-    _data : {},
+    // _data : {},
 
     _initGraph : function (done) {
 
         // create graph
         this._graph = new M.Graph.SnowCoverFraction({ 
-            type     : 'annualCycles',
-            cube     : this,
+            type : 'annualCycles',
+            cube : this,
         });
+
+        // return
+        done && done();
 
     },
 
     _initCursor : function () {
 
         // init cursor
-        this._cursor = 0;
+        this._cursor = null;
 
         // init feature group
         this._group = L.featureGroup([]);//.addTo(app._map);
@@ -308,7 +349,6 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         var datasets = this.getDatasets();
         var f = this.options.timeFormat;
         if (!_.size(datasets)) {
-            console.log('no datasets yet!');
             app.FeedbackPane.setError({
                 title : 'Missing datasets',
                 description : 'There are no datasets in the layer. Please add datasets before continuing.'
@@ -390,30 +430,33 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         masks = _.isArray(masks) ? masks : [masks];
 
-        masks.forEach(function (m) {
+        async.each(masks, function (m, cb) {
 
             // check if raster mask
-            if (m.type == 'postgis-raster') return this._initRasterMask(m, done);
+            if (m.type == 'postgis-raster') return this._initRasterMask(m, cb);
 
             // check if vector mask
-            if (m.type == 'topojson') return this._initTopoJSONMask(m, done);
+            if (m.type == 'topojson') return this._initTopoJSONMask(m, cb);
 
             // check if vector mask
-            if (m.type == 'geojson') return this._initGeoJSONMask(m, done);
+            if (m.type == 'geojson') return this._initGeoJSONMask(m, cb);
 
             console.error('Unsupported mask', m);
 
-        }.bind(this));
+        }.bind(this), 
 
-        done && done();
+        // callback
+        function (err) {
 
-        // select first mask by default
-        this.setDefaultMask();
+            done && done();
+
+            // select first mask by default
+            this.setDefaultMask();
+
+        }.bind(this))
+
 
     },
-
-    _masks : [],
-    _maskLayers : [],
 
     _initRasterMask : function (mask, done) {
         console.error('todo: RASTER MASK');
@@ -428,7 +471,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // create mask (geojson) layer
         var maskLayer = new M.Model.Layer.GeoJSONMaskLayer({
             geojson : mask.geometry,
-            style : this.options.mask.defaultStyle,
+            style : this.getMaskStyling(),
             id : mask.id
         });
 
@@ -479,7 +522,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     _onMaskMouseout : function (maskLayer, e) {
-        var style = maskLayer.selected ? this.options.mask.selectedStyle : this.options.mask.defaultStyle;
+        // var style = maskLayer.selected ? this.options.mask.selectedStyle : this.getMaskStyling();
+        var style = maskLayer.selected ? this.getMaskStyling() : this.getMaskStyling();
         maskLayer.layer.setStyle(style);
     },
 
@@ -533,7 +577,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this.selectMask(maskLayer);
 
         // cause not hovering
-        maskLayer.layer.setStyle(this.options.mask.selectedStyle);
+        // maskLayer.layer.setStyle(this.options.mask.selectedStyle);
+        maskLayer.layer.setStyle(this.getMaskStyling());
         
     },
 
@@ -568,13 +613,13 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     },
 
     unselectMask : function (maskLayer) {
-        maskLayer.layer.setStyle(this.options.mask.defaultStyle);
+        maskLayer.layer.setStyle(this.getMaskStyling());
     },
 
     unselectAllMasks : function () {
         // reset all selected first
         this._maskLayers.forEach(function (m) {
-            m.layer.setStyle(this.options.mask.defaultStyle);
+            m.layer.setStyle(this.getMaskStyling());
             m.selected = false;
         }.bind(this));
     },
@@ -616,7 +661,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // reset style for all layers
         this._maskLayer.layer.eachLayer(function (l) {
-            l.setStyle(this.options.mask.selectedStyle);
+            l.setStyle(this.getMaskStyling());
         }.bind(this));
 
         this.fire('maskSelected', {
@@ -628,7 +673,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
         // reset style for all layers
         this._maskLayer.layer.eachLayer(function (l) {
-            l.setStyle(this.options.mask.defaultStyle);
+            l.setStyle(this.getMaskStyling());
         }.bind(this));
 
         // // fire mask selected event
@@ -682,12 +727,47 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             if (err) {
                 console.error(err);
                 done && done(err);
+                return;
+            }
+            
+            // parse
+            var masked_cube = M.parse(result);
+
+            // save updated cube
+            if (masked_cube) {
+                this._saveCube(masked_cube);
+            } else {
+                console.error('Error parsing cube:', masked_cube);
+            }
+
+            // callback
+            done && done(null);
+
+        }.bind(this));
+
+    },
+
+    saveMask : function (mask, done) {
+
+        // add mask @ server
+        app.api.addMask({
+            mask : mask,
+            cube_id : this.getCubeId()
+        }, function (err, result) {
+            if (err) {
+                console.error(err);
+                done && done(err);
+                return;
             }
             // parse
             var masked_cube = M.parse(result);
 
             // save updated cube
-            this._saveCube(masked_cube);
+            if (masked_cube) {
+                this._saveCube(masked_cube);
+            } else {
+                console.error('Error parsing cube:', masked_cube);
+            }
 
             // callback
             done && done(null);
@@ -707,28 +787,70 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
     _onLayerClick : function (e) {
     },
 
+    _n : 0,
+
+    // _findLatestExternalData : function () {
+    //     var data = this._graph.getYearlyData();
+    //     var latest = _.last(data.years);
+    //     return latest;
+    // },
+
+    _getDefaultTimestamp : function () {
+        // var time = this._findLatestExternalData();
+        var time = app._scf_latest;
+        var timestamp = time.date;
+        return timestamp;
+    },
+
     _moveCursor : function (options) {
 
         // get options
         var timestamp = options.timestamp;
 
+
         // find index of dataset corresponding to current date
         var didx = this._findDatasetByTimestamp(timestamp);
 
-        if (didx < 0) {
-            console.error('no dataset corresponding to timestamp');
-            app.FeedbackPane.setError({title : 'No raster available', description : 'There is no satellite imagery available for this date.'})
+        // find latest data
+        // var latest_external_data = this._findLatestExternalData();
+        var latest_external_data = app._scf_latest;
+        var beyond = timestamp.isAfter(latest_external_data.date, 'day');
 
-            // hide
-            this._hideLayer(this.layer);
+        if (didx < 0 && beyond) {
+        // if (didx < 0) {
+            console.error('no dataset corresponding to timestamp', timestamp);
+
+            app._scf_current = latest_external_data.date;
+
+            // jump to latest available
+            this._graph._setSliderToLatestAvailable();
+
+
+            // fire global event
+            M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
+                timestamp : latest_external_data.date
+            }}); 
 
             // done
             return;
-        }
 
+
+        } else {
+            // console.log('there should be some data');
+
+            app._scf_current = timestamp;
+
+            // fire global event
+            M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
+                timestamp : timestamp
+            }}); 
+        }
 
         // set direction (for cache algorithm)
         this._cursorDirection = (didx > this._cursor) ? 1 : -1;
+
+        // don't reload if already cursor in right place
+        if (this._cursor == didx) return;
 
         // set
         this._cursor = didx;
@@ -739,6 +861,7 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // sets cursor at current frame (ie. show layer on map)
         this._updateCursor();
 
+       
     },
 
     // this is where layers are shown on map 
@@ -776,6 +899,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             // M.Mixin.Events.fire('cubeCacheNoLayer', { detail : { 
             //     cube : this 
             // }});
+
+
             
             // done here
             return;
@@ -788,7 +913,13 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this.layer = layer;
 
         // log
-        console.log('cursor @', this._cursor);
+        console.error('cursor @', this._cursor);
+
+        // fire global event
+        M.Mixin.Events.fire('timeseries_layer_date_changed', { detail : {
+            timestamp : dataset.timestamp
+        }}); 
+
     },
 
     // update cache // todo: move cache to own Class ?
@@ -920,6 +1051,14 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         return this._cube.cube_id;
     },  
 
+    getCube : function () {
+        return this._cube;
+    },
+
+    getCubeJSON : function () {
+        return this.store.data.cube;
+    },
+
     _refreshCube : function () {
         // this._prepareRaster();
     },
@@ -950,16 +1089,21 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         var didx = _.findIndex(this._datasets, function (d) { 
             return _.toString(d.formattedTime) == b;
         });
+
         return didx;
     },
 
-    _findLastDataset : function () {
-        var f = this.options.timeFormat;
-        var didx = _.max(this._datasets, function (d) { 
+    _findLatestDataset : function () {
+        return _.maxBy(this._datasets, function (d) { 
             return d.idx;
         });
-        var d = didx ? didx.idx : -1;
-        return d;
+    },
+
+    _findLatestDOY : function () {
+        var latest = this._findLatestDataset();
+        if (_.isUndefined(latest)) return 245;
+        var doy = parseInt(latest.formattedTime.split('-')[1]);
+        return doy;
     },
 
     _showLayer : function (layer) {
@@ -1003,7 +1147,11 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             var cube = M.parse(cubeJSON)
 
             // save updated cube
-            this._saveCube(cube);
+            if (cube) {
+                this._saveCube(cube);
+            } else {
+                console.error('Error parsing cube:', cubeJSON);
+            }
 
             // refresh layers
             this._refreshLayer();
@@ -1042,6 +1190,8 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
 
     setDatasetDate : function (options, done) {
 
+        console.error('setDatasetDate', options);
+
         // get date, dataset
         var date = options.date;
         var dataset = options.dataset;
@@ -1079,8 +1229,12 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
             var cube = M.parse(cubeJSON)
 
             // save updated cube
-            this._saveCube(cube);
-
+            if (cube) {
+                this._saveCube(cube);
+            } else {
+                console.error('Error parsing cube: ', cubeJSON);
+            }
+            
             // refresh layers
             this._refreshLayer();
 
@@ -1110,15 +1264,70 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         this._legendContainer.style.display = 'none';
     },
 
-    // debug: create legend. todo: make dynamic
+    getLegend : function () {
+        return this.store.legend;
+    },
+
+    refreshLegend : function () {
+        if (this._legendContainer) M.DomUtil.remove(this._legendContainer);
+        this._legendContainer = null;
+    },
+
+    // create legend
     _createLegend : function () {
+        if (this._legendContainer) M.DomUtil.remove(this._legendContainer);
 
         // create legend container
         this._legendContainer = M.DomUtil.create('div', 'snow-raster-legend-container', app._map._controlContainer);
 
+        // get gradient
+        var gradient = this._getLegendGradient();
+
+        // set style
+        var gradientStyle = 'background: -webkit-linear-gradient(' + gradient + ');background: -o-linear-gradient(' + gradient + ');background: -moz-linear-gradient(' + gradient + ');'
+
+        // create html
+        var legendHTML = '<div class="info-legend-frame snow-raster"><div class="info-legend-val info-legend-min-val">1%</div><div class="info-legend-header scf">Snow</div><div class="info-legend-val info-legend-max-val">100%</div><div class="info-legend-gradient-container" style="' + gradientStyle + '"></div></div>'
+
+        // check for custom legend
+        var customLegend = this.getLegend();
+        if (customLegend) {
+            // create legend
+            var legendHTML = '<div class="custom-legend-title">' + this.getTitle() + '</div>';
+            legendHTML += '<img src="' + customLegend + '">';
+
+            // add class
+            M.DomUtil.addClass(this._legendContainer, 'custom-legend');
+        } 
+
         // set legend
-        this._legendContainer.innerHTML = '<div class="info-legend-frame snow-raster"><div class="info-legend-val info-legend-min-val">1%</div><div class="info-legend-header scf">Snow</div><div class="info-legend-val info-legend-max-val">100%</div><div class="info-legend-gradient-container" style="background: -webkit-linear-gradient(0deg, #8C8C8C, white);background: -o-linear-gradient(0deg, #8C8C8C, white);background: -moz-linear-gradient(0deg, #8C8C8C, white);"></div></div>'
-        
+        this._legendContainer.innerHTML = legendHTML;
+
+    },
+
+    _getLegendGradient : function () {
+
+        // val = 100 means 0 for SCF styling
+        var startValue = 0;
+
+        // default
+        var defaultGradient = '0deg, #8C8C8C, white';
+
+        var style = M.parse(this.store.style);
+
+        // return default gradient if no style set
+        if (!style || !style.stops) return defaultGradient;
+
+        // create gradient string
+        var gradient = '0deg';
+        _.forEach(style.stops, function (s) {
+            var val = s.val;
+            var color = 'rgba(' + s.col.r + ', ' + s.col.g + ', ' + s.col.b + ', ' + s.col.a + ')';
+            var percent = val - startValue;
+            gradient += ', ' + color + ' ' + percent + '%'
+        });
+
+        return gradient;
     },
 
     deleteLayer : function () {
@@ -1135,6 +1344,91 @@ M.Model.Layer.CubeLayer = M.Model.Layer.extend({
         // delete layer
         project.deleteLayer(this);
     
+    },
+
+    getGraphEnabled : function () {
+
+        var storeOptions = this.store.options;
+
+        // on by default
+        if (_.isUndefined(storeOptions)) return true;
+
+        // ensure parsed
+        if (_.isString(storeOptions)) {
+            storeOptions = M.parse(storeOptions);
+        }
+
+        // on by default
+        if (_.isUndefined(storeOptions.graphEnabled)) return true;
+    
+        // return set state
+        return storeOptions.graphEnabled;
+    },
+
+    setGraphEnabled : function (state) {
+
+        var storeOptions = this.store.options;
+
+        // ensure exists
+        if (_.isUndefined(storeOptions)) {
+            storeOptions = {};
+        }
+       
+        // ensure parsed
+        if (_.isString(storeOptions)) {
+            storeOptions = M.parse(storeOptions);
+        }
+
+        // set state
+        storeOptions.graphEnabled = state;
+
+        // stringify
+        this.store.options = M.stringify(storeOptions);
+
+        // save
+        this.save('options');
+
+    },
+
+    setMaskStyling : function (styling) {
+        var storeOptions = this.store.options;
+
+        // ensure exists
+        if (_.isUndefined(storeOptions)) {
+            storeOptions = {};
+        }
+       
+        // ensure parsed
+        if (_.isString(storeOptions)) {
+            storeOptions = M.parse(storeOptions);
+        }
+
+        // set state
+        storeOptions.maskStyling = styling;
+
+        // stringify
+        this.store.options = M.stringify(storeOptions);
+
+        // save
+        this.save('options');
+    },
+
+    getMaskStyling : function () {
+        var storeOptions = this.store.options;
+
+        // on by default
+        if (_.isUndefined(storeOptions)) return this.options.mask.defaultStyle;
+
+        // ensure parsed
+        if (_.isString(storeOptions)) {
+            storeOptions = M.parse(storeOptions);
+        }
+
+        // return default
+        if (_.isUndefined(storeOptions.maskStyling)) return this.options.mask.defaultStyle;
+    
+        // return set state
+        return storeOptions.maskStyling;
     },
 
 

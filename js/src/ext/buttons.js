@@ -39,8 +39,6 @@ M.button = M.Class.extend({
 		var prefix = 'chrome-field-mini-input mini-input-dual ';
 		if ( className ) prefix += className;
 
-
-
 		// create max input
 		var miniInputMax = M.DomUtil.createId('input', 'field_mini_input_max_' + key, appendTo);
 		miniInputMax.className = prefix;
@@ -59,8 +57,6 @@ M.button = M.Class.extend({
 		
 		// remember
 		this.max = miniInputMax;
-
-
 
 		// create min input
 		var miniInputMin = M.DomUtil.createId('input', 'field_mini_input_min_' + key, appendTo);
@@ -456,7 +452,7 @@ M.button = M.Class.extend({
 		var className   = this.options.className;
 		var isOn        = this.options.isOn;
 		var allowText   = this.options.allowText;
-		var _class = 'chrome-field-input ';
+		var _class 		= 'chrome-field-input ';
 
 		if ( className ) _class += className;
 

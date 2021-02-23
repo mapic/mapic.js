@@ -2,7 +2,7 @@ M.Model.File = M.Model.extend({
 
     _ : 'file',
 
-    _initialize : function (store) {
+    initialize : function (store) {
 
         // set store
         this.store = store;

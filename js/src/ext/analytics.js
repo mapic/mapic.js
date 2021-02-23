@@ -31,8 +31,8 @@ M.Analytics = M.Class.extend({
 		var data = {
 			event : event,
 			timestamp : Date.now(),
-			user_id : app.Account.getUuid(),
-			user_name : app.Account.getUsername(),
+			user_id : app.Account ? app.Account.getUuid() : 'pre-auth',
+			user_name : app.Account ? app.Account.getUsername() : 'pre-auth',
 			options : options
 		}
 

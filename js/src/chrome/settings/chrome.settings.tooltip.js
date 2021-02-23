@@ -155,16 +155,13 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
         
         // Header
         var header = M.DomUtil.create('div', 'chrome-content-header', sectionWrapper, 'Popup/labels');
-        // var headerExtra = M.DomUtil.create('span', 'chrome-content-header-gray', header, ' (auto detected)');
 
         if ( typeof this.tooltipMeta.enable == 'undefined' ) {
             this.tooltipMeta.enable = true;
         }
 
-        // Enable/disable switch
-        // Enable/disable switch
-        // Enable/disable switch
 
+        // Enable/disable switch
         var enableDisableLine = new M.fieldLine({
             id       : 'enable',
             appendTo : sectionWrapper,
@@ -182,6 +179,7 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
         });
 
 
+        // labels
         var labelsToggleLine = new M.fieldLine({
             id       : 'enable',
             appendTo : sectionWrapper,
@@ -197,7 +195,41 @@ M.Chrome.SettingsContent.Tooltip = M.Chrome.SettingsContent.extend({
             appendTo : labelsToggleLine.container,
             fn       : this._toggleLabels.bind(this)
         });
+
+
+        // hover
+        var labelsToggleLine = new M.fieldLine({
+            id       : 'enable',
+            appendTo : sectionWrapper,
+            title    : 'Enable tooltip on hover',
+            input    : false
+        });     
+
+        var labelsToggle = new M.button({
+            id       : 'enable-pop-up',
+            type     : 'switch',
+            isOn     : this.tooltipMeta.hover,
+            right    : false,
+            appendTo : labelsToggleLine.container,
+            fn       : this._toggleTooltipHover.bind(this)
+        });
    
+    },
+
+     _toggleTooltipHover : function (e, enabled) {
+       
+        // save
+        this.tooltipMeta.hover = enabled;
+        this._layer.setTooltip(this.tooltipMeta);
+
+        // fire event
+        if (enabled) {
+            this._layer.fire('hover_enabled');
+        } else {
+            this._layer.fire('hover_disabled');
+        }
+
+        
     },
 
     _toggleLabels : function (e, enabled) {

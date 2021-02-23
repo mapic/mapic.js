@@ -70,7 +70,9 @@ M.Model.Project = M.Model.extend({
 	},
 
 	addLayer : function (layer) {
+		console.log('addLayer =>', layer);
 		var l = new M.createLayer(layer);
+		console.log('l', l);
 		if (l) this.layers[layer.uuid] = l;
 		return l || false;
 	},
@@ -318,7 +320,7 @@ M.Model.Project = M.Model.extend({
 		this._refresh();
 	},
 
-	_update : function (field, value) {
+	_update : function (field, value, noRefresh) {
 
 		// set fields
 		var options = {};
@@ -326,7 +328,7 @@ M.Model.Project = M.Model.extend({
 		options.uuid = this.store.uuid;
 
 		// save to server
-		this._save(options);
+		this._save(options, noRefresh);
 	},
 
 	_updateSlug : function (field , value) {
@@ -342,10 +344,17 @@ M.Model.Project = M.Model.extend({
 		console.error('deprecated');
 	},
 
-	_save : function (options) {
+	noop : function () {
+
+	},
+
+	_save : function (options, noRefresh) {
 		
+		var callback = noRefresh ? this.noop : this._saved.bind(this);
+
 		// save to server                                       	
-		app.api.updateProject(options, this._saved.bind(this));
+		// app.api.updateProject(options, this._saved.bind(this));
+		app.api.updateProject(options, callback);
 	},
 
 	// callback for save
@@ -450,6 +459,26 @@ M.Model.Project = M.Model.extend({
 		project = null;
 		delete project;
 
+	},
+
+	getCustomLogo : function () {
+
+		// // css object
+		// var default_logo = {
+		// 	width : "200px",
+		// 	height: "100px",
+		// 	background : ""
+		// } 
+
+
+		var logo = M.parse(this.store.logo) || false;
+
+		return logo;
+	},
+
+	setCustomLogo : function (logo_object) {
+		this.store.logo = M.stringify(logo_object) || "";
+		this._update('logo');
 	},
 
 	removeMapboxAccount : function (account) {

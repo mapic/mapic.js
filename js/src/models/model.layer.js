@@ -13,7 +13,13 @@ M.Model.Layer = M.Model.extend({
         
         // data not loaded
         this.loaded = false;
+
+        this.on('hover_enabled', this._onHoverEnabled);
+        this.on('hover_disabled', this._onHoverDisabled);
+
     },
+
+    _on_timeseries_layer_date_changed : function () {},
 
     addHooks : function () {
         this._setHooks('on');
@@ -29,6 +35,14 @@ M.Model.Layer = M.Model.extend({
         // all visible tiles loaded event (for phantomJS)
         M.DomEvent[on](this.layer, 'load', this._onLayerLoaded, this);
         M.DomEvent[on](this.layer, 'loading', this._onLayerLoading, this);
+
+        M.Mixin.Events[on]('timeseries_layer_date_changed', this._on_timeseries_layer_date_changed, this);
+
+      
+    },
+
+    getType : function () {
+        return this.type;
     },
 
     // dummy
@@ -96,11 +110,6 @@ M.Model.Layer = M.Model.extend({
         this._addToZIndex(type);
 
         this._added = true;
-
-        // // fire event
-        // M.Mixin.Events.fire('layerEnabled', { detail : {
-        //     layer : this
-        // }}); 
 
         // fire layer enabled
         this.fire('enabled', {
@@ -198,11 +207,17 @@ M.Model.Layer = M.Model.extend({
         // hide if empty and not editor
         var project = app.activeProject;
         var isEditor = project.isEditor();
-        if (this.store.description || isEditor) { // todo: what if only editor 
-            descriptionControl.show();
-        } else {                                // refactor to descriptionControl
-            descriptionControl.hide();
-        }
+
+        // ensure description control is visible
+        descriptionControl.show(); // debug
+        return; // debug
+
+
+        // if (this.store.description || isEditor) { // todo: what if only editor 
+        //     descriptionControl.show();
+        // } else {                                // refactor to descriptionControl
+        //     descriptionControl.hide();
+        // }
         
     },
 
@@ -265,6 +280,25 @@ M.Model.Layer = M.Model.extend({
 
     disable : function () {
         this.remove();
+    },
+
+
+    getCustomOptions : function () {
+        var c = M.parse(this.store.options) || {};
+        return c;
+    },
+
+    setCustomOptions : function (o) {
+        var existing_options = M.parse(this.store.options) || {};
+
+        _.each(o, function (value, key) {
+            existing_options[key] = value;
+        });
+
+        // save
+        this.store.options = JSON.stringify(existing_options);
+        this.save('options');
+
     },
 
     saveOpacity : function (opacity) {
@@ -625,6 +659,9 @@ M.Model.Layer = M.Model.extend({
 
         } else {
             
+            // test
+            grid[on]('mousemove', _.throttle(this._gridOnHover.bind(this), 200), this);
+
             // click popup
             grid[on]('mousedown', this._gridOnMousedown, this);     
             grid[on]('mouseup', this._gridOnMouseup, this);  
@@ -665,6 +702,10 @@ M.Model.Layer = M.Model.extend({
         return false;
     },
 
+    getLegendImage : function () {
+        return;
+    },
+
     isRaster : function () {
         return false;
     },
@@ -691,6 +732,31 @@ M.Model.Layer = M.Model.extend({
         return false;
     },
 
+    isWMS : function () {
+        return false;
+    },
+
+    getSourceURL : function () {
+    },
+
+    getWMSLayerString : function () {
+
+    },
+
+    getWMSExtraOptions : function () {
+
+    },
+
+    getWMSLegend : function () {
+
+    },
+
+    isGeoJSON : function () {
+        return false;
+    },
+
+    _onHoverEnabled : function () {},
+    _onHoverDisabled : function () {},
 });
 
 
@@ -699,8 +765,8 @@ M.Model.Layer = M.Model.extend({
 
 
 M.ErrorLayer = M.Model.Layer.extend({
-    initialize : function () {
-        console.log('Errorlayer');
+    initialize : function (layer) {
+        console.log('Errorlayer: ', layer);
     }
 });
 
@@ -720,6 +786,8 @@ M.createLayer = function (layer) {
     // postgis raster
     if (isRaster) return new M.RasterLayer(layer);
 
+    if (layer.data.geojson7946) return new M.Model.Layer.GeoJSONLayer(layer);
+
     // cubes
     if (layer.data.cube) return new M.Model.Layer.CubeLayer(layer);
 
@@ -732,14 +800,17 @@ M.createLayer = function (layer) {
     // google
     if (layer.data.google) return new M.GoogleLayer(layer);
 
-    // wms
-    if (layer.data.wms) return new M.WMSLayer(layer);
-
     // graph
     if (layer.data.graph) return new M.Layer.Graph(layer);
 
+    // wms
+    if (layer.data.wms) return new M.WMSLayer(layer);
+
+    // tile service
+    if (layer.data.tile_service) return new M.TileServiceLayer(layer);
+
     // catch-all error layer
-    return new M.ErrorLayer();
+    return new M.ErrorLayer(layer);
 };
 
 // update options and redraw

@@ -32,7 +32,6 @@ M.Evented = L.Evented.extend({ // inheriting from 1.0.0-rc3 L.Evented, makes it 
 
     // dummies
     _projectSelected : function () {},
-    _onProjectUnload : function () {},
     _initialize      : function () {},
     _initContainer   : function () {},
     _editEnabled     : function () {},
@@ -41,6 +40,8 @@ M.Evented = L.Evented.extend({ // inheriting from 1.0.0-rc3 L.Evented, makes it 
     _layerDisabled   : function () {},
     _updateView      : function () {},
     _refresh         : function () {},
+
+    _onProjectUnload : function () {},
     _onFileImported  : function () {},
     _onFileDeleted   : function () {},
     _onLayerAdded    : function () {},

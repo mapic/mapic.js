@@ -129,7 +129,7 @@ M.MapPane = M.Pane.extend({
             fadeAnimation : true,
             zoomAnimation : true,
             inertia : true,
-            edgeBufferTiles: 3,
+            edgeBufferTiles: 1,
             // zoomSnap : 0,
             // experiments
             // zoomSnap : 0,

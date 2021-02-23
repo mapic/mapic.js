@@ -12,7 +12,7 @@ M.MapboxLayer = M.Model.Layer.extend({
             mapboxUri : this.store.data.mapbox,
 
             // edge buffer plugin
-            edgeBufferTiles : 5,
+            edgeBufferTiles : 2,
             className : 'pixel-fix'
             
         });
@@ -114,7 +114,7 @@ M.GoogleLayer = M.Model.Layer.extend({
             tms : false,
             maxZoom : this.options.maxZoom,
             minZoom : this.options.minZoom,
-            edgeBufferTiles : 5,
+            edgeBufferTiles : 2,
             className : 'pixel-fix'
 
         });
@@ -185,7 +185,7 @@ M.NorkartLayer = M.Model.Layer.extend({
             tms : false,
             maxZoom : this.options.maxZoom,
             minZoom : this.options.minZoom,
-            edgeBufferTiles : 5,
+            edgeBufferTiles : 2,
             className : 'pixel-fix'
             
         });

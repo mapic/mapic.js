@@ -48,7 +48,8 @@ M.RasterLayer = M.Model.Layer.extend({
             fileUuid: fileUuid,
             layerUuid : layerUuid,
             subdomains : subdomains,
-            maxRequests : 0
+            maxRequests : 0,
+            edgeBufferTiles: 5
         });
 
         // hacky click event (cause no utf-grid)

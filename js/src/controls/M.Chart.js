@@ -4,8 +4,6 @@ M.Chart = M.Control.extend({
 
         app.log('opened:chart');
 
-        console.log('M.Chart!', this);
-
         // set options
         M.setOptions(this, options);
         var multiPopUp = options.multiPopUp;
@@ -46,6 +44,7 @@ M.Chart = M.Control.extend({
             // Create content
             var content = this.singlePopUp(e);
      
+            var timeseries_chart = true;
         }
 
         // Return if disabled
@@ -67,6 +66,10 @@ M.Chart = M.Control.extend({
         // Open popup
         this.openPopup(e, multiPopUp);
 
+        // refresh
+        if (timeseries_chart) {
+            this._resize_chart_update_size();
+        }
     },
 
     createCSVContent : function (layer) {
@@ -338,11 +341,11 @@ M.Chart = M.Control.extend({
         // create popup
         var popup = this._popup = M.popup({
             offset : [18, 0],           
-            closeButton : true,
+            closeButton : false,
             zoomAnimation : false,
             maxWidth : maxWidth,
             minWidth : minWidth,
-            maxHeight : 350,
+            // maxHeight : 350,
             appendTo : app._appPane,
             defaultPosition : {
                 x : 7,          
@@ -361,13 +364,9 @@ M.Chart = M.Control.extend({
             popup._container.style.maxWidth = _mobileWidth - 13 + 'px';
         }
 
-        
-
-
         if ( !this.popupSettings.timeSeries || this.popupSettings.timeSeries.enable == false ) {
             M.DomUtil.addClass(popup._container, 'tiny-pop-up')
         }
-
 
         return popup;
     },
@@ -431,9 +430,118 @@ M.Chart = M.Control.extend({
         content.appendChild(_chartContainer);
         content.appendChild(_footer);
 
-
         return content;     
     },  
+
+    _remove_chart_ghost : function () {
+
+        // resize end
+        M.DomUtil.remove(app._chart_ghost);
+        M.DomEvent.off(document, 'mouseup', this._remove_chart_ghost, this);
+
+        // update size with latest values
+        setTimeout(this._resize_chart_update_size.bind(this), 50);
+    },
+
+    _resize_chart_update_size : function () {
+
+        // on first open
+        if (!app._chart_resize) {
+            app._chart_resize = {
+                new_x : 400,
+                new_y : 300
+            };
+        }
+
+        // get vars
+        var new_x = app._chart_resize.new_x;
+        var new_y = app._chart_resize.new_y;
+
+        // set wrapper size
+        this._popup._wrapper.style.width = new_x + 'px';
+        this._popup._wrapper.style.height = new_y + 'px';
+       
+        // resize fonts
+        // fix font sizes
+        var _header = app._resize_chart_header;
+        var zoom;
+        var fontSize;
+
+        if (new_x < 500) { 
+            zoom = 1;
+            fontSize = 12;
+        } 
+        if (new_x >= 500 && new_x < 700) {
+            zoom = 1.1;
+            fontSize = 13;
+        }
+        if (new_x >= 700 && new_x < 900) {
+            zoom = 1.2;
+            fontSize = 14;
+        }
+        if (new_x >= 900 && new_x < 1100) {
+            zoom = 1.3;
+            fontSize = 15;
+        }
+        if (new_x >= 1100 && new_x < 1400) {
+            zoom = 1.4;
+            fontSize = 16;
+        }
+        if (new_x >= 1400 && new_x < 1700) {
+            zoom = 1.5;
+            fontSize = 17;
+        }
+        if (new_x >= 1700 ) {
+            zoom = 1.6;
+            fontSize = 18;
+        }
+
+        // set zoom, font
+        _header.style.zoom = zoom;
+        this._footerDates.style.fontSize = fontSize;
+
+        // calc
+        var new_header_height = _header.offsetHeight * zoom + 40;
+        var chart_x = new_x - 20;
+        var chart_y = new_y - new_header_height;
+
+        // do the actual update
+        this._chart.resize({
+            height : chart_y, 
+            width : chart_x
+        });
+
+        // remember
+        app._rememberChartSizeHeight = new_y;
+        app._rememberChartSizeWidth = new_x;
+
+        // unhide
+        M.DomUtil.removeClass(app._popup_content_div, 'visibility-hidden');
+
+    },
+
+    _resize_chart_fn : function (e) {
+
+        // hide chart content while resizing
+        M.DomUtil.addClass(app._popup_content_div, 'visibility-hidden');
+
+        // calc
+        var move_x = e.pageX - app._chart_resize.start_x;
+        var move_y = app._chart_resize.start_y - e.pageY;
+        var new_x = app._chart_resize.start_size_x + move_x;
+        var new_y = app._chart_resize.start_size_y + move_y;
+        if (new_x < 400) new_x = 400;
+        if (new_y < 300) new_y = 300;
+
+        // remember chart size
+        app._chart_resize.new_x = new_x;
+        app._chart_resize.new_y = new_y;
+
+        // set wrapper size
+        this._popup._wrapper.style.width = new_x + 'px';
+        this._popup._wrapper.style.height = new_y + 'px';
+
+    },
 
 
     singleC3PopUp : function (e) {
@@ -470,12 +578,13 @@ M.Chart = M.Control.extend({
             layer       : e.layer
         };
 
-        console.log('c3object', c3Obj);
 
         var content = M.DomUtil.create('div', 'popup-inner-content');
 
+        app._popup_content_div = content;
+
         // Create header HTML
-        var _header = this.createHeader(headerOptions);
+        var _header = app._resize_chart_header = this.createHeader(headerOptions);
         var _chartContainer = this.createChartContainer();
         var _footer = this.createFooter();
         content.appendChild(_header);
@@ -488,9 +597,6 @@ M.Chart = M.Control.extend({
             var _chart = this.C3Chart(this._c3Obj);
             var _chartTicks = this.chartTicks(this._c3Obj);
             _chartContainer.appendChild(_chart);
-            console.log('_chart', _chart);
-
-
 
             // resizable
             var resizeButton = M.DomUtil.create('div', 'resize-chart-button');
@@ -499,88 +605,29 @@ M.Chart = M.Control.extend({
             
             // on resize start
             M.DomEvent.on(resizeButton, 'mousedown', function (e) {
-                console.log('resizebutton mousedonw', e);
 
-                var start_x = e.x;
-                var start_y = e.y;
+                var start_x = e.pageX;
+                var start_y = e.pageY;
 
-                var start_size_x = _chart.offsetWidth;
-                var start_size_y = _chart.offsetHeight;
+                var start_size_x = this._popup._wrapper.offsetWidth;
+                var start_size_y = this._popup._wrapper.offsetHeight;
+
+                app._chart_resize = {
+                    start_x,
+                    start_y, 
+                    start_size_x,
+                    start_size_y,
+                };
 
                 // create ghost fullscreen
-                var ghost = M.DomUtil.create('div', 'resize-ghost-fullscreen');
-                app._appPane.appendChild(ghost); // add 
-                M.DomEvent.on(ghost, 'mouseup', function (e) {
-                    console.log('MOUSEUP!');
-
-                    // resize end
-                    M.DomUtil.remove(ghost);
-                });
+                app._chart_ghost = M.DomUtil.create('div', 'resize-ghost-fullscreen');
+                app._appPane.appendChild(app._chart_ghost); // add 
+               
+                // add event listener for mouseup
+                M.DomEvent.on(document, 'mouseup', this._remove_chart_ghost, this);
 
                 // resize move
-                M.DomEvent.on(ghost, 'mousemove', function (e) {
-                    if (Math.random() > 0.5) return;
-                    var move_x = e.x - start_x;
-                    var move_y = start_y - e.y;
-                    console.log('move_x:', move_x, ', move_y:', move_y);
-                    console.log('start_size_x:', start_size_x, ', start_size_y:', start_size_y);
-
-                    var new_x = start_size_x + move_x;
-                    var new_y = start_size_y + move_y;
-
-                    if (new_x < 400) new_x = 400;
-                    if (new_y < 200) new_y = 200;
-
-                    console.log('new_x:', new_x, ', new_y:', new_y);
-
-                    // resize
-                    this._chart.resize({height : new_y, width : new_x})
-
-                    // remember
-                    app._rememberChartSizeHeight = new_y;
-                    app._rememberChartSizeWidth = new_x;
-
-                    // fix font sizes
-                    if (new_x < 500) { 
-                        _header.style.zoom = 1;
-                        this._footerDates.style.fontSize = '12px';
-                        this._regressionButtonWrapper.style.zoom = 1;
-                    } 
-                    if (new_x >= 500 && new_x < 700) {
-                        _header.style.zoom = 1.2;
-                        this._footerDates.style.fontSize = '14px';
-                        this._regressionButtonWrapper.style.zoom = 1.2;
-                    }
-                    if (new_x >= 700 && new_x < 900) {
-                        _header.style.zoom = 1.4;
-                        this._footerDates.style.fontSize = '16px';
-                        this._regressionButtonWrapper.style.zoom = 1.4;
-                    }
-                    if (new_x >= 900 && new_x < 1100) {
-                        _header.style.zoom = 1.6;
-                        this._footerDates.style.fontSize = '18px';
-                        this._regressionButtonWrapper.style.zoom = 1.6;
-                    }
-                    if (new_x >= 1100 && new_x < 1400) {
-                        _header.style.zoom = 1.8;
-                        this._footerDates.style.fontSize = '20px';
-                        this._regressionButtonWrapper.style.zoom = 1.8;
-                    }
-                    if (new_x >= 1400 && new_x < 1700) {
-                        _header.style.zoom = 2;
-                        this._footerDates.style.fontSize = '21px';
-                        this._regressionButtonWrapper.style.zoom = 2;
-                    }
-                    if (new_x >= 1700 ) {
-                        _header.style.zoom = 2.2;
-                        this._footerDates.style.fontSize = '22px';
-                        this._regressionButtonWrapper.style.zoom = 2.2;
-                    }
-
-
-
-                }.bind(this))
-
+                M.DomEvent.on(app._chart_ghost, 'mousemove', _.throttle(this._resize_chart_fn.bind(this), 20), this);
 
                 
             }.bind(this));
@@ -726,8 +773,6 @@ M.Chart = M.Control.extend({
             }
 
         };
-
-        console.log('c3Obj', c3Obj);
 
         this._c3Obj = this.createC3dataObj(c3Obj);
 
@@ -978,7 +1023,7 @@ M.Chart = M.Control.extend({
 
             var _width = _mobileWidth - 33;
         } else {
-            var _width = 430;
+            var _width = 400;
         }   
 
         // CHART SETTINGS
@@ -988,7 +1033,7 @@ M.Chart = M.Control.extend({
             bindto: _C3Container,
 
             size: {
-                height: app._rememberChartSizeHeight || 200,
+                height: app._rememberChartSizeHeight || 300,
                 width : app._rememberChartSizeWidth || _width
             },
 

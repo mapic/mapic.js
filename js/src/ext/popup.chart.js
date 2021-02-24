@@ -225,7 +225,8 @@ M.Popup.Chart = L.Control.extend({
 		this._ghost = M.DomUtil.create('div', 'leaflet-popup-ghost', app._appPane);
 
 		// events
-		M.DomEvent.on(this._ghost, 'mouseup', this._dragStop, this);
+		// M.DomEvent.on(this._ghost, 'mouseup', this._dragStop, this);
+		M.DomEvent.on(document, 'mouseup', this._dragStop, this);
 		M.DomEvent.on(this._ghost, 'mousemove', this._dragging, this);
 
 	},
@@ -233,7 +234,8 @@ M.Popup.Chart = L.Control.extend({
 	_dragStop : function (e) {
 
 		// remove events
-		M.DomEvent.off(this._ghost, 'mouseup', this._dragStop, this);
+		// M.DomEvent.off(this._ghost, 'mouseup', this._dragStop, this);
+		M.DomEvent.off(document, 'mouseup', this._dragStop, this);
 		M.DomEvent.off(this._ghost, 'mousemove', this._dragging, this);
 		
 		// remove ghost div
@@ -257,7 +259,7 @@ M.Popup.Chart = L.Control.extend({
 		// set pos
 		this.setPosition({
 			x : diff.x,
-			y : diff.y
+			y : diff.y - 20
 		});
 	},
 

@@ -4,8 +4,6 @@ M.Legend = M.Class.extend({
 
 	initialize : function (options) {
 
-		console.error('M.Legend (styler.legend.js)');
-
 		this.options = options;
 
 		this.initLegends();
@@ -343,8 +341,6 @@ M.Legend = M.Class.extend({
 		var gradientName = object.name ? object.name : bline;
 		var gradident_footer_left = object.left_footer || 'left';
 		var gradident_footer_right = object.right_footer || 'right';
-
-		console.error('### 1 # gradientLegendSetting', options);
 
 		// create container
 		var container = M.DomUtil.create('div', 'legend-each-container', this._legendContent);

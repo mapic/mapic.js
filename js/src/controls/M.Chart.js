@@ -1026,6 +1026,43 @@ M.Chart = M.Control.extend({
             var _width = 400;
         }   
 
+
+        var tooltip_interpolation_parser = function (color, d) {
+            var defaultColor = '#0000FF';
+            var red = false;
+            
+            try {
+
+                // hacky interpolation coloring scheme
+                var a = _.toString(d.value);
+                if (_.isEmpty(a)) return defaultColor;
+                var i = _.includes(a, '00001');
+                if (i) red = true;
+
+                // second method, looking for when second decicmal is a 1
+                var b = a.split('.');
+                var c = b[1];
+                if (_.isUndefined(c)) return defaultColor;
+                var d = c.charAt(1);
+                if (d == '1') red = true;
+
+                // return color
+                if (red) return 'red';
+                return defaultColor;
+
+            } catch (e) {
+                return defaultColor;
+            }
+        }
+        var tooltip_html_parser = function (data) {
+            var d = data[0];
+            var tooltip_value = d.value;
+            var tooltip_title = moment(d).format("DD.MM.YYYY");
+            var tooltip_value_color = tooltip_interpolation_parser(null, d);
+            var tooltip_html = '<table class="c3-tooltip"><tbody><tr><th colspan="2">' + tooltip_title + '</th></tr><tr class="c3-tooltip-name--mm"><td class="name"><span style="background-color:' + tooltip_value_color + '"></span>mm</td><td class="value">' + tooltip_value + '</td></tr></tbody></table>';
+            return tooltip_html;
+        }
+
         // CHART SETTINGS
         var chartSettings = {
             interaction : true,
@@ -1072,15 +1109,7 @@ M.Chart = M.Control.extend({
                     mm : 'scatter',
                     regression : 'line'
                 },
-                color : function (color, d) {
-
-                    // hacky interpolation coloring scheme
-                    var a = _.toString(d.value)
-                    var i = _.includes(a, '00001');
-
-                    // return red or default color                 
-                    return i ? 'red' : '#0000FF';
-                }
+                color : tooltip_interpolation_parser,
             },
 
             axis: {
@@ -1106,12 +1135,13 @@ M.Chart = M.Control.extend({
 
             tooltip: {
                 grouped : true,
-                format: {
-                    title: function (d) { 
-                        var nnDate = moment(d).format("DD.MM.YYYY");
-                        return nnDate;
-                    }
-                }
+                // format: {
+                //     title: function (d) { 
+                //         var nnDate = moment(d).format("DD.MM.YYYY");
+                //         return nnDate;
+                //     }
+                // }
+                contents : tooltip_html_parser
                 
             },
 
@@ -1132,6 +1162,8 @@ M.Chart = M.Control.extend({
 
         return _C3Container;
     },
+
+
 
     _addCSVButton : function () {
         var button = M.DomUtil.create('div', 'csv-button-wrapper', this._footerContainer, 'Export as CSV');

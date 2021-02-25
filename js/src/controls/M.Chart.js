@@ -1026,10 +1026,16 @@ M.Chart = M.Control.extend({
             var _width = 400;
         }   
 
-
+        // helper fns
         var tooltip_interpolation_parser = function (color, d) {
             var defaultColor = '#0000FF';
             var red = false;
+            
+            // only for edi
+            if (!_.includes(location.host, 'maps.edinsights.no')) {
+                return defaultColor;
+            }
+            
             
             try {
 

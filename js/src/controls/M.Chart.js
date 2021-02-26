@@ -1147,7 +1147,14 @@ M.Chart = M.Control.extend({
                 //         return nnDate;
                 //     }
                 // }
-                contents : tooltip_html_parser
+                contents : function (data) {
+                    var d = data[0];
+                    var tooltip_value = d.value;
+                    var tooltip_title = moment(d.x).format("DD.MM.YYYY");
+                    var tooltip_value_color = tooltip_interpolation_parser(null, d);
+                    var tooltip_html = '<table class="c3-tooltip"><tbody><tr><th colspan="2">' + tooltip_title + '</th></tr><tr class="c3-tooltip-name--mm"><td class="name"><span style="background-color:' + tooltip_value_color + '"></span>mm</td><td class="value">' + tooltip_value + '</td></tr></tbody></table>';
+                    return tooltip_html;
+                }
                 
             },
 

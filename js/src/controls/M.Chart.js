@@ -464,6 +464,7 @@ M.Chart = M.Control.extend({
         // resize fonts
         // fix font sizes
         var _header = app._resize_chart_header;
+        if (!_header) return;
         var zoom;
         var fontSize;
 

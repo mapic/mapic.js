@@ -544,6 +544,17 @@ M.Chart = M.Control.extend({
 
     },
 
+    _getChartUnit : function (layer) {
+        try {
+            var tooltip = layer.store.tooltip;
+            var parsed = M.parse(tooltip);
+            var chartUnit = parsed.chartUnit;
+            if (chartUnit) return chartUnit;
+            return 'mm'; // default
+        } catch (e) {
+            return 'mm'; // default
+        }
+    },
 
     singleC3PopUp : function (e) {
 
@@ -591,6 +602,11 @@ M.Chart = M.Control.extend({
         content.appendChild(_header);
         content.appendChild(_chartContainer);
         content.appendChild(_footer);
+
+        // create chart unit label
+        var chartUnitLabel = M.DomUtil.create('div', 'chart-unit-label');
+        chartUnitLabel.innerHTML = this._getChartUnit(e.layer)
+        _footer.appendChild(chartUnitLabel);
 
         // Create graph HTML
         if ( this.popupSettings && this.popupSettings.timeSeries.enable != false) {

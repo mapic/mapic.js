@@ -615,6 +615,11 @@ M.VectorLayer = M.Model.Layer.extend({
         // pass layer
         e.layer = this;
 
+        // add event (for control.description legend toggle)
+        M.Mixin.Events.fire('layerPointClick', { detail : {
+            layer_id : e.layer.options.uuid
+        }});
+
         // fetch data
         this._fetchData(e, function (ctx, json) {
             

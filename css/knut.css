@@ -3707,3 +3707,7 @@ input#geojson-upload {
     top: -14px;
     left: 16px;
 }
+
+.description-multiple-toggle-wrapper {
+    display: none;
+}

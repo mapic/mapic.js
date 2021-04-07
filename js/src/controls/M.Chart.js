@@ -507,10 +507,12 @@ M.Chart = M.Control.extend({
         var chart_y = new_y - new_header_height;
 
         // do the actual update
-        this._chart.resize({
-            height : chart_y, 
-            width : chart_x
-        });
+        if (this._chart) {
+            this._chart.resize({
+                height : chart_y, 
+                width : chart_x
+            });
+        }
 
         // remember
         app._rememberChartSizeHeight = new_y;

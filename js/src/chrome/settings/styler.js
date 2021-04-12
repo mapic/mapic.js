@@ -315,6 +315,8 @@ M.Styler = M.Class.extend({
 			childWrapper : 'point-size-children' // todo: make class for polyugon?
 		});	
 
+		console.log('this.options.meta', this.options.meta);
+
 		// dropdown
 		var dropdown = new M.button({
 			id 	 	 : 'interpolated',
@@ -323,7 +325,7 @@ M.Styler = M.Class.extend({
 			right 	 : true,
 			appendTo : line.container,
 			fn 	 	 : this._dropdownSelected.bind(this),
-			array 	 : this.options.meta, // columns in dropdown
+			array 	 : this._filterMeta(this.options.meta), // columns in dropdown
 			selected : column // preselected item
 		});
 
@@ -354,6 +356,33 @@ M.Styler = M.Class.extend({
 			// staticVal    : staticVal,
 			// value 	     : val
 		};
+	},
+
+	_filterMeta : function (meta) {
+
+		var filtered = [];
+
+		_.forEach(meta, function (m) {
+
+			if (m == 'Fixed value') {
+				filtered.push('Disabled');
+			
+			} else {
+
+
+				// skip numbers
+				var n = parseInt(m);
+				if (isNaN(n)) {
+					filtered.push(m);
+				}
+
+			}
+
+
+		});
+
+		return filtered;
+
 	},
 
 	// create opacity box

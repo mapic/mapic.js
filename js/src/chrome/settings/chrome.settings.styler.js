@@ -83,8 +83,6 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 		}, function (err, results) {
 			var res = M.parse(results);
 
-			console.log('render res:', res);
-
 			// give feedback on error
 			if (res.error) {
 				return app.FeedbackPane.setError({ 
@@ -597,8 +595,6 @@ M.Chrome.SettingsContent.Styler = M.Chrome.SettingsContent.extend({
 	},
 
 	_updateVector : function (newLegend) {
-
-		console.error('_updateVector', newLegend);
 
 		// Update point
 		if (this._pointStyler) {

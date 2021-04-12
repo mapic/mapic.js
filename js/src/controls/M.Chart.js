@@ -949,7 +949,6 @@ M.Chart = M.Control.extend({
             }
 
 
-
             if ( _val && _val != -9999) {
                 var metaPair = M.DomUtil.create('div', 'tableRow c3-header-metapair metapair-' + c, container);
                 var metaKey = M.DomUtil.create('div', 'tableCell c3-header-metakey', metaPair, title);
@@ -998,19 +997,29 @@ M.Chart = M.Control.extend({
         var range;
 
         var settingsRange = c3Obj.popupSettings.timeSeries.minmaxRange;
-    
+
         // Use range from settings
         if ( settingsRange ) {
     
-            range = parseInt(settingsRange);
+            // range = parseInt(settingsRange);
+            range = parseFloat(settingsRange);
     
         // Use dynamic range based on current point
         } else {
+
         
-            if ( minY < 0 ) {
+            if (minY < 0) {
+                
                 var convertedMinY = Math.abs(minY);
-                if ( convertedMinY > maxY )     range = convertedMinY;
-                else                range = maxY;
+
+
+                if (convertedMinY > maxY) {
+                    range = convertedMinY;
+                } else {
+                    range = maxY;
+                }
+
+
             } else {
                 range = Math.floor(maxY * 100) / 100;
             }
@@ -1055,7 +1064,6 @@ M.Chart = M.Control.extend({
                 return defaultColor;
             }
             
-            
             try {
 
                 // hacky interpolation coloring scheme
@@ -1079,6 +1087,8 @@ M.Chart = M.Control.extend({
                 return defaultColor;
             }
         }
+
+        // helper fn
         var tooltip_html_parser = function (data) {
             var d = data[0];
             var tooltip_value = d.value;
@@ -1153,7 +1163,13 @@ M.Chart = M.Control.extend({
                     max : range,
                     min : -range,
                     tick: {
-                        format: function (d) { return Math.floor(d * 100)/100}
+                        format: function (d) { 
+                            // return d;
+                            // console.log('d', d);
+                            var f = (Math.floor(d * 100) / 100);
+                            // console.log('f:', f);
+                            return f;
+                        }
                     }
                 }
             },
@@ -1181,6 +1197,8 @@ M.Chart = M.Control.extend({
                 pattern: ['#000000']
             }               
         };
+
+        // create chart
         var chart = this._chart = c3.generate(chartSettings);
 
         // add zoom events

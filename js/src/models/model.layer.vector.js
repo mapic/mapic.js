@@ -685,6 +685,8 @@ M.VectorLayer = M.Model.Layer.extend({
 
         console.log('_onDownloadReady', path);
 
+        app.feedback.msg('Download ready!', 'Click this link to <a href="' + path + '" target="_blank">download dataset</a>.', 20000);
+
         // open (note: some browsers will block pop-ups. todo: test browsers!)
         window.open(path, 'mywindow');
 

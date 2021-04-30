@@ -707,7 +707,7 @@ input.chrome-field-input {
     position: fixed;
     left: calc(50% - 100px);
     max-height: 200px;
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 
 

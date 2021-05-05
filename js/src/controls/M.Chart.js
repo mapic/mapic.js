@@ -624,6 +624,7 @@ M.Chart = M.Control.extend({
             
             // on resize start
             M.DomEvent.on(resizeButton, 'mousedown', function (e) {
+                if (e.which == 3) return; // ignore right click
 
                 var start_x = e.pageX;
                 var start_y = e.pageY;
@@ -804,10 +805,12 @@ M.Chart = M.Control.extend({
             layer       : _layer
         };
 
-        var content = M.DomUtil.create('div', 'popup-inner-content');
+        var content = M.DomUtil.create('div', 'popup-inner-content visibility-hidden');
+
+        app._popup_content_div = content;
 
         // Create header
-        var _header = this.createHeader(headerOptions);
+        var _header = app._resize_chart_header = this.createHeader(headerOptions);
         var _chartContainer = this.createChartContainer();
         var _footer = this.createFooter();
         content.appendChild(_header);
@@ -822,9 +825,43 @@ M.Chart = M.Control.extend({
             var _chartTicks = this.chartTicks(this._c3Obj);
             _chartContainer.appendChild(_chart);
 
-        }
+            // resizable
+            var resizeButton = M.DomUtil.create('div', 'resize-chart-button');
+            resizeButton.innerHTML = '<i class="fa fa-expand"></i>';
+            _chartContainer.appendChild(resizeButton);
+            
+            // on resize start
+            M.DomEvent.on(resizeButton, 'mousedown', function (e) {
+                if (e.which == 3) return; // ignore right click
 
-        
+                var start_x = e.pageX;
+                var start_y = e.pageY;
+
+                var start_size_x = this._popup._wrapper.offsetWidth;
+                var start_size_y = this._popup._wrapper.offsetHeight;
+
+                app._chart_resize = {
+                    start_x,
+                    start_y, 
+                    start_size_x,
+                    start_size_y,
+                };
+
+                // create ghost fullscreen
+                app._chart_ghost = M.DomUtil.create('div', 'resize-ghost-fullscreen');
+                app._appPane.appendChild(app._chart_ghost); // add 
+               
+                // add event listener for mouseup
+                M.DomEvent.on(document, 'mouseup', this._remove_chart_ghost, this);
+
+                // resize move
+                M.DomEvent.on(app._chart_ghost, 'mousemove', _.throttle(this._resize_chart_fn.bind(this), 20), this);
+                
+            }.bind(this));
+
+            setTimeout(this._resize_chart_update_size.bind(this), 20);
+
+        }
 
         return content;
     },      

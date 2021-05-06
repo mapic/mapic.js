@@ -129,7 +129,7 @@
 .file-action:hover:after {
     content: '';
     position: absolute;
-    width: 142px;
+    width: 142px !important;
     height: 100%;
     background: #EEE;
     left: -19px;

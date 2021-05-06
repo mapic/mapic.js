@@ -2520,7 +2520,9 @@ M.Chrome.Data = M.Chrome.extend({
         // create divs
         var toggles_wrapper = M.DomUtil.create('div', 'toggles-wrapper file-options', container);
         var zindex = M.DomUtil.create('div', 'smooth-fullscreen-name-label clearboth', toggles_wrapper, zindex_text);
+        var description_div = M.DomUtil.create('div', 'input-description', toggles_wrapper, zindex_description);
         var zindex_input = M.DomUtil.create('input', 'smooth-input smaller-input', toggles_wrapper);
+
         zindex_input.setAttribute('placeholder', zindex_placeholder);
         zindex_input.value = zindex_value;
         var zindex_error = M.DomUtil.create('div', 'smooth-fullscreen-error-label', toggles_wrapper);
